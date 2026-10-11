@@ -32,6 +32,12 @@ jobs:
           corepack pnpm --version
       - name: Install declared dependencies
         run: corepack pnpm install --no-frozen-lockfile
+      - name: Capture resolved dependency lockfile
+        shell: bash
+        run: |
+          echo RENDERARIUM_LOCKFILE_BEGIN
+          cat pnpm-lock.yaml
+          echo RENDERARIUM_LOCKFILE_END
       - name: Execute real 18-stage canonical pipeline
         shell: bash
         run: |
