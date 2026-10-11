@@ -19,6 +19,7 @@ const htmlPath = process.env.SC3D_SOFTWARE_PREVIEW === "1"
   ? softwareHtmlPath : webglHtmlPath;
 const adapterPath = resolve(repoRoot, "runtime/sc3d/three-adapter-browser.mjs");
 const threePath = resolve(repoRoot, "node_modules/three/build/three.module.js");
+const threeCorePath = resolve(repoRoot, "node_modules/three/build/three.core.js");
 
 // Scene assemblies are lowered through the SAME canonical schema/semantic
 // loader used by production assembly, but stay in memory. Existing direct
@@ -45,6 +46,7 @@ const routes = new Map([
   ["/index.html", htmlPath],
   ["/runtime/sc3d/three-adapter-browser.mjs", adapterPath],
   ["/vendor/three.module.js", threePath],
+  ["/vendor/three.core.js", threeCorePath],
   ["/software", softwareHtmlPath],
   ["/runtime/sc3d/canvas-preview-browser.mjs", softwareModulePath],
   ["/scenes/cozy-reader-room-v1/room-interactions-browser.mjs", roomInteractionsModulePath],

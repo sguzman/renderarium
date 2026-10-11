@@ -84,6 +84,7 @@ try {
     ["", "<script type=\"module\">"],
     ["runtime/sc3d/three-adapter-browser.mjs", "buildSc3dObject"],
     ["vendor/three.module.js", "WebGLRenderer"],
+    ["vendor/three.core.js", "export"],
   ];
   for (const [route, expected] of requests) {
     const response = await fetch(new URL(route, url), {

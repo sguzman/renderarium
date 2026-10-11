@@ -77,12 +77,10 @@ jobs:
           mkdir -p artifacts/canonical-browser
           set -o pipefail
           {
-            result=0
             for scene in living-room kitchen bathroom office backyard garage factory; do
               echo "===== ${scene} ====="
-              python scripts/test-block-chibi-canonical-browser.py --scene "${scene}" --allow-swiftshader || result=1
+              python scripts/test-block-chibi-canonical-browser.py --scene "${scene}" --allow-swiftshader
             done
-            exit "$result"
           } 2>&1 | tee artifacts/canonical-browser/browser-tests.log
       - name: Upload browser diagnostics even on failure
         if: ${{ always() }}
