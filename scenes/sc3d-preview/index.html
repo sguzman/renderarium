@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SC3D Preview</title>
+  <style>
+    :root { color-scheme: dark; font-family: ui-sans-serif, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #17171b; color: #f4f1ed; }
+    main { display: grid; grid-template-rows: auto 1fr; min-height: 100vh; }
+    header {
+      display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+      padding: .8rem 1rem; background: #202027; border-bottom: 1px solid #33343c;
+    }
+    header strong { margin-right: auto; }
+    label { display: inline-flex; gap: .45rem; align-items: center; }
+    button {
+      border: 1px solid #4b4b55; background: #2d2d35; color: #f4f1ed;
+      border-radius: .4rem; padding: .45rem .7rem; cursor: pointer;
+    }
+    #status { color: #b9d5b0; font-size: .9rem; }
+    #viewport { min-height: 78vh; position: relative; overflow: hidden; }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+    .note {
+      position: absolute; left: 1rem; bottom: 1rem; max-width: 32rem;
+      padding: .55rem .7rem; border-radius: .45rem;
+      background: rgb(0 0 0 / .50); color: #d8d4cf; font-size: .82rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <strong id="title">SC3D preview</strong>
+      <label><input id="structure" type="checkbox"> structure / wireframe</label>
+      <button id="reset" type="button">reset view</button>
+      <span id="status">loading…</span>
+    </header>
+    <section id="viewport">
+      <div class="note">Drag to rotate. Wheel to zoom. Beauty and wireframe views are the same SC3D geometry.</div>
+    </section>
+  </main>
+
+  <script>
+    // If WebGL initialization, an import, or the SC3D source fails, do not
+    // leave the user staring at "loading..." or treat it as a valid render.
+    function reportSc3dPreviewFailure(detail) {
+      if (document.documentElement.dataset.sc3dReady === "true") return;
+      const reason = String(detail || "unknown renderer failure").slice(0, 500);
+      document.documentElement.dataset.sc3dError = "true";
+      window.__SC3D_ERROR__ = reason;
+      const status = document.querySelector("#status");
+      if (status) {
+        status.textContent = "SC3D preview unavailable: " + reason;
+        status.style.color = "#ffb7a3";
+      }
+      const viewport = document.querySelector("#viewport");
+      if (viewport && !document.querySelector("#sc3d-preview-error")) {
+        const message = document.createElement("div");
+        message.id = "sc3d-preview-error";
+        message.setAttribute("role", "alert");
+        message.style.cssText = "margin:1rem;padding:1rem;border:1px solid #994b46;background:#382729;color:#ffddd6;border-radius:.45rem;max-width:40rem";
+        message.textContent = "The Three.js scene did not initialize. The room assets have not been changed. " +
+          "This is a browser/renderer error, not evidence that the room is empty. " + reason;
+        viewport.appendChild(message);
+      }
+    }
+    window.addEventListener("error", event => {
+      reportSc3dPreviewFailure(event.message || "module/runtime load failure");
+    });
+    window.addEventListener("unhandledrejection", event => {
+      reportSc3dPreviewFailure(event.reason?.message || event.reason || "asynchronous renderer error");
+    });
+    document.addEventListener("webglcontextlost", event => {
+      event.preventDefault();
+      document.documentElement.dataset.sc3dReady = "false";
+      reportSc3dPreviewFailure("WebGL context lost");
+    }, true);
+  </script>
+
+  <script type="module">
+    import * as THREE from "/vendor/three.module.js";
+    import { previewPixelRatio } from "/runtime/sc3d/preview-render-budget.mjs";
+    import { createFrameProof, assertFreshFrame } from "/runtime/sc3d/preview-frame-proof.mjs";
+    import { buildSc3dObject, setStructureMode } from "/runtime/sc3d/three-adapter-browser.mjs";
+
+    const viewport = document.querySelector("#viewport");
+    const status = document.querySelector("#status");
+    const title = document.querySelector("#title");
+    const structure = document.querySelector("#structure");
+    const reset = document.querySelector("#reset");
+    const params = new URLSearchParams(location.search);
+    const requestedView = params.get("view");
+    const diagnosticMode = params.get("diagnostic") === "1";
+    const requestedProjection = params.get("projection");
+    const diagnosticRenderMode = params.get("render_mode") ?? "beauty";
+    const optionalNumberParam = (name) => {
+      const raw = params.get(name);
+      return raw == null || raw === "" ? Number.NaN : Number(raw);
+    };
+    const requestedAzimuth = optionalNumberParam("azimuth_deg");
+    const requestedElevation = optionalNumberParam("elevation_deg");
+    const requestedRoll = optionalNumberParam("roll_deg");
+    const requestedFov = optionalNumberParam("fov_deg");
+
+    if (diagnosticMode) {
+      document.querySelector("header").style.display = "none";
+      document.querySelector(".note").style.display = "none";
+      document.querySelector("main").style.gridTemplateRows = "1fr";
+      document.querySelector("#viewport").style.minHeight = "100vh";
+    }
+
+    const ir = await fetch("/asset-ir.json", { cache: "no-store" }).then((r) => {
+      if (!r.ok) throw new Error(`asset load failed: HTTP ${r.status}`);
+      return r.json();
+    });
+
+    title.textContent = `${ir.asset.name ?? ir.asset.id} · SC3D ${ir.version}`;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color("#25232a");
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    // The final DPR is set from the *actual* viewport dimensions in resize().
+    renderer.setPixelRatio(1);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    viewport.prepend(renderer.domElement);
+
+    // This preview is a static scene. Render only when the view or an
+    // interaction changes; do not spin a GPU render loop while idle.
+    let roomInteractions = null;
+    const frameProof = createFrameProof({
+      documentElement: document.documentElement,
+      schedule: requestAnimationFrame,
+      draw: () => {
+        roomInteractions?.refresh();
+        renderer.render(scene, camera);
+        window.__SC3D_READY__ = true;
+      },
+      onError: error => reportSc3dPreviewFailure(error?.message || error),
+    });
+    function requestRender() {
+      frameProof.requestRender();
+    }
+
+
+    let camera;
+    let zoom = 1;
+
+    function createCamera() {
+      if (requestedProjection === "perspective") {
+        const fov = Number.isFinite(requestedFov) && requestedFov > 1 && requestedFov < 120
+          ? requestedFov
+          : 24;
+        return new THREE.PerspectiveCamera(fov, 1, 0.01, 100);
+      }
+      return new THREE.OrthographicCamera(-2.5, 2.5, 2.8, -2.8, 0.01, 100);
+    }
+
+    camera = createCamera();
+
+    const presentation = new THREE.Group();
+    const character = buildSc3dObject(ir);
+    presentation.add(character);
+    scene.add(presentation);
+
+    const bounds = new THREE.Box3().setFromObject(character);
+    const boundSize = bounds.getSize(new THREE.Vector3());
+    const boundCenter = bounds.getCenter(new THREE.Vector3());
+    let baseHalfHeight = Math.max(1.85, boundSize.y * 0.58);
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(9, 9),
+      new THREE.MeshStandardMaterial({ color: "#8e8583", roughness: 1 }),
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.82;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    scene.add(new THREE.HemisphereLight("#fff2df", "#4c4557", 1.8));
+
+    const key = new THREE.DirectionalLight("#ffe5ca", 3.1);
+    key.position.set(-4.0, 6.5, -5.0);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight("#cbd7ff", 1.15);
+    fill.position.set(4.0, 2.5, -3.0);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight("#ffe7f1", 0.8);
+    rim.position.set(2.0, 4.0, 5.0);
+    scene.add(rim);
+
+    if (diagnosticMode && diagnosticRenderMode === "wireframe") {
+      setStructureMode(character, true);
+    } else if (diagnosticMode && diagnosticRenderMode === "silhouette") {
+      scene.background = new THREE.Color("#ffffff");
+      ground.visible = false;
+      scene.overrideMaterial = new THREE.MeshBasicMaterial({ color: "#000000" });
+    }
+
+    const viewDirections = {
+      front: new THREE.Vector3(0, 0.04, -1),
+      "front-three-quarter": new THREE.Vector3(0.58, 0.06, -0.82),
+      front3q: new THREE.Vector3(0.58, 0.06, -0.82),
+      side: new THREE.Vector3(1, 0.04, 0),
+      "rear-three-quarter": new THREE.Vector3(0.58, 0.06, 0.82),
+      rear3q: new THREE.Vector3(0.58, 0.06, 0.82),
+      rear: new THREE.Vector3(0, 0.04, 1),
+    };
+
+    function directionFromAngles(azimuthDeg, elevationDeg) {
+      const az = azimuthDeg * Math.PI / 180;
+      const el = elevationDeg * Math.PI / 180;
+      const horizontal = Math.cos(el);
+      return new THREE.Vector3(
+        -Math.sin(az) * horizontal,
+        Math.sin(el),
+        -Math.cos(az) * horizontal,
+      ).normalize();
+    }
+
+    function calibratedDirection(name) {
+      if (Number.isFinite(requestedAzimuth) && Number.isFinite(requestedElevation)) {
+        return directionFromAngles(requestedAzimuth, requestedElevation);
+      }
+      return (viewDirections[name] ?? viewDirections["front-three-quarter"]).clone().normalize();
+    }
+
+    function perspectiveFitDistance() {
+      const sphere = new THREE.Sphere();
+      bounds.getBoundingSphere(sphere);
+      const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+      return (sphere.radius / Math.sin(verticalFov / 2)) * 1.08;
+    }
+
+    function setViewPreset(name = "front-three-quarter") {
+      const direction = calibratedDirection(name);
+      presentation.rotation.set(0, 0, 0);
+      zoom = 1;
+
+      const distance = camera.isPerspectiveCamera ? perspectiveFitDistance() : 8;
+      camera.position.copy(boundCenter).addScaledVector(direction, distance);
+      camera.up.set(0, 1, 0);
+      camera.lookAt(boundCenter);
+
+      if (Number.isFinite(requestedRoll) && requestedRoll !== 0) {
+        camera.rotateZ(THREE.MathUtils.degToRad(requestedRoll));
+      }
+
+      if (camera.isOrthographicCamera) {
+        camera.zoom = zoom;
+      }
+      camera.updateProjectionMatrix();
+      requestRender();
+    }
+
+    function resetView() {
+      setViewPreset("front-three-quarter");
+      requestRender();
+    }
+    setViewPreset(requestedView ?? "front-three-quarter");
+
+    function resize() {
+      const width = Math.max(1, viewport.clientWidth);
+      const height = Math.max(1, viewport.clientHeight);
+      renderer.setPixelRatio(previewPixelRatio({
+        width, height, deviceRatio: window.devicePixelRatio || 1,
+      }));
+      renderer.setSize(width, height, false);
+      const aspect = width / height;
+
+      if (camera.isPerspectiveCamera) {
+        camera.aspect = aspect;
+      } else {
+        const halfHeight = baseHalfHeight;
+        camera.left = -halfHeight * aspect;
+        camera.right = halfHeight * aspect;
+        camera.top = halfHeight;
+        camera.bottom = -halfHeight;
+      }
+      camera.updateProjectionMatrix();
+      requestRender();
+    }
+
+    new ResizeObserver(resize).observe(viewport);
+    resize();
+
+    structure.addEventListener("change", () => { setStructureMode(character, structure.checked); requestRender(); });
+    reset.addEventListener("click", resetView);
+
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    renderer.domElement.addEventListener("pointerdown", (event) => {
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      renderer.domElement.setPointerCapture(event.pointerId);
+    });
+
+    renderer.domElement.addEventListener("pointermove", (event) => {
+      if (!dragging) return;
+      const dx = event.clientX - lastX;
+      const dy = event.clientY - lastY;
+      presentation.rotation.y += dx * 0.009;
+      presentation.rotation.x = THREE.MathUtils.clamp(
+        presentation.rotation.x + dy * 0.006,
+        -0.42,
+        0.42,
+      );
+      lastX = event.clientX;
+      lastY = event.clientY;
+      requestRender();
+    });
+
+    renderer.domElement.addEventListener("pointerup", (event) => {
+      dragging = false;
+      renderer.domElement.releasePointerCapture(event.pointerId);
+    });
+
+    renderer.domElement.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      zoom = THREE.MathUtils.clamp(zoom * Math.exp(-event.deltaY * 0.001), 0.65, 2.4);
+      if (camera.isPerspectiveCamera) {
+        const direction = camera.position.clone().sub(boundCenter).normalize();
+        const distance = perspectiveFitDistance() / zoom;
+        camera.position.copy(boundCenter).addScaledVector(direction, distance);
+      } else {
+        camera.zoom = zoom;
+      }
+      camera.updateProjectionMatrix();
+      requestRender();
+    }, { passive: false });
+
+    status.textContent = `validated · ${Object.keys(ir.parts).length} parts · ${Object.keys(ir.materials).length} materials · ${camera.isPerspectiveCamera ? "perspective" : "orthographic"} · ${diagnosticRenderMode}`;
+
+    // Optional specimen-specific controls. Other SC3D viewers are untouched.
+    if (ir.asset.id === "cozy-reader-room-v1" && !diagnosticMode) {
+      const { createRoomInteractionController, roomInstanceFromPartId } = await import(
+        "/scenes/cozy-reader-room-v1/room-interactions-browser.mjs"
+      );
+      const button = document.createElement("button");
+      button.type = "button";
+      button.id = "room-lamp-toggle";
+      button.setAttribute("aria-label", "Toggle room table lamp");
+      const bookButton = document.createElement("button");
+      bookButton.type = "button";
+      bookButton.id = "room-desk-book-toggle";
+      bookButton.setAttribute("aria-label", "Open or close the desk book");
+      const selected = document.createElement("span");
+      selected.id = "room-selected";
+      selected.setAttribute("aria-live", "polite");
+      selected.style.fontSize = ".85rem";
+      selected.style.color = "#eedbc5";
+      status.before(button, bookButton, selected);
+      const room = createRoomInteractionController({
+        THREE,
+        model: character,
+        scene,
+        camera: () => camera,
+        canvas: renderer.domElement,
+        onUpdate(next) {
+          button.textContent = next.lampOn ? "Lamp: on" : "Lamp: off";
+          button.setAttribute("aria-pressed", String(next.lampOn));
+          const deskBookOpen = next.openBooks.includes("book");
+          bookButton.textContent = deskBookOpen ? "Close book" : "Open book";
+          bookButton.setAttribute("aria-pressed", String(deskBookOpen));
+          selected.textContent = next.selectedLabel
+            ? "Selected: " + next.selectedLabel +
+              (next.openBooks.includes(next.selectedId) ? " (open)" : "")
+            : "Click a room object to inspect";
+          requestRender();
+        },
+      });
+      roomInteractions = room;
+      button.addEventListener("click", () => room.toggleLamp());
+      bookButton.addEventListener("click", () => room.toggleBook("book"));
+      window.__SC3D_ROOM_STATE__ = () => room.getState();
+      // Opt-in browser proof runs inside the actual Three.js room preview,
+      // never during ordinary viewing or diagnostic screenshot capture.
+      if (params.get("room_qa") === "1") {
+        const root = document.documentElement;
+        root.dataset.sc3dRoomQa = "running";
+        const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
+        const require = (condition, description) => {
+          if (!condition) throw new Error(description);
+        };
+        (async () => {
+          await nextFrame();
+          await nextFrame();
+          require(root.dataset.sc3dReady === "true" &&
+            Number(root.dataset.sc3dFrame) >= 1, "Three.js first frame not rendered");
+          const nodes = character.userData.sc3dNodes;
+          const deskCover = nodes["book__cover_top"];
+          const shelfCover = nodes["shelf-book__cover_top"];
+          const initialPivot = deskCover.pivotNode.position.clone();
+          const initialLocal = deskCover.localSpace.position.clone();
+          const initialAngle = deskCover.pivotNode.rotation.z;
+          const shelfAngle = shelfCover.pivotNode.rotation.z;
+          const emitter = nodes.lamp__emitter.localSpace.children.find(child => child.isMesh);
+          const initialIntensity = emitter.material.emissiveIntensity;
+          require(initialIntensity > 0, "lamp baseline has no emission");
+          require(room.getState().lampOn && room.getState().openBooks.length === 0,
+            "unexpected initial room state");
+
+          const lampBefore = frameProof.frameCount();
+          button.click();
+          require(!room.getState().lampOn && button.getAttribute("aria-pressed") === "false",
+            "accessible lamp switch did not turn off");
+          require(emitter.material.emissiveIntensity === 0, "lamp emitter stayed on");
+          await nextFrame();
+          assertFreshFrame(root, lampBefore, "lamp redraw failed");
+
+          const booksBefore = frameProof.frameCount();
+          bookButton.click();
+          require(room.getState().openBooks.includes("book") &&
+            bookButton.getAttribute("aria-pressed") === "true", "desk book button did not open");
+          require(deskCover.pivotNode.position.x < initialPivot.x &&
+            deskCover.localSpace.position.x > initialLocal.x &&
+            deskCover.pivotNode.rotation.z !== initialAngle,
+            "desk cover did not articulate around spine");
+          room.setBookOpen("shelf-book", true);
+          require(room.getState().openBooks.length === 2 &&
+            shelfCover.pivotNode.rotation.z !== shelfAngle,
+            "shelf book did not open independently");
+          await nextFrame();
+          assertFreshFrame(root, booksBefore, "book redraw failed");
+
+          const restoreBefore = frameProof.frameCount();
+          bookButton.click();
+          room.setBookOpen("shelf-book", false);
+          button.click();
+          require(room.getState().lampOn && room.getState().openBooks.length === 0 &&
+            bookButton.getAttribute("aria-pressed") === "false", "controls did not restore");
+          require(deskCover.pivotNode.position.equals(initialPivot) &&
+            deskCover.localSpace.position.equals(initialLocal) &&
+            deskCover.pivotNode.rotation.z === initialAngle,
+            "closed book baseline was not restored");
+          require(shelfCover.pivotNode.rotation.z === shelfAngle,
+            "shelf cover baseline was not restored");
+          require(emitter.material.emissiveIntensity === initialIntensity,
+            "lamp emission baseline was not restored");
+          await nextFrame();
+          assertFreshFrame(root, restoreBefore, "restored room redraw failed");
+
+          // Real scene-geometry hit testing, not a mocked Raycaster. Sample
+          // actual canvas coordinates until an inspectable prop is exposed.
+          // The synthetic pick exercises ray/part mapping, not OS pointer routing.
+          const rect = renderer.domElement.getBoundingClientRect();
+          require(rect.width > 0 && rect.height > 0, "room canvas has no hit area");
+          const ray = new THREE.Raycaster();
+          const ndc = new THREE.Vector2();
+          let picked = null;
+          for (let yi = 1; yi <= 9 && !picked; yi += 1) {
+            for (let xi = 1; xi <= 9 && !picked; xi += 1) {
+              const x = xi / 10;
+              const y = yi / 10;
+              ndc.set(2 * x - 1, 1 - 2 * y);
+              ray.setFromCamera(ndc, camera);
+              const target = ray.intersectObject(character, true)
+                .map(hit => roomInstanceFromPartId(hit.object.userData.sc3dPartId))
+                .find(Boolean);
+              if (!target) continue;
+              room.pick(rect.left + rect.width * x, rect.top + rect.height * y);
+              require(room.getState().selectedId === target,
+                "scene raycast selection mismatch: expected " + target);
+              picked = target;
+            }
+          }
+          require(picked, "no selectable room prop found in actual scene rays");
+          root.dataset.sc3dRoomQaPicked = picked;
+          const selectionBefore = frameProof.frameCount();
+          room.select(null);
+          room.setLampOn(true);
+          room.setBookOpen("book", false);
+          room.setBookOpen("shelf-book", false);
+          await nextFrame();
+          assertFreshFrame(root, selectionBefore, "selection redraw failed");
+          require(room.getState().selectedId === null &&
+            room.getState().lampOn && room.getState().openBooks.length === 0,
+            "selection proof failed to restore room state");
+          root.dataset.sc3dRoomQa = "passed";
+        })().catch(error => {
+          root.dataset.sc3dRoomQa = "failed";
+          root.dataset.sc3dRoomQaError = String(error?.message || error).slice(0, 300);
+        });
+      }
+      document.querySelector(".note").textContent =
+        "Drag to orbit · Wheel to zoom · Click props to inspect · Click either book to open or close it · Click lamp to toggle light.";
+    }
+
+    requestRender();
+  </script>
+</body>
+</html>

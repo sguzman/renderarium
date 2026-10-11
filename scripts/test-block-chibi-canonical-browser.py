@@ -89,12 +89,33 @@ def run(scene: str, allow_swiftshader: bool) -> None:
                 page = browser.new_page(viewport={"width": 1140, "height": 760})
                 errors: list[str] = []
                 page.on("pageerror", lambda error: errors.append(str(error)))
-                page.goto(url + "?projection=perspective&view=front-three-quarter")
-                page.wait_for_function(
-                    "() => window.__SC3D_READY__ === true"
-                    " && document.documentElement.dataset.sc3dReady === 'true'",
-                    timeout=30000,
-                )
+                network_errors: list[str] = []
+                page.on("response", lambda response: network_errors.append(
+                    f"HTTP {response.status} {response.url}") if response.status >= 400 else None)
+                page.on("requestfailed", lambda request: network_errors.append(
+                    f"Request failed: {request.url}"))
+                response = page.goto(url + "?projection=perspective&view=front-three-quarter")
+                assert response is not None and response.ok, (
+                    f"Preview entrypoint failed: HTTP {response.status if response else 'none'}; "
+                    f"network={network_errors}; page_errors={errors}")
+                assert page.locator("#viewport").count() == 1, (
+                    f"Expected SC3D viewport missing; network={network_errors}; page_errors={errors}")
+                try:
+                    page.wait_for_function(
+                        "() => window.__SC3D_READY__ === true"
+                        " && document.documentElement.dataset.sc3dReady === 'true'",
+                        timeout=30000,
+                    )
+                except Exception as exc:
+                    state = page.evaluate("""() => ({
+                        ready: window.__SC3D_READY__,
+                        error: window.__SC3D_ERROR__,
+                        status: document.querySelector('#status')?.textContent,
+                        data: {...document.documentElement.dataset}
+                    })""")
+                    raise AssertionError(
+                        f"SC3D render readiness failed: state={state}; "
+                        f"network={network_errors}; page_errors={errors}") from exc
                 assert not errors, f"Canonical Three.js browser error: {errors}"
                 status = page.locator("#status").inner_text()
                 assert "validated" in status.lower(), status

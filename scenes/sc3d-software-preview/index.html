@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SC3D software scene preview</title>
+<style>
+:root{font-family:system-ui,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;color:#302a28;background:#e8e6e0}
+main{min-height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr)}
+header{padding:.7rem 1rem;display:flex;gap:.55rem;align-items:center;flex-wrap:wrap;background:#fcf8f1;border-bottom:1px solid #cbbcb2}
+strong{margin-right:auto}
+button{padding:.5rem .7rem;background:#fff;border:1px solid #b6a69b;border-radius:.45rem;cursor:pointer;color:#302a28}
+button:focus-visible{outline:2px solid #3469ac}
+#status{font-size:.78rem}
+#viewport{position:relative;min-height:70vh}
+canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.note{position:absolute;bottom:.65rem;left:.65rem;right:.65rem;max-width:35rem;padding:.5rem .7rem;border-radius:.4rem;background:rgb(255 255 255 / .85);font-size:.8rem;line-height:1.45}
+@media(max-width:650px){header{gap:.3rem}button{padding:.4rem}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<strong id="title">SC3D software preview</strong>
+<button type="button" data-view="-35,24">3/4 room</button>
+<button type="button" data-view="0,18">front</button>
+<button type="button" data-view="-54,40">high view</button>
+<button type="button" data-view="-15,18">near-front</button>
+<span id="status">Loading source geometry...</span>
+</header>
+<section id="viewport">
+<canvas id="scene" aria-label="Interactive GPU-free 3D scene; drag to orbit, wheel to zoom"></canvas>
+<div class="note">Drag to orbit; wheel to zoom. This is an independent Canvas2D geometry diagnostic, not a Three.js beauty render. Unsupported SC3D geometry is reported rather than silently omitted.</div>
+</section>
+</main>
+<script type="module">
+import {createCanvasViewer} from "/runtime/sc3d/canvas-preview-browser.mjs";
+const params=new URLSearchParams(location.search);
+try {
+ const response=await fetch("/asset-ir.json",{cache:"no-store"});
+ if(!response.ok)throw new Error("SC3D source load returned HTTP "+response.status);
+ const ir=await response.json();
+ document.querySelector("#title").textContent=(ir.asset.name??ir.asset.id)+" · software preview";
+ const viewer=createCanvasViewer(document.querySelector("#scene"),ir,{status:document.querySelector("#status")});
+ for(const button of document.querySelectorAll("[data-view]"))button.addEventListener("click",()=>{
+  const [az,el]=button.dataset.view.split(",").map(Number);
+  viewer.preset(az,el);
+ });
+ const az=params.get("azimuth_deg"),el=params.get("elevation_deg");
+ if(az!==null&&el!==null&&Number.isFinite(Number(az))&&Number.isFinite(Number(el))){
+  viewer.preset(Number(az),Number(el));
+ } else if(params.get("view")==="front")viewer.preset(0,18);
+ if(params.get("diagnostic")==="1"){
+  document.querySelector("header").style.display="none";
+  document.querySelector(".note").hidden=true;
+  document.querySelector("main").style.gridTemplateRows="minmax(0,1fr)";
+  document.querySelector("#viewport").style.minHeight="100vh";
+  viewer.draw();
+ }
+ window.__SC3D_READY__=true;
+} catch(error){
+ document.querySelector("#status").textContent="Preview error: "+String(error?.message??error);
+ window.__SC3D_ERROR__=String(error?.stack??error);
+ console.error(error);
+}
+</script>
+</body>
+</html>
