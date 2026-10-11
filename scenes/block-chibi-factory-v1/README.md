@@ -104,9 +104,8 @@ primarily the deliberate belt/product and supply-transfer interfaces.
 These did **not** justify rearranging the user-approved composition or
 modifying the scene to solve camera-dependent painter-order artifacts.
 
-**Current visual review:** The human reviewer accepted the final corrected
-factory appearance on 2026-10-08. The approval is recorded without reproducing
-private conversational wording.
+**Current visual review:** Factory v1 appearance and composition were accepted
+on 2026-10-08. This remains a visual verdict, not a Three.js/WebGL validation.
 Visual acceptance and scope are recorded in Taria's
 `evaluations/block-chibi-factory-v1-interactive-visual-acceptance-2026-10-08.yml`.
 The first accepted alternate artifact was the CPU depth-corrected
