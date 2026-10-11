@@ -1,0 +1,134 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-bathtub-v1
+  name: Block Chibi Soaking Bathtub v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, bathroom, bathtub]
+materials:
+  porcelain: {role: bathtub-ceramic, base_color: "#f7efe5", roughness: 0.98}
+  edge: {role: bathtub-rim, base_color: "#fdfaf1", roughness: 0.98}
+  inner: {role: bath-recess, base_color: "#c2d8d9", roughness: 0.98}
+  water: {role: bath-water, base_color: "#93bdc8", roughness: 0.98}
+  metal: {role: bath-faucet, base_color: "#c1a78b", roughness: 0.98}
+  accent: {role: fixture-knob, base_color: "#d69c97", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  base:
+    role: full-length-tub-support
+    parent: root
+    geometry: {kind: cuboid, size: [1.88, 0.2, 1.05]}
+    material: porcelain
+    transform: {translate: [0, 0.14, 0]}
+    articulation: static
+  front:
+    role: bathtub-front-panel
+    parent: root
+    geometry: {kind: tapered_box, bottom: [1.9,0.16], top: [1.84,0.15], height: 0.52}
+    material: porcelain
+    transform: {translate: [0, 0.49, -0.49]}
+    articulation: static
+  rear:
+    role: bathtub-rear-panel
+    parent: root
+    geometry: {kind: tapered_box, bottom: [1.9,0.16], top: [1.84,0.15], height: 0.52}
+    material: porcelain
+    transform: {translate: [0, 0.49, 0.49]}
+    articulation: static
+  left:
+    role: bathtub-left-end
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.16,1.04], top: [0.15,0.98], height: 0.52}
+    material: porcelain
+    transform: {translate: [-0.88, 0.49, 0]}
+    articulation: static
+  right:
+    role: bathtub-right-end
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.16,1.04], top: [0.15,0.98], height: 0.52}
+    material: porcelain
+    transform: {translate: [0.88, 0.49, 0]}
+    articulation: static
+  basin_bottom:
+    role: recessed-bath-floor
+    parent: root
+    geometry: {kind: cuboid, size: [1.59, 0.08, 0.75]}
+    material: inner
+    transform: {translate: [0, 0.31, 0]}
+    articulation: static
+  water:
+    role: visible-water-surface
+    parent: root
+    geometry: {kind: cuboid, size: [1.55, 0.02, 0.72]}
+    material: water
+    transform: {translate: [0, 0.455, 0]}
+    articulation: static
+  rim_front:
+    role: thick-lip
+    parent: root
+    geometry: {kind: cuboid, size: [1.91, 0.065, 0.15]}
+    material: edge
+    transform: {translate: [0, 0.778, -0.495]}
+    articulation: static
+  rim_rear:
+    role: thick-lip
+    parent: root
+    geometry: {kind: cuboid, size: [1.91, 0.065, 0.15]}
+    material: edge
+    transform: {translate: [0, 0.778, 0.495]}
+    articulation: static
+  rim_left:
+    role: thick-lip
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.065, 0.97]}
+    material: edge
+    transform: {translate: [-0.886, 0.778, 0]}
+    articulation: static
+  rim_right:
+    role: thick-lip
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.065, 0.97]}
+    material: edge
+    transform: {translate: [0.886, 0.778, 0]}
+    articulation: static
+  faucet_upright:
+    role: bath-tap-rise
+    parent: root
+    geometry: {kind: cuboid, size: [0.1, 0.31, 0.11]}
+    material: metal
+    transform: {translate: [0.69, 0.96, 0.49]}
+    articulation: static
+  faucet_spout:
+    role: bath-tap-reach
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 0.08, 0.37]}
+    material: metal
+    transform: {translate: [0.69, 1.11, 0.3]}
+    articulation: static
+  tap_outlet:
+    role: bath-tap-outlet
+    parent: root
+    geometry: {kind: cuboid, size: [0.09, 0.11, 0.09]}
+    material: metal
+    transform: {translate: [0.69, 1.055, 0.125]}
+    articulation: static
+  control_hot:
+    role: bath-control
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 0.08, 0.12]}
+    material: accent
+    transform: {translate: [0.45, 0.825, 0.5]}
+    articulation: static
+  control_cold:
+    role: bath-control
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 0.08, 0.12]}
+    material: accent
+    transform: {translate: [0.88, 0.825, 0.5]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: initial-scene-review-pending, renderer_experiments: deferred}

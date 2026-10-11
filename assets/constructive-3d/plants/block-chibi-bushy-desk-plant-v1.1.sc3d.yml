@@ -1,0 +1,255 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pot:
+    role: plant-container
+    base_color: "#a86f58"
+    roughness: 0.96
+  pot_dark:
+    role: plant-container-shadow
+    base_color: "#7f5143"
+    roughness: 0.97
+  green:
+    role: foliage-primary
+    base_color: "#7ea27a"
+    roughness: 0.96
+  green_light:
+    role: foliage-highlight
+    base_color: "#91b184"
+    roughness: 0.96
+  green_dark:
+    role: foliage-secondary
+    base_color: "#5f7f5d"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-bushy-desk-plant-v1.1
+  name: Block Chibi Bushy Desk Plant v1.1
+  kind: prop
+  root: root
+  tags: [plant, block-chibi-room, bushy-desk-plant, grammar-specimen, morphology-revised]
+
+parts:
+  root: {role: plant-root, parent: null, articulation: static}
+
+  pot:
+    role: plant-anchor
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.54, 0.54]
+      top: [0.44, 0.44]
+      height: 0.42
+    material: pot
+    transform: {translate: [0.0, 0.21, 0.0]}
+
+  stem:
+    role: plant-stem
+    parent: root
+    geometry: {kind: cuboid, size: [0.09, 0.30, 0.09]}
+    material: green_dark
+    transform: {translate: [0.0, 0.51, 0.0]}
+
+  crown_core:
+    role: plant-crown-core
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.14, 0.16]}
+    material: green_dark
+    transform: {translate: [0.0, 0.68, 0.0]}
+
+  leaf_left_low_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.28, 0.20]
+      height: 0.17
+    material: green
+    transform:
+      translate: [-0.04, 0.68, 0.02]
+      rotate_deg: [-8, 0, -62]
+
+  leaf_left_low_tip:
+    role: plant-leaf-distal
+    parent: leaf_left_low_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.20]
+      top: [0.07, 0.09]
+      height: 0.22
+    material: green
+    transform:
+      translate: [0.0, 0.180, 0.0]
+
+  leaf_right_low_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.28, 0.20]
+      height: 0.17
+    material: green_light
+    transform:
+      translate: [0.04, 0.69, -0.02]
+      rotate_deg: [8, 0, 60]
+
+  leaf_right_low_tip:
+    role: plant-leaf-distal
+    parent: leaf_right_low_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.20]
+      top: [0.07, 0.09]
+      height: 0.22
+    material: green_light
+    transform:
+      translate: [0.0, 0.180, 0.0]
+
+  leaf_left_high_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.26, 0.20]
+      height: 0.17
+    material: green_light
+    transform:
+      translate: [-0.03, 0.72, -0.05]
+      rotate_deg: [12, 0, -30]
+
+  leaf_left_high_tip:
+    role: plant-leaf-distal
+    parent: leaf_left_high_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.26, 0.20]
+      top: [0.07, 0.09]
+      height: 0.24
+    material: green_light
+    transform:
+      translate: [0.0, 0.190, 0.0]
+
+  leaf_right_high_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.26, 0.20]
+      height: 0.17
+    material: green
+    transform:
+      translate: [0.03, 0.73, 0.05]
+      rotate_deg: [-12, 0, 30]
+
+  leaf_right_high_tip:
+    role: plant-leaf-distal
+    parent: leaf_right_high_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.26, 0.20]
+      top: [0.07, 0.09]
+      height: 0.24
+    material: green
+    transform:
+      translate: [0.0, 0.190, 0.0]
+
+  leaf_front_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.25, 0.20]
+      height: 0.16
+    material: green
+    transform:
+      translate: [0, 0.7, -0.08]
+      rotate_deg: [38, 0, 0]
+
+  leaf_front_tip:
+    role: plant-leaf-distal
+    parent: leaf_front_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.25, 0.20]
+      top: [0.07, 0.09]
+      height: 0.21
+    material: green
+    transform:
+      translate: [0.0, 0.170, 0.0]
+
+  leaf_back_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.25, 0.20]
+      height: 0.16
+    material: green_light
+    transform:
+      translate: [0, 0.71, 0.08]
+      rotate_deg: [-34, 0, 4]
+
+  leaf_back_tip:
+    role: plant-leaf-distal
+    parent: leaf_back_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.25, 0.20]
+      top: [0.07, 0.09]
+      height: 0.21
+    material: green_light
+    transform:
+      translate: [0.0, 0.170, 0.0]
+
+  leaf_top_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.24, 0.20]
+      height: 0.17
+    material: green
+    transform:
+      translate: [0, 0.75, 0]
+      rotate_deg: [2, 0, -2]
+
+  leaf_top_tip:
+    role: plant-leaf-distal
+    parent: leaf_top_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.24, 0.20]
+      top: [0.07, 0.09]
+      height: 0.23
+    material: green
+    transform:
+      translate: [0.0, 0.185, 0.0]
+
+extensions:
+  taria:
+    object_grammar: plant@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::plant@0.2
+    specimen_intent: bushy-desk-plant
+    predecessor: block-chibi-bushy-desk-plant-v1
+    morphology_strategy: compact-layered-rosette
+    evaluation_status: awaiting-corrected-family-review

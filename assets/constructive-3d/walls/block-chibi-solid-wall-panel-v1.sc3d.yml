@@ -1,0 +1,61 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wall:
+    role: wall-surface
+    base_color: "#e4c4aa"
+    roughness: 0.99
+  wall_accent:
+    role: wall-accent
+    base_color: "#d9b49a"
+    roughness: 0.99
+  trim:
+    role: wall-trim
+    base_color: "#f2eadb"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-solid-wall-panel-v1
+  name: Block Chibi Solid Wall Panel v1
+  kind: architecture
+  root: root
+  tags: [wall, block-chibi-room, solid-wall-panel, grammar-specimen]
+
+parts:
+  root: {role: wall-root, parent: null, articulation: static}
+
+  wall_body:
+    role: wall-boundary-surface
+    parent: root
+    geometry: {kind: cuboid, size: [1.80, 2.20, 0.16]}
+    material: wall
+    transform: {translate: [0.0, 1.10, 0.0]}
+
+  baseboard:
+    role: wall-baseboard
+    parent: root
+    geometry: {kind: cuboid, size: [1.76, 0.14, 0.05]}
+    material: trim
+    transform: {translate: [0.0, 0.07, -0.105]}
+
+extensions:
+  taria:
+    object_grammar: wall@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::wall@0.1
+    specimen_intent: solid-wall-panel
+    room_face: [0.0, 0.0, -1.0]
+    render_shading: flat
+    evaluation_status: awaiting-family-review

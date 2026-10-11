@@ -1,0 +1,29 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-patio-table-v1
+  name: Block Chibi Patio Table v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garden, outdoor, patio-table]
+materials:
+  wood: {role: table-wood, base_color: "#a87962", roughness: 0.98}
+  edge: {role: table-legs, base_color: "#765542", roughness: 0.98}
+  accent: {role: table-inlay, base_color: "#eac29f", roughness: 0.98}
+  pot: {role: small-plant-pot, base_color: "#d7a1a1", roughness: 0.98}
+  green: {role: leaf-green, base_color: "#83a981", roughness: 0.98}
+parts:
+  root: {role: patio-table-root, parent: null, articulation: static}
+  top: {role: tabletop, parent: root, geometry: {kind: cuboid, size: [0.85, 0.13, 0.61]}, material: wood, transform: {translate: [0, 0.5, 0]}}
+  inlay: {role: patio-table-inlay, parent: root, geometry: {kind: cuboid, size: [0.6, 0.012, 0.41]}, material: accent, transform: {translate: [0, 0.574, 0]}}
+  leg_lf: {role: table-foot, parent: root, geometry: {kind: cuboid, size: [0.13, 0.46, 0.13]}, material: edge, transform: {translate: [-0.29, 0.23, -0.19]}}
+  leg_rf: {role: table-foot, parent: root, geometry: {kind: cuboid, size: [0.13, 0.46, 0.13]}, material: edge, transform: {translate: [0.29, 0.23, -0.19]}}
+  leg_lb: {role: table-foot, parent: root, geometry: {kind: cuboid, size: [0.13, 0.46, 0.13]}, material: edge, transform: {translate: [-0.29, 0.23, 0.19]}}
+  leg_rb: {role: table-foot, parent: root, geometry: {kind: cuboid, size: [0.13, 0.46, 0.13]}, material: edge, transform: {translate: [0.29, 0.23, 0.19]}}
+  teacup: {role: decorative-small-pot, parent: root, geometry: {kind: tapered_box, bottom: [0.17, 0.17], top: [0.14, 0.14], height: 0.14}, material: pot, transform: {translate: [0.18, 0.66, -0.04]}}
+  sprig: {role: potted-green-sprig, parent: root, geometry: {kind: tapered_box, bottom: [0.13, 0.13], top: [0.21, 0.16], height: 0.22}, material: green, transform: {translate: [0.18, 0.8, -0.04]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, semantic_grammar: patio-table, first_review: pending, effects: deferred}

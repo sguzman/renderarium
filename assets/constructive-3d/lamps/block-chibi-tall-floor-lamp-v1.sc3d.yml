@@ -1,0 +1,96 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pink:
+    role: lamp-housing
+    base_color: "#d7869f"
+    roughness: 0.96
+  pink_dark:
+    role: lamp-support
+    base_color: "#9f586f"
+    roughness: 0.97
+  cream:
+    role: lamp-housing
+    base_color: "#f1dfd1"
+    roughness: 0.97
+  warm_emit:
+    role: lamp-emitter
+    base_color: "#ffe3a3"
+    roughness: 0.75
+    emissive: "#ffd27a"
+    emissive_intensity: 0.65
+  brown:
+    role: lamp-support
+    base_color: "#6b4a3d"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-tall-floor-lamp-v1
+  name: Block Chibi Tall Floor Lamp v1
+  kind: prop
+  root: root
+  tags: [lamp, block-chibi-room, floor-lamp, grammar-specimen]
+
+parts:
+  root: {role: lamp-root, parent: null, articulation: static}
+
+  base:
+    role: lamp-base
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.72, 0.72]
+      top: [0.58, 0.58]
+      height: 0.20
+    material: pink_dark
+    transform: {translate: [0.0, 0.10, 0.0]}
+
+  stem:
+    role: lamp-stem
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.14, 0.14]
+      top: [0.11, 0.11]
+      height: 1.44
+    material: brown
+    transform: {translate: [0.0, 0.92, 0.0]}
+
+  shade:
+    role: lamp-shade
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.86, 0.86]
+      top: [0.56, 0.56]
+      height: 0.50
+    material: cream
+    transform: {translate: [0.0, 1.72, 0.0]}
+
+  emitter:
+    role: lamp-light-source
+    parent: root
+    geometry: {kind: cuboid, size: [0.38, 0.11, 0.38]}
+    material: warm_emit
+    transform: {translate: [0.0, 1.475, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: lamp@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::lamp@0.1
+    specimen_intent: tall-floor-lamp
+    support_strategy: floor
+    evaluation_status: awaiting-family-review

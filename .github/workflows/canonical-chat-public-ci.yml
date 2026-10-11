@@ -1,0 +1,95 @@
+name: Canonical chat preview integration (public runners)
+
+# Public mirror only. Run on changes to this repository, never the private source.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: renderarium-canonical-chat-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  canonical:
+    name: Frozen sources / Node / Ajv / production Three.js
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce public publication boundary
+        run: node tools/publication-gate.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install pnpm via Corepack
+        run: |
+          corepack enable
+          corepack pnpm --version
+      - name: Install declared dependencies
+        run: corepack pnpm install --no-frozen-lockfile
+      - name: Execute real 18-stage canonical pipeline
+        shell: bash
+        run: |
+          mkdir -p artifacts/canonical-chat
+          set -o pipefail
+          node scripts/verify-chat-preview-pipeline.mjs 2>&1 | tee artifacts/canonical-chat/verification.log
+      - name: Upload canonical pipeline evidence even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-chat-verification
+          path: artifacts/canonical-chat/
+          if-no-files-found: warn
+
+  chromium:
+    name: Canonical Three.js / Chromium WebGL browser QA
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce public publication boundary
+        run: node tools/publication-gate.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install pnpm via Corepack
+        run: corepack enable
+      - name: Install declared dependencies
+        run: corepack pnpm install --no-frozen-lockfile
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Python Playwright and Chromium
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Exercise actual browser scene controls for seven accepted scenes
+        shell: bash
+        run: |
+          mkdir -p artifacts/canonical-browser
+          set -o pipefail
+          {
+            result=0
+            for scene in living-room kitchen bathroom office backyard garage factory; do
+              echo "===== ${scene} ====="
+              python scripts/test-block-chibi-canonical-browser.py --scene "${scene}" --allow-swiftshader || result=1
+            done
+            exit "$result"
+          } 2>&1 | tee artifacts/canonical-browser/browser-tests.log
+      - name: Upload browser diagnostics even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-threejs-browser
+          path: artifacts/canonical-browser/
+          if-no-files-found: warn
+
+# This CI checks real canonical source/Three.js and Chromium behavior.
+# SwiftShader software WebGL is not physical GPU evidence; no live ChatGPT
+# embed delivery or new human visual approval is claimed.

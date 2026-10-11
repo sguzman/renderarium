@@ -1,0 +1,75 @@
+format: scenarium-sc3d-scene-assembly
+version: "0.1"
+id: block-chibi-office-v1
+name: Block Chibi Office v1
+description: >-
+  Soft block-chibi residential home-office cutaway with a wide writing desk,
+  functional monitor and keyboard-mouse, front-facing pink chair, pinboard,
+  organized file cabinet, bookshelf, area rug, lamp, plant and true window.
+semantic_authority:
+  repository: sguzman/taria
+  specification: taria/scenarium/specifications/block-chibi-office-v1.yml
+  queue: taria/scenarium/queues/block-chibi-office-v1.yml
+style: block-chibi-room
+architectural_context: residential-home-office
+space:
+  handedness: right
+  up: y
+  forward: -z
+  room_size: [5.80, 2.80, 4.70]
+  floor_support_y: 0.118
+  front_open: true
+  right_open: true
+zones:
+  - {id: workstation, x_range: [-1.80, 0.05], z_range: [0.95, 1.92]}
+  - {id: desk-seating, x_range: [-1.31, -0.35], z_range: [-0.22, 0.58]}
+  - {id: reference-storage, x_range: [-2.60, -2.05], z_range: [-1.40, 0.20]}
+  - {id: filing, x_range: [1.66, 2.55], z_range: [1.05, 1.86]}
+  - {id: lighting-corner, x_range: [-2.66, -1.78], z_range: [1.06, 1.94]}
+  - {id: circulation, x_range: [-1.60, 1.55], z_range: [-2.18, -1.10]}
+components:
+  - id: shell
+    asset: scenes/block-chibi-office-v1/components/office-shell.sc3d.yml
+    transform: {translate: [0, 0, 0]}
+  - id: desk
+    asset: assets/constructive-3d/desks/block-chibi-wide-writing-desk-v1.sc3d.yml
+    transform: {translate: [-0.85, 0.118, 1.42]}
+  - id: chair
+    asset: assets/constructive-3d/chairs/block-chibi-wide-cute-chair-v1.sc3d.yml
+    transform: {translate: [-0.85, 0.118, 0.2], rotate_deg: [0, 180, 0]}
+  - id: monitor
+    asset: assets/constructive-3d/offices/block-chibi-computer-monitor-v1.sc3d.yml
+    transform: {translate: [-0.72, 0.978, 1.58]}
+  - id: keyboard-mouse
+    asset: assets/constructive-3d/offices/block-chibi-keyboard-mouse-v1.sc3d.yml
+    transform: {translate: [-0.84, 0.978, 1.1]}
+  - id: filing-cabinet
+    asset: assets/constructive-3d/offices/block-chibi-filing-cabinet-v1.sc3d.yml
+    transform: {translate: [2.13, 0.118, 1.45]}
+  - id: pinboard
+    asset: assets/constructive-3d/offices/block-chibi-pinboard-v1.sc3d.yml
+    transform: {translate: [-1.83, 2.12, 2.125]}
+  - id: bookshelf
+    asset: assets/constructive-3d/bookshelves/block-chibi-low-wide-bookshelf-v1.1.sc3d.yml
+    transform: {translate: [-2.35, 0.118, -0.49], rotate_deg: [0, -90, 0]}
+  - id: area-rug
+    asset: assets/constructive-3d/rugs/block-chibi-wide-area-rug-v1.sc3d.yml
+    transform: {translate: [-0.45, 0.118, -0.3], scale: [1.3, 1, 1.3]}
+  - id: floor-lamp
+    asset: assets/constructive-3d/lamps/block-chibi-tall-floor-lamp-v1.2.sc3d.yml
+    transform: {translate: [-2.22, 0.118, 1.50]}
+  - id: plant
+    asset: assets/constructive-3d/plants/block-chibi-medium-snake-plant-v1.sc3d.yml
+    transform: {translate: [-2.28, 0.118, -1.67]}
+  - id: window
+    asset: assets/constructive-3d/windows/block-chibi-square-four-pane-window-v1.sc3d.yml
+    transform: {translate: [1.4, 1.72, 2.115]}
+generated_output:
+  path: scenes/block-chibi-office-v1/generated/block-chibi-office-v1.sc3d.yml
+review:
+  status: first-in-chat-interactive-visual-review-pending
+  human_approval: pending
+  renderer_kind: alternate-source-derived-webgl
+  canonical_threejs_validation: pending-unverified
+  rendering_experiments: deferred
+  no_characters: true

@@ -1,0 +1,104 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wood:
+    role: furniture-primary
+    base_color: "#7b5545"
+    roughness: 0.95
+  wood_dark:
+    role: furniture-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+  textile:
+    role: cushion
+    base_color: "#d7869f"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-compact-chair-v1
+  name: Block Chibi Compact Chair v1
+  kind: prop
+  root: root
+  description: >-
+    Narrow compact four-leg chair with shorter back and deliberately thick
+    members, testing a small-footprint variant of the same realization grammar.
+  tags: [chair, block-chibi-room, compact-chair, grammar-specimen]
+
+parts:
+  root:
+    role: chair-root
+    parent: null
+    articulation: static
+
+  seat:
+    role: chair-seat
+    parent: root
+    geometry: {kind: cuboid, size: [0.52, 0.14, 0.42]}
+    material: wood
+    transform: {translate: [0.0, 0.46, 0.0]}
+    articulation: static
+
+  back:
+    role: chair-back
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.46, 0.14]
+      top: [0.50, 0.16]
+      height: 0.50
+    material: wood_dark
+    transform: {translate: [0.0, 0.76, 0.17]}
+    articulation: static
+
+  leg_front_left:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.39, 0.14]}
+    material: wood_dark
+    transform: {translate: [-0.17, 0.195, -0.12]}
+    articulation: static
+
+  leg_front_right:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.39, 0.14]}
+    material: wood_dark
+    transform: {translate: [0.17, 0.195, -0.12]}
+    articulation: static
+
+  leg_back_left:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.39, 0.14]}
+    material: wood_dark
+    transform: {translate: [-0.17, 0.195, 0.12]}
+    articulation: static
+
+  leg_back_right:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.39, 0.14]}
+    material: wood_dark
+    transform: {translate: [0.17, 0.195, 0.12]}
+    articulation: static
+
+extensions:
+  taria:
+    object_grammar: chair@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::chair@0.1
+    specimen_intent: compact-chair
+    use_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

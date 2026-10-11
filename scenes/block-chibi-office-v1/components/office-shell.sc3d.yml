@@ -1,0 +1,45 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-office-v1-shell
+  name: Block Chibi Office v1 cutaway shell
+  kind: environment
+  root: root
+  tags: [block-chibi-room, office, room-shell, cutaway]
+materials:
+  floor_substrate: {role: floor-base, base_color: "#785d50", roughness: 0.98}
+  floor_a: {role: wood-plank, base_color: "#c39678", roughness: 0.98}
+  floor_b: {role: wood-plank, base_color: "#d4ae8c", roughness: 0.98}
+  wall: {role: warm-paint, base_color: "#f1dfca", roughness: 0.99}
+  side: {role: accent-paint, base_color: "#d9c5b4", roughness: 0.99}
+  trim: {role: white-baseboard, base_color: "#f9eee0", roughness: 0.99}
+  accent: {role: wall-band, base_color: "#aec5b9", roughness: 0.99}
+parts:
+  root: {role: shell-root, parent: null, articulation: static}
+  floor_under: {role: floor-support, parent: root, geometry: {kind: cuboid, size: [5.80, 0.18, 4.70]}, material: floor_substrate, transform: {translate: [0, 0, 0]}}
+  plank_1: {role: floor-wood-plank, parent: root, geometry: {kind: cuboid, size: [0.695, 0.027, 4.53]}, material: floor_a, transform: {translate: [-2.485, 0.104, 0]}}
+  plank_2: {role: floor-wood-plank, parent: root, geometry: {kind: cuboid, size: [0.695, 0.027, 4.53]}, material: floor_b, transform: {translate: [-1.775, 0.104, 0]}}
+  plank_3: {role: floor-wood-plank, parent: root, geometry: {kind: cuboid, size: [0.695, 0.027, 4.53]}, material: floor_a, transform: {translate: [-1.065, 0.104, 0]}}
+  plank_4: {role: floor-wood-plank, parent: root, geometry: {kind: cuboid, size: [0.695, 0.027, 4.53]}, material: floor_b, transform: {translate: [-0.355, 0.104, 0]}}
+  plank_5: {role: floor-wood-plank, parent: root, geometry: {kind: cuboid, size: [0.695, 0.027, 4.53]}, material: floor_a, transform: {translate: [0.355, 0.104, 0]}}
+  plank_6: {role: floor-wood-plank, parent: root, geometry: {kind: cuboid, size: [0.695, 0.027, 4.53]}, material: floor_b, transform: {translate: [1.065, 0.104, 0]}}
+  plank_7: {role: floor-wood-plank, parent: root, geometry: {kind: cuboid, size: [0.695, 0.027, 4.53]}, material: floor_a, transform: {translate: [1.775, 0.104, 0]}}
+  plank_8: {role: floor-wood-plank, parent: root, geometry: {kind: cuboid, size: [0.695, 0.027, 4.53]}, material: floor_b, transform: {translate: [2.485, 0.104, 0]}}
+  left_wall: {role: left-side-cutaway-wall, parent: root, geometry: {kind: cuboid, size: [0.18, 2.80, 4.70]}, material: side, transform: {translate: [-2.81, 1.40, 0]}}
+  rear_left: {role: rear-window-left-pier, parent: root, geometry: {kind: cuboid, size: [3.625, 2.80, 0.18]}, material: wall, transform: {translate: [-1.0875, 1.40, 2.26]}}
+  rear_right: {role: rear-window-right-pier, parent: root, geometry: {kind: cuboid, size: [0.825, 2.80, 0.18]}, material: wall, transform: {translate: [2.4875, 1.40, 2.26]}}
+  window_below: {role: structural-window-sill-wall, parent: root, geometry: {kind: cuboid, size: [1.35, 1.08, 0.18]}, material: wall, transform: {translate: [1.40, 0.54, 2.26]}}
+  window_above: {role: structural-window-lintel-wall, parent: root, geometry: {kind: cuboid, size: [1.35, 0.47, 0.18]}, material: wall, transform: {translate: [1.40, 2.565, 2.26]}}
+  left_trim: {role: white-baseboard, parent: root, geometry: {kind: cuboid, size: [0.07, 0.19, 4.54]}, material: trim, transform: {translate: [-2.675, 0.205, 0]}}
+  back_trim: {role: white-baseboard, parent: root, geometry: {kind: cuboid, size: [5.50, 0.19, 0.07]}, material: trim, transform: {translate: [0, 0.205, 2.113]}}
+  accent_band: {role: restrained-wall-accent, parent: root, geometry: {kind: cuboid, size: [3.48, 0.055, 0.016]}, material: accent, transform: {translate: [-1.07, 0.92, 2.159]}}
+extensions:
+  scenarium:
+    semantic_ref: specification:block-chibi-office-v1
+    floor_support_y: 0.118
+    real_window_opening: {center_x: 1.40, width: 1.35, bottom_y: 1.08, top_y: 2.33}
+    front_open: true
+    right_open: true

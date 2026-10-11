@@ -1,0 +1,110 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pages:
+    role: book-pages
+    base_color: "#f3e8d2"
+    roughness: 0.98
+  blue:
+    role: book-cover
+    base_color: "#708aa0"
+    roughness: 0.96
+  blue_dark:
+    role: book-spine
+    base_color: "#53697a"
+    roughness: 0.97
+  pink:
+    role: book-cover
+    base_color: "#d7869f"
+    roughness: 0.97
+  pink_dark:
+    role: book-spine
+    base_color: "#ad627c"
+    roughness: 0.97
+  gold:
+    role: book-cover
+    base_color: "#c39a57"
+    roughness: 0.96
+  gold_dark:
+    role: book-spine
+    base_color: "#9a7743"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-open-reading-book-v1
+  name: Block Chibi Open Reading Book v1
+  kind: prop
+  root: root
+  tags: [book, block-chibi-room, open-reading-book, grammar-specimen]
+
+parts:
+  root: {role: book-root, parent: null, articulation: static}
+
+  left_half:
+    role: book-open-half
+    parent: root
+    transform:
+      translate: [0.0, 0.16, 0.0]
+      rotate_deg: [0.0, 0.0, -8.0]
+
+  left_cover:
+    role: book-cover
+    parent: left_half
+    geometry: {kind: cuboid, size: [0.80, 0.035, 1.08]}
+    material: gold
+    transform: {translate: [-0.43, -0.065, 0.0]}
+
+  left_pages:
+    role: book-page-mass
+    parent: left_half
+    geometry: {kind: cuboid, size: [0.76, 0.075, 1.02]}
+    material: pages
+    transform: {translate: [-0.43, 0.0, 0.0]}
+
+  right_half:
+    role: book-open-half
+    parent: root
+    transform:
+      translate: [0.0, 0.16, 0.0]
+      rotate_deg: [0.0, 0.0, 8.0]
+
+  right_cover:
+    role: book-cover
+    parent: right_half
+    geometry: {kind: cuboid, size: [0.80, 0.035, 1.08]}
+    material: gold
+    transform: {translate: [0.43, -0.065, 0.0]}
+
+  right_pages:
+    role: book-page-mass
+    parent: right_half
+    geometry: {kind: cuboid, size: [0.76, 0.075, 1.02]}
+    material: pages
+    transform: {translate: [0.43, 0.0, 0.0]}
+
+  hinge:
+    role: book-spine
+    parent: root
+    geometry: {kind: cuboid, size: [0.09, 0.095, 1.08]}
+    material: gold_dark
+    transform: {translate: [0.0, 0.095, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: book@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::book@0.1
+    specimen_intent: open-reading-book
+    evaluation_status: awaiting-family-review

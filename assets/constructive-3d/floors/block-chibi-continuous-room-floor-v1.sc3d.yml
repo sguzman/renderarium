@@ -1,0 +1,62 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  warm_floor:
+    role: floor-substrate
+    base_color: "#a97861"
+    roughness: 0.99
+  warm_floor_dark:
+    role: floor-finish
+    base_color: "#93624f"
+    roughness: 0.99
+  warm_floor_light:
+    role: floor-finish
+    base_color: "#b9866d"
+    roughness: 0.99
+  cream_tile:
+    role: floor-finish
+    base_color: "#e9d7bd"
+    roughness: 0.99
+  rose_tile:
+    role: floor-finish
+    base_color: "#c98379"
+    roughness: 0.99
+
+asset:
+  id: block-chibi-continuous-room-floor-v1
+  name: Block Chibi Continuous Room Floor v1
+  kind: architecture
+  root: root
+  tags: [floor, block-chibi-room, continuous-room-floor, grammar-specimen]
+
+parts:
+  root: {role: floor-root, parent: null, articulation: static}
+
+  substrate:
+    role: floor-walkable-surface
+    parent: root
+    geometry: {kind: cuboid, size: [2.30, 0.10, 2.00]}
+    material: warm_floor
+    transform: {translate: [0.0, 0.05, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: floor@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::floor@0.1
+    specimen_intent: continuous-room-floor
+    support_plane_y: 0.10
+    render_shading: flat
+    evaluation_status: awaiting-family-review

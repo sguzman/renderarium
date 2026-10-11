@@ -1,0 +1,39 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-industrial-supply-bin-v1
+  name: Block Chibi industrial supply bin v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, industrial-supply-bin]
+materials:
+  steel: {role: steel, base_color: "#799f9d", roughness: 0.98}
+  rim: {role: rim, base_color: "#e7cdaa", roughness: 0.98}
+  stock: {role: stock, base_color: "#e7aaad", roughness: 0.98}
+  stock2: {role: stock2, base_color: "#bcd0a6", roughness: 0.98}
+  stock3: {role: stock3, base_color: "#f4d9ac", roughness: 0.98}
+  label: {role: label, base_color: "#f9ecd9", roughness: 0.98}
+parts:
+  root: {role: industrial-supply-bin-root, parent: null, articulation: static}
+  body: {role: body, parent: root, geometry: {kind: cuboid, size: [1.03, 0.73, 0.9]}, material: steel, transform: {translate: [0, 0.45, 0]}}
+  topstock: {role: topstock, parent: root, geometry: {kind: cuboid, size: [0.87, 0.065, 0.71]}, material: stock, transform: {translate: [0, 0.83, 0]}}
+  rim_front: {role: rim_front, parent: root, geometry: {kind: cuboid, size: [1.08, 0.1, 0.1]}, material: rim, transform: {translate: [0, 0.89, -0.45]}}
+  rim_rear: {role: rim_rear, parent: root, geometry: {kind: cuboid, size: [1.08, 0.1, 0.1]}, material: rim, transform: {translate: [0, 0.89, 0.45]}}
+  rim_l: {role: rim_l, parent: root, geometry: {kind: cuboid, size: [0.1, 0.1, 0.85]}, material: rim, transform: {translate: [-0.52, 0.89, 0]}}
+  rim_r: {role: rim_r, parent: root, geometry: {kind: cuboid, size: [0.1, 0.1, 0.85]}, material: rim, transform: {translate: [0.52, 0.89, 0]}}
+  supply_a: {role: supply_a, parent: root, geometry: {kind: cuboid, size: [0.27, 0.24, 0.29]}, material: stock, transform: {translate: [-0.23, 1.005, -0.15]}}
+  supply_b: {role: supply_b, parent: root, geometry: {kind: cuboid, size: [0.28, 0.18, 0.3]}, material: stock2, transform: {translate: [0.19, 0.975, -0.1]}}
+  supply_c: {role: supply_c, parent: root, geometry: {kind: cuboid, size: [0.29, 0.22, 0.24]}, material: stock3, transform: {translate: [0, 0.995, 0.22]}}
+  front_label: {role: front_label, parent: root, geometry: {kind: cuboid, size: [0.58, 0.18, 0.015]}, material: label, transform: {translate: [0, 0.56, -0.457]}}
+  front_foot_l: {role: front_foot_l, parent: root, geometry: {kind: cuboid, size: [0.13, 0.11, 0.13]}, material: steel, transform: {translate: [-0.39, 0.055, -0.31]}}
+  front_foot_r: {role: front_foot_r, parent: root, geometry: {kind: cuboid, size: [0.13, 0.11, 0.13]}, material: steel, transform: {translate: [0.39, 0.055, -0.31]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred

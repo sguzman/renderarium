@@ -1,0 +1,278 @@
+{
+  "format": "scenarium-source-bound-chat-preview-v1",
+  "scene": "block-chibi-office-v1",
+  "source_assembly": "scenes/block-chibi-office-v1/room.assembly.yml",
+  "source_assembly_blob": "68ce44f722dd36ca4c9d6a4062256c3363d2605c",
+  "renderer_kind": "alternate-chat-webgl-not-canonical-Threejs",
+  "mesh_count": 104,
+  "groups": [
+    {
+      "index": 0,
+      "id": "shell",
+      "source": "scenes/block-chibi-office-v1/components/office-shell.sc3d.yml",
+      "source_blob": "45984f299773ddbc724ddb01c652c456b058ae97",
+      "translate": [
+        0,
+        0,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 1,
+      "id": "desk",
+      "source": "assets/constructive-3d/desks/block-chibi-wide-writing-desk-v1.sc3d.yml",
+      "source_blob": "46859ad081caaf4ddb4bf972296c4b62482b6d4a",
+      "translate": [
+        -0.85,
+        0.118,
+        1.42
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 2,
+      "id": "chair",
+      "source": "assets/constructive-3d/chairs/block-chibi-wide-cute-chair-v1.sc3d.yml",
+      "source_blob": "a97ee954f000356f56b7e63ca07280002029d2d6",
+      "translate": [
+        -0.85,
+        0.118,
+        0.2
+      ],
+      "rotate_deg": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 3,
+      "id": "monitor",
+      "source": "assets/constructive-3d/offices/block-chibi-computer-monitor-v1.sc3d.yml",
+      "source_blob": "fd3038030f04a16b9c18f5cbe478c760b7f8e94f",
+      "translate": [
+        -0.72,
+        0.978,
+        1.58
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 4,
+      "id": "keyboard-mouse",
+      "source": "assets/constructive-3d/offices/block-chibi-keyboard-mouse-v1.sc3d.yml",
+      "source_blob": "b3f89d2a5d292887fb9600225b0f6610efdf7e7e",
+      "translate": [
+        -0.84,
+        0.978,
+        1.1
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 5,
+      "id": "filing-cabinet",
+      "source": "assets/constructive-3d/offices/block-chibi-filing-cabinet-v1.sc3d.yml",
+      "source_blob": "85c29ab2b06bc34771be77918cd3ec25751f5b91",
+      "translate": [
+        2.13,
+        0.118,
+        1.45
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 6,
+      "id": "pinboard",
+      "source": "assets/constructive-3d/offices/block-chibi-pinboard-v1.sc3d.yml",
+      "source_blob": "f7723fdc46528262620ca8fbf979a94d3994b265",
+      "translate": [
+        -1.83,
+        2.12,
+        2.125
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 7,
+      "id": "bookshelf",
+      "source": "assets/constructive-3d/bookshelves/block-chibi-low-wide-bookshelf-v1.1.sc3d.yml",
+      "source_blob": "f639c7094ce76dd26e74bd40bc8e6b9e36ae7b45",
+      "translate": [
+        -2.35,
+        0.118,
+        -0.49
+      ],
+      "rotate_deg": [
+        0,
+        -90,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 8,
+      "id": "area-rug",
+      "source": "assets/constructive-3d/rugs/block-chibi-wide-area-rug-v1.sc3d.yml",
+      "source_blob": "259613da4b2ed3473e68c8022bfba264462ad309",
+      "translate": [
+        -0.45,
+        0.118,
+        -0.3
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.3,
+        1,
+        1.3
+      ]
+    },
+    {
+      "index": 9,
+      "id": "floor-lamp",
+      "source": "assets/constructive-3d/lamps/block-chibi-tall-floor-lamp-v1.2.sc3d.yml",
+      "source_blob": "c22982dbe2d3a7c46c5c3fc18805961dbbbdc879",
+      "translate": [
+        -2.22,
+        0.118,
+        1.5
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 10,
+      "id": "plant",
+      "source": "assets/constructive-3d/plants/block-chibi-medium-snake-plant-v1.sc3d.yml",
+      "source_blob": "c3a3078aa779270929d5053510b0bc38b0c47366",
+      "translate": [
+        -2.28,
+        0.118,
+        -1.67
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 11,
+      "id": "window",
+      "source": "assets/constructive-3d/windows/block-chibi-square-four-pane-window-v1.sc3d.yml",
+      "source_blob": "53c0c62d0c3fe13af3782b9b3bf08a57196155d9",
+      "translate": [
+        1.4,
+        1.72,
+        2.115
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "part_encoding": "group|id|parent-or-dash|cuboid-b-tapered-t|dimensions|RGB-hex|local-pos|local-rotation|local-scale",
+  "parts": "0|floor_under|-|b|5.8,0.18,4.7|785d50|-|-|-\n0|plank_1|-|b|0.695,0.027,4.53|c39678|-2.485,0.104,0|-|-\n0|plank_2|-|b|0.695,0.027,4.53|d4ae8c|-1.775,0.104,0|-|-\n0|plank_3|-|b|0.695,0.027,4.53|c39678|-1.065,0.104,0|-|-\n0|plank_4|-|b|0.695,0.027,4.53|d4ae8c|-0.355,0.104,0|-|-\n0|plank_5|-|b|0.695,0.027,4.53|c39678|0.355,0.104,0|-|-\n0|plank_6|-|b|0.695,0.027,4.53|d4ae8c|1.065,0.104,0|-|-\n0|plank_7|-|b|0.695,0.027,4.53|c39678|1.775,0.104,0|-|-\n0|plank_8|-|b|0.695,0.027,4.53|d4ae8c|2.485,0.104,0|-|-\n0|left_wall|-|b|0.18,2.8,4.7|d9c5b4|-2.81,1.4,0|-|-\n0|rear_left|-|b|3.625,2.8,0.18|f1dfca|-1.0875,1.4,2.26|-|-\n0|rear_right|-|b|0.825,2.8,0.18|f1dfca|2.4875,1.4,2.26|-|-\n0|window_below|-|b|1.35,1.08,0.18|f1dfca|1.4,0.54,2.26|-|-\n0|window_above|-|b|1.35,0.47,0.18|f1dfca|1.4,2.565,2.26|-|-\n0|left_trim|-|b|0.07,0.19,4.54|f9eee0|-2.675,0.205,0|-|-\n0|back_trim|-|b|5.5,0.19,0.07|f9eee0|0,0.205,2.113|-|-\n0|accent_band|-|b|3.48,0.055,0.016|aec5b9|-1.07,0.92,2.159|-|-\n1|top|-|b|1.65,0.16,0.72|7b5545|0,0.78,0|-|-\n1|side_panel_left|-|b|0.18,0.72,0.62|5c3d35|-0.69,0.36,0.02|-|-\n1|side_panel_right|-|b|0.18,0.72,0.62|5c3d35|0.69,0.36,0.02|-|-\n1|center_drawer|-|b|0.58,0.18,0.18|5c3d35|0,0.64,-0.25|-|-\n1|drawer_face|-|b|0.48,0.11,0.025|f4e8d2|0,0.64,-0.352|-|-\n2|seat|-|b|0.78,0.16,0.58|7b5545|0,0.5,0|-|-\n2|cushion|-|b|0.7,0.08,0.5|d7869f|0,0.62,-0.01|-|-\n2|back|-|t|0.76,0.16,0.84,0.18,0.72|5c3d35|0,0.92,0.25|-|-\n2|leg_front_left|-|b|0.16,0.42,0.16|5c3d35|-0.29,0.21,-0.2|-|-\n2|leg_front_right|-|b|0.16,0.42,0.16|5c3d35|0.29,0.21,-0.2|-|-\n2|leg_back_left|-|b|0.16,0.42,0.16|5c3d35|-0.29,0.21,0.2|-|-\n2|leg_back_right|-|b|0.16,0.42,0.16|5c3d35|0.29,0.21,0.2|-|-\n3|foot|-|b|0.48,0.045,0.3|5d6473|0,0.0225,0|-|-\n3|stem|-|b|0.105,0.36,0.11|9d8c8b|0,0.23,0.06|-|-\n3|screen_case|-|b|1.04,0.68,0.11|6d6c77|0,0.73,0.05|-|-\n3|display|-|b|0.92,0.54,0.02|87b4c2|0,0.73,-0.014|-|-\n3|task_panel|-|b|0.39,0.27,0.013|e9c9d0|-0.2,0.73,-0.027|-|-\n3|side_panel|-|b|0.23,0.35,0.013|eee6ca|0.26,0.73,-0.027|-|-\n3|bottom_icon|-|b|0.055,0.05,0.015|eee6ca|0.42,0.44,-0.016|-|-\n4|keyboard|-|b|0.72,0.065,0.235|d5cbc2|-0.14,0.033,0|-|-\n4|key_row1|-|b|0.62,0.018,0.035|fbede1|-0.14,0.076,-0.07|-|-\n4|key_row2|-|b|0.62,0.018,0.035|fbede1|-0.14,0.076,-0.011|-|-\n4|key_row3|-|b|0.62,0.018,0.035|fbede1|-0.14,0.076,0.049|-|-\n4|spacebar|-|b|0.29,0.018,0.035|bf9baf|-0.14,0.076,0.103|-|-\n4|mouse|-|b|0.17,0.073,0.25|9faeb9|0.49,0.037,0|-|-\n4|mouse_wheel|-|b|0.03,0.016,0.06|646879|0.49,0.08,-0.045|-|-\n5|body|-|b|0.75,1.18,0.57|91a99f|0,0.59,0|-|-\n5|drawer_1|-|b|0.64,0.32,0.04|c8d6bd|0,0.24,-0.305|-|-\n5|drawer_2|-|b|0.64,0.32,0.04|c8d6bd|0,0.59,-0.305|-|-\n5|drawer_3|-|b|0.64,0.32,0.04|c8d6bd|0,0.94,-0.305|-|-\n5|handle_1|-|b|0.22,0.045,0.05|b58d6c|0,0.24,-0.345|-|-\n5|handle_2|-|b|0.22,0.045,0.05|b58d6c|0,0.59,-0.345|-|-\n5|handle_3|-|b|0.22,0.045,0.05|b58d6c|0,0.94,-0.345|-|-\n5|label_1|-|b|0.28,0.07,0.008|faf0d9|-0.15,0.33,-0.331|-|-\n5|label_2|-|b|0.28,0.07,0.008|faf0d9|-0.15,0.68,-0.331|-|-\n5|label_3|-|b|0.28,0.07,0.008|faf0d9|-0.15,1.03,-0.331|-|-\n5|foot_l|-|b|0.12,0.08,0.12|70837b|-0.26,0.04,-0.2|-|-\n5|foot_r|-|b|0.12,0.08,0.12|70837b|0.26,0.04,-0.2|-|-\n6|frame|-|b|1.34,0.94,0.09|906b59|-|-|-\n6|cork|-|b|1.19,0.79,0.02|d9b690|0,0,-0.055|-|-\n6|pink_note|-|b|0.31,0.34,0.012|e4aabb|-0.36,0.12,-0.07|0,0,-7|-\n6|cream_note|-|b|0.4,0.27,0.012|f9e6ce|0.16,0.18,-0.073|0,0,5|-\n6|blue_note|-|b|0.29,0.2,0.012|a6c8ce|0.24,-0.21,-0.072|0,0,-6|-\n6|paper_strip|-|b|0.18,0.018,0.008|a58f83|0.12,0.21,-0.081|-|-\n6|pushpin_left|-|b|0.06,0.06,0.025|b67072|-0.36,0.28,-0.083|-|-\n6|pushpin_right|-|b|0.06,0.06,0.025|b67072|0.15,0.29,-0.083|-|-\n7|side_left|-|b|0.16,0.92,0.48|5c3d35|-0.7,0.46,0|-|-\n7|side_right|-|b|0.16,0.92,0.48|5c3d35|0.7,0.46,0|-|-\n7|shelf_bottom|-|b|1.22,0.14,0.48|7b5545|0,0.07,0|-|-\n7|shelf_mid|-|b|1.22,0.14,0.48|7b5545|0,0.5,0|-|-\n7|shelf_top|-|b|1.22,0.14,0.48|7b5545|0,0.85,0|-|-\n7|storage_box|-|b|0.48,0.28,0.34|f1cdd8|-0.34,0.28,0|-|-\n7|book_1|-|b|0.15,0.25,0.28|708aa0|0.18,0.27,0|-|-\n7|book_2|-|b|0.15,0.31,0.28|d7869f|0.35,0.3,0|-|-\n7|book_3|-|b|0.15,0.27,0.28|c39a57|0.52,0.28,0|-|-\n8|field|-|b|1.8,0.04,1.38|d97b9b|0,0.025,0|-|-\n8|border_front|-|b|1.66,0.008,0.1|efb7c8|0,0.049,-0.57|-|-\n8|border_back|-|b|1.66,0.008,0.1|efb7c8|0,0.049,0.57|-|-\n8|border_left|-|b|0.1,0.008,1.04|efb7c8|-0.76,0.049,0|-|-\n8|border_right|-|b|0.1,0.008,1.04|efb7c8|0.76,0.049,0|-|-\n9|base|-|t|0.74,0.74,0.6,0.6,0.2|9f586f|0,0.1,0|-|-\n9|stem|-|t|0.14,0.14,0.11,0.11,1.42|6b4a3d|0,0.91,0|-|-\n9|emitter|-|b|0.42,0.1,0.42|fff0b8|0,1.46,0|-|-\n9|shade|-|t|0.88,0.88,0.58,0.58,0.5|e39bb2|0,1.73,0|-|-\n10|pot|-|t|0.62,0.62,0.508,0.508,0.46|a86f58|0,0.23,0|-|-\n10|soil_cap|-|b|0.446,0.045,0.446|4d4039|0,0.478,0|-|-\n10|leaf_1_body|-|t|0.148,0.09,0.18,0.086,0.619|567b5d|0,0.805,0|0,0,-1|-\n10|leaf_1_tip|leaf_1_body|t|0.18,0.086,0.04,0.038,0.241|567b5d|0,0.418,0|-|-\n10|leaf_2_body|-|t|0.139,0.09,0.17,0.086,0.533|6f9871|-0.08,0.761,0.02|2,40,-8|-\n10|leaf_2_tip|leaf_2_body|t|0.17,0.086,0.04,0.038,0.207|6f9871|0,0.358,0|-|-\n10|leaf_3_body|-|t|0.139,0.088,0.17,0.084,0.504|86aa79|0.08,0.747,-0.02|-2,-42,9|-\n10|leaf_3_tip|leaf_3_body|t|0.17,0.084,0.04,0.037,0.196|86aa79|0,0.338,0|-|-\n10|leaf_4_body|-|t|0.131,0.085,0.16,0.082,0.461|6f9871|-0.03,0.725,-0.09|5,95,-11|-\n10|leaf_4_tip|leaf_4_body|t|0.16,0.082,0.04,0.036,0.179|6f9871|0,0.308,0|-|-\n10|leaf_5_body|-|t|0.131,0.083,0.16,0.08,0.432|567b5d|0.04,0.711,0.09|-4,-100,10|-\n10|leaf_5_tip|leaf_5_body|t|0.16,0.08,0.04,0.035,0.168|567b5d|0,0.288,0|-|-\n10|leaf_6_body|-|t|0.123,0.08,0.15,0.077,0.389|86aa79|-0.11,0.689,0.07|-3,145,-13|-\n10|leaf_6_tip|leaf_6_body|t|0.15,0.077,0.04,0.034,0.151|86aa79|0,0.258,0|-|-\n10|leaf_7_body|-|t|0.123,0.078,0.15,0.075,0.36|6f9871|0.11,0.675,-0.06|4,-150,14|-\n10|leaf_7_tip|leaf_7_body|t|0.15,0.075,0.04,0.033,0.14|6f9871|0,0.238,0|-|-\n11|frame_left|-|b|0.12,1.18,0.12|f3ead9|-0.56,0,0|-|-\n11|frame_right|-|b|0.12,1.18,0.12|f3ead9|0.56,0,0|-|-\n11|frame_top|-|b|1,0.12,0.12|f3ead9|0,0.53,0|-|-\n11|frame_bottom|-|b|1,0.12,0.14159999999999998|f3ead9|0,-0.53,-0.0024|-|-\n11|glazing|-|b|0.97,0.9117999999999999,0.035|a9c1cf|0,0,0.0744|-|-\n11|mullion_1|-|b|0.0744,0.94,0.0936|f3ead9|0,0,-0.0048|-|-\n11|muntin_1|-|b|1,0.0744,0.0912|f3ead9|0,0,-0.006|-|-",
+  "scene_architectural_context": "residential-home-office",
+  "revision": "office-v1-rear-left-corner-lamp-layout-r2",
+  "human_feedback": {
+    "other_than_lamp": "all else visually good",
+    "revision_requested": "lamp against wall, preferably corner",
+    "status": "corrected-awaiting-visual-confirmation"
+  },
+  "placement_verification": {
+    "lamp_left_wall_gap_m": 0.06,
+    "lamp_back_wall_gap_m": 0.23,
+    "lamp_desk_x_gap_m": 0.105,
+    "lamp_pinboard_z_gap_m": 0.089,
+    "status": "clearances-passed"
+  }
+}

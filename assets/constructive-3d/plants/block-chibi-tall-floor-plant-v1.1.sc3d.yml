@@ -1,0 +1,278 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pot:
+    role: plant-container
+    base_color: "#a86f58"
+    roughness: 0.96
+  pot_dark:
+    role: plant-container-shadow
+    base_color: "#7f5143"
+    roughness: 0.97
+  green:
+    role: foliage-primary
+    base_color: "#7ea27a"
+    roughness: 0.96
+  green_light:
+    role: foliage-highlight
+    base_color: "#91b184"
+    roughness: 0.96
+  green_dark:
+    role: foliage-secondary
+    base_color: "#5f7f5d"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-tall-floor-plant-v1.1
+  name: Block Chibi Tall Floor Plant v1.1
+  kind: prop
+  root: root
+  tags: [plant, block-chibi-room, tall-floor-plant, grammar-specimen, morphology-revised]
+
+parts:
+  root: {role: plant-root, parent: null, articulation: static}
+
+  pot:
+    role: plant-anchor
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.66, 0.66]
+      top: [0.52, 0.52]
+      height: 0.54
+    material: pot_dark
+    transform: {translate: [0.0, 0.27, 0.0]}
+
+  trunk:
+    role: plant-trunk
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.13, 0.13]
+      top: [0.10, 0.10]
+      height: 0.92
+    material: green_dark
+    transform: {translate: [0.0, 0.88, 0.0]}
+
+  branch_left:
+    role: plant-branch
+    parent: root
+    geometry: {kind: cuboid, size: [0.08, 0.34, 0.08]}
+    material: green_dark
+    transform:
+      translate: [-0.10, 1.08, 0.00]
+      rotate_deg: [0.0, 0.0, -48.0]
+
+  branch_right:
+    role: plant-branch
+    parent: root
+    geometry: {kind: cuboid, size: [0.08, 0.34, 0.08]}
+    material: green_dark
+    transform:
+      translate: [0.10, 1.22, 0.00]
+      rotate_deg: [0.0, 0.0, 46.0]
+
+  branch_top:
+    role: plant-branch
+    parent: root
+    geometry: {kind: cuboid, size: [0.08, 0.30, 0.08]}
+    material: green_dark
+    transform:
+      translate: [0.0, 1.43, 0.0]
+
+  left_cluster_out_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.30, 0.20]
+      height: 0.18
+    material: green
+    transform:
+      translate: [-0.2, 1.18, 0.02]
+      rotate_deg: [5, 0, -68]
+
+  left_cluster_out_tip:
+    role: plant-leaf-distal
+    parent: left_cluster_out_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.30, 0.20]
+      top: [0.07, 0.09]
+      height: 0.24
+    material: green
+    transform:
+      translate: [0.0, 0.195, 0.0]
+
+  left_cluster_up_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.28, 0.20]
+      height: 0.18
+    material: green_light
+    transform:
+      translate: [-0.17, 1.21, -0.03]
+      rotate_deg: [10, 0, -26]
+
+  left_cluster_up_tip:
+    role: plant-leaf-distal
+    parent: left_cluster_up_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.20]
+      top: [0.07, 0.09]
+      height: 0.24
+    material: green_light
+    transform:
+      translate: [0.0, 0.195, 0.0]
+
+  right_cluster_out_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.30, 0.20]
+      height: 0.18
+    material: green
+    transform:
+      translate: [0.2, 1.31, -0.02]
+      rotate_deg: [-5, 0, 68]
+
+  right_cluster_out_tip:
+    role: plant-leaf-distal
+    parent: right_cluster_out_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.30, 0.20]
+      top: [0.07, 0.09]
+      height: 0.24
+    material: green
+    transform:
+      translate: [0.0, 0.195, 0.0]
+
+  right_cluster_up_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.28, 0.20]
+      height: 0.18
+    material: green_light
+    transform:
+      translate: [0.17, 1.34, 0.03]
+      rotate_deg: [-10, 0, 26]
+
+  right_cluster_up_tip:
+    role: plant-leaf-distal
+    parent: right_cluster_up_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.20]
+      top: [0.07, 0.09]
+      height: 0.24
+    material: green_light
+    transform:
+      translate: [0.0, 0.195, 0.0]
+
+  top_left_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.28, 0.20]
+      height: 0.18
+    material: green
+    transform:
+      translate: [-0.03, 1.53, -0.02]
+      rotate_deg: [6, 0, -25]
+
+  top_left_tip:
+    role: plant-leaf-distal
+    parent: top_left_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.20]
+      top: [0.07, 0.09]
+      height: 0.25
+    material: green
+    transform:
+      translate: [0.0, 0.200, 0.0]
+
+  top_right_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.28, 0.20]
+      height: 0.18
+    material: green_light
+    transform:
+      translate: [0.03, 1.54, 0.02]
+      rotate_deg: [-6, 0, 24]
+
+  top_right_tip:
+    role: plant-leaf-distal
+    parent: top_right_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.20]
+      top: [0.07, 0.09]
+      height: 0.25
+    material: green_light
+    transform:
+      translate: [0.0, 0.200, 0.0]
+
+  top_center_base:
+    role: plant-leaf-proximal
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.09, 0.11]
+      top: [0.27, 0.20]
+      height: 0.18
+    material: green
+    transform:
+      translate: [0, 1.56, -0.05]
+      rotate_deg: [8, 0, 0]
+
+  top_center_tip:
+    role: plant-leaf-distal
+    parent: top_center_base
+    geometry:
+      kind: tapered_box
+      bottom: [0.27, 0.20]
+      top: [0.07, 0.09]
+      height: 0.26
+    material: green
+    transform:
+      translate: [0.0, 0.205, 0.0]
+
+extensions:
+  taria:
+    object_grammar: plant@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::plant@0.2
+    specimen_intent: tall-floor-plant
+    predecessor: block-chibi-tall-floor-plant-v1
+    morphology_strategy: trunk-branch-nodes-and-leaf-clusters
+    evaluation_status: awaiting-corrected-family-review

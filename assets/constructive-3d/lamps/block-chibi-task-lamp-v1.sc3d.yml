@@ -1,0 +1,118 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pink:
+    role: lamp-housing
+    base_color: "#d7869f"
+    roughness: 0.96
+  pink_dark:
+    role: lamp-support
+    base_color: "#9f586f"
+    roughness: 0.97
+  cream:
+    role: lamp-housing
+    base_color: "#f1dfd1"
+    roughness: 0.97
+  warm_emit:
+    role: lamp-emitter
+    base_color: "#ffe3a3"
+    roughness: 0.75
+    emissive: "#ffd27a"
+    emissive_intensity: 0.65
+  brown:
+    role: lamp-support
+    base_color: "#6b4a3d"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-task-lamp-v1
+  name: Block Chibi Task Lamp v1
+  kind: prop
+  root: root
+  tags: [lamp, block-chibi-room, task-lamp, grammar-specimen]
+
+parts:
+  root: {role: lamp-root, parent: null, articulation: static}
+
+  base:
+    role: lamp-base
+    parent: root
+    geometry: {kind: cuboid, size: [0.72, 0.14, 0.56]}
+    material: pink_dark
+    transform: {translate: [0.0, 0.07, 0.0]}
+
+  base_joint:
+    role: lamp-joint
+    parent: root
+    geometry: {kind: cuboid, size: [0.20, 0.20, 0.20]}
+    material: brown
+    transform: {translate: [-0.18, 0.22, 0.0]}
+
+  lower_arm:
+    role: lamp-arm
+    parent: root
+    geometry: {kind: cuboid, size: [0.13, 0.72, 0.13]}
+    material: brown
+    transform:
+      translate: [0.0, 0.54, 0.0]
+      rotate_deg: [0.0, 0.0, -28.0]
+
+  elbow_joint:
+    role: lamp-joint
+    parent: root
+    geometry: {kind: cuboid, size: [0.20, 0.20, 0.20]}
+    material: pink
+    transform: {translate: [0.17, 0.86, 0.0]}
+
+  upper_arm:
+    role: lamp-arm
+    parent: root
+    geometry: {kind: cuboid, size: [0.13, 0.58, 0.13]}
+    material: brown
+    transform:
+      translate: [0.31, 1.08, 0.0]
+      rotate_deg: [0.0, 0.0, 34.0]
+
+  head:
+    role: lamp-head
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.46, 0.34]
+      top: [0.36, 0.28]
+      height: 0.28
+    material: pink
+    transform:
+      translate: [0.47, 1.31, 0.0]
+      rotate_deg: [0.0, 0.0, -18.0]
+
+  emitter:
+    role: lamp-light-source
+    parent: root
+    geometry: {kind: cuboid, size: [0.28, 0.055, 0.20]}
+    material: warm_emit
+    transform:
+      translate: [0.53, 1.18, 0.0]
+      rotate_deg: [0.0, 0.0, -18.0]
+
+extensions:
+  taria:
+    object_grammar: lamp@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::lamp@0.1
+    specimen_intent: block-task-lamp
+    support_strategy: table
+    articulation_intent: static-proof-of-connected-chain
+    evaluation_status: awaiting-family-review

@@ -1,0 +1,47 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-compact-car-v1
+  name: Block Chibi compact car v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garage, residential-garage, compact-car]
+materials:
+  body: {role: body, base_color: "#e4aeb9", roughness: 0.98}
+  lower: {role: lower, base_color: "#b67f8a", roughness: 0.98}
+  roof: {role: roof, base_color: "#f4cad0", roughness: 0.98}
+  glass: {role: glass, base_color: "#9cbecb", roughness: 0.98}
+  window: {role: window, base_color: "#b8d3d4", roughness: 0.98}
+  rubber: {role: rubber, base_color: "#48505a", roughness: 0.98}
+  hub: {role: hub, base_color: "#f3e4d6", roughness: 0.98}
+  lights: {role: lights, base_color: "#ffebc1", roughness: 0.98}
+  tail: {role: tail, base_color: "#db898a", roughness: 0.98}
+  bumper: {role: bumper, base_color: "#b9b9b0", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  chassis: {role: chassis, parent: root, geometry: {kind: cuboid, size: [1.56, 0.49, 2.46]}, material: lower, transform: {translate: [0, 0.5, 0]}}
+  body: {role: body, parent: root, geometry: {kind: tapered_box, bottom: [1.64, 2.57], top: [1.42, 2.3], height: 0.46}, material: body, transform: {translate: [0, 0.83, 0]}}
+  cabin: {role: cabin, parent: root, geometry: {kind: tapered_box, bottom: [1.3, 1.42], top: [1.12, 1.14], height: 0.53}, material: roof, transform: {translate: [0, 1.29, 0.18]}}
+  windshield: {role: windshield, parent: root, geometry: {kind: cuboid, size: [1.14, 0.36, 0.04]}, material: glass, transform: {translate: [0, 1.3, -0.55], rotate_deg: [25, 0, 0]}}
+  rear_window: {role: rear_window, parent: root, geometry: {kind: cuboid, size: [1.02, 0.35, 0.035]}, material: window, transform: {translate: [0, 1.29, 0.88], rotate_deg: [-20, 0, 0]}}
+  side_window_left: {role: side_window_left, parent: root, geometry: {kind: cuboid, size: [0.028, 0.34, 0.94]}, material: glass, transform: {translate: [-0.615, 1.29, 0.18]}}
+  side_window_right: {role: side_window_right, parent: root, geometry: {kind: cuboid, size: [0.028, 0.34, 0.94]}, material: glass, transform: {translate: [0.615, 1.29, 0.18]}}
+  wheel_fl: {role: wheel_fl, parent: root, geometry: {kind: cuboid, size: [0.25, 0.52, 0.46]}, material: rubber, transform: {translate: [-0.84, 0.34, -0.81]}}
+  wheel_fr: {role: wheel_fr, parent: root, geometry: {kind: cuboid, size: [0.25, 0.52, 0.46]}, material: rubber, transform: {translate: [0.84, 0.34, -0.81]}}
+  wheel_rl: {role: wheel_rl, parent: root, geometry: {kind: cuboid, size: [0.25, 0.52, 0.46]}, material: rubber, transform: {translate: [-0.84, 0.34, 0.83]}}
+  wheel_rr: {role: wheel_rr, parent: root, geometry: {kind: cuboid, size: [0.25, 0.52, 0.46]}, material: rubber, transform: {translate: [0.84, 0.34, 0.83]}}
+  hub_fl: {role: hub_fl, parent: root, geometry: {kind: cuboid, size: [0.025, 0.19, 0.2]}, material: hub, transform: {translate: [-0.978, 0.34, -0.81]}}
+  hub_fr: {role: hub_fr, parent: root, geometry: {kind: cuboid, size: [0.025, 0.19, 0.2]}, material: hub, transform: {translate: [0.978, 0.34, -0.81]}}
+  hub_rl: {role: hub_rl, parent: root, geometry: {kind: cuboid, size: [0.025, 0.19, 0.2]}, material: hub, transform: {translate: [-0.978, 0.34, 0.83]}}
+  hub_rr: {role: hub_rr, parent: root, geometry: {kind: cuboid, size: [0.025, 0.19, 0.2]}, material: hub, transform: {translate: [0.978, 0.34, 0.83]}}
+  headlight_left: {role: headlight_left, parent: root, geometry: {kind: cuboid, size: [0.3, 0.16, 0.025]}, material: lights, transform: {translate: [-0.49, 0.7, -1.302]}}
+  headlight_right: {role: headlight_right, parent: root, geometry: {kind: cuboid, size: [0.3, 0.16, 0.025]}, material: lights, transform: {translate: [0.49, 0.7, -1.302]}}
+  tail_left: {role: tail_left, parent: root, geometry: {kind: cuboid, size: [0.29, 0.14, 0.025]}, material: tail, transform: {translate: [-0.49, 0.67, 1.303]}}
+  tail_right: {role: tail_right, parent: root, geometry: {kind: cuboid, size: [0.29, 0.14, 0.025]}, material: tail, transform: {translate: [0.49, 0.67, 1.303]}}
+  front_bumper: {role: front_bumper, parent: root, geometry: {kind: cuboid, size: [1.44, 0.12, 0.13]}, material: bumper, transform: {translate: [0, 0.42, -1.315]}}
+  rear_bumper: {role: rear_bumper, parent: root, geometry: {kind: cuboid, size: [1.44, 0.12, 0.13]}, material: bumper, transform: {translate: [0, 0.42, 1.315]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, context: residential-garage, review: pending, lighting: deferred}

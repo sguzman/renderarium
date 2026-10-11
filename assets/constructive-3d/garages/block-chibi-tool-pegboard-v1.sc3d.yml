@@ -1,0 +1,34 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-tool-pegboard-v1
+  name: Block Chibi tool pegboard v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garage, residential-garage, tool-pegboard]
+materials:
+  frame: {role: frame, base_color: "#ba9476", roughness: 0.98}
+  board: {role: board, base_color: "#dac0a2", roughness: 0.98}
+  holes: {role: holes, base_color: "#8d745f", roughness: 0.98}
+  tools: {role: tools, base_color: "#697e89", roughness: 0.98}
+  wrench: {role: wrench, base_color: "#afb5a8", roughness: 0.98}
+  handle: {role: handle, base_color: "#dd9eae", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  back: {role: back, parent: root, geometry: {kind: cuboid, size: [1.52, 1.05, 0.085]}, material: frame, transform: {translate: [0, 0, 0]}}
+  face: {role: face, parent: root, geometry: {kind: cuboid, size: [1.38, 0.9, 0.014]}, material: board, transform: {translate: [0, 0, -0.054]}}
+  hole_0: {role: hole_0, parent: root, geometry: {kind: cuboid, size: [0.045, 0.045, 0.012]}, material: holes, transform: {translate: [-0.45, 0.31, -0.069]}}
+  hole_1: {role: hole_1, parent: root, geometry: {kind: cuboid, size: [0.045, 0.045, 0.012]}, material: holes, transform: {translate: [-0.15, 0.31, -0.069]}}
+  hole_2: {role: hole_2, parent: root, geometry: {kind: cuboid, size: [0.045, 0.045, 0.012]}, material: holes, transform: {translate: [0.15, 0.31, -0.069]}}
+  hole_3: {role: hole_3, parent: root, geometry: {kind: cuboid, size: [0.045, 0.045, 0.012]}, material: holes, transform: {translate: [0.45, 0.31, -0.069]}}
+  hammer_handle: {role: hammer_handle, parent: root, geometry: {kind: cuboid, size: [0.09, 0.5, 0.09]}, material: handle, transform: {translate: [-0.38, -0.05, -0.102]}}
+  hammer_head: {role: hammer_head, parent: root, geometry: {kind: cuboid, size: [0.39, 0.12, 0.12]}, material: tools, transform: {translate: [-0.38, 0.2, -0.107]}}
+  wrench_body: {role: wrench_body, parent: root, geometry: {kind: cuboid, size: [0.1, 0.51, 0.07]}, material: wrench, transform: {translate: [0.07, -0.045, -0.102]}}
+  wrench_tip: {role: wrench_tip, parent: root, geometry: {kind: cuboid, size: [0.25, 0.12, 0.09]}, material: tools, transform: {translate: [0.07, 0.22, -0.105]}}
+  screwdriver_body: {role: screwdriver_body, parent: root, geometry: {kind: cuboid, size: [0.1, 0.39, 0.09]}, material: handle, transform: {translate: [0.39, -0.07, -0.1]}}
+  screwdriver_tip: {role: screwdriver_tip, parent: root, geometry: {kind: cuboid, size: [0.07, 0.24, 0.07]}, material: wrench, transform: {translate: [0.39, 0.235, -0.104]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, context: residential-garage, review: pending, lighting: deferred}

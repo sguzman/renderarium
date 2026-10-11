@@ -1,0 +1,121 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wood:
+    role: furniture-primary
+    base_color: "#7b5545"
+    roughness: 0.95
+  wood_dark:
+    role: furniture-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+  book_blue:
+    role: book
+    base_color: "#708aa0"
+    roughness: 0.96
+  book_gold:
+    role: book
+    base_color: "#c39a57"
+    roughness: 0.96
+  book_pink:
+    role: book
+    base_color: "#d7869f"
+    roughness: 0.98
+  box_cream:
+    role: storage-box
+    base_color: "#f1cdd8"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-narrow-bookcase-v1
+  name: Block Chibi Narrow Bookcase v1
+  kind: prop
+  root: root
+  tags: [bookshelf, block-chibi-room, narrow-bookcase, grammar-specimen]
+
+parts:
+  root: {role: bookshelf-root, parent: null, articulation: static}
+
+  side_left:
+    role: bookshelf-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 1.45, 0.38]}
+    material: wood_dark
+    transform: {translate: [-0.26, 0.725, 0.0]}
+
+  side_right:
+    role: bookshelf-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 1.45, 0.38]}
+    material: wood_dark
+    transform: {translate: [0.26, 0.725, 0.0]}
+
+  shelf_bottom:
+    role: shelf-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.68, 0.12, 0.38]}
+    material: wood
+    transform: {translate: [0.0, 0.06, 0.0]}
+
+  shelf_mid_1:
+    role: shelf-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.68, 0.12, 0.38]}
+    material: wood
+    transform: {translate: [0.0, 0.46, 0.0]}
+
+  shelf_mid_2:
+    role: shelf-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.68, 0.12, 0.38]}
+    material: wood
+    transform: {translate: [0.0, 0.86, 0.0]}
+
+  shelf_top:
+    role: shelf-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.68, 0.12, 0.38]}
+    material: wood
+    transform: {translate: [0.0, 1.39, 0.0]}
+
+  book_1:
+    role: shelf-content
+    parent: root
+    geometry: {kind: cuboid, size: [0.13, 0.27, 0.24]}
+    material: book_gold
+    transform: {translate: [-0.12, 0.25, 0.0]}
+
+  book_2:
+    role: shelf-content
+    parent: root
+    geometry: {kind: cuboid, size: [0.13, 0.31, 0.24]}
+    material: book_blue
+    transform: {translate: [0.03, 0.27, 0.0]}
+
+  book_3:
+    role: shelf-content
+    parent: root
+    geometry: {kind: cuboid, size: [0.13, 0.23, 0.24]}
+    material: book_pink
+    transform: {translate: [0.16, 0.65, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: bookshelf@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::bookshelf@0.1
+    specimen_intent: narrow-bookcase
+    access_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

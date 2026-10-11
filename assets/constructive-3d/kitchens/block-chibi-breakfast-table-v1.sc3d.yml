@@ -1,0 +1,84 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-breakfast-table-v1
+  name: Block Chibi Breakfast Table v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, kitchen, breakfast-table]
+materials:
+  wood: {role: breakfast-table-wood, base_color: "#b88468", roughness: 0.98}
+  edge: {role: table-structural-wood, base_color: "#765143", roughness: 0.98}
+  inlay: {role: tabletop-inlay, base_color: "#e0b88d", roughness: 0.98}
+  ceramic: {role: small-ceramic-cup, base_color: "#fbebd6", roughness: 0.98}
+  accent: {role: cup-liquid, base_color: "#bd8c65", roughness: 0.98}
+parts:
+  root: {role: breakfast-table-root, parent: null, articulation: static}
+  top:
+    role: breakfast-table-top
+    parent: root
+    geometry: {kind: cuboid, size: [1.27, 0.13, 0.79]}
+    material: wood
+    transform: {translate: [0, 0.73, 0]}
+    articulation: static
+  inlay:
+    role: tabletop-center-inlay
+    parent: root
+    geometry: {kind: cuboid, size: [1.04, 0.013, 0.56]}
+    material: inlay
+    transform: {translate: [0, 0.804, 0]}
+    articulation: static
+  leg_left_front:
+    role: table-leg
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.69, 0.14]}
+    material: edge
+    transform: {translate: [-0.47, 0.345, -0.28]}
+    articulation: static
+  leg_right_front:
+    role: table-leg
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.69, 0.14]}
+    material: edge
+    transform: {translate: [0.47, 0.345, -0.28]}
+    articulation: static
+  leg_left_rear:
+    role: table-leg
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.69, 0.14]}
+    material: edge
+    transform: {translate: [-0.47, 0.345, 0.28]}
+    articulation: static
+  leg_right_rear:
+    role: table-leg
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.69, 0.14]}
+    material: edge
+    transform: {translate: [0.47, 0.345, 0.28]}
+    articulation: static
+  cup:
+    role: cup-for-breakfast
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.17, 0.16]}
+    material: ceramic
+    transform: {translate: [0.23, 0.907, 0.08]}
+    articulation: static
+  cup_top:
+    role: cup-rim
+    parent: root
+    geometry: {kind: cuboid, size: [0.15, 0.02, 0.15]}
+    material: accent
+    transform: {translate: [0.23, 1, 0.08]}
+    articulation: static
+  napkin:
+    role: table-napkin
+    parent: root
+    geometry: {kind: cuboid, size: [0.2, 0.011, 0.2]}
+    material: ceramic
+    transform: {translate: [-0.25, 0.814, -0.1]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: first-review-pending}

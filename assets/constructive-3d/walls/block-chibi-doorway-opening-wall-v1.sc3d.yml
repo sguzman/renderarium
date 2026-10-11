@@ -1,0 +1,88 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wall:
+    role: wall-surface
+    base_color: "#e4c4aa"
+    roughness: 0.99
+  wall_accent:
+    role: wall-accent
+    base_color: "#d9b49a"
+    roughness: 0.99
+  trim:
+    role: wall-trim
+    base_color: "#f2eadb"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-doorway-opening-wall-v1
+  name: Block Chibi Doorway Opening Wall v1
+  kind: architecture
+  root: root
+  tags: [wall, block-chibi-room, doorway-opening-wall, grammar-specimen]
+
+parts:
+  root: {role: wall-root, parent: null, articulation: static}
+
+  left_pier:
+    role: wall-pier
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 2.20, 0.16]}
+    material: wall
+    transform: {translate: [-0.70, 1.10, 0.0]}
+
+  right_pier:
+    role: wall-pier
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 2.20, 0.16]}
+    material: wall
+    transform: {translate: [0.70, 1.10, 0.0]}
+
+  header:
+    role: wall-lintel
+    parent: root
+    geometry: {kind: cuboid, size: [0.90, 0.36, 0.16]}
+    material: wall
+    transform: {translate: [0.0, 2.02, 0.0]}
+
+  baseboard_left:
+    role: wall-baseboard
+    parent: root
+    geometry: {kind: cuboid, size: [0.46, 0.14, 0.05]}
+    material: trim
+    transform: {translate: [-0.72, 0.07, -0.105]}
+
+  baseboard_right:
+    role: wall-baseboard
+    parent: root
+    geometry: {kind: cuboid, size: [0.46, 0.14, 0.05]}
+    material: trim
+    transform: {translate: [0.72, 0.07, -0.105]}
+
+extensions:
+  taria:
+    object_grammar: wall@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::wall@0.1
+    specimen_intent: doorway-opening-wall
+    room_face: [0.0, 0.0, -1.0]
+    opening:
+      kind: doorway
+      width: 0.90
+      height: 1.84
+      bottom_y: 0.00
+      top_y: 1.84
+    render_shading: flat
+    evaluation_status: awaiting-family-review

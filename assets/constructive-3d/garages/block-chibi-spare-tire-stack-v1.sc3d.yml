@@ -1,0 +1,28 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-spare-tire-stack-v1
+  name: Block Chibi spare tire stack v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garage, residential-garage, spare-tire-stack]
+materials:
+  tire: {role: tire, base_color: "#434b53", roughness: 0.98}
+  band: {role: band, base_color: "#5b6264", roughness: 0.98}
+  hub: {role: hub, base_color: "#b3aea7", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  tire_0: {role: tire_0, parent: root, geometry: {kind: tapered_box, bottom: [0.79, 0.79], top: [0.73, 0.73], height: 0.27}, material: tire, transform: {translate: [0, 0.22, 0]}}
+  rim_0: {role: rim_0, parent: root, geometry: {kind: cuboid, size: [0.3, 0.012, 0.3]}, material: hub, transform: {translate: [0, 0.36, 0]}}
+  band_0: {role: band_0, parent: root, geometry: {kind: cuboid, size: [0.83, 0.035, 0.83]}, material: band, transform: {translate: [0, 0.29000000000000004, 0]}}
+  tire_1: {role: tire_1, parent: root, geometry: {kind: tapered_box, bottom: [0.79, 0.79], top: [0.73, 0.73], height: 0.27}, material: tire, transform: {translate: [0, 0.51, 0]}}
+  rim_1: {role: rim_1, parent: root, geometry: {kind: cuboid, size: [0.3, 0.012, 0.3]}, material: hub, transform: {translate: [0, 0.65, 0]}}
+  band_1: {role: band_1, parent: root, geometry: {kind: cuboid, size: [0.83, 0.035, 0.83]}, material: band, transform: {translate: [0, 0.5800000000000001, 0]}}
+  tire_2: {role: tire_2, parent: root, geometry: {kind: tapered_box, bottom: [0.79, 0.79], top: [0.73, 0.73], height: 0.27}, material: tire, transform: {translate: [0, 0.8, 0]}}
+  rim_2: {role: rim_2, parent: root, geometry: {kind: cuboid, size: [0.3, 0.012, 0.3]}, material: hub, transform: {translate: [0, 0.9400000000000001, 0]}}
+  band_2: {role: band_2, parent: root, geometry: {kind: cuboid, size: [0.83, 0.035, 0.83]}, material: band, transform: {translate: [0, 0.8700000000000001, 0]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, context: residential-garage, review: pending, lighting: deferred}

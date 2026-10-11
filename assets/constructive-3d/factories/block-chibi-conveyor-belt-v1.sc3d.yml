@@ -1,0 +1,64 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-conveyor-belt-v1
+  name: Block Chibi conveyor belt v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, conveyor-belt]
+materials:
+  base: {role: base, base_color: "#789b9b", roughness: 0.98}
+  belt: {role: belt, base_color: "#5a777a", roughness: 0.98}
+  rubber: {role: rubber, base_color: "#405d63", roughness: 0.98}
+  edge: {role: edge, base_color: "#c9a28a", roughness: 0.98}
+  roller: {role: roller, base_color: "#e0d4bc", roughness: 0.98}
+  ribs: {role: ribs, base_color: "#93b1aa", roughness: 0.98}
+  legs: {role: legs, base_color: "#6b8586", roughness: 0.98}
+  feet: {role: feet, base_color: "#acc6b5", roughness: 0.98}
+parts:
+  root: {role: conveyor-belt-root, parent: null, articulation: static}
+  chassis: {role: chassis, parent: root, geometry: {kind: cuboid, size: [7.1, 0.29, 1.06]}, material: base, transform: {translate: [0, 0.67, 0]}}
+  belt_top: {role: belt_top, parent: root, geometry: {kind: cuboid, size: [7.14, 0.06, 0.9]}, material: belt, transform: {translate: [0, 0.845, 0]}}
+  left_side_rail: {role: left_side_rail, parent: root, geometry: {kind: cuboid, size: [7.18, 0.13, 0.095]}, material: edge, transform: {translate: [0, 0.932, -0.53]}}
+  right_side_rail: {role: right_side_rail, parent: root, geometry: {kind: cuboid, size: [7.18, 0.13, 0.095]}, material: edge, transform: {translate: [0, 0.932, 0.53]}}
+  left_roller: {role: left_roller, parent: root, geometry: {kind: cuboid, size: [0.17, 0.2, 0.95]}, material: roller, transform: {translate: [-3.51, 0.83, 0]}}
+  right_roller: {role: right_roller, parent: root, geometry: {kind: cuboid, size: [0.17, 0.2, 0.95]}, material: roller, transform: {translate: [3.51, 0.83, 0]}}
+  front_leg_0: {role: front_leg_0, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [-3, 0.34, -0.37]}}
+  rear_leg_0: {role: rear_leg_0, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [-3, 0.34, 0.37]}}
+  ground_foot_0: {role: ground_foot_0, parent: root, geometry: {kind: cuboid, size: [0.4, 0.11, 1.02]}, material: feet, transform: {translate: [-3, 0.105, 0]}}
+  front_leg_1: {role: front_leg_1, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [-1.5, 0.34, -0.37]}}
+  rear_leg_1: {role: rear_leg_1, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [-1.5, 0.34, 0.37]}}
+  ground_foot_1: {role: ground_foot_1, parent: root, geometry: {kind: cuboid, size: [0.4, 0.11, 1.02]}, material: feet, transform: {translate: [-1.5, 0.105, 0]}}
+  front_leg_2: {role: front_leg_2, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [0, 0.34, -0.37]}}
+  rear_leg_2: {role: rear_leg_2, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [0, 0.34, 0.37]}}
+  ground_foot_2: {role: ground_foot_2, parent: root, geometry: {kind: cuboid, size: [0.4, 0.11, 1.02]}, material: feet, transform: {translate: [0, 0.105, 0]}}
+  front_leg_3: {role: front_leg_3, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [1.5, 0.34, -0.37]}}
+  rear_leg_3: {role: rear_leg_3, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [1.5, 0.34, 0.37]}}
+  ground_foot_3: {role: ground_foot_3, parent: root, geometry: {kind: cuboid, size: [0.4, 0.11, 1.02]}, material: feet, transform: {translate: [1.5, 0.105, 0]}}
+  front_leg_4: {role: front_leg_4, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [3, 0.34, -0.37]}}
+  rear_leg_4: {role: rear_leg_4, parent: root, geometry: {kind: cuboid, size: [0.15, 0.54, 0.14]}, material: legs, transform: {translate: [3, 0.34, 0.37]}}
+  ground_foot_4: {role: ground_foot_4, parent: root, geometry: {kind: cuboid, size: [0.4, 0.11, 1.02]}, material: feet, transform: {translate: [3, 0.105, 0]}}
+  belt_crossbar_0: {role: belt_crossbar_0, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [-3.1, 0.884, 0]}}
+  belt_crossbar_1: {role: belt_crossbar_1, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [-2.63, 0.884, 0]}}
+  belt_crossbar_2: {role: belt_crossbar_2, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [-2.16, 0.884, 0]}}
+  belt_crossbar_3: {role: belt_crossbar_3, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [-1.6900000000000002, 0.884, 0]}}
+  belt_crossbar_4: {role: belt_crossbar_4, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [-1.2200000000000002, 0.884, 0]}}
+  belt_crossbar_5: {role: belt_crossbar_5, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [-0.7500000000000004, 0.884, 0]}}
+  belt_crossbar_6: {role: belt_crossbar_6, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [-0.28000000000000025, 0.884, 0]}}
+  belt_crossbar_7: {role: belt_crossbar_7, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [0.18999999999999995, 0.884, 0]}}
+  belt_crossbar_8: {role: belt_crossbar_8, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [0.6599999999999997, 0.884, 0]}}
+  belt_crossbar_9: {role: belt_crossbar_9, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [1.1299999999999994, 0.884, 0]}}
+  belt_crossbar_10: {role: belt_crossbar_10, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [1.5999999999999992, 0.884, 0]}}
+  belt_crossbar_11: {role: belt_crossbar_11, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [2.07, 0.884, 0]}}
+  belt_crossbar_12: {role: belt_crossbar_12, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [2.5399999999999996, 0.884, 0]}}
+  belt_crossbar_13: {role: belt_crossbar_13, parent: root, geometry: {kind: cuboid, size: [0.042, 0.008, 0.79]}, material: ribs, transform: {translate: [3.0099999999999993, 0.884, 0]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred

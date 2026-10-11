@@ -1,0 +1,591 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+asset:
+  id: cozy-reader-girl-v1
+  name: Cozy Reader Girl v1
+  kind: character
+  root: root
+  description: >-
+    First constructive 3D translation of the user-approved cute-reader reference direction.
+    This is a new character branch, not a mutation of Quest Girl v7.
+  tags:
+    - block-chibi
+    - cozy-reader
+    - cute-character
+    - static-design-proof
+    - reference-derived
+    - v1
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  skin:
+    role: skin
+    base_color: "#f3c8ad"
+    roughness: 0.95
+  hair:
+    role: hair
+    base_color: "#4a2d2a"
+    roughness: 0.93
+  hair_shadow:
+    role: hair-shadow
+    base_color: "#34201f"
+    roughness: 0.95
+  cardigan:
+    role: costume-primary
+    base_color: "#c96f91"
+    roughness: 0.96
+  cardigan_light:
+    role: costume-secondary
+    base_color: "#e1a1b6"
+    roughness: 0.97
+  skirt:
+    role: costume-lower
+    base_color: "#70465f"
+    roughness: 0.97
+  cream:
+    role: costume-trim
+    base_color: "#f2dfd1"
+    roughness: 0.98
+  eye:
+    role: facial-feature
+    base_color: "#2f2628"
+    roughness: 1.0
+  blush:
+    role: facial-accent
+    base_color: "#e795a1"
+    roughness: 0.99
+  boot:
+    role: footwear
+    base_color: "#5a3940"
+    roughness: 0.96
+  boot_accent:
+    role: footwear-accent
+    base_color: "#a85f78"
+    roughness: 0.97
+
+geometry_library:
+  eye_block:
+    kind: cuboid
+    size: [0.14, 0.22, 0.028]
+  hand:
+    kind: cuboid
+    size: [0.16, 0.15, 0.16]
+
+parts:
+  root:
+    role: root
+    parent: null
+    articulation: static
+
+  torso:
+    role: torso
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.64, 0.34]
+      top: [0.58, 0.30]
+      height: 0.46
+    material: cardigan
+    transform:
+      translate: [0.0, 0.16, 0.0]
+    anchors:
+      neck: [0.0, 0.23, 0.0]
+      shoulder_left: [-0.31, 0.11, 0.0]
+      shoulder_right: [0.31, 0.11, 0.0]
+      hip_left: [-0.18, -0.22, 0.0]
+      hip_right: [0.18, -0.22, 0.0]
+    articulation: rigid
+
+  cardigan_left:
+    role: cardigan-front-left
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.24, 0.36, 0.055]
+    material: cardigan_light
+    transform:
+      translate: [-0.15, -0.02, -0.175]
+      rotate_deg: [0.0, 0.0, -3.0]
+    articulation: rigid
+
+  cardigan_right:
+    role: cardigan-front-right
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.24, 0.36, 0.055]
+    material: cardigan_light
+    transform:
+      translate: [0.15, -0.02, -0.175]
+      rotate_deg: [0.0, 0.0, 3.0]
+    articulation: rigid
+
+  collar:
+    role: collar
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.38, 0.08, 0.050]
+    material: cream
+    transform:
+      translate: [0.0, 0.155, -0.185]
+    articulation: rigid
+
+  skirt:
+    role: skirt
+    parent: torso
+    geometry:
+      kind: tapered_box
+      bottom: [0.80, 0.46]
+      top: [0.60, 0.33]
+      height: 0.38
+    material: skirt
+    transform:
+      translate: [0.0, -0.36, 0.0]
+    articulation: rigid
+
+  head:
+    role: head
+    parent: torso
+    geometry:
+      kind: tapered_box
+      bottom: [1.16, 0.82]
+      top: [1.28, 0.90]
+      height: 1.08
+    material: skin
+    anchors:
+      neck: [0.0, -0.54, 0.0]
+    attachment:
+      parent_anchor: neck
+      child_anchor: neck
+      offset: [0.0, -0.06, 0.0]
+    pivot: [0.0, -0.54, 0.0]
+    articulation: rigid
+
+  hair_back:
+    role: hair-back
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [1.24, 0.30]
+      top: [1.32, 0.36]
+      height: 1.00
+    material: hair_shadow
+    transform:
+      translate: [0.0, 0.00, 0.34]
+    articulation: rigid
+
+  crown:
+    role: hair-crown
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [1.24, 0.84]
+      top: [1.30, 0.90]
+      height: 0.42
+    material: hair
+    transform:
+      translate: [0.0, 0.41, 0.02]
+    articulation: rigid
+
+  front_hair_body:
+    role: hair-front-body
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [1.08, 0.13]
+      top: [1.16, 0.17]
+      height: 0.18
+    material: hair
+    transform:
+      translate: [0.0, 0.43, -0.385]
+    articulation: rigid
+
+  fringe_left:
+    role: hair-rooted-fringe-left
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.08]
+      top: [0.40, 0.11]
+      height: 0.28
+    material: hair
+    transform:
+      translate: [-0.34, 0.31, -0.432]
+      rotate_deg: [0.0, 0.0, -8.0]
+    articulation: rigid
+
+  fringe_center:
+    role: hair-rooted-fringe-center
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [0.27, 0.08]
+      top: [0.40, 0.11]
+      height: 0.25
+    material: hair
+    transform:
+      translate: [0.0, 0.325, -0.435]
+    articulation: rigid
+
+  fringe_right:
+    role: hair-rooted-fringe-right
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.08]
+      top: [0.40, 0.11]
+      height: 0.28
+    material: hair
+    transform:
+      translate: [0.34, 0.31, -0.432]
+      rotate_deg: [0.0, 0.0, 8.0]
+    articulation: rigid
+
+  side_lock_left:
+    role: hair-face-frame-left
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [0.16, 0.20]
+      top: [0.22, 0.25]
+      height: 0.52
+    material: hair
+    transform:
+      translate: [-0.57, -0.02, -0.27]
+      rotate_deg: [0.0, 0.0, -7.0]
+    articulation: rigid
+
+  side_lock_right:
+    role: hair-face-frame-right
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [0.16, 0.20]
+      top: [0.22, 0.25]
+      height: 0.52
+    material: hair
+    transform:
+      translate: [0.57, -0.02, -0.27]
+      rotate_deg: [0.0, 0.0, 7.0]
+    articulation: rigid
+
+  rear_side_left:
+    role: hair-side-back-left
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [0.20, 0.26]
+      top: [0.25, 0.30]
+      height: 0.62
+    material: hair_shadow
+    transform:
+      translate: [-0.54, -0.08, 0.20]
+      rotate_deg: [0.0, 0.0, -5.0]
+    articulation: rigid
+
+  rear_side_right:
+    role: hair-side-back-right
+    parent: head
+    geometry:
+      kind: tapered_box
+      bottom: [0.20, 0.26]
+      top: [0.25, 0.30]
+      height: 0.62
+    material: hair_shadow
+    transform:
+      translate: [0.54, -0.08, 0.20]
+      rotate_deg: [0.0, 0.0, 5.0]
+    articulation: rigid
+
+  tied_root:
+    role: tied-hair-root
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.28, 0.24, 0.28]
+    material: hair
+    transform:
+      translate: [-0.42, -0.08, 0.49]
+    articulation: rigid
+
+  tied_mass:
+    role: tied-hair-mass
+    parent: tied_root
+    geometry:
+      kind: tapered_box
+      bottom: [0.28, 0.24]
+      top: [0.40, 0.34]
+      height: 0.56
+    material: hair
+    transform:
+      translate: [-0.10, -0.36, 0.03]
+      rotate_deg: [0.0, 0.0, 12.0]
+    articulation: rigid
+
+  tied_tip:
+    role: tied-hair-tip
+    parent: tied_mass
+    geometry:
+      kind: tapered_box
+      bottom: [0.17, 0.16]
+      top: [0.27, 0.23]
+      height: 0.34
+    material: hair_shadow
+    transform:
+      translate: [-0.05, -0.31, 0.015]
+      rotate_deg: [0.0, 0.0, 8.0]
+    articulation: rigid
+
+  left_eye:
+    role: eye-left
+    parent: head
+    geometry:
+      ref: eye_block
+    material: eye
+    transform:
+      translate: [-0.245, -0.005, -0.456]
+    articulation: rigid
+
+  right_eye:
+    role: eye-right
+    parent: head
+    geometry:
+      ref: eye_block
+    material: eye
+    transform:
+      translate: [0.245, -0.005, -0.456]
+    articulation: rigid
+
+  mouth:
+    role: mouth
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.075, 0.025, 0.018]
+    material: eye
+    transform:
+      translate: [0.0, -0.205, -0.458]
+    articulation: rigid
+
+  blush_left:
+    role: blush-left
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.13, 0.042, 0.016]
+    material: blush
+    transform:
+      translate: [-0.39, -0.13, -0.456]
+    articulation: rigid
+
+  blush_right:
+    role: blush-right
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.13, 0.042, 0.016]
+    material: blush
+    transform:
+      translate: [0.39, -0.13, -0.456]
+    articulation: rigid
+
+  sleeve_left:
+    role: sleeve-left
+    parent: torso
+    geometry:
+      kind: tapered_box
+      bottom: [0.22, 0.22]
+      top: [0.25, 0.24]
+      height: 0.28
+    material: cardigan
+    anchors:
+      proximal: [0.0, 0.14, 0.0]
+    attachment:
+      parent_anchor: shoulder_left
+      child_anchor: proximal
+      offset: [0.0, 0.0, 0.0]
+    pivot: [0.0, 0.14, 0.0]
+    transform:
+      rotate_deg: [0.0, 0.0, -10.0]
+    articulation: rigid
+
+  sleeve_right:
+    role: sleeve-right
+    parent: torso
+    geometry:
+      kind: tapered_box
+      bottom: [0.22, 0.22]
+      top: [0.25, 0.24]
+      height: 0.28
+    material: cardigan
+    anchors:
+      proximal: [0.0, 0.14, 0.0]
+    attachment:
+      parent_anchor: shoulder_right
+      child_anchor: proximal
+      offset: [0.0, 0.0, 0.0]
+    pivot: [0.0, 0.14, 0.0]
+    transform:
+      rotate_deg: [0.0, 0.0, 10.0]
+    articulation: rigid
+
+  forearm_left:
+    role: forearm-left
+    parent: sleeve_left
+    geometry:
+      kind: tapered_box
+      bottom: [0.13, 0.13]
+      top: [0.15, 0.15]
+      height: 0.29
+    material: skin
+    transform:
+      translate: [-0.02, -0.27, -0.01]
+      rotate_deg: [0.0, 0.0, -4.0]
+    articulation: rigid
+
+  forearm_right:
+    role: forearm-right
+    parent: sleeve_right
+    geometry:
+      kind: tapered_box
+      bottom: [0.13, 0.13]
+      top: [0.15, 0.15]
+      height: 0.29
+    material: skin
+    transform:
+      translate: [0.02, -0.27, -0.01]
+      rotate_deg: [0.0, 0.0, 4.0]
+    articulation: rigid
+
+  hand_left:
+    role: hand-left
+    parent: forearm_left
+    geometry:
+      ref: hand
+    material: skin
+    transform:
+      translate: [-0.01, -0.22, -0.01]
+    articulation: rigid
+
+  hand_right:
+    role: hand-right
+    parent: forearm_right
+    geometry:
+      ref: hand
+    material: skin
+    transform:
+      translate: [0.01, -0.22, -0.01]
+    articulation: rigid
+
+  leg_left:
+    role: leg-left
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.18, 0.40, 0.20]
+    material: cream
+    anchors:
+      proximal: [0.0, 0.20, 0.0]
+    attachment:
+      parent_anchor: hip_left
+      child_anchor: proximal
+      offset: [-0.035, -0.23, 0.0]
+    pivot: [0.0, 0.20, 0.0]
+    articulation: rigid
+
+  leg_right:
+    role: leg-right
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.18, 0.40, 0.20]
+    material: cream
+    anchors:
+      proximal: [0.0, 0.20, 0.0]
+    attachment:
+      parent_anchor: hip_right
+      child_anchor: proximal
+      offset: [0.035, -0.23, 0.0]
+    pivot: [0.0, 0.20, 0.0]
+    articulation: rigid
+
+  boot_left:
+    role: boot-left
+    parent: leg_left
+    geometry:
+      kind: cuboid
+      size: [0.27, 0.23, 0.36]
+    material: boot
+    transform:
+      translate: [0.0, -0.30, -0.055]
+    articulation: rigid
+
+  boot_left_band:
+    role: boot-accent-left
+    parent: boot_left
+    geometry:
+      kind: cuboid
+      size: [0.29, 0.055, 0.37]
+    material: boot_accent
+    transform:
+      translate: [0.0, 0.045, 0.0]
+    articulation: rigid
+
+  boot_right:
+    role: boot-right
+    parent: leg_right
+    geometry:
+      kind: cuboid
+      size: [0.27, 0.23, 0.36]
+    material: boot
+    transform:
+      translate: [0.0, -0.30, -0.055]
+    articulation: rigid
+
+  boot_right_band:
+    role: boot-accent-right
+    parent: boot_right
+    geometry:
+      kind: cuboid
+      size: [0.29, 0.055, 0.37]
+    material: boot_accent
+    transform:
+      translate: [0.0, 0.045, 0.0]
+    articulation: rigid
+
+extensions:
+  taria:
+    design_target: cozy-reader-girl-v1
+    predecessor_relation: new-branch-from-quest-girl-v7-capability
+    predecessor_geometry_reused: false
+    promotion_if_accepted: quest-girl-v8
+    reference:
+      kind: user-approved-visual-reference
+      sha256: ddc0bc2d5196c9fcb41776b584c6978453c4fb36ec31aa95b6cb9b360da57611
+      dimensions_px: [138, 191]
+      purpose: design-language-only
+    design_intent:
+      - much-cuter-than-quest-girl-v7
+      - larger-head-smaller-body
+      - softer-fuller-hair
+      - face-framing-side-locks
+      - simpler-sweeter-face
+      - slimmer-limbs
+      - chunky-cute-boots
+      - pink-lavender-cozy-palette
+      - standing-static-proof-before-seated-reading
+    hair_grammar: block-chibi-hair-grammar@0.3
+    evaluation_status: awaiting-first-static-review
+    generation_policy: no-image-generation

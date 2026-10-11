@@ -1,0 +1,93 @@
+{
+  "format": "scenarium-source-bound-embedded-preview-v1",
+  "scene": "block-chibi-living-room-v1",
+  "source_assembly": "scenes/block-chibi-living-room-v1/room.assembly.yml",
+  "source_assembly_blob": "8d0e1bf11ac1a65b501c33829e24bdbca2ca5a12",
+  "renderer_class": "alternate-chat-webgl-not-canonical-threejs",
+  "geometry_count": 87,
+  "groups": [
+    {
+      "index": 0,
+      "id": "shell",
+      "source": "scenes/block-chibi-living-room-v1/components/living-room-shell.sc3d.yml",
+      "source_sha": "325017e7ae7b42ec5aed9faa10b764277686096b",
+      "translate": "-",
+      "rotate_deg": "-",
+      "scale": "-"
+    },
+    {
+      "index": 1,
+      "id": "sofa",
+      "source": "assets/constructive-3d/sofas/block-chibi-two-seat-sofa-v1.sc3d.yml",
+      "source_sha": "dde6d4bb75edb83e2f550297963ced234bbeb009",
+      "translate": "-0.84,0.118,1.47",
+      "rotate_deg": "-",
+      "scale": "-"
+    },
+    {
+      "index": 2,
+      "id": "coffee-table",
+      "source": "assets/constructive-3d/tables/block-chibi-coffee-table-v1.sc3d.yml",
+      "source_sha": "5a8a2a47f398f49719f813395214c4c7307e79f6",
+      "translate": "-0.55,0.118,0.1",
+      "rotate_deg": "-",
+      "scale": "-"
+    },
+    {
+      "index": 3,
+      "id": "chair",
+      "source": "assets/constructive-3d/chairs/block-chibi-wide-cute-chair-v1.sc3d.yml",
+      "source_sha": "a97ee954f000356f56b7e63ca07280002029d2d6",
+      "translate": "1.57,0.118,0.07",
+      "rotate_deg": "0,120,0",
+      "scale": "-"
+    },
+    {
+      "index": 4,
+      "id": "rug",
+      "source": "assets/constructive-3d/rugs/block-chibi-wide-area-rug-v1.sc3d.yml",
+      "source_sha": "259613da4b2ed3473e68c8022bfba264462ad309",
+      "translate": "-0.35,0.118,0.05",
+      "rotate_deg": "-",
+      "scale": "1.52,1,1.3"
+    },
+    {
+      "index": 5,
+      "id": "floor-lamp",
+      "source": "assets/constructive-3d/lamps/block-chibi-tall-floor-lamp-v1.2.sc3d.yml",
+      "source_sha": "c22982dbe2d3a7c46c5c3fc18805961dbbbdc879",
+      "translate": "2.13,0.118,1.3",
+      "rotate_deg": "-",
+      "scale": "-"
+    },
+    {
+      "index": 6,
+      "id": "bookshelf",
+      "source": "assets/constructive-3d/bookshelves/block-chibi-low-wide-bookshelf-v1.1.sc3d.yml",
+      "source_sha": "f639c7094ce76dd26e74bd40bc8e6b9e36ae7b45",
+      "translate": "-2.34,0.118,-1.09",
+      "rotate_deg": "0,-90,0",
+      "scale": "-"
+    },
+    {
+      "index": 7,
+      "id": "plant",
+      "source": "assets/constructive-3d/plants/block-chibi-medium-snake-plant-v1.sc3d.yml",
+      "source_sha": "c3a3078aa779270929d5053510b0bc38b0c47366",
+      "translate": "-2.32,0.118,0.57",
+      "rotate_deg": "-",
+      "scale": "-"
+    },
+    {
+      "index": 8,
+      "id": "window",
+      "source": "assets/constructive-3d/windows/block-chibi-square-four-pane-window-v1.sc3d.yml",
+      "source_sha": "53c0c62d0c3fe13af3782b9b3bf08a57196155d9",
+      "translate": "1.35,1.72,2.12",
+      "rotate_deg": "-",
+      "scale": "-"
+    }
+  ],
+  "encoding": "index|part_id|parent_part_or_dash|b_cuboid_or_t_tapered|dimensions|material_hex|translate_or_dash|rotate_deg_or_dash|scale_or_dash",
+  "parts": "0|floor_under|-|b|5.8,0.18,4.7|855c4b|-|-|-\n0|plank_1|-|b|0.92,0.028,4.54|bb886f|-2.4,0.104,0|-|-\n0|plank_2|-|b|0.92,0.028,4.54|c79979|-1.44,0.104,0|-|-\n0|plank_3|-|b|0.92,0.028,4.54|bb886f|-0.48,0.104,0|-|-\n0|plank_4|-|b|0.92,0.028,4.54|c79979|0.48,0.104,0|-|-\n0|plank_5|-|b|0.92,0.028,4.54|bb886f|1.44,0.104,0|-|-\n0|plank_6|-|b|0.92,0.028,4.54|c79979|2.4,0.104,0|-|-\n0|left_wall|-|b|0.18,2.8,4.7|dec6b3|-2.81,1.4,0|-|-\n0|back_wall_left|-|b|3.575,2.8,0.18|eddcc6|-1.1125,1.4,2.26|-|-\n0|back_wall_right|-|b|0.875,2.8,0.18|eddcc6|2.4625,1.4,2.26|-|-\n0|window_sill_wall|-|b|1.35,1.08,0.18|eddcc6|1.35,0.54,2.26|-|-\n0|window_lintel_wall|-|b|1.35,0.47,0.18|eddcc6|1.35,2.565,2.26|-|-\n0|left_baseboard|-|b|0.075,0.18,4.54|f7ecde|-2.675,0.2,0|-|-\n0|rear_baseboard|-|b|5.5,0.18,0.075|f7ecde|0,0.2,2.115|-|-\n0|picture_frame|-|b|0.71,0.61,0.06|795749|-1.8,2.03,2.12|-|-\n0|picture_mat|-|b|0.58,0.48,0.015|f6eee1|-1.8,2.03,2.079|-|-\n0|picture_green|-|b|0.5,0.24,0.011|8da28c|-1.8,1.98,2.067|-|-\n0|picture_rose|-|b|0.5,0.13,0.011|c78694|-1.8,2.17,2.067|-|-\n1|base|-|b|2.28,0.34,0.91|735147|0,0.34,0|-|-\n1|seat_left|-|b|0.94,0.19,0.7|e5a6b0|-0.48,0.6,-0.07|-|-\n1|seat_right|-|b|0.94,0.19,0.7|e5a6b0|0.48,0.6,-0.07|-|-\n1|back|-|b|2.28,0.79,0.24|a96579|0,0.78,0.385|-|-\n1|back_cushion_left|-|b|0.89,0.5,0.18|b97a88|-0.48,0.84,0.22|-|-\n1|back_cushion_right|-|b|0.89,0.5,0.18|b97a88|0.48,0.84,0.22|-|-\n1|arm_left|-|b|0.23,0.56,0.93|a96579|-1.04,0.59,0|-|-\n1|arm_right|-|b|0.23,0.56,0.93|a96579|1.04,0.59,0|-|-\n1|leg_front_left|-|b|0.15,0.17,0.14|735147|-0.94,0.085,-0.33|-|-\n1|leg_front_right|-|b|0.15,0.17,0.14|735147|0.94,0.085,-0.33|-|-\n1|leg_rear_left|-|b|0.15,0.17,0.14|735147|-0.94,0.085,0.33|-|-\n1|leg_rear_right|-|b|0.15,0.17,0.14|735147|0.94,0.085,0.33|-|-\n1|throw_pillow_left|-|b|0.3,0.32,0.13|f5d5bc|-0.73,0.82,0.065|0,-15,-14|-\n1|throw_pillow_right|-|b|0.3,0.32,0.13|e0a0b5|0.72,0.82,0.07|0,12,12|-\n2|top|-|b|1.3,0.13,0.7|95664f|0,0.48,0|-|-\n2|top_inlay|-|b|0.98,0.012,0.43|c89a73|0,0.552,0|-|-\n2|leg_left_front|-|b|0.14,0.43,0.14|6e493d|-0.48,0.215,-0.23|-|-\n2|leg_right_front|-|b|0.14,0.43,0.14|6e493d|0.48,0.215,-0.23|-|-\n2|leg_left_back|-|b|0.14,0.43,0.14|6e493d|-0.48,0.215,0.23|-|-\n2|leg_right_back|-|b|0.14,0.43,0.14|6e493d|0.48,0.215,0.23|-|-\n2|lower_shelf|-|b|1.01,0.075,0.52|6e493d|0,0.18,0|-|-\n3|seat|-|b|0.78,0.16,0.58|7b5545|0,0.5,0|-|-\n3|cushion|-|b|0.7,0.08,0.5|d7869f|0,0.62,-0.01|-|-\n3|back|-|t|0.76,0.16,0.84,0.18,0.72|5c3d35|0,0.92,0.25|-|-\n3|leg_front_left|-|b|0.16,0.42,0.16|5c3d35|-0.29,0.21,-0.2|-|-\n3|leg_front_right|-|b|0.16,0.42,0.16|5c3d35|0.29,0.21,-0.2|-|-\n3|leg_back_left|-|b|0.16,0.42,0.16|5c3d35|-0.29,0.21,0.2|-|-\n3|leg_back_right|-|b|0.16,0.42,0.16|5c3d35|0.29,0.21,0.2|-|-\n4|field|-|b|1.8,0.04,1.38|d97b9b|0,0.025,0|-|-\n4|border_front|-|b|1.66,0.008,0.1|efb7c8|0,0.049,-0.57|-|-\n4|border_back|-|b|1.66,0.008,0.1|efb7c8|0,0.049,0.57|-|-\n4|border_left|-|b|0.1,0.008,1.04|efb7c8|-0.76,0.049,0|-|-\n4|border_right|-|b|0.1,0.008,1.04|efb7c8|0.76,0.049,0|-|-\n5|base|-|t|0.74,0.74,0.6,0.6,0.2|9f586f|0,0.1,0|-|-\n5|stem|-|t|0.14,0.14,0.11,0.11,1.42|6b4a3d|0,0.91,0|-|-\n5|emitter|-|b|0.42,0.1,0.42|fff0b8|0,1.46,0|-|-\n5|shade|-|t|0.88,0.88,0.58,0.58,0.5|e39bb2|0,1.73,0|-|-\n6|side_left|-|b|0.16,0.92,0.48|5c3d35|-0.7,0.46,0|-|-\n6|side_right|-|b|0.16,0.92,0.48|5c3d35|0.7,0.46,0|-|-\n6|shelf_bottom|-|b|1.22,0.14,0.48|7b5545|0,0.07,0|-|-\n6|shelf_mid|-|b|1.22,0.14,0.48|7b5545|0,0.5,0|-|-\n6|shelf_top|-|b|1.22,0.14,0.48|7b5545|0,0.85,0|-|-\n6|storage_box|-|b|0.48,0.28,0.34|f1cdd8|-0.34,0.28,0|-|-\n6|book_1|-|b|0.15,0.25,0.28|708aa0|0.18,0.27,0|-|-\n6|book_2|-|b|0.15,0.31,0.28|d7869f|0.35,0.3,0|-|-\n6|book_3|-|b|0.15,0.27,0.28|c39a57|0.52,0.28,0|-|-\n7|pot|-|t|0.62,0.62,0.508,0.508,0.46|a86f58|0,0.23,0|-|-\n7|soil_cap|-|b|0.446,0.045,0.446|4d4039|0,0.478,0|-|-\n7|leaf_1_body|-|t|0.148,0.09,0.18,0.086,0.619|567b5d|0,0.805,0|0,0,-1|-\n7|leaf_1_tip|leaf_1_body|t|0.18,0.086,0.04,0.038,0.241|567b5d|0,0.418,0|-|-\n7|leaf_2_body|-|t|0.139,0.09,0.17,0.086,0.533|6f9871|-0.08,0.761,0.02|2,40,-8|-\n7|leaf_2_tip|leaf_2_body|t|0.17,0.086,0.04,0.038,0.207|6f9871|0,0.358,0|-|-\n7|leaf_3_body|-|t|0.139,0.088,0.17,0.084,0.504|86aa79|0.08,0.747,-0.02|-2,-42,9|-\n7|leaf_3_tip|leaf_3_body|t|0.17,0.084,0.04,0.037,0.196|86aa79|0,0.338,0|-|-\n7|leaf_4_body|-|t|0.131,0.085,0.16,0.082,0.461|6f9871|-0.03,0.725,-0.09|5,95,-11|-\n7|leaf_4_tip|leaf_4_body|t|0.16,0.082,0.04,0.036,0.179|6f9871|0,0.308,0|-|-\n7|leaf_5_body|-|t|0.131,0.083,0.16,0.08,0.432|567b5d|0.04,0.711,0.09|-4,-100,10|-\n7|leaf_5_tip|leaf_5_body|t|0.16,0.08,0.04,0.035,0.168|567b5d|0,0.288,0|-|-\n7|leaf_6_body|-|t|0.123,0.08,0.15,0.077,0.389|86aa79|-0.11,0.689,0.07|-3,145,-13|-\n7|leaf_6_tip|leaf_6_body|t|0.15,0.077,0.04,0.034,0.151|86aa79|0,0.258,0|-|-\n7|leaf_7_body|-|t|0.123,0.078,0.15,0.075,0.36|6f9871|0.11,0.675,-0.06|4,-150,14|-\n7|leaf_7_tip|leaf_7_body|t|0.15,0.075,0.04,0.033,0.14|6f9871|0,0.238,0|-|-\n8|frame_left|-|b|0.12,1.18,0.12|f3ead9|-0.56,0,0|-|-\n8|frame_right|-|b|0.12,1.18,0.12|f3ead9|0.56,0,0|-|-\n8|frame_top|-|b|1,0.12,0.12|f3ead9|0,0.53,0|-|-\n8|frame_bottom|-|b|1,0.12,0.14159999999999998|f3ead9|0,-0.53,-0.0024|-|-\n8|glazing|-|b|0.97,0.9117999999999999,0.035|a9c1cf|0,0,0.0744|-|-\n8|mullion_1|-|b|0.0744,0.94,0.0936|f3ead9|0,0,-0.0048|-|-\n8|muntin_1|-|b|1,0.0744,0.0912|f3ead9|0,0,-0.006|-|-"
+}

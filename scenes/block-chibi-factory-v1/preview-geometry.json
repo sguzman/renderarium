@@ -1,0 +1,355 @@
+{
+  "format": "scenarium-source-bound-chat-preview-v1",
+  "scene": "block-chibi-factory-v1",
+  "source_assembly": "scenes/block-chibi-factory-v1/room.assembly.yml",
+  "source_assembly_blob": "045972bf390939cf86c5278c297dba0bd5f36af3",
+  "renderer_kind": "alternate-chat-webgl-not-canonical-Threejs",
+  "mesh_count": 209,
+  "groups": [
+    {
+      "index": 0,
+      "id": "shell",
+      "source": "scenes/block-chibi-factory-v1/components/factory-shell.sc3d.yml",
+      "source_blob": "71efb2c9ee5079d2ab7852821b3eb3285dbf6797",
+      "translate": [
+        0,
+        0,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 1,
+      "id": "main-conveyor",
+      "source": "assets/constructive-3d/factories/block-chibi-conveyor-belt-v1.sc3d.yml",
+      "source_blob": "7017fd50869e7d90a5cd7795e3d516452417e99b",
+      "translate": [
+        0,
+        0.105,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 2,
+      "id": "incoming-stock",
+      "source": "assets/constructive-3d/factories/block-chibi-industrial-supply-bin-v1.sc3d.yml",
+      "source_blob": "90f58b9daf5f88b4214a7872b03cf7bc2fdff2b2",
+      "translate": [
+        -4.28,
+        0.15,
+        1.51
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 3,
+      "id": "feed-chute",
+      "source": "assets/constructive-3d/factories/block-chibi-feed-chute-v1.sc3d.yml",
+      "source_blob": "ff4f5f56482714685d05d9da5ce27e108b945cf3",
+      "translate": [
+        -3.8,
+        0.15,
+        0.1
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 4,
+      "id": "forming-press",
+      "source": "assets/constructive-3d/factories/block-chibi-stamping-press-v1.sc3d.yml",
+      "source_blob": "1b3d03fdc1a9cff313fd75674960445c467a6b2e",
+      "translate": [
+        -2.23,
+        0.15,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 5,
+      "id": "assembly-robot",
+      "source": "assets/constructive-3d/factories/block-chibi-pick-place-robot-arm-v1.sc3d.yml",
+      "source_blob": "4c2d620c3e95e42e01d36aa79607d2787b3191ce",
+      "translate": [
+        0.35,
+        0.15,
+        1.64
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 6,
+      "id": "inspection-station",
+      "source": "assets/constructive-3d/factories/block-chibi-inspection-gantry-v1.sc3d.yml",
+      "source_blob": "5c9fdc0401fd87e1d60be83976c5a9a04f802cf5",
+      "translate": [
+        2.2,
+        0.15,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 7,
+      "id": "output-pallet",
+      "source": "assets/constructive-3d/factories/block-chibi-shipping-pallet-v1.sc3d.yml",
+      "source_blob": "0a7f1baa6410191c8516881ac6db0a1c65d88904",
+      "translate": [
+        4.23,
+        0.15,
+        0.28
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 8,
+      "id": "control-console",
+      "source": "assets/constructive-3d/factories/block-chibi-factory-control-console-v1.sc3d.yml",
+      "source_blob": "e2f86f894e6bc3ad8d31b91e29e9fdb441c32a5c",
+      "translate": [
+        1.45,
+        0.15,
+        1.68
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 9,
+      "id": "stock-rack",
+      "source": "assets/constructive-3d/garages/block-chibi-garage-storage-shelf-v1.sc3d.yml",
+      "source_blob": "794f4c83c68ae84c6bd635d268a12a4503857654",
+      "translate": [
+        3.71,
+        0.15,
+        2.31
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 10,
+      "id": "stamped-toy-a",
+      "source": "assets/constructive-3d/factories/block-chibi-pastel-toy-block-v1.sc3d.yml",
+      "source_blob": "401a75e4a11df0ff0bf264d8adf722dc381cd869",
+      "translate": [
+        -2.2,
+        0.958,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 11,
+      "id": "stamped-toy-b",
+      "source": "assets/constructive-3d/factories/block-chibi-pastel-toy-block-v1.sc3d.yml",
+      "source_blob": "401a75e4a11df0ff0bf264d8adf722dc381cd869",
+      "translate": [
+        -0.95,
+        0.958,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 12,
+      "id": "stamped-toy-c",
+      "source": "assets/constructive-3d/factories/block-chibi-pastel-toy-block-v1.sc3d.yml",
+      "source_blob": "401a75e4a11df0ff0bf264d8adf722dc381cd869",
+      "translate": [
+        0.86,
+        0.958,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 13,
+      "id": "inspected-toy",
+      "source": "assets/constructive-3d/factories/block-chibi-pastel-toy-block-v1.sc3d.yml",
+      "source_blob": "401a75e4a11df0ff0bf264d8adf722dc381cd869",
+      "translate": [
+        2.24,
+        0.958,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 14,
+      "id": "carton-side-a",
+      "source": "assets/constructive-3d/factories/block-chibi-shipping-carton-v1.sc3d.yml",
+      "source_blob": "6e832805da8aaacea436078aba85740587e9b3f5",
+      "translate": [
+        3.68,
+        0.15,
+        1.13
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 15,
+      "id": "carton-side-b",
+      "source": "assets/constructive-3d/factories/block-chibi-shipping-carton-v1.sc3d.yml",
+      "source_blob": "6e832805da8aaacea436078aba85740587e9b3f5",
+      "translate": [
+        4.55,
+        0.15,
+        1.52
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "part_encoding": "group|id|parent|b-box-or-t-taper|dims|material_hex|pos|rotate",
+  "parts": "0|slab|-|b|10.2,0.24,6.4|7d8987|-|-\n0|concrete_floor|-|b|10.06,0.034,6.23|d2d6c8|0,0.137,0|-\n0|back_wall|-|b|10.2,4.2,0.19|e2e6df|0,2.1,3.1|-\n0|left_wall|-|b|0.19,4.2,6.4|b6c8c4|-5,2.1,0|-\n0|back_crown_beam|-|b|10.16,0.38,0.34|729b9a|0,4.02,3.02|-\n0|left_crown_beam|-|b|0.32,0.35,6.23|729b9a|-4.96,4.02,0|-\n0|rear_baseboard|-|b|9.78,0.17,0.11|91b9b0|0,0.25,2.96|-\n0|left_baseboard|-|b|0.12,0.17,6.02|91b9b0|-4.85,0.25,0|-\n0|high_vent_a|-|b|1.08,0.34,0.04|9fb5b1|-1.45,3.78,2.995|-\n0|high_vent_b|-|b|1.08,0.34,0.04|9fb5b1|1.2,3.78,2.995|-\n0|high_vent_c|-|b|1.08,0.34,0.04|9fb5b1|3.83,3.78,2.995|-\n0|factory_sign_plate|-|b|2.65,0.49,0.065|d9aaa6|-2.83,3.56,2.982|-\n0|factory_sign_left|-|b|0.28,0.2,0.071|f4e9d7|-3.65,3.56,2.942|-\n0|factory_sign_mid|-|b|0.28,0.2,0.071|f4e9d7|-3.14,3.56,2.942|-\n0|factory_sign_right|-|b|0.28,0.2,0.071|f4e9d7|-2.63,3.56,2.942|-\n0|pedestrian_lane_left|-|b|9.3,0.012,0.075|c8c0ac|0,0.159,-1.57|-\n0|pedestrian_lane_right|-|b|9.3,0.012,0.075|c8c0ac|0,0.159,-2.76|-\n0|safety_front_band|-|b|9.3,0.009,0.065|ebc68b|0,0.16,-2.47|-\n0|rear_post__4_78|-|b|0.17,4.1,0.22|729b9a|-4.78,2.05,2.985|-\n0|rear_post__2_39|-|b|0.17,4.1,0.22|729b9a|-2.39,2.05,2.985|-\n0|rear_post_0|-|b|0.17,4.1,0.22|729b9a|0,2.05,2.985|-\n0|rear_post_2_39|-|b|0.17,4.1,0.22|729b9a|2.39,2.05,2.985|-\n0|rear_post_4_78|-|b|0.17,4.1,0.22|729b9a|4.78,2.05,2.985|-\n0|window_0|-|b|1.52,0.88,0.04|a7ced0|-3.55,2.77,2.98|-\n0|window_border_l_0|-|b|0.09,1.02,0.07|f4e5d3|-4.359999999999999,2.77,2.95|-\n0|window_border_r_0|-|b|0.09,1.02,0.07|f4e5d3|-2.7399999999999998,2.77,2.95|-\n0|window_border_top_0|-|b|1.7,0.085,0.08|f4e5d3|-3.55,3.3,2.95|-\n0|window_border_bottom_0|-|b|1.7,0.085,0.08|f4e5d3|-3.55,2.25,2.95|-\n0|window_1|-|b|1.52,0.88,0.04|a7ced0|-1.21,2.77,2.98|-\n0|window_border_l_1|-|b|0.09,1.02,0.07|f4e5d3|-2.02,2.77,2.95|-\n0|window_border_r_1|-|b|0.09,1.02,0.07|f4e5d3|-0.3999999999999999,2.77,2.95|-\n0|window_border_top_1|-|b|1.7,0.085,0.08|f4e5d3|-1.21,3.3,2.95|-\n0|window_border_bottom_1|-|b|1.7,0.085,0.08|f4e5d3|-1.21,2.25,2.95|-\n0|window_2|-|b|1.52,0.88,0.04|a7ced0|1.13,2.77,2.98|-\n0|window_border_l_2|-|b|0.09,1.02,0.07|f4e5d3|0.31999999999999984,2.77,2.95|-\n0|window_border_r_2|-|b|0.09,1.02,0.07|f4e5d3|1.94,2.77,2.95|-\n0|window_border_top_2|-|b|1.7,0.085,0.08|f4e5d3|1.13,3.3,2.95|-\n0|window_border_bottom_2|-|b|1.7,0.085,0.08|f4e5d3|1.13,2.25,2.95|-\n0|window_3|-|b|1.52,0.88,0.04|a7ced0|3.4699999999999998,2.77,2.98|-\n0|window_border_l_3|-|b|0.09,1.02,0.07|f4e5d3|2.6599999999999997,2.77,2.95|-\n0|window_border_r_3|-|b|0.09,1.02,0.07|f4e5d3|4.279999999999999,2.77,2.95|-\n0|window_border_top_3|-|b|1.7,0.085,0.08|f4e5d3|3.4699999999999998,3.3,2.95|-\n0|window_border_bottom_3|-|b|1.7,0.085,0.08|f4e5d3|3.4699999999999998,2.25,2.95|-\n0|lane_arrow_shaft__4|-|b|0.48,0.014,0.09|8fb8ae|-4,0.166,-2.16|-\n0|lane_arrow_tip_a__4|-|b|0.23,0.014,0.075|8fb8ae|-3.73,0.166,-2.25|0,24,0\n0|lane_arrow_tip_b__4|-|b|0.23,0.014,0.075|8fb8ae|-3.73,0.166,-2.07|0,-24,0\n0|lane_arrow_shaft__2|-|b|0.48,0.014,0.09|8fb8ae|-2,0.166,-2.16|-\n0|lane_arrow_tip_a__2|-|b|0.23,0.014,0.075|8fb8ae|-1.73,0.166,-2.25|0,24,0\n0|lane_arrow_tip_b__2|-|b|0.23,0.014,0.075|8fb8ae|-1.73,0.166,-2.07|0,-24,0\n0|lane_arrow_shaft_0|-|b|0.48,0.014,0.09|8fb8ae|0,0.166,-2.16|-\n0|lane_arrow_tip_a_0|-|b|0.23,0.014,0.075|8fb8ae|0.27,0.166,-2.25|0,24,0\n0|lane_arrow_tip_b_0|-|b|0.23,0.014,0.075|8fb8ae|0.27,0.166,-2.07|0,-24,0\n0|lane_arrow_shaft_2|-|b|0.48,0.014,0.09|8fb8ae|2,0.166,-2.16|-\n0|lane_arrow_tip_a_2|-|b|0.23,0.014,0.075|8fb8ae|2.27,0.166,-2.25|0,24,0\n0|lane_arrow_tip_b_2|-|b|0.23,0.014,0.075|8fb8ae|2.27,0.166,-2.07|0,-24,0\n0|lane_arrow_shaft_4|-|b|0.48,0.014,0.09|8fb8ae|4,0.166,-2.16|-\n0|lane_arrow_tip_a_4|-|b|0.23,0.014,0.075|8fb8ae|4.27,0.166,-2.25|0,24,0\n0|lane_arrow_tip_b_4|-|b|0.23,0.014,0.075|8fb8ae|4.27,0.166,-2.07|0,-24,0\n1|chassis|-|b|7.1,0.29,1.06|789b9b|0,0.67,0|-\n1|belt_top|-|b|7.14,0.06,0.9|5a777a|0,0.845,0|-\n1|left_side_rail|-|b|7.18,0.13,0.095|c9a28a|0,0.932,-0.53|-\n1|right_side_rail|-|b|7.18,0.13,0.095|c9a28a|0,0.932,0.53|-\n1|left_roller|-|b|0.17,0.2,0.95|e0d4bc|-3.51,0.83,0|-\n1|right_roller|-|b|0.17,0.2,0.95|e0d4bc|3.51,0.83,0|-\n1|front_leg_0|-|b|0.15,0.54,0.14|6b8586|-3,0.34,-0.37|-\n1|rear_leg_0|-|b|0.15,0.54,0.14|6b8586|-3,0.34,0.37|-\n1|ground_foot_0|-|b|0.4,0.11,1.02|acc6b5|-3,0.105,0|-\n1|front_leg_1|-|b|0.15,0.54,0.14|6b8586|-1.5,0.34,-0.37|-\n1|rear_leg_1|-|b|0.15,0.54,0.14|6b8586|-1.5,0.34,0.37|-\n1|ground_foot_1|-|b|0.4,0.11,1.02|acc6b5|-1.5,0.105,0|-\n1|front_leg_2|-|b|0.15,0.54,0.14|6b8586|0,0.34,-0.37|-\n1|rear_leg_2|-|b|0.15,0.54,0.14|6b8586|0,0.34,0.37|-\n1|ground_foot_2|-|b|0.4,0.11,1.02|acc6b5|0,0.105,0|-\n1|front_leg_3|-|b|0.15,0.54,0.14|6b8586|1.5,0.34,-0.37|-\n1|rear_leg_3|-|b|0.15,0.54,0.14|6b8586|1.5,0.34,0.37|-\n1|ground_foot_3|-|b|0.4,0.11,1.02|acc6b5|1.5,0.105,0|-\n1|front_leg_4|-|b|0.15,0.54,0.14|6b8586|3,0.34,-0.37|-\n1|rear_leg_4|-|b|0.15,0.54,0.14|6b8586|3,0.34,0.37|-\n1|ground_foot_4|-|b|0.4,0.11,1.02|acc6b5|3,0.105,0|-\n1|belt_crossbar_0|-|b|0.042,0.008,0.79|93b1aa|-3.1,0.884,0|-\n1|belt_crossbar_1|-|b|0.042,0.008,0.79|93b1aa|-2.63,0.884,0|-\n1|belt_crossbar_2|-|b|0.042,0.008,0.79|93b1aa|-2.16,0.884,0|-\n1|belt_crossbar_3|-|b|0.042,0.008,0.79|93b1aa|-1.6900000000000002,0.884,0|-\n1|belt_crossbar_4|-|b|0.042,0.008,0.79|93b1aa|-1.2200000000000002,0.884,0|-\n1|belt_crossbar_5|-|b|0.042,0.008,0.79|93b1aa|-0.7500000000000004,0.884,0|-\n1|belt_crossbar_6|-|b|0.042,0.008,0.79|93b1aa|-0.28000000000000025,0.884,0|-\n1|belt_crossbar_7|-|b|0.042,0.008,0.79|93b1aa|0.18999999999999995,0.884,0|-\n1|belt_crossbar_8|-|b|0.042,0.008,0.79|93b1aa|0.6599999999999997,0.884,0|-\n1|belt_crossbar_9|-|b|0.042,0.008,0.79|93b1aa|1.1299999999999994,0.884,0|-\n1|belt_crossbar_10|-|b|0.042,0.008,0.79|93b1aa|1.5999999999999992,0.884,0|-\n1|belt_crossbar_11|-|b|0.042,0.008,0.79|93b1aa|2.07,0.884,0|-\n1|belt_crossbar_12|-|b|0.042,0.008,0.79|93b1aa|2.5399999999999996,0.884,0|-\n1|belt_crossbar_13|-|b|0.042,0.008,0.79|93b1aa|3.0099999999999993,0.884,0|-\n2|body|-|b|1.03,0.73,0.9|799f9d|0,0.45,0|-\n2|topstock|-|b|0.87,0.065,0.71|e7aaad|0,0.83,0|-\n2|rim_front|-|b|1.08,0.1,0.1|e7cdaa|0,0.89,-0.45|-\n2|rim_rear|-|b|1.08,0.1,0.1|e7cdaa|0,0.89,0.45|-\n2|rim_l|-|b|0.1,0.1,0.85|e7cdaa|-0.52,0.89,0|-\n2|rim_r|-|b|0.1,0.1,0.85|e7cdaa|0.52,0.89,0|-\n2|supply_a|-|b|0.27,0.24,0.29|e7aaad|-0.23,1.005,-0.15|-\n2|supply_b|-|b|0.28,0.18,0.3|bcd0a6|0.19,0.975,-0.1|-\n2|supply_c|-|b|0.29,0.22,0.24|f4d9ac|0,0.995,0.22|-\n2|front_label|-|b|0.58,0.18,0.015|f9ecd9|0,0.56,-0.457|-\n2|front_foot_l|-|b|0.13,0.11,0.13|799f9d|-0.39,0.055,-0.31|-\n2|front_foot_r|-|b|0.13,0.11,0.13|799f9d|0.39,0.055,-0.31|-\n3|left_guide|-|b|1.21,0.13,0.075|8c9e95|0,1.06,-0.4|0,0,-12\n3|right_guide|-|b|1.21,0.13,0.075|8c9e95|0,1.06,0.4|0,0,-12\n3|sloped_feed_plate|-|b|1.21,0.07,0.73|a4bdb1|0,1.04,0|0,0,-12\n3|support_l|-|b|0.12,1.04,0.13|d7b69c|-0.45,0.52,-0.28|-\n3|support_r|-|b|0.12,1.04,0.13|d7b69c|-0.45,0.52,0.28|-\n3|support_exit|-|b|0.13,0.88,0.13|d7b69c|0.5,0.44,0|-\n3|stock_on_chute|-|b|0.24,0.14,0.24|e6abac|-0.22,1.16,0|-\n4|left_upright|-|b|0.3,2.35,0.29|81aeb0|0,1.18,-0.88|-\n4|right_upright|-|b|0.3,2.35,0.29|81aeb0|0,1.18,0.88|-\n4|top_crossbeam|-|b|0.74,0.39,2.04|e4b9a8|0,2.33,0|-\n4|press_motor|-|b|0.76,0.45,0.63|9a7c87|0,2.63,0|-\n4|ram|-|b|0.28,0.73,0.31|f6d7a6|0,1.78,0|-\n4|die_head|-|b|0.65,0.21,0.57|ce8f8c|0,1.32,0|-\n4|work_base|-|b|1.41,0.08,0.78|f8ebe0|0,0.55,0|-\n4|front_safety_bar|-|b|1.92,0.09,0.09|eac780|0,1.08,-0.58|-\n4|indicator_green|-|b|0.16,0.18,0.045|81aeb0|0.62,2.34,-0.302|-\n4|indicator_cream|-|b|0.16,0.18,0.045|f6d7a6|0.37,2.34,-0.302|-\n4|side_guard_left|-|b|0.63,1.24,0.075|f8ebe0|0,1.34,-1.03|-\n4|side_guard_right|-|b|0.63,1.24,0.075|f8ebe0|0,1.34,1.03|-\n5|ground_base|-|b|0.82,0.18,0.79|638b8c|0,0.09,0|-\n5|pedestal|-|t|0.56,0.57,0.45,0.47,1.05|9bc5b2|0,0.68,0|-\n5|shoulder_housing|-|b|0.7,0.46,0.56|eab0ac|0,1.43,-0.09|-\n5|shoulder_pivot|-|b|0.26,0.3,0.63|b48194|0,1.42,-0.12|-\n5|upper_link|-|b|0.28,1.02,0.28|eab0ac|0,1.8,-0.39|-38,0,0\n5|elbow_joint|-|b|0.43,0.35,0.38|b48194|0,2.11,-0.73|-\n5|forearm|-|b|0.26,0.87,0.26|f2c6ac|0,1.82,-1.04|35,0,0\n5|wrist_joint|-|b|0.34,0.27,0.33|b48194|0,1.5,-1.31|-\n5|gripper_mount|-|b|0.35,0.18,0.29|668b8b|0,1.3,-1.31|-\n5|gripper_left|-|b|0.1,0.31,0.16|668b8b|-0.17,1.15,-1.31|-\n5|gripper_right|-|b|0.1,0.31,0.16|668b8b|0.17,1.15,-1.31|-\n5|gripper_tips|-|b|0.29,0.07,0.12|f1e4c8|0,0.995,-1.31|-\n5|front_status_light|-|b|0.25,0.14,0.025|c4ded0|0,1.44,-0.402|-\n6|front_post|-|b|0.16,1.82,0.16|749998|0,0.91,-0.71|-\n6|rear_post|-|b|0.16,1.82,0.16|749998|0,0.91,0.71|-\n6|overhead_crossbar|-|b|0.32,0.22,1.63|ecc8ad|0,1.84,0|-\n6|sensor_head|-|b|0.37,0.27,0.38|718f9e|0,1.66,0|-\n6|lens|-|b|0.2,0.045,0.23|a5d3c8|0,1.5,0|-\n6|screen_mount|-|b|0.26,0.35,0.2|749998|0.14,1.95,-0.72|-\n6|screen_face|-|b|0.027,0.23,0.18|f5ebe2|0.29,1.96,-0.72|-\n6|green_light|-|b|0.047,0.09,0.09|a5d3c8|0.32,2.02,-0.72|-\n6|amber_light|-|b|0.047,0.09,0.09|f3de9e|0.32,1.89,-0.72|-\n6|floor_sensor_left|-|b|0.29,0.09,0.14|ecc8ad|0,0.98,-0.69|-\n6|floor_sensor_right|-|b|0.29,0.09,0.14|ecc8ad|0,0.98,0.69|-\n7|pallet_base_0|-|b|1.43,0.14,0.21|b89171|0,0.09,-0.57|-\n7|pallet_base_1|-|b|1.43,0.14,0.21|b89171|0,0.09,0|-\n7|pallet_base_2|-|b|1.43,0.14,0.21|b89171|0,0.09,0.57|-\n7|pallet_top_0|-|b|0.36,0.1,1.45|e6c69e|-0.53,0.21,0|-\n7|pallet_top_1|-|b|0.36,0.1,1.45|e6c69e|0,0.21,0|-\n7|pallet_top_2|-|b|0.36,0.1,1.45|e6c69e|0.53,0.21,0|-\n7|shipping_box_a|-|b|0.57,0.49,0.54|e6c69e|-0.32,0.53,-0.25|-\n7|shipping_box_b|-|b|0.57,0.49,0.54|e6c69e|0.32,0.53,-0.25|-\n7|shipping_box_c|-|b|0.57,0.49,0.54|b89171|0,0.53,0.31|-\n7|shipping_box_top|-|b|0.63,0.46,0.58|e6c69e|0,1.02,-0.25|-\n7|label_top|-|b|0.34,0.12,0.015|f8efde|0,1.05,-0.55|-\n7|box_band|-|b|0.06,0.46,0.6|89765f|0,1.02,-0.25|-\n8|base|-|b|0.64,0.15,0.55|718c8c|0,0.075,0|-\n8|stand|-|b|0.25,0.97,0.28|718c8c|0,0.61,0|-\n8|console|-|t|0.82,0.56,0.75,0.46,0.52|8facac|0,1.2,0|-\n8|control_face|-|b|0.66,0.32,0.035|c6d4c7|0,1.31,-0.295|-12,0,0\n8|display|-|b|0.36,0.16,0.042|95c6bf|-0.15,1.39,-0.319|-12,0,0\n8|push_button|-|b|0.15,0.1,0.04|efb6b9|0.23,1.23,-0.324|-\n8|status_lamp|-|b|0.13,0.1,0.04|e8cd90|0.22,1.39,-0.324|-\n9|upright_0_0|-|b|0.1,1.95,0.11|798d86|-0.71,0.975,-0.27|-\n9|upright_0_1|-|b|0.1,1.95,0.11|798d86|-0.71,0.975,0.27|-\n9|upright_1_0|-|b|0.1,1.95,0.11|798d86|0.71,0.975,-0.27|-\n9|upright_1_1|-|b|0.1,1.95,0.11|798d86|0.71,0.975,0.27|-\n9|shelf_0|-|b|1.54,0.09,0.69|cba787|0,0.24,0|-\n9|shelf_1|-|b|1.54,0.09,0.69|cba787|0,0.91,0|-\n9|shelf_2|-|b|1.54,0.09,0.69|cba787|0,1.55,0|-\n9|shelf_3|-|b|1.54,0.09,0.69|cba787|0,1.94,0|-\n9|bin_left|-|b|0.55,0.46,0.52|deb9aa|-0.37,0.53,0|-\n9|bin_right|-|b|0.55,0.46,0.52|a8bdab|0.35,0.53,0|-\n9|bin_top|-|b|0.64,0.37,0.5|deb9aa|0.18,1.74,0|-\n9|paint_can|-|b|0.29,0.3,0.3|f4d4bd|-0.4,1.13,-0.05|-\n9|label_left|-|b|0.28,0.07,0.012|fdf0dc|-0.37,0.62,-0.266|-\n9|label_right|-|b|0.28,0.07,0.012|fdf0dc|0.35,0.62,-0.266|-\n10|block_body|-|b|0.41,0.26,0.39|f2b7b4|0,0.15,0|-\n10|cap|-|b|0.43,0.07,0.41|ffdfb0|0,0.32,0|-\n10|stamp_center|-|b|0.16,0.025,0.16|9fbda9|0,0.371,0|-\n10|front_badge|-|b|0.21,0.13,0.014|e8bf79|0,0.174,-0.202|-\n10|ground_feet|-|b|0.36,0.05,0.34|c28e95|0,0.029,0|-\n11|block_body|-|b|0.41,0.26,0.39|f2b7b4|0,0.15,0|-\n11|cap|-|b|0.43,0.07,0.41|ffdfb0|0,0.32,0|-\n11|stamp_center|-|b|0.16,0.025,0.16|9fbda9|0,0.371,0|-\n11|front_badge|-|b|0.21,0.13,0.014|e8bf79|0,0.174,-0.202|-\n11|ground_feet|-|b|0.36,0.05,0.34|c28e95|0,0.029,0|-\n12|block_body|-|b|0.41,0.26,0.39|f2b7b4|0,0.15,0|-\n12|cap|-|b|0.43,0.07,0.41|ffdfb0|0,0.32,0|-\n12|stamp_center|-|b|0.16,0.025,0.16|9fbda9|0,0.371,0|-\n12|front_badge|-|b|0.21,0.13,0.014|e8bf79|0,0.174,-0.202|-\n12|ground_feet|-|b|0.36,0.05,0.34|c28e95|0,0.029,0|-\n13|block_body|-|b|0.41,0.26,0.39|f2b7b4|0,0.15,0|-\n13|cap|-|b|0.43,0.07,0.41|ffdfb0|0,0.32,0|-\n13|stamp_center|-|b|0.16,0.025,0.16|9fbda9|0,0.371,0|-\n13|front_badge|-|b|0.21,0.13,0.014|e8bf79|0,0.174,-0.202|-\n13|ground_feet|-|b|0.36,0.05,0.34|c28e95|0,0.029,0|-\n14|carton_body|-|b|0.48,0.44,0.46|f2d9b4|0,0.25,0|-\n14|carton_lid|-|b|0.53,0.08,0.51|ddbaa0|0,0.505,0|-\n14|cross_tape|-|b|0.09,0.014,0.51|b6c7b0|0,0.553,0|-\n14|front_label|-|b|0.27,0.16,0.014|f8eee0|0,0.3,-0.242|-\n15|carton_body|-|b|0.48,0.44,0.46|f2d9b4|0,0.25,0|-\n15|carton_lid|-|b|0.53,0.08,0.51|ddbaa0|0,0.505,0|-\n15|cross_tape|-|b|0.09,0.014,0.51|b6c7b0|0,0.553,0|-\n15|front_label|-|b|0.27,0.16,0.014|f8eee0|0,0.3,-0.242|-",
+  "visual_revision": "v1-factory-press-straddles-conveyor",
+  "source_geometry_checks": {
+    "source_blobs_updated": true,
+    "press_frame_straddles_belt": true,
+    "source_asset_edited_without_assembly_transform": true,
+    "canonical_renderer_unverified": true
+  }
+}

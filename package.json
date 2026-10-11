@@ -1,0 +1,23 @@
+{
+  "name": "renderarium",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Public SC3D renderer and canonical chat-preview verification mirror",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.15.1",
+  "scripts": {
+    "verify:public-boundary": "node tools/publication-gate.mjs",
+    "verify:chat-preview-pipeline": "node scripts/verify-chat-preview-pipeline.mjs",
+    "verify:campaign": "node tools/verify-chibi-campaign.mjs",
+    "verify:factory-preview": "node tools/verify-factory-preview.mjs",
+    "preview:sc3d": "node scripts/serve-sc3d-preview.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "three": "^0.180.0",
+    "yaml": "^2.8.1"
+  }
+}

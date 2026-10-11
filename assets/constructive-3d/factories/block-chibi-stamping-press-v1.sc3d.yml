@@ -1,0 +1,40 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-stamping-press-v1
+  name: Block Chibi stamping press v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, stamping-press]
+materials:
+  frame: {role: frame, base_color: "#81aeb0", roughness: 0.98}
+  cap: {role: cap, base_color: "#e4b9a8", roughness: 0.98}
+  gear: {role: gear, base_color: "#9a7c87", roughness: 0.98}
+  ram: {role: ram, base_color: "#f6d7a6", roughness: 0.98}
+  die: {role: die, base_color: "#ce8f8c", roughness: 0.98}
+  front: {role: front, base_color: "#f8ebe0", roughness: 0.98}
+  warning: {role: warning, base_color: "#eac780", roughness: 0.98}
+parts:
+  root: {role: stamping-press-root, parent: null, articulation: static}
+  left_upright: {role: left_upright, parent: root, geometry: {kind: cuboid, size: [0.30, 2.35, 0.29]}, material: frame, transform: {translate: [0, 1.18, -0.88]}}
+  right_upright: {role: right_upright, parent: root, geometry: {kind: cuboid, size: [0.30, 2.35, 0.29]}, material: frame, transform: {translate: [0, 1.18, 0.88]}}
+  top_crossbeam: {role: top_crossbeam, parent: root, geometry: {kind: cuboid, size: [0.74, 0.39, 2.04]}, material: cap, transform: {translate: [0, 2.33, 0]}}
+  press_motor: {role: press_motor, parent: root, geometry: {kind: cuboid, size: [0.76, 0.45, 0.63]}, material: gear, transform: {translate: [0, 2.63, 0]}}
+  ram: {role: ram, parent: root, geometry: {kind: cuboid, size: [0.28, 0.73, 0.31]}, material: ram, transform: {translate: [0, 1.78, 0]}}
+  die_head: {role: die_head, parent: root, geometry: {kind: cuboid, size: [0.65, 0.21, 0.57]}, material: die, transform: {translate: [0, 1.32, 0]}}
+  work_base: {role: work_base, parent: root, geometry: {kind: cuboid, size: [1.41, 0.08, 0.78]}, material: front, transform: {translate: [0, 0.55, 0]}}
+  front_safety_bar: {role: front_safety_bar, parent: root, geometry: {kind: cuboid, size: [1.92, 0.09, 0.09]}, material: warning, transform: {translate: [0, 1.08, -0.58]}}
+  indicator_green: {role: indicator_green, parent: root, geometry: {kind: cuboid, size: [0.16, 0.18, 0.045]}, material: frame, transform: {translate: [0.62, 2.34, -0.302]}}
+  indicator_cream: {role: indicator_cream, parent: root, geometry: {kind: cuboid, size: [0.16, 0.18, 0.045]}, material: ram, transform: {translate: [0.37, 2.34, -0.302]}}
+  side_guard_left: {role: side_guard_left, parent: root, geometry: {kind: cuboid, size: [0.63, 1.24, 0.075]}, material: front, transform: {translate: [0, 1.34, -1.03]}}
+  side_guard_right: {role: side_guard_right, parent: root, geometry: {kind: cuboid, size: [0.63, 1.24, 0.075]}, material: front, transform: {translate: [0, 1.34, 1.03]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred

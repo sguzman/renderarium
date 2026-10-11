@@ -1,0 +1,88 @@
+{
+  "format": "scenarium-visual-acceptance-ledger-v1",
+  "recorded_at": "2026-10-09",
+  "basis": "Owner's prior in-chat visual acceptance; records the existing decision, not a new request for review",
+  "authority": "Visual acceptance and freeze only; not canonical-Three.js, GPU, release or semantic-ontology accreditation",
+  "canonical_threejs": "unverified",
+  "source_geometry": "frozen",
+  "repeat_visual_review": "forbidden_without_explicit_owner_request",
+  "recorded_scenes": [
+    {
+      "scene": "block-chibi-living-room-v1",
+      "visual_review": "accepted",
+      "visual_scope": "appearance_and_composition",
+      "assembly_path": "scenes/block-chibi-living-room-v1/room.assembly.yml",
+      "assembly_git_blob": "8d0e1bf11ac1a65b501c33829e24bdbca2ca5a12",
+      "preview_path": "scenes/block-chibi-living-room-v1/preview-geometry.json",
+      "preview_git_blob": "d168f2dd95b5777c50f93c5275f97c9b9abfb35d",
+      "primitives": 87,
+      "component_instances": 9
+    },
+    {
+      "scene": "block-chibi-kitchen-v1",
+      "visual_review": "accepted",
+      "visual_scope": "appearance_and_composition",
+      "assembly_path": "scenes/block-chibi-kitchen-v1/room.assembly.yml",
+      "assembly_git_blob": "cc5d8b00667503fcca0d7b860dd23e202b9eef2b",
+      "preview_path": "scenes/block-chibi-kitchen-v1/preview-geometry.json",
+      "preview_git_blob": "18f96a285ac3ef6b669d9c89a9a08a36bfaa310d",
+      "primitives": 149,
+      "component_instances": 11
+    },
+    {
+      "scene": "block-chibi-bathroom-v1",
+      "visual_review": "accepted",
+      "visual_scope": "appearance_and_composition",
+      "assembly_path": "scenes/block-chibi-bathroom-v1/room.assembly.yml",
+      "assembly_git_blob": "cdb5eb446bd0bd6541a2ba2a21265fa8682944ac",
+      "preview_path": "scenes/block-chibi-bathroom-v1/preview-geometry.json",
+      "preview_git_blob": "2e69d0f28bed609a91ca87ef0b4af78e9be42b5e",
+      "primitives": 139,
+      "component_instances": 10
+    },
+    {
+      "scene": "block-chibi-office-v1",
+      "visual_review": "accepted",
+      "visual_scope": "appearance_and_composition",
+      "assembly_path": "scenes/block-chibi-office-v1/room.assembly.yml",
+      "assembly_git_blob": "68ce44f722dd36ca4c9d6a4062256c3363d2605c",
+      "preview_path": "scenes/block-chibi-office-v1/preview-geometry.json",
+      "preview_git_blob": "f6055e2ccb05226398ff688972170bf9d6182034",
+      "primitives": 104,
+      "component_instances": 12
+    },
+    {
+      "scene": "block-chibi-backyard-v1",
+      "visual_review": "accepted",
+      "visual_scope": "appearance_and_composition",
+      "assembly_path": "scenes/block-chibi-backyard-v1/room.assembly.yml",
+      "assembly_git_blob": "19f4ff08ccc1e4f3044b9a240be9b635870394b6",
+      "preview_path": "scenes/block-chibi-backyard-v1/preview-geometry.json",
+      "preview_git_blob": "06c608928f4c51cc3abc9663d1a6a81b4ae722c8",
+      "primitives": 181,
+      "component_instances": 18
+    },
+    {
+      "scene": "block-chibi-garage-v1",
+      "visual_review": "accepted",
+      "visual_scope": "appearance_and_composition",
+      "assembly_path": "scenes/block-chibi-garage-v1/room.assembly.yml",
+      "assembly_git_blob": "8f786a100d91534671cd11c7ef1340ca7809a8f7",
+      "preview_path": "scenes/block-chibi-garage-v1/preview-geometry.json",
+      "preview_git_blob": "003e1015cc48884a687fe17f13b0751512d23380",
+      "primitives": 112,
+      "component_instances": 8
+    },
+    {
+      "scene": "block-chibi-factory-v1",
+      "visual_review": "accepted",
+      "visual_scope": "appearance_and_composition",
+      "assembly_path": "scenes/block-chibi-factory-v1/room.assembly.yml",
+      "assembly_git_blob": "045972bf390939cf86c5278c297dba0bd5f36af3",
+      "preview_path": "scenes/block-chibi-factory-v1/preview-geometry.json",
+      "preview_git_blob": "2a40f271a50dc22a1fe94a6dfb42cf3648a55efa",
+      "primitives": 209,
+      "component_instances": 16
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-two-seat-sofa-v1
+  name: Block Chibi Two Seat Sofa v1
+  kind: prop
+  root: root
+  tags: [sofa, living-room, block-chibi-room, seating]
+materials:
+  frame: {role: sofa-support, base_color: "#735147", roughness: 0.97}
+  upholstery: {role: sofa-upholstery, base_color: "#b97a88", roughness: 0.99}
+  back: {role: upholstered-back, base_color: "#a96579", roughness: 0.98}
+  seat: {role: sofa-seat, base_color: "#e5a6b0", roughness: 0.99}
+  pillow: {role: throw-pillow, base_color: "#f5d5bc", roughness: 0.99}
+  pillow_accent: {role: throw-pillow, base_color: "#e0a0b5", roughness: 0.99}
+parts:
+  root: {role: sofa-root, parent: null, articulation: static}
+  base: {role: sofa-structural-base, parent: root, geometry: {kind: cuboid, size: [2.28, 0.34, 0.91]}, material: frame, transform: {translate: [0.0, 0.34, 0.0]}}
+  seat_left: {role: left-seat-cushion, parent: root, geometry: {kind: cuboid, size: [0.94, 0.19, 0.70]}, material: seat, transform: {translate: [-0.48, 0.60, -0.07]}}
+  seat_right: {role: right-seat-cushion, parent: root, geometry: {kind: cuboid, size: [0.94, 0.19, 0.70]}, material: seat, transform: {translate: [0.48, 0.60, -0.07]}}
+  back: {role: sofa-back-structural-support, parent: root, geometry: {kind: cuboid, size: [2.28, 0.79, 0.24]}, material: back, transform: {translate: [0.0, 0.78, 0.385]}}
+  back_cushion_left: {role: sofa-back-cushion, parent: root, geometry: {kind: cuboid, size: [0.89, 0.50, 0.18]}, material: upholstery, transform: {translate: [-0.48, 0.84, 0.22]}}
+  back_cushion_right: {role: sofa-back-cushion, parent: root, geometry: {kind: cuboid, size: [0.89, 0.50, 0.18]}, material: upholstery, transform: {translate: [0.48, 0.84, 0.22]}}
+  arm_left: {role: sofa-arm-support, parent: root, geometry: {kind: cuboid, size: [0.23, 0.56, 0.93]}, material: back, transform: {translate: [-1.04, 0.59, 0.0]}}
+  arm_right: {role: sofa-arm-support, parent: root, geometry: {kind: cuboid, size: [0.23, 0.56, 0.93]}, material: back, transform: {translate: [1.04, 0.59, 0.0]}}
+  leg_front_left: {role: sofa-foot, parent: root, geometry: {kind: cuboid, size: [0.15, 0.17, 0.14]}, material: frame, transform: {translate: [-0.94, 0.085, -0.33]}}
+  leg_front_right: {role: sofa-foot, parent: root, geometry: {kind: cuboid, size: [0.15, 0.17, 0.14]}, material: frame, transform: {translate: [0.94, 0.085, -0.33]}}
+  leg_rear_left: {role: sofa-foot, parent: root, geometry: {kind: cuboid, size: [0.15, 0.17, 0.14]}, material: frame, transform: {translate: [-0.94, 0.085, 0.33]}}
+  leg_rear_right: {role: sofa-foot, parent: root, geometry: {kind: cuboid, size: [0.15, 0.17, 0.14]}, material: frame, transform: {translate: [0.94, 0.085, 0.33]}}
+  throw_pillow_left: {role: removable-throw-pillow, parent: root, geometry: {kind: cuboid, size: [0.30, 0.32, 0.13]}, material: pillow, transform: {translate: [-0.73, 0.82, 0.065], rotate_deg: [0, -15, -14]}}
+  throw_pillow_right: {role: removable-throw-pillow, parent: root, geometry: {kind: cuboid, size: [0.30, 0.32, 0.13]}, material: pillow_accent, transform: {translate: [0.72, 0.82, 0.07], rotate_deg: [0, 12, 12]}}
+extensions:
+  scenarium: {object_family: sofa, style_ref: "block-chibi-room", visual_status: review-pending, use_forward: [0, 0, -1]}

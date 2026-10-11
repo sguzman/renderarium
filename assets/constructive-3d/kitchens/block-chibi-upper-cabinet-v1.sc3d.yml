@@ -1,0 +1,62 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-upper-cabinet-v1
+  name: Block Chibi Upper Cupboard v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, kitchen, upper-cabinet]
+materials:
+  body: {role: upper-cabinet-body, base_color: "#829d8b", roughness: 0.98}
+  doors: {role: cupboard-door, base_color: "#b8c9af", roughness: 0.98}
+  edge: {role: wood-trim, base_color: "#688474", roughness: 0.98}
+  handles: {role: cupboard-handle, base_color: "#d6ad75", roughness: 0.98}
+parts:
+  root: {role: upper-cabinet-root, parent: null, articulation: static}
+  body:
+    role: cupboard-carcass
+    parent: root
+    geometry: {kind: cuboid, size: [1.1, 0.61, 0.34]}
+    material: body
+    transform: {translate: [0, 0.305, 0]}
+    articulation: static
+  door_left:
+    role: left-cupboard-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.47, 0.5, 0.04]}
+    material: doors
+    transform: {translate: [-0.265, 0.31, -0.19]}
+    articulation: static
+  door_right:
+    role: right-cupboard-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.47, 0.5, 0.04]}
+    material: doors
+    transform: {translate: [0.265, 0.31, -0.19]}
+    articulation: static
+  handle_left:
+    role: door-knob
+    parent: root
+    geometry: {kind: cuboid, size: [0.069, 0.07, 0.055]}
+    material: handles
+    transform: {translate: [-0.085, 0.28, -0.24]}
+    articulation: static
+  handle_right:
+    role: door-knob
+    parent: root
+    geometry: {kind: cuboid, size: [0.069, 0.07, 0.055]}
+    material: handles
+    transform: {translate: [0.085, 0.28, -0.24]}
+    articulation: static
+  lower_lip:
+    role: cupboard-lower-trim
+    parent: root
+    geometry: {kind: cuboid, size: [1.12, 0.05, 0.35]}
+    material: edge
+    transform: {translate: [0, 0.025, 0]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: first-review-pending}

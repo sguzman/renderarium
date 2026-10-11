@@ -1,0 +1,12 @@
+node_modules/
+dist/
+out/
+output/
+*.mp4
+*.webm
+*.mov
+.DS_Store
+
+# HyperFrames local preview state
+.hyperframes/
+.thumbnails/

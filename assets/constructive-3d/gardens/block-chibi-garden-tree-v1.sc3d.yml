@@ -1,0 +1,32 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-garden-tree-v1
+  name: Block Chibi Garden Tree v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garden, outdoor, garden-tree]
+materials:
+  trunk: {role: tree-trunk, base_color: "#906b51", roughness: 0.98}
+  bark: {role: bark-accent, base_color: "#b58966", roughness: 0.98}
+  leaf_a: {role: sunlit-leaves, base_color: "#9bc18c", roughness: 0.98}
+  leaf_b: {role: shade-leaves, base_color: "#729f79", roughness: 0.98}
+  leaf_c: {role: fresh-leaves, base_color: "#bdd3a1", roughness: 0.98}
+  fruit: {role: pink-fruit, base_color: "#e8aab2", roughness: 0.98}
+parts:
+  root: {role: garden-tree-root, parent: null, articulation: static}
+  trunk: {role: trunk-and-root-support, parent: root, geometry: {kind: tapered_box, bottom: [0.43, 0.42], top: [0.31, 0.3], height: 1.8}, material: trunk, transform: {translate: [0, 0.9, 0]}}
+  root_base: {role: trunk-ground-foot, parent: root, geometry: {kind: cuboid, size: [0.58, 0.18, 0.55]}, material: bark, transform: {translate: [0, 0.09, 0]}}
+  crown_base: {role: lowest-canopy, parent: root, geometry: {kind: tapered_box, bottom: [1.85, 1.55], top: [1.98, 1.75], height: 0.64}, material: leaf_b, transform: {translate: [0, 1.81, 0]}}
+  crown_mid: {role: round-tier-canopy, parent: root, geometry: {kind: tapered_box, bottom: [2.07, 1.88], top: [1.76, 1.65], height: 0.67}, material: leaf_a, transform: {translate: [0, 2.31, 0.08]}}
+  crown_top: {role: upper-canopy, parent: root, geometry: {kind: tapered_box, bottom: [1.44, 1.4], top: [1.02, 1.04], height: 0.6}, material: leaf_c, transform: {translate: [0, 2.81, 0.04]}}
+  canopy_tuft_left: {role: leaf-tuft, parent: root, geometry: {kind: cuboid, size: [0.46, 0.44, 0.59]}, material: leaf_a, transform: {translate: [-0.89, 2.21, -0.18]}}
+  canopy_tuft_right: {role: leaf-tuft, parent: root, geometry: {kind: cuboid, size: [0.47, 0.45, 0.58]}, material: leaf_b, transform: {translate: [0.91, 2.13, 0.14]}}
+  fruit1: {role: decorative-fruit, parent: root, geometry: {kind: cuboid, size: [0.16, 0.16, 0.16]}, material: fruit, transform: {translate: [-0.65, 2, -0.77]}}
+  fruit2: {role: decorative-fruit, parent: root, geometry: {kind: cuboid, size: [0.15, 0.16, 0.15]}, material: fruit, transform: {translate: [0.57, 2.44, -0.74]}}
+  fruit3: {role: decorative-fruit, parent: root, geometry: {kind: cuboid, size: [0.15, 0.16, 0.15]}, material: fruit, transform: {translate: [0.12, 2.83, -0.52]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, semantic_grammar: garden-tree, first_review: pending, effects: deferred}

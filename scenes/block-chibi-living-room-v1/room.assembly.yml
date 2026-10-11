@@ -1,0 +1,67 @@
+format: scenarium-sc3d-scene-assembly
+version: "0.1"
+id: block-chibi-living-room-v1
+name: Block Chibi Living Room v1
+description: >-
+  Open-front cutaway domestic living room in the accepted block-chibi style.
+  Main sofa faces a low shared coffee table; a side chair, floor lamp,
+  left-side storage, genuine window opening, and perimeter plant
+  complete the conversation cluster.
+semantic_authority:
+  repository: sguzman/taria
+  specification: taria/scenarium/specifications/block-chibi-living-room-v1.yml
+  queue: taria/scenarium/queues/block-chibi-living-room-v1.yml
+style: block-chibi-room
+space:
+  handedness: right
+  up: y
+  forward: -z
+  room_size: [5.80, 2.80, 4.70]
+  room_origin: center-of-floor
+  floor_support_y: 0.118
+  front_open: true
+  right_open: true
+zones:
+  - {id: sofa-seating, x_range: [-2.10, 0.40], z_range: [0.96, 2.02]}
+  - {id: coffee, x_range: [-1.32, 0.24], z_range: [-0.40, 0.64]}
+  - {id: accent-seating, x_range: [1.05, 2.15], z_range: [-0.60, 0.75]}
+  - {id: storage, x_range: [-2.65, -1.90], z_range: [-1.90, -0.25]}
+  - {id: circulation, x_range: [-1.60, 1.40], z_range: [-2.18, -0.96]}
+components:
+  - id: shell
+    asset: scenes/block-chibi-living-room-v1/components/living-room-shell.sc3d.yml
+    transform: {translate: [0, 0, 0]}
+  - id: sofa
+    asset: assets/constructive-3d/sofas/block-chibi-two-seat-sofa-v1.sc3d.yml
+    transform: {translate: [-0.84, 0.118, 1.47]}
+  - id: coffee-table
+    asset: assets/constructive-3d/tables/block-chibi-coffee-table-v1.sc3d.yml
+    transform: {translate: [-0.55, 0.118, 0.10]}
+  - id: chair
+    asset: assets/constructive-3d/chairs/block-chibi-wide-cute-chair-v1.sc3d.yml
+    transform: {translate: [1.57, 0.118, 0.07], rotate_deg: [0, 120, 0]}
+  - id: rug
+    asset: assets/constructive-3d/rugs/block-chibi-wide-area-rug-v1.sc3d.yml
+    transform: {translate: [-0.35, 0.118, 0.05], scale: [1.52, 1, 1.30]}
+  - id: floor-lamp
+    asset: assets/constructive-3d/lamps/block-chibi-tall-floor-lamp-v1.2.sc3d.yml
+    transform: {translate: [2.13, 0.118, 1.30]}
+  - id: bookshelf
+    asset: assets/constructive-3d/bookshelves/block-chibi-low-wide-bookshelf-v1.1.sc3d.yml
+    transform: {translate: [-2.34, 0.118, -1.09], rotate_deg: [0, -90, 0]}
+  - id: plant
+    asset: assets/constructive-3d/plants/block-chibi-medium-snake-plant-v1.sc3d.yml
+    transform: {translate: [-2.32, 0.118, 0.57]}
+  - id: window
+    asset: assets/constructive-3d/windows/block-chibi-square-four-pane-window-v1.sc3d.yml
+    transform: {translate: [1.35, 1.72, 2.12]}
+generated_output:
+  path: scenes/block-chibi-living-room-v1/generated/block-chibi-living-room-v1.sc3d.yml
+review:
+  status: first-chat-interactive-showcase-pending
+  required_views: [front-right-three-quarter, front-left-three-quarter, elevated-room-composition]
+  first_deliverable: actual-source-derived-in-chat-interactive-3d
+  human_approval: pending
+  canonical_threejs_execution: pending
+  no_characters: true
+  no_audio: true

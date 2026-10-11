@@ -1,0 +1,81 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wood:
+    role: furniture-primary
+    base_color: "#7b5545"
+    roughness: 0.95
+  wood_dark:
+    role: furniture-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+  cream:
+    role: furniture-accent
+    base_color: "#f4e8d2"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-wide-writing-desk-v1
+  name: Block Chibi Wide Writing Desk v1
+  kind: prop
+  root: root
+  tags: [desk, block-chibi-room, wide-writing-desk, grammar-specimen]
+
+parts:
+  root: {role: desk-root, parent: null, articulation: static}
+
+  top:
+    role: desk-work-surface
+    parent: root
+    geometry: {kind: cuboid, size: [1.65, 0.16, 0.72]}
+    material: wood
+    transform: {translate: [0.0, 0.78, 0.0]}
+
+  side_panel_left:
+    role: desk-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.18, 0.72, 0.62]}
+    material: wood_dark
+    transform: {translate: [-0.69, 0.36, 0.02]}
+
+  side_panel_right:
+    role: desk-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.18, 0.72, 0.62]}
+    material: wood_dark
+    transform: {translate: [0.69, 0.36, 0.02]}
+
+  center_drawer:
+    role: desk-drawer
+    parent: root
+    geometry: {kind: cuboid, size: [0.58, 0.18, 0.18]}
+    material: wood_dark
+    transform: {translate: [0.0, 0.64, -0.25]}
+
+  drawer_face:
+    role: desk-drawer-accent
+    parent: root
+    geometry: {kind: cuboid, size: [0.48, 0.11, 0.025]}
+    material: cream
+    transform: {translate: [0.0, 0.64, -0.352]}
+
+extensions:
+  taria:
+    object_grammar: desk@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::desk@0.1
+    specimen_intent: wide-writing-desk
+    use_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

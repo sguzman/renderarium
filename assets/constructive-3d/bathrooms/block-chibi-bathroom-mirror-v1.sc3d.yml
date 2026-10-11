@@ -1,0 +1,55 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-bathroom-mirror-v1
+  name: Block Chibi Framed Bathroom Mirror v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, bathroom, bathroom-mirror]
+materials:
+  wood: {role: mirror-frame, base_color: "#ba8f76", roughness: 0.98}
+  glass: {role: mirror-surface, base_color: "#aac8d3", roughness: 0.98}
+  shine: {role: mirror-reflection, base_color: "#d7e5de", roughness: 0.98}
+  trim: {role: mirror-inner-border, base_color: "#f8efe3", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  backing:
+    role: wall-backed-mirror
+    parent: root
+    geometry: {kind: cuboid, size: [1.1, 1.17, 0.075]}
+    material: wood
+    transform: {translate: [0, 0, 0]}
+    articulation: static
+  inner_border:
+    role: pale-mirror-border
+    parent: root
+    geometry: {kind: cuboid, size: [0.96, 1.04, 0.021]}
+    material: trim
+    transform: {translate: [0, 0, -0.051]}
+    articulation: static
+  mirror_glass:
+    role: flat-reflective-blue-panel
+    parent: root
+    geometry: {kind: cuboid, size: [0.84, 0.91, 0.014]}
+    material: glass
+    transform: {translate: [0, 0, -0.07]}
+    articulation: static
+  highlight:
+    role: stylized-reflected-light
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.68, 0.01]}
+    material: shine
+    transform: {translate: [-0.24, 0.075, -0.08]}
+    articulation: static
+  bottom_shelf:
+    role: small-mirror-shelf
+    parent: root
+    geometry: {kind: cuboid, size: [0.88, 0.065, 0.22]}
+    material: wood
+    transform: {translate: [0, -0.63, -0.11]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: initial-scene-review-pending, renderer_experiments: deferred}

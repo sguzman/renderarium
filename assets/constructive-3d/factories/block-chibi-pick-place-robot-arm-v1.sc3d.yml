@@ -1,0 +1,42 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-pick-place-robot-arm-v1
+  name: Block Chibi pick place robot arm v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, pick-place-robot-arm]
+materials:
+  base: {role: base, base_color: "#638b8c", roughness: 0.98}
+  torso: {role: torso, base_color: "#9bc5b2", roughness: 0.98}
+  upper: {role: upper, base_color: "#eab0ac", roughness: 0.98}
+  lower: {role: lower, base_color: "#f2c6ac", roughness: 0.98}
+  joint: {role: joint, base_color: "#b48194", roughness: 0.98}
+  claw: {role: claw, base_color: "#668b8b", roughness: 0.98}
+  tip: {role: tip, base_color: "#f1e4c8", roughness: 0.98}
+  display: {role: display, base_color: "#c4ded0", roughness: 0.98}
+parts:
+  root: {role: pick-place-robot-arm-root, parent: null, articulation: static}
+  ground_base: {role: ground_base, parent: root, geometry: {kind: cuboid, size: [0.82, 0.18, 0.79]}, material: base, transform: {translate: [0, 0.09, 0]}}
+  pedestal: {role: pedestal, parent: root, geometry: {kind: tapered_box, bottom: [0.56, 0.57], top: [0.45, 0.47], height: 1.05}, material: torso, transform: {translate: [0, 0.68, 0]}}
+  shoulder_housing: {role: shoulder_housing, parent: root, geometry: {kind: cuboid, size: [0.7, 0.46, 0.56]}, material: upper, transform: {translate: [0, 1.43, -0.09]}}
+  shoulder_pivot: {role: shoulder_pivot, parent: root, geometry: {kind: cuboid, size: [0.26, 0.3, 0.63]}, material: joint, transform: {translate: [0, 1.42, -0.12]}}
+  upper_link: {role: upper_link, parent: root, geometry: {kind: cuboid, size: [0.28, 1.02, 0.28]}, material: upper, transform: {translate: [0, 1.8, -0.39], rotate_deg: [-38, 0, 0]}}
+  elbow_joint: {role: elbow_joint, parent: root, geometry: {kind: cuboid, size: [0.43, 0.35, 0.38]}, material: joint, transform: {translate: [0, 2.11, -0.73]}}
+  forearm: {role: forearm, parent: root, geometry: {kind: cuboid, size: [0.26, 0.87, 0.26]}, material: lower, transform: {translate: [0, 1.82, -1.04], rotate_deg: [35, 0, 0]}}
+  wrist_joint: {role: wrist_joint, parent: root, geometry: {kind: cuboid, size: [0.34, 0.27, 0.33]}, material: joint, transform: {translate: [0, 1.5, -1.31]}}
+  gripper_mount: {role: gripper_mount, parent: root, geometry: {kind: cuboid, size: [0.35, 0.18, 0.29]}, material: claw, transform: {translate: [0, 1.3, -1.31]}}
+  gripper_left: {role: gripper_left, parent: root, geometry: {kind: cuboid, size: [0.1, 0.31, 0.16]}, material: claw, transform: {translate: [-0.17, 1.15, -1.31]}}
+  gripper_right: {role: gripper_right, parent: root, geometry: {kind: cuboid, size: [0.1, 0.31, 0.16]}, material: claw, transform: {translate: [0.17, 1.15, -1.31]}}
+  gripper_tips: {role: gripper_tips, parent: root, geometry: {kind: cuboid, size: [0.29, 0.07, 0.12]}, material: tip, transform: {translate: [0, 0.995, -1.31]}}
+  front_status_light: {role: front_status_light, parent: root, geometry: {kind: cuboid, size: [0.25, 0.14, 0.025]}, material: display, transform: {translate: [0, 1.44, -0.402]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred

@@ -1,0 +1,31 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-garden-bench-v1
+  name: Block Chibi Patio Bench v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garden, outdoor, garden-bench]
+materials:
+  seat: {role: bench-wood-seat, base_color: "#c58e78", roughness: 0.98}
+  frame: {role: bench-frame, base_color: "#866854", roughness: 0.98}
+  cushion: {role: pastel-cushion, base_color: "#e9b5bc", roughness: 0.98}
+  back: {role: bench-back, base_color: "#9bb8a6", roughness: 0.98}
+  edge: {role: soft-trim, base_color: "#f2d7c4", roughness: 0.98}
+parts:
+  root: {role: garden-bench-root, parent: null, articulation: static}
+  seat_base: {role: garden-bench-seat, parent: root, geometry: {kind: cuboid, size: [1.47, 0.16, 0.52]}, material: seat, transform: {translate: [0, 0.52, 0]}}
+  cushion: {role: soft-seat-pad, parent: root, geometry: {kind: cuboid, size: [1.35, 0.1, 0.44]}, material: cushion, transform: {translate: [0, 0.653, -0.02]}}
+  back_support: {role: full-backrest, parent: root, geometry: {kind: cuboid, size: [1.48, 0.68, 0.16]}, material: back, transform: {translate: [0, 0.93, 0.27]}}
+  back_trim: {role: top-back-edge, parent: root, geometry: {kind: cuboid, size: [1.5, 0.075, 0.2]}, material: edge, transform: {translate: [0, 1.29, 0.27]}}
+  arm_left: {role: left-arm-support, parent: root, geometry: {kind: cuboid, size: [0.17, 0.22, 0.6]}, material: frame, transform: {translate: [-0.73, 0.69, -0.01]}}
+  arm_right: {role: right-arm-support, parent: root, geometry: {kind: cuboid, size: [0.17, 0.22, 0.6]}, material: frame, transform: {translate: [0.73, 0.69, -0.01]}}
+  leg_left_front: {role: load-bearing-leg, parent: root, geometry: {kind: cuboid, size: [0.16, 0.52, 0.16]}, material: frame, transform: {translate: [-0.6, 0.26, -0.18]}}
+  leg_right_front: {role: load-bearing-leg, parent: root, geometry: {kind: cuboid, size: [0.16, 0.52, 0.16]}, material: frame, transform: {translate: [0.6, 0.26, -0.18]}}
+  leg_left_back: {role: load-bearing-leg, parent: root, geometry: {kind: cuboid, size: [0.16, 0.52, 0.16]}, material: frame, transform: {translate: [-0.6, 0.26, 0.18]}}
+  leg_right_back: {role: load-bearing-leg, parent: root, geometry: {kind: cuboid, size: [0.16, 0.52, 0.16]}, material: frame, transform: {translate: [0.6, 0.26, 0.18]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, semantic_grammar: garden-bench, first_review: pending, effects: deferred}

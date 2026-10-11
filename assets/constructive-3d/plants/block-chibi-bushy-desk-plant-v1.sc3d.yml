@@ -1,0 +1,122 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pot:
+    role: plant-container
+    base_color: "#a86f58"
+    roughness: 0.96
+  pot_dark:
+    role: plant-container-shadow
+    base_color: "#7f5143"
+    roughness: 0.97
+  green:
+    role: foliage-primary
+    base_color: "#7ea27a"
+    roughness: 0.96
+  green_dark:
+    role: foliage-secondary
+    base_color: "#5f7f5d"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-bushy-desk-plant-v1
+  name: Block Chibi Bushy Desk Plant v1
+  kind: prop
+  root: root
+  tags: [plant, block-chibi-room, bushy-desk-plant, grammar-specimen]
+
+parts:
+  root: {role: plant-root, parent: null, articulation: static}
+
+  pot:
+    role: plant-anchor
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.54, 0.54]
+      top: [0.44, 0.44]
+      height: 0.42
+    material: pot
+    transform: {translate: [0.0, 0.21, 0.0]}
+
+  stem:
+    role: plant-stem
+    parent: root
+    geometry: {kind: cuboid, size: [0.10, 0.44, 0.10]}
+    material: green_dark
+    transform: {translate: [0.0, 0.58, 0.0]}
+
+  leaf_left_low:
+    role: plant-foliage
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.11, 0.17], top: [0.30, 0.24], height: 0.38}
+    material: green
+    transform:
+      translate: [-0.19, 0.68, 0.03]
+      rotate_deg: [-8.0, 0.0, -46.0]
+
+  leaf_right_low:
+    role: plant-foliage
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.11, 0.17], top: [0.30, 0.24], height: 0.38}
+    material: green
+    transform:
+      translate: [0.19, 0.69, -0.03]
+      rotate_deg: [7.0, 0.0, 45.0]
+
+  leaf_left_high:
+    role: plant-foliage
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.11, 0.17], top: [0.28, 0.23], height: 0.40}
+    material: green
+    transform:
+      translate: [-0.15, 0.86, -0.055]
+      rotate_deg: [10.0, 0.0, -28.0]
+
+  leaf_right_high:
+    role: plant-foliage
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.11, 0.17], top: [0.28, 0.23], height: 0.40}
+    material: green
+    transform:
+      translate: [0.15, 0.87, 0.055]
+      rotate_deg: [-10.0, 0.0, 28.0]
+
+  leaf_front:
+    role: plant-foliage
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.12, 0.16], top: [0.29, 0.22], height: 0.36}
+    material: green
+    transform:
+      translate: [0.0, 0.79, -0.12]
+      rotate_deg: [18.0, 0.0, 0.0]
+
+  leaf_top:
+    role: plant-foliage
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.12, 0.16], top: [0.27, 0.22], height: 0.42}
+    material: green
+    transform:
+      translate: [0.0, 0.98, 0.02]
+      rotate_deg: [-4.0, 0.0, 2.0]
+
+extensions:
+  taria:
+    object_grammar: plant@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::plant@0.1
+    specimen_intent: bushy-desk-plant
+    display_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

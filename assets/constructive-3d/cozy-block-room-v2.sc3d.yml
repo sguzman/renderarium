@@ -1,0 +1,642 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+asset:
+  id: cozy-block-room-v2
+  name: Cozy Block Room v2
+  kind: environment
+  root: root
+  description: >-
+    Second SC3D environment specimen: a strict assembly-cleanup revision of
+    the accepted v1 composition, built against BlockChibiRoomGrammar v0.2.
+  tags:
+    - block-chibi
+    - toy-diorama
+    - bedroom
+    - study
+    - assembly-cleanup-v2
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  floor_wood:
+    role: floor
+    base_color: "#a97861"
+    roughness: 0.96
+
+  wall:
+    role: wall
+    base_color: "#ead9cc"
+    roughness: 0.98
+
+  wall_trim:
+    role: trim
+    base_color: "#f7eee5"
+    roughness: 0.98
+
+  wood:
+    role: furniture-primary
+    base_color: "#7b5545"
+    roughness: 0.95
+
+  wood_dark:
+    role: furniture-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+
+  textile:
+    role: textile-primary
+    base_color: "#d7869f"
+    roughness: 0.98
+
+  textile_light:
+    role: textile-secondary
+    base_color: "#f1cdd8"
+    roughness: 0.98
+
+  cream:
+    role: textile-neutral
+    base_color: "#f5e6d5"
+    roughness: 0.98
+
+  green:
+    role: foliage
+    base_color: "#7ea27a"
+    roughness: 0.96
+
+  green_dark:
+    role: foliage-shadow
+    base_color: "#5f7f5d"
+    roughness: 0.97
+
+  glass:
+    role: window-glass
+    base_color: "#c9e4ec"
+    roughness: 0.45
+    opacity: 0.48
+    double_sided: true
+
+  rug:
+    role: rug
+    base_color: "#c97687"
+    roughness: 0.99
+
+  book_blue:
+    role: book
+    base_color: "#708aa0"
+    roughness: 0.96
+
+  book_gold:
+    role: book
+    base_color: "#c39a57"
+    roughness: 0.96
+
+parts:
+  root:
+    role: environment-root
+    parent: null
+    articulation: static
+
+  floor:
+    role: shell-floor
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [5.2, 0.10, 4.2]
+    material: floor_wood
+    transform:
+      translate: [0.0, -0.97, 0.40]
+    articulation: static
+
+  back_wall:
+    role: shell-back-wall
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [5.2, 3.2, 0.12]
+    material: wall
+    transform:
+      translate: [0.0, 0.68, 2.44]
+    articulation: static
+
+  left_wall:
+    role: shell-left-wall
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.12, 3.2, 4.2]
+    material: wall
+    transform:
+      translate: [-2.54, 0.68, 0.40]
+    articulation: static
+
+  back_baseboard:
+    role: shell-trim
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [5.0, 0.12, 0.08]
+    material: wall_trim
+    transform:
+      translate: [0.0, -0.85, 2.34]
+    articulation: static
+
+  left_baseboard:
+    role: shell-trim
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.08, 0.12, 4.0]
+    material: wall_trim
+    transform:
+      translate: [-2.44, -0.85, 0.40]
+    articulation: static
+
+  rug:
+    role: character-stage-rug
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.75, 0.035, 1.30]
+    material: rug
+    transform:
+      translate: [0.05, -0.895, -0.05]
+    articulation: static
+
+  bed_base:
+    role: bed-base
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.50, 0.28, 2.10]
+    material: wood
+    transform:
+      translate: [1.71, -0.77, 1.15]
+    articulation: static
+
+  mattress:
+    role: bed-mattress
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.40, 0.20, 2.00]
+    material: cream
+    transform:
+      translate: [1.71, -0.52, 1.15]
+    articulation: static
+
+  blanket:
+    role: bed-blanket
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.41, 0.08, 0.95]
+    material: textile
+    transform:
+      translate: [1.71, -0.375, 0.72]
+    articulation: static
+
+  pillow:
+    role: bed-pillow
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.80, 0.18, 0.45]
+    material: textile_light
+    transform:
+      translate: [1.71, -0.36, 1.75]
+    articulation: static
+
+  headboard:
+    role: bed-headboard
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.53, 1.00, 0.14]
+    material: wood_dark
+    transform:
+      translate: [1.71, -0.30, 2.23]
+    articulation: static
+
+  desk_top:
+    role: desk-top
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.25, 0.12, 0.58]
+    material: wood
+    transform:
+      translate: [-1.55, -0.05, 1.55]
+    articulation: static
+
+  desk_leg_front_left:
+    role: desk-support
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.14, 0.86, 0.14]
+    material: wood_dark
+    transform:
+      translate: [-2.05, -0.48, 1.34]
+    articulation: static
+
+  desk_leg_front_right:
+    role: desk-support
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.14, 0.86, 0.14]
+    material: wood_dark
+    transform:
+      translate: [-1.05, -0.48, 1.34]
+    articulation: static
+
+  desk_leg_back_left:
+    role: desk-support
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.14, 0.86, 0.14]
+    material: wood_dark
+    transform:
+      translate: [-2.05, -0.48, 1.76]
+    articulation: static
+
+  desk_leg_back_right:
+    role: desk-support
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.14, 0.86, 0.14]
+    material: wood_dark
+    transform:
+      translate: [-1.05, -0.48, 1.76]
+    articulation: static
+
+  chair_seat:
+    role: chair-seat
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.52, 0.12, 0.48]
+    material: wood
+    transform:
+      translate: [-1.55, -0.45, 0.82]
+    articulation: static
+
+  chair_back:
+    role: chair-back
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.52, 0.68, 0.12]
+    material: wood_dark
+    transform:
+      translate: [-1.55, -0.15, 1.03]
+    articulation: static
+
+  chair_leg_left:
+    role: chair-support
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.12, 0.42, 0.12]
+    material: wood_dark
+    transform:
+      translate: [-1.75, -0.70, 0.82]
+    articulation: static
+
+  chair_leg_right:
+    role: chair-support
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.12, 0.42, 0.12]
+    material: wood_dark
+    transform:
+      translate: [-1.35, -0.70, 0.82]
+    articulation: static
+
+  desk_book_1:
+    role: desk-book
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.34, 0.08, 0.24]
+    material: book_blue
+    transform:
+      translate: [-1.78, 0.055, 1.53]
+    articulation: static
+
+  desk_book_2:
+    role: desk-book
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.31, 0.07, 0.22]
+    material: book_gold
+    transform:
+      translate: [-1.76, 0.13, 1.53]
+      rotate_deg: [0.0, 6.0, 0.0]
+    articulation: static
+
+  lamp_base:
+    role: desk-lamp-base
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.24, 0.08, 0.24]
+    material: wood_dark
+    transform:
+      translate: [-1.24, 0.05, 1.53]
+    articulation: static
+
+  lamp_stem:
+    role: desk-lamp-stem
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.08, 0.34, 0.08]
+    material: wood_dark
+    transform:
+      translate: [-1.24, 0.24, 1.53]
+    articulation: static
+
+  lamp_shade:
+    role: desk-lamp-shade
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.34, 0.30]
+      top: [0.22, 0.20]
+      height: 0.25
+    material: textile_light
+    transform:
+      translate: [-1.24, 0.48, 1.53]
+    articulation: static
+
+  shelf_left:
+    role: shelf-support
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.12, 1.75, 0.42]
+    material: wood_dark
+    transform:
+      translate: [-2.33, -0.045, 2.18]
+    articulation: static
+
+  shelf_right:
+    role: shelf-support
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.12, 1.75, 0.42]
+    material: wood_dark
+    transform:
+      translate: [-1.68, -0.045, 2.18]
+    articulation: static
+
+  shelf_bottom:
+    role: shelf-board
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.77, 0.10, 0.42]
+    material: wood
+    transform:
+      translate: [-2.005, -0.86, 2.18]
+    articulation: static
+
+  shelf_mid:
+    role: shelf-board
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.77, 0.10, 0.42]
+    material: wood
+    transform:
+      translate: [-2.005, -0.15, 2.18]
+    articulation: static
+
+  shelf_top:
+    role: shelf-board
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.77, 0.10, 0.42]
+    material: wood
+    transform:
+      translate: [-2.005, 0.80, 2.18]
+    articulation: static
+
+  shelf_book_1:
+    role: shelf-book
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.13, 0.38, 0.26]
+    material: book_blue
+    transform:
+      translate: [-2.20, 0.08, 2.18]
+    articulation: static
+
+  shelf_book_2:
+    role: shelf-book
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.13, 0.32, 0.26]
+    material: textile
+    transform:
+      translate: [-2.04, 0.05, 2.18]
+    articulation: static
+
+  shelf_book_3:
+    role: shelf-book
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.13, 0.42, 0.26]
+    material: book_gold
+    transform:
+      translate: [-1.88, 0.10, 2.18]
+    articulation: static
+
+  window_glass:
+    role: window-glass
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.25, 1.12, 0.035]
+    material: glass
+    transform:
+      translate: [0.15, 0.80, 2.36]
+    articulation: static
+
+  window_frame_top:
+    role: window-frame
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.45, 0.11, 0.08]
+    material: wall_trim
+    transform:
+      translate: [0.15, 1.39, 2.32]
+    articulation: static
+
+  window_frame_bottom:
+    role: window-frame
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.45, 0.11, 0.08]
+    material: wall_trim
+    transform:
+      translate: [0.15, 0.21, 2.32]
+    articulation: static
+
+  window_frame_left:
+    role: window-frame
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.11, 1.30, 0.08]
+    material: wall_trim
+    transform:
+      translate: [-0.52, 0.80, 2.32]
+    articulation: static
+
+  window_frame_right:
+    role: window-frame
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.11, 1.30, 0.08]
+    material: wall_trim
+    transform:
+      translate: [0.82, 0.80, 2.32]
+    articulation: static
+
+  window_frame_mid_v:
+    role: window-frame
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.08, 1.18, 0.07]
+    material: wall_trim
+    transform:
+      translate: [0.15, 0.80, 2.28]
+    articulation: static
+
+  window_frame_mid_h:
+    role: window-frame
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [1.34, 0.08, 0.07]
+    material: wall_trim
+    transform:
+      translate: [0.15, 0.80, 2.28]
+    articulation: static
+
+  plant_pot:
+    role: plant-pot
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.40, 0.40]
+      top: [0.34, 0.34]
+      height: 0.42
+    material: wood
+    transform:
+      translate: [2.15, -0.70, -1.00]
+    articulation: static
+
+  plant_stem:
+    role: plant-stem
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.08, 0.48, 0.08]
+    material: green_dark
+    transform:
+      translate: [2.15, -0.27, -1.00]
+    articulation: static
+
+  plant_leaf_left:
+    role: plant-foliage
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.12, 0.16]
+      top: [0.26, 0.22]
+      height: 0.34
+    material: green
+    transform:
+      translate: [2.01, -0.05, -1.00]
+      rotate_deg: [0.0, 0.0, -28.0]
+    articulation: static
+
+  plant_leaf_right:
+    role: plant-foliage
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.12, 0.16]
+      top: [0.26, 0.22]
+      height: 0.34
+    material: green
+    transform:
+      translate: [2.29, -0.05, -1.00]
+      rotate_deg: [0.0, 0.0, 28.0]
+    articulation: static
+
+  plant_leaf_top:
+    role: plant-foliage
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.13, 0.15]
+      top: [0.24, 0.21]
+      height: 0.38
+    material: green
+    transform:
+      translate: [2.15, 0.05, -1.00]
+    articulation: static
+
+extensions:
+  taria:
+    room_grammar: block-chibi-room-grammar@0.2
+    room_archetype: cozy-bedroom-study@0.2
+    experiment_phase: assembly-cleanup-v2
+    predecessor: cozy-block-room-v1
+    character_stage:
+      center: [0.05, -0.92, -0.05]
+      clear_radius: 0.82
+    zones:
+      sleep: right-rear
+      study: left-rear
+      storage: back-left-wall
+      display: back-wall
+      plant: right-front
+      character-stage: center-front
+    cleanup:
+      bed_enlarged_for_sleep_use: true
+      pillow_moved_to_head_side: true
+      plant_separated_from_bed: true
+      desk_supports: four-leg
+      shelf_wall_adjacent: true
+      shell_floor_penetration_reduced: true
+      chair_shelf_collision_removed: true
+    acceptance_gate: human-environment-assembly-review
+    evaluation_status: awaiting-review

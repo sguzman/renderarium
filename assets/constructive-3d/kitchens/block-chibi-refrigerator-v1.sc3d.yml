@@ -1,0 +1,78 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-refrigerator-v1
+  name: Block Chibi Refrigerator v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, kitchen, refrigerator]
+materials:
+  body: {role: cool-appliance, base_color: "#e6dfcf", roughness: 0.98}
+  door: {role: refrigerator-door, base_color: "#b5c8be", roughness: 0.98}
+  trim: {role: refrigerator-trim, base_color: "#7e9f96", roughness: 0.98}
+  metal: {role: hardware, base_color: "#d4c3a5", roughness: 0.98}
+  dark: {role: door-gap, base_color: "#627977", roughness: 0.98}
+  accent: {role: decorative-mark, base_color: "#e2a5a5", roughness: 0.98}
+parts:
+  root: {role: refrigerator-root, parent: null, articulation: static}
+  body:
+    role: refrigerator-cabinet
+    parent: root
+    geometry: {kind: cuboid, size: [0.88, 2.12, 0.72]}
+    material: body
+    transform: {translate: [0, 1.06, 0]}
+    articulation: static
+  upper_door:
+    role: freezer-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.835, 0.64, 0.04]}
+    material: door
+    transform: {translate: [0, 1.742, -0.38]}
+    articulation: static
+  lower_door:
+    role: refrigerator-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.835, 1.34, 0.04]}
+    material: door
+    transform: {translate: [0, 0.72, -0.38]}
+    articulation: static
+  middle_gap:
+    role: door-separation
+    parent: root
+    geometry: {kind: cuboid, size: [0.838, 0.028, 0.052]}
+    material: dark
+    transform: {translate: [0, 1.389, -0.4]}
+    articulation: static
+  upper_handle:
+    role: door-grip
+    parent: root
+    geometry: {kind: cuboid, size: [0.052, 0.28, 0.08]}
+    material: metal
+    transform: {translate: [0.32, 1.65, -0.45]}
+    articulation: static
+  lower_handle:
+    role: door-grip
+    parent: root
+    geometry: {kind: cuboid, size: [0.052, 0.43, 0.08]}
+    material: metal
+    transform: {translate: [0.32, 1.145, -0.45]}
+    articulation: static
+  top_badge:
+    role: brandless-decorative-badge
+    parent: root
+    geometry: {kind: cuboid, size: [0.25, 0.12, 0.018]}
+    material: accent
+    transform: {translate: [-0.2, 1.93, -0.412]}
+    articulation: static
+  base_plinth:
+    role: refrigerator-plinth
+    parent: root
+    geometry: {kind: cuboid, size: [0.78, 0.1, 0.63]}
+    material: trim
+    transform: {translate: [0, 0.055, 0]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: first-review-pending}

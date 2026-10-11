@@ -1,0 +1,26 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-coffee-table-v1
+  name: Block Chibi Coffee Table v1
+  kind: prop
+  root: root
+  tags: [coffee-table, living-room, block-chibi-room, furniture]
+materials:
+  wood: {role: table-top, base_color: "#95664f", roughness: 0.96}
+  edge: {role: table-side, base_color: "#6e493d", roughness: 0.97}
+  accent: {role: decorative-inlay, base_color: "#c89a73", roughness: 0.98}
+parts:
+  root: {role: coffee-table-root, parent: null, articulation: static}
+  top: {role: low-table-top, parent: root, geometry: {kind: cuboid, size: [1.30, 0.13, 0.70]}, material: wood, transform: {translate: [0, 0.48, 0]}}
+  top_inlay: {role: centered-inlay, parent: root, geometry: {kind: cuboid, size: [0.98, 0.012, 0.43]}, material: accent, transform: {translate: [0, 0.552, 0]}}
+  leg_left_front: {role: table-leg, parent: root, geometry: {kind: cuboid, size: [0.14, 0.43, 0.14]}, material: edge, transform: {translate: [-0.48, 0.215, -0.23]}}
+  leg_right_front: {role: table-leg, parent: root, geometry: {kind: cuboid, size: [0.14, 0.43, 0.14]}, material: edge, transform: {translate: [0.48, 0.215, -0.23]}}
+  leg_left_back: {role: table-leg, parent: root, geometry: {kind: cuboid, size: [0.14, 0.43, 0.14]}, material: edge, transform: {translate: [-0.48, 0.215, 0.23]}}
+  leg_right_back: {role: table-leg, parent: root, geometry: {kind: cuboid, size: [0.14, 0.43, 0.14]}, material: edge, transform: {translate: [0.48, 0.215, 0.23]}}
+  lower_shelf: {role: low-table-storage, parent: root, geometry: {kind: cuboid, size: [1.01, 0.075, 0.52]}, material: edge, transform: {translate: [0, 0.18, 0]}}
+extensions:
+  scenarium: {object_family: coffee_table, style_ref: "block-chibi-room", visual_status: review-pending}

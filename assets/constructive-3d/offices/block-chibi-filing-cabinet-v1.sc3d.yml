@@ -1,0 +1,36 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-filing-cabinet-v1
+  name: Block Chibi Filing Cabinet v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, office, filing-cabinet]
+materials:
+  frame: {role: steel-cabinet, base_color: "#91a99f", roughness: 0.98}
+  front: {role: drawer-faces, base_color: "#c8d6bd", roughness: 0.98}
+  handles: {role: metal-drawer-pulls, base_color: "#b58d6c", roughness: 0.98}
+  label: {role: drawer-label, base_color: "#faf0d9", roughness: 0.98}
+  foot: {role: filing-cabinet-foot, base_color: "#70837b", roughness: 0.98}
+parts:
+  root: {role: office-prop-root, parent: null, articulation: static}
+  body: {role: three-drawer-cabinet, parent: root, geometry: {kind: cuboid, size: [0.75, 1.18, 0.57]}, material: frame, transform: {translate: [0, 0.59, 0]}}
+  drawer_1: {role: file-drawer-front, parent: root, geometry: {kind: cuboid, size: [0.64, 0.32, 0.04]}, material: front, transform: {translate: [0, 0.24, -0.305]}}
+  drawer_2: {role: file-drawer-front, parent: root, geometry: {kind: cuboid, size: [0.64, 0.32, 0.04]}, material: front, transform: {translate: [0, 0.59, -0.305]}}
+  drawer_3: {role: file-drawer-front, parent: root, geometry: {kind: cuboid, size: [0.64, 0.32, 0.04]}, material: front, transform: {translate: [0, 0.94, -0.305]}}
+  handle_1: {role: drawer-handle, parent: root, geometry: {kind: cuboid, size: [0.22, 0.045, 0.05]}, material: handles, transform: {translate: [0, 0.24, -0.345]}}
+  handle_2: {role: drawer-handle, parent: root, geometry: {kind: cuboid, size: [0.22, 0.045, 0.05]}, material: handles, transform: {translate: [0, 0.59, -0.345]}}
+  handle_3: {role: drawer-handle, parent: root, geometry: {kind: cuboid, size: [0.22, 0.045, 0.05]}, material: handles, transform: {translate: [0, 0.94, -0.345]}}
+  label_1: {role: drawer-label, parent: root, geometry: {kind: cuboid, size: [0.28, 0.07, 0.008]}, material: label, transform: {translate: [-0.15, 0.33, -0.331]}}
+  label_2: {role: drawer-label, parent: root, geometry: {kind: cuboid, size: [0.28, 0.07, 0.008]}, material: label, transform: {translate: [-0.15, 0.68, -0.331]}}
+  label_3: {role: drawer-label, parent: root, geometry: {kind: cuboid, size: [0.28, 0.07, 0.008]}, material: label, transform: {translate: [-0.15, 1.03, -0.331]}}
+  foot_l: {role: cabinet-foot, parent: root, geometry: {kind: cuboid, size: [0.12, 0.08, 0.12]}, material: foot, transform: {translate: [-0.26, 0.04, -0.2]}}
+  foot_r: {role: cabinet-foot, parent: root, geometry: {kind: cuboid, size: [0.12, 0.08, 0.12]}, material: foot, transform: {translate: [0.26, 0.04, -0.2]}}
+extensions:
+  scenarium:
+    style_ref: block-chibi-room
+    visual_status: initial-scene-review-pending
+    object_family: filing-cabinet

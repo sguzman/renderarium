@@ -1,0 +1,204 @@
+{
+  "format": "scenarium-source-bound-chat-preview-v1",
+  "scene": "block-chibi-garage-v1",
+  "source_assembly": "scenes/block-chibi-garage-v1/room.assembly.yml",
+  "source_assembly_blob": "8f786a100d91534671cd11c7ef1340ca7809a8f7",
+  "renderer_kind": "alternate-chat-webgl-not-canonical-Threejs",
+  "mesh_count": 112,
+  "groups": [
+    {
+      "index": 0,
+      "id": "shell",
+      "source": "scenes/block-chibi-garage-v1/components/garage-shell.sc3d.yml",
+      "source_blob": "253aea46ebd81630a2eb23d05cb981f9b9094c0e",
+      "translate": [
+        0,
+        0,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 1,
+      "id": "car",
+      "source": "assets/constructive-3d/garages/block-chibi-compact-car-v1.sc3d.yml",
+      "source_blob": "f6eb238ab1c8e68a8e2d25cbdf02ab84ba1e1cb1",
+      "translate": [
+        -1.47,
+        0.046,
+        -0.26
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 2,
+      "id": "workbench",
+      "source": "assets/constructive-3d/garages/block-chibi-garage-workbench-v1.sc3d.yml",
+      "source_blob": "5a5997a36fbee4bd3ddea2c87b86257d4d05830d",
+      "translate": [
+        1.12,
+        0.126,
+        2.14
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 3,
+      "id": "pegboard",
+      "source": "assets/constructive-3d/garages/block-chibi-tool-pegboard-v1.sc3d.yml",
+      "source_blob": "1329643fd55bcb16678e676c6af54ed65fa3f83a",
+      "translate": [
+        1.12,
+        2,
+        2.875
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 4,
+      "id": "tool-chest",
+      "source": "assets/constructive-3d/garages/block-chibi-rolling-tool-chest-v1.sc3d.yml",
+      "source_blob": "0879d2ecc1e284a89510fd06dba5b377d9fd22a4",
+      "translate": [
+        -1.1,
+        0.126,
+        2.6
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 5,
+      "id": "spare-tires",
+      "source": "assets/constructive-3d/garages/block-chibi-spare-tire-stack-v1.sc3d.yml",
+      "source_blob": "833eb59fb6d5c93b9c9efd81a6bdc93119e6eaf1",
+      "translate": [
+        -3.07,
+        0.041,
+        2.18
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 6,
+      "id": "storage-shelf",
+      "source": "assets/constructive-3d/garages/block-chibi-garage-storage-shelf-v1.sc3d.yml",
+      "source_blob": "794f4c83c68ae84c6bd635d268a12a4503857654",
+      "translate": [
+        2.96,
+        0.126,
+        2.13
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 7,
+      "id": "bicycle",
+      "source": "assets/constructive-3d/garages/block-chibi-utility-bicycle-v1.sc3d.yml",
+      "source_blob": "9227c16e09d57fd1dee5cf3aa0e42f432429a7db",
+      "translate": [
+        2.96,
+        0.126,
+        -1.66
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "part_encoding": "group|id|parent|b-or-t|dimensions|hex|local-pos|local-rotate",
+  "parts": "0|slab|-|b|7.6,0.2,6.2|797c7c|-|-\n0|concrete_surface|-|b|7.46,0.026,6.03|c4c4b9|0,0.113,0|-\n0|rear_wall|-|b|7.6,3.05,0.17|e6e2d6|0,1.525,3.01|-\n0|left_wall|-|b|0.17,3.05,6.2|c4d0c7|-3.72,1.525,0|-\n0|rear_baseboard|-|b|7.35,0.19,0.08|fff0db|0,0.205,2.879|-\n0|left_baseboard|-|b|0.08,0.19,5.95|fff0db|-3.575,0.205,0|-\n0|rear_accent_band|-|b|7.34,0.1,0.028|a3b7af|0,2.64,2.91|-\n0|garage_door_header|-|b|7.31,0.31,0.23|a2b9b4|0,2.86,-2.91|-\n0|entrance_post_left|-|b|0.3,2.76,0.3|a2b9b4|-3.48,1.38,-2.91|-\n0|entrance_post_right|-|b|0.3,2.76,0.3|a2b9b4|3.48,1.38,-2.91|-\n0|threshold|-|b|7.12,0.045,0.27|8c918d|0,0.147,-2.89|-\n1|chassis|-|b|1.56,0.49,2.46|b67f8a|0,0.5,0|-\n1|body|-|t|1.64,2.57,1.42,2.3,0.46|e4aeb9|0,0.83,0|-\n1|cabin|-|t|1.3,1.42,1.12,1.14,0.53|f4cad0|0,1.29,0.18|-\n1|windshield|-|b|1.14,0.36,0.04|9cbecb|0,1.3,-0.55|25,0,0\n1|rear_window|-|b|1.02,0.35,0.035|b8d3d4|0,1.29,0.88|-20,0,0\n1|side_window_left|-|b|0.028,0.34,0.94|9cbecb|-0.615,1.29,0.18|-\n1|side_window_right|-|b|0.028,0.34,0.94|9cbecb|0.615,1.29,0.18|-\n1|wheel_fl|-|b|0.25,0.52,0.46|48505a|-0.84,0.34,-0.81|-\n1|wheel_fr|-|b|0.25,0.52,0.46|48505a|0.84,0.34,-0.81|-\n1|wheel_rl|-|b|0.25,0.52,0.46|48505a|-0.84,0.34,0.83|-\n1|wheel_rr|-|b|0.25,0.52,0.46|48505a|0.84,0.34,0.83|-\n1|hub_fl|-|b|0.025,0.19,0.2|f3e4d6|-0.978,0.34,-0.81|-\n1|hub_fr|-|b|0.025,0.19,0.2|f3e4d6|0.978,0.34,-0.81|-\n1|hub_rl|-|b|0.025,0.19,0.2|f3e4d6|-0.978,0.34,0.83|-\n1|hub_rr|-|b|0.025,0.19,0.2|f3e4d6|0.978,0.34,0.83|-\n1|headlight_left|-|b|0.3,0.16,0.025|ffebc1|-0.49,0.7,-1.302|-\n1|headlight_right|-|b|0.3,0.16,0.025|ffebc1|0.49,0.7,-1.302|-\n1|tail_left|-|b|0.29,0.14,0.025|db898a|-0.49,0.67,1.303|-\n1|tail_right|-|b|0.29,0.14,0.025|db898a|0.49,0.67,1.303|-\n1|front_bumper|-|b|1.44,0.12,0.13|b9b9b0|0,0.42,-1.315|-\n1|rear_bumper|-|b|1.44,0.12,0.13|b9b9b0|0,0.42,1.315|-\n2|top|-|b|1.7,0.14,0.75|e5bd97|0,0.92,0|-\n2|top_inlay|-|b|1.48,0.01,0.58|b88763|0,1,0|-\n2|leg_0_0|-|b|0.13,0.91,0.13|657b78|-0.68,0.455,-0.27|-\n2|leg_0_1|-|b|0.13,0.91,0.13|657b78|-0.68,0.455,0.27|-\n2|leg_1_0|-|b|0.13,0.91,0.13|657b78|0.68,0.455,-0.27|-\n2|leg_1_1|-|b|0.13,0.91,0.13|657b78|0.68,0.455,0.27|-\n2|lower_shelf|-|b|1.42,0.08,0.57|b88763|0,0.24,0|-\n2|back_rail|-|b|1.69,0.12,0.09|657b78|0,0.82,0.37|-\n2|vise_base|-|b|0.28,0.15,0.21|657b78|-0.58,1.09,-0.22|-\n2|vise_jaw|-|b|0.1,0.16,0.25|c1d1bf|-0.45,1.16,-0.22|-\n2|wood_block|-|b|0.41,0.1,0.32|b88763|0.31,1.05,0.05|-\n2|measuring_bar|-|b|0.42,0.035,0.05|a4a6a1|0.31,1.13,0.05|-\n3|back|-|b|1.52,1.05,0.085|ba9476|-|-\n3|face|-|b|1.38,0.9,0.014|dac0a2|0,0,-0.054|-\n3|hole_0|-|b|0.045,0.045,0.012|8d745f|-0.45,0.31,-0.069|-\n3|hole_1|-|b|0.045,0.045,0.012|8d745f|-0.15,0.31,-0.069|-\n3|hole_2|-|b|0.045,0.045,0.012|8d745f|0.15,0.31,-0.069|-\n3|hole_3|-|b|0.045,0.045,0.012|8d745f|0.45,0.31,-0.069|-\n3|hammer_handle|-|b|0.09,0.5,0.09|dd9eae|-0.38,-0.05,-0.102|-\n3|hammer_head|-|b|0.39,0.12,0.12|697e89|-0.38,0.2,-0.107|-\n3|wrench_body|-|b|0.1,0.51,0.07|afb5a8|0.07,-0.045,-0.102|-\n3|wrench_tip|-|b|0.25,0.12,0.09|697e89|0.07,0.22,-0.105|-\n3|screwdriver_body|-|b|0.1,0.39,0.09|dd9eae|0.39,-0.07,-0.1|-\n3|screwdriver_tip|-|b|0.07,0.24,0.07|afb5a8|0.39,0.235,-0.104|-\n4|housing|-|b|0.83,1.01,0.59|b8828c|0,0.575,0|-\n4|drawer_0|-|b|0.72,0.23,0.04|e9bbc2|0,0.3,-0.319|-\n4|pull_0|-|b|0.28,0.045,0.06|f5e2d4|0,0.3,-0.352|-\n4|drawer_1|-|b|0.72,0.23,0.04|e9bbc2|0,0.59,-0.319|-\n4|pull_1|-|b|0.28,0.045,0.06|f5e2d4|0,0.59,-0.352|-\n4|drawer_2|-|b|0.72,0.23,0.04|e9bbc2|0,0.88,-0.319|-\n4|pull_2|-|b|0.28,0.045,0.06|f5e2d4|0,0.88,-0.352|-\n4|top|-|b|0.89,0.08,0.64|868c8e|0,1.12,0|-\n4|caster_0_0|-|b|0.15,0.15,0.15|4e5659|-0.3,0.075,-0.2|-\n4|caster_0_1|-|b|0.15,0.15,0.15|4e5659|-0.3,0.075,0.2|-\n4|caster_1_0|-|b|0.15,0.15,0.15|4e5659|0.3,0.075,-0.2|-\n4|caster_1_1|-|b|0.15,0.15,0.15|4e5659|0.3,0.075,0.2|-\n4|side_handle|-|b|0.13,0.25,0.1|868c8e|0.46,0.93,0|-\n5|tire_0|-|t|0.79,0.79,0.73,0.73,0.27|434b53|0,0.22,0|-\n5|rim_0|-|b|0.3,0.012,0.3|b3aea7|0,0.36,0|-\n5|band_0|-|b|0.83,0.035,0.83|5b6264|0,0.29000000000000004,0|-\n5|tire_1|-|t|0.79,0.79,0.73,0.73,0.27|434b53|0,0.51,0|-\n5|rim_1|-|b|0.3,0.012,0.3|b3aea7|0,0.65,0|-\n5|band_1|-|b|0.83,0.035,0.83|5b6264|0,0.5800000000000001,0|-\n5|tire_2|-|t|0.79,0.79,0.73,0.73,0.27|434b53|0,0.8,0|-\n5|rim_2|-|b|0.3,0.012,0.3|b3aea7|0,0.9400000000000001,0|-\n5|band_2|-|b|0.83,0.035,0.83|5b6264|0,0.8700000000000001,0|-\n6|upright_0_0|-|b|0.1,1.95,0.11|798d86|-0.71,0.975,-0.27|-\n6|upright_0_1|-|b|0.1,1.95,0.11|798d86|-0.71,0.975,0.27|-\n6|upright_1_0|-|b|0.1,1.95,0.11|798d86|0.71,0.975,-0.27|-\n6|upright_1_1|-|b|0.1,1.95,0.11|798d86|0.71,0.975,0.27|-\n6|shelf_0|-|b|1.54,0.09,0.69|cba787|0,0.24,0|-\n6|shelf_1|-|b|1.54,0.09,0.69|cba787|0,0.91,0|-\n6|shelf_2|-|b|1.54,0.09,0.69|cba787|0,1.55,0|-\n6|shelf_3|-|b|1.54,0.09,0.69|cba787|0,1.94,0|-\n6|bin_left|-|b|0.55,0.46,0.52|deb9aa|-0.37,0.53,0|-\n6|bin_right|-|b|0.55,0.46,0.52|a8bdab|0.35,0.53,0|-\n6|bin_top|-|b|0.64,0.37,0.5|deb9aa|0.18,1.74,0|-\n6|paint_can|-|b|0.29,0.3,0.3|f4d4bd|-0.4,1.13,-0.05|-\n6|label_left|-|b|0.28,0.07,0.012|fdf0dc|-0.37,0.62,-0.266|-\n6|label_right|-|b|0.28,0.07,0.012|fdf0dc|0.35,0.62,-0.266|-\n7|wheel_bottom_0|-|b|0.13,0.1,0.55|525960|0,0.05,-0.74|-\n7|wheel_top_0|-|b|0.13,0.1,0.55|525960|0,0.59,-0.74|-\n7|wheel_front_0|-|b|0.13,0.48,0.1|525960|0,0.32,-0.98|-\n7|wheel_back_0|-|b|0.13,0.48,0.1|525960|0,0.32,-0.5|-\n7|hub_0|-|b|0.15,0.15,0.15|c9d3ce|0,0.32,-0.74|-\n7|wheel_bottom_1|-|b|0.13,0.1,0.55|525960|0,0.05,0.74|-\n7|wheel_top_1|-|b|0.13,0.1,0.55|525960|0,0.59,0.74|-\n7|wheel_front_1|-|b|0.13,0.48,0.1|525960|0,0.32,0.5|-\n7|wheel_back_1|-|b|0.13,0.48,0.1|525960|0,0.32,0.98|-\n7|hub_1|-|b|0.15,0.15,0.15|c9d3ce|0,0.32,0.74|-\n7|frame_top|-|b|0.09,0.1,0.8|92afab|0,0.63,0|-\n7|frame_down|-|b|0.09,0.64,0.1|92afab|0,0.42,0.05|27,0,0\n7|frame_diag|-|b|0.09,0.74,0.1|92afab|0,0.41,-0.26|-30,0,0\n7|front_fork|-|b|0.09,0.85,0.1|92afab|0,0.66,-0.74|-\n7|rear_strut|-|b|0.09,0.55,0.1|92afab|0,0.42,0.64|-\n7|handle_stem|-|b|0.09,0.23,0.1|ae8975|0,1.05,-0.73|-\n7|handlebar|-|b|0.64,0.09,0.09|ae8975|0,1.17,-0.73|-\n7|seat_post|-|b|0.09,0.27,0.1|92afab|0,0.82,0.38|-\n7|saddle|-|b|0.36,0.09,0.34|cf9ca8|0,0.98,0.38|-\n7|pedal_crank|-|b|0.32,0.09,0.11|bca9a1|0,0.31,0.08|-",
+  "visual_revision": "garage-r4-tool-chest-against-real-rear-wall",
+  "human_review": {
+    "floor": "accepted",
+    "other_scene": "positive",
+    "car_bicycle": "deferred_nonblocking",
+    "prior_misplacement": "right_cutaway_edge_did_not_have_a_wall",
+    "tool_chest_new_location": "actual_rear_wall_between_tires_and_workbench",
+    "final_confirmation": "pending"
+  },
+  "geometry_checks": {
+    "removed_decorative_floor_pieces": 13,
+    "unchanged_furniture_and_vehicle_pieces": 101,
+    "source_part_provenance": "updated-and-source-checked"
+  },
+  "placement_verification": {
+    "rear_wall_inside_z": 2.925,
+    "chest_back_z": 2.92,
+    "wall_clearance_m": 0.005,
+    "car_front_of_chest_clearance_m": 1.098,
+    "bench_lateral_clearance_m": 0.845,
+    "tire_lateral_clearance_m": 1.11,
+    "drawer_orientation": "toward_front_open_aisle",
+    "status": "passed"
+  }
+}

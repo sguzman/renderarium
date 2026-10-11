@@ -1,0 +1,78 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-kitchen-v1-shell
+  name: Block Chibi Kitchen v1 tiled cutaway shell
+  kind: environment
+  root: root
+  tags: [block-chibi-room, kitchen, tiled-floor, real-window, cutaway]
+materials:
+  substrate: {role: floor-core, base_color: "#9c7667", roughness: 0.98}
+  tile_cream: {role: checker-tile, base_color: "#f2e0c9", roughness: 0.98}
+  tile_rose: {role: checker-tile, base_color: "#e4cbbf", roughness: 0.98}
+  wall: {role: kitchen-plaster, base_color: "#eee2d1", roughness: 0.99}
+  wall_side: {role: cutaway-wall, base_color: "#e0cbbb", roughness: 0.99}
+  trim: {role: wall-baseboard, base_color: "#fcf4e9", roughness: 0.98}
+  splash_a: {role: backsplash-tile, base_color: "#a9beb3", roughness: 0.97}
+  splash_b: {role: backsplash-tile, base_color: "#cfdfce", roughness: 0.97}
+parts:
+  root: {role: shell-root, parent: null, articulation: static}
+  floor_under: {role: structural-floor, parent: root, geometry: {kind: cuboid, size: [5.80, 0.18, 4.70]}, material: substrate, transform: {translate: [0, 0, 0]}}
+  tile_1_1: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [-2.40, 0.1055, -1.84]}}
+  tile_1_2: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [-1.44, 0.1055, -1.84]}}
+  tile_1_3: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [-0.48, 0.1055, -1.84]}}
+  tile_1_4: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [0.48, 0.1055, -1.84]}}
+  tile_1_5: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [1.44, 0.1055, -1.84]}}
+  tile_1_6: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [2.40, 0.1055, -1.84]}}
+  tile_2_1: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [-2.40, 0.1055, -0.92]}}
+  tile_2_2: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [-1.44, 0.1055, -0.92]}}
+  tile_2_3: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [-0.48, 0.1055, -0.92]}}
+  tile_2_4: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [0.48, 0.1055, -0.92]}}
+  tile_2_5: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [1.44, 0.1055, -0.92]}}
+  tile_2_6: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [2.40, 0.1055, -0.92]}}
+  tile_3_1: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [-2.40, 0.1055, 0.00]}}
+  tile_3_2: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [-1.44, 0.1055, 0.00]}}
+  tile_3_3: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [-0.48, 0.1055, 0.00]}}
+  tile_3_4: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [0.48, 0.1055, 0.00]}}
+  tile_3_5: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [1.44, 0.1055, 0.00]}}
+  tile_3_6: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [2.40, 0.1055, 0.00]}}
+  tile_4_1: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [-2.40, 0.1055, 0.92]}}
+  tile_4_2: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [-1.44, 0.1055, 0.92]}}
+  tile_4_3: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [-0.48, 0.1055, 0.92]}}
+  tile_4_4: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [0.48, 0.1055, 0.92]}}
+  tile_4_5: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [1.44, 0.1055, 0.92]}}
+  tile_4_6: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [2.40, 0.1055, 0.92]}}
+  tile_5_1: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [-2.40, 0.1055, 1.84]}}
+  tile_5_2: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [-1.44, 0.1055, 1.84]}}
+  tile_5_3: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [-0.48, 0.1055, 1.84]}}
+  tile_5_4: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [0.48, 0.1055, 1.84]}}
+  tile_5_5: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_cream, transform: {translate: [1.44, 0.1055, 1.84]}}
+  tile_5_6: {role: floor-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.025, 0.906]}, material: tile_rose, transform: {translate: [2.40, 0.1055, 1.84]}}
+  left_wall: {role: cutaway-left-wall, parent: root, geometry: {kind: cuboid, size: [0.18, 2.80, 4.70]}, material: wall_side, transform: {translate: [-2.81, 1.40, 0]}}
+  back_left_pier: {role: window-left-structural-pier, parent: root, geometry: {kind: cuboid, size: [0.66, 2.80, 0.18]}, material: wall, transform: {translate: [-2.57, 1.40, 2.26]}}
+  back_right_pier: {role: window-right-structural-pier, parent: root, geometry: {kind: cuboid, size: [3.88, 2.80, 0.18]}, material: wall, transform: {translate: [0.96, 1.40, 2.26]}}
+  back_window_below: {role: real-window-sill-wall, parent: root, geometry: {kind: cuboid, size: [1.26, 1.33, 0.18]}, material: wall, transform: {translate: [-1.61, 0.665, 2.26]}}
+  back_window_above: {role: real-window-lintel-wall, parent: root, geometry: {kind: cuboid, size: [1.26, 0.32, 0.18]}, material: wall, transform: {translate: [-1.61, 2.64, 2.26]}}
+  left_trim: {role: floor-wall-trim, parent: root, geometry: {kind: cuboid, size: [0.07, 0.18, 4.52]}, material: trim, transform: {translate: [-2.675, 0.20, 0]}}
+  back_trim: {role: floor-wall-trim, parent: root, geometry: {kind: cuboid, size: [5.50, 0.18, 0.07]}, material: trim, transform: {translate: [0, 0.20, 2.115]}}
+  backsplash_0_0: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_b, transform: {translate: [-0.71, 1.18, 2.163]}}
+  backsplash_0_1: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_a, transform: {translate: [-0.25, 1.18, 2.163]}}
+  backsplash_0_2: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_b, transform: {translate: [0.21, 1.18, 2.163]}}
+  backsplash_0_3: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_a, transform: {translate: [0.67, 1.18, 2.163]}}
+  backsplash_0_4: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_b, transform: {translate: [1.13, 1.18, 2.163]}}
+  backsplash_1_0: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_a, transform: {translate: [-0.71, 1.37, 2.163]}}
+  backsplash_1_1: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_b, transform: {translate: [-0.25, 1.37, 2.163]}}
+  backsplash_1_2: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_a, transform: {translate: [0.21, 1.37, 2.163]}}
+  backsplash_1_3: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_b, transform: {translate: [0.67, 1.37, 2.163]}}
+  backsplash_1_4: {role: ceramic-backsplash, parent: root, geometry: {kind: cuboid, size: [0.44, 0.17, 0.012]}, material: splash_a, transform: {translate: [1.13, 1.37, 2.163]}}
+extensions:
+  scenarium:
+    semantic_ref: specification:block-chibi-kitchen-v1
+    window_opening: {center_x: -1.61, width: 1.26, bottom_y: 1.33, top_y: 2.48}
+    floor_support_y: 0.118
+    no_painted_window: true
+    front_open: true
+    right_open: true

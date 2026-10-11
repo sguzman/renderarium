@@ -1,0 +1,99 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pink:
+    role: lamp-housing
+    base_color: "#d7869f"
+    roughness: 0.96
+  pink_light:
+    role: lamp-housing-accent
+    base_color: "#e39bb2"
+    roughness: 0.96
+  pink_dark:
+    role: lamp-support
+    base_color: "#9f586f"
+    roughness: 0.97
+  warm_emit:
+    role: lamp-emitter
+    base_color: "#fff0b8"
+    roughness: 0.45
+    emissive: "#ffd56f"
+    emissive_intensity: 2.5
+  brown:
+    role: lamp-support
+    base_color: "#6b4a3d"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-tall-floor-lamp-v1.1
+  name: Block Chibi Tall Floor Lamp v1.1
+  kind: prop
+  root: root
+  tags: [lamp, block-chibi-room, floor-lamp, grammar-specimen, review-corrected]
+
+parts:
+  root: {role: lamp-root, parent: null, articulation: static}
+
+  base:
+    role: lamp-base
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.74, 0.74]
+      top: [0.60, 0.60]
+      height: 0.20
+    material: pink_dark
+    transform: {translate: [0.0, 0.10, 0.0]}
+
+  stem:
+    role: lamp-stem
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.14, 0.14]
+      top: [0.11, 0.11]
+      height: 1.42
+    material: brown
+    transform: {translate: [0.0, 0.91, 0.0]}
+
+  emitter:
+    role: lamp-light-source
+    parent: root
+    geometry: {kind: cuboid, size: [0.42, 0.12, 0.42]}
+    material: warm_emit
+    transform: {translate: [0.0, 1.47, 0.0]}
+
+  shade:
+    role: lamp-shade
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.88, 0.88]
+      top: [0.58, 0.58]
+      height: 0.50
+    material: pink_light
+    transform: {translate: [0.0, 1.73, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: lamp@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::lamp@0.2
+    predecessor: block-chibi-tall-floor-lamp-v1
+    specimen_intent: tall-floor-lamp
+    support_strategy: floor
+    palette_revision: rose-family-shade
+    proof_light_intensity: strong-visible
+    evaluation_status: awaiting-corrected-family-review

@@ -1,0 +1,391 @@
+{
+  "format": "scenarium-source-bound-chat-preview-v1",
+  "scene": "block-chibi-backyard-v1",
+  "source_assembly": "scenes/block-chibi-backyard-v1/room.assembly.yml",
+  "source_assembly_blob": "19f4ff08ccc1e4f3044b9a240be9b635870394b6",
+  "renderer_kind": "alternate-chat-webgl-not-canonical-Threejs",
+  "mesh_count": 181,
+  "groups": [
+    {
+      "index": 0,
+      "id": "shell",
+      "source": "scenes/block-chibi-backyard-v1/components/backyard-shell.sc3d.yml",
+      "source_blob": "a0afcbdfbd3c115d9d4dca8b623449806a444993",
+      "translate": [
+        0,
+        0,
+        0
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 1,
+      "id": "tree",
+      "source": "assets/constructive-3d/gardens/block-chibi-garden-tree-v1.sc3d.yml",
+      "source_blob": "b04ea3433e763e8488af4363c7bf1bca2d10bbf6",
+      "translate": [
+        -2.09,
+        0.155,
+        1.19
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 2,
+      "id": "flower-bed-left",
+      "source": "assets/constructive-3d/gardens/block-chibi-raised-garden-bed-v1.sc3d.yml",
+      "source_blob": "9390c5b112ad050de04cf8088a6390e669fe850a",
+      "translate": [
+        -2.01,
+        0.155,
+        -1.14
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 3,
+      "id": "flower-bed-rear",
+      "source": "assets/constructive-3d/gardens/block-chibi-raised-garden-bed-v1.sc3d.yml",
+      "source_blob": "9390c5b112ad050de04cf8088a6390e669fe850a",
+      "translate": [
+        -0.5,
+        0.155,
+        1.52
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 4,
+      "id": "bench",
+      "source": "assets/constructive-3d/gardens/block-chibi-garden-bench-v1.sc3d.yml",
+      "source_blob": "f116ca7dae7d9d3149f6cb78b5a24a6f7f7e2a3b",
+      "translate": [
+        1.62,
+        0.22,
+        0.12
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 5,
+      "id": "patio-table",
+      "source": "assets/constructive-3d/gardens/block-chibi-patio-table-v1.sc3d.yml",
+      "source_blob": "47f8336dce806c4bf5a72c4dc6b28a9f21e141f8",
+      "translate": [
+        1.62,
+        0.22,
+        -0.99
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 6,
+      "id": "stone-1",
+      "source": "assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml",
+      "source_blob": "09a2f6a985ea9538387d00c5a3641828e4a93641",
+      "translate": [
+        -0.76,
+        0.155,
+        -2.2
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 7,
+      "id": "stone-2",
+      "source": "assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml",
+      "source_blob": "09a2f6a985ea9538387d00c5a3641828e4a93641",
+      "translate": [
+        -0.65,
+        0.155,
+        -1.67
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 8,
+      "id": "stone-3",
+      "source": "assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml",
+      "source_blob": "09a2f6a985ea9538387d00c5a3641828e4a93641",
+      "translate": [
+        -0.36,
+        0.155,
+        -1.12
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 9,
+      "id": "stone-4",
+      "source": "assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml",
+      "source_blob": "09a2f6a985ea9538387d00c5a3641828e4a93641",
+      "translate": [
+        -0.09,
+        0.155,
+        -0.56
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 10,
+      "id": "stone-5",
+      "source": "assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml",
+      "source_blob": "09a2f6a985ea9538387d00c5a3641828e4a93641",
+      "translate": [
+        0.29,
+        0.155,
+        -0.22
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 11,
+      "id": "flowers-left-1",
+      "source": "assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml",
+      "source_blob": "7b891cfaf8392867b845462497f3a4a1e1d802bb",
+      "translate": [
+        -2.29,
+        0.5,
+        -1.15
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 12,
+      "id": "flowers-left-2",
+      "source": "assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml",
+      "source_blob": "7b891cfaf8392867b845462497f3a4a1e1d802bb",
+      "translate": [
+        -1.78,
+        0.5,
+        -1.12
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 13,
+      "id": "flowers-rear-1",
+      "source": "assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml",
+      "source_blob": "7b891cfaf8392867b845462497f3a4a1e1d802bb",
+      "translate": [
+        -0.81,
+        0.5,
+        1.53
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 14,
+      "id": "flowers-rear-2",
+      "source": "assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml",
+      "source_blob": "7b891cfaf8392867b845462497f3a4a1e1d802bb",
+      "translate": [
+        -0.28,
+        0.5,
+        1.49
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 15,
+      "id": "flowers-fence-1",
+      "source": "assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml",
+      "source_blob": "7b891cfaf8392867b845462497f3a4a1e1d802bb",
+      "translate": [
+        1.03,
+        0.13,
+        1.61
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 16,
+      "id": "flowers-fence-2",
+      "source": "assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml",
+      "source_blob": "7b891cfaf8392867b845462497f3a4a1e1d802bb",
+      "translate": [
+        2.45,
+        0.13,
+        1.55
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "index": 17,
+      "id": "birdhouse",
+      "source": "assets/constructive-3d/gardens/block-chibi-birdhouse-v1.sc3d.yml",
+      "source_blob": "e9955723d3bf77516119f843eff3d656ccd1ccb8",
+      "translate": [
+        -2.76,
+        0.155,
+        0.04
+      ],
+      "rotate_deg": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "part_encoding": "index|id|parent-dash|b-cuboid-t-tapered|dims|hex|local-translate-dash|rotation-dash",
+  "parts": "0|ground|-|b|6.4,0.24,5.2|88715d|-|-\n0|lawn|-|b|6.25,0.035,5.04|9cbe83|0,0.1375,0|-\n0|patio_base|-|b|2.55,0.052,2.15|d7b8a0|1.56,0.172,-0.65|-\n0|paver_0_0|-|b|0.79,0.021,1.01|f1dcc3|0.73,0.209,-1.185|-\n0|paver_0_1|-|b|0.79,0.021,1.01|e4c6b7|1.56,0.209,-1.185|-\n0|paver_0_2|-|b|0.79,0.021,1.01|f1dcc3|2.3899999999999997,0.209,-1.185|-\n0|paver_1_0|-|b|0.79,0.021,1.01|e4c6b7|0.73,0.209,-0.11499999999999999|-\n0|paver_1_1|-|b|0.79,0.021,1.01|f1dcc3|1.56,0.209,-0.11499999999999999|-\n0|paver_1_2|-|b|0.79,0.021,1.01|e4c6b7|2.3899999999999997,0.209,-0.11499999999999999|-\n0|lawn_patch_0|-|b|0.41,0.005,0.26|89b579|-2.45,0.159,-0.1|-\n0|lawn_patch_1|-|b|0.41,0.005,0.26|b2cd96|-1.1,0.159,1.89|-\n0|lawn_patch_2|-|b|0.41,0.005,0.26|89b579|-0.4,0.159,-1.2|-\n0|lawn_patch_3|-|b|0.41,0.005,0.26|b2cd96|2.75,0.159,1.2|-\n0|lawn_patch_4|-|b|0.41,0.005,0.26|89b579|0.85,0.159,-2.12|-\n0|rear_picket_0|-|b|0.34,1.18,0.13|f9e5ce|-2.82,0.69,2.42|-\n0|rear_picket_1|-|b|0.34,1.18,0.13|f9e5ce|-2.307272727272727,0.69,2.42|-\n0|rear_picket_2|-|b|0.34,1.18,0.13|f9e5ce|-1.7945454545454544,0.69,2.42|-\n0|rear_picket_3|-|b|0.34,1.18,0.13|f9e5ce|-1.2818181818181817,0.69,2.42|-\n0|rear_picket_4|-|b|0.34,1.18,0.13|f9e5ce|-0.769090909090909,0.69,2.42|-\n0|rear_picket_5|-|b|0.34,1.18,0.13|f9e5ce|-0.25636363636363635,0.69,2.42|-\n0|rear_picket_6|-|b|0.34,1.18,0.13|f9e5ce|0.25636363636363635,0.69,2.42|-\n0|rear_picket_7|-|b|0.34,1.18,0.13|f9e5ce|0.769090909090909,0.69,2.42|-\n0|rear_picket_8|-|b|0.34,1.18,0.13|f9e5ce|1.2818181818181817,0.69,2.42|-\n0|rear_picket_9|-|b|0.34,1.18,0.13|f9e5ce|1.7945454545454544,0.69,2.42|-\n0|rear_picket_10|-|b|0.34,1.18,0.13|f9e5ce|2.307272727272727,0.69,2.42|-\n0|rear_picket_11|-|b|0.34,1.18,0.13|f9e5ce|2.82,0.69,2.42|-\n0|left_picket_0|-|b|0.14,1.18,0.35|f9e5ce|-3.08,0.69,-2.14|-\n0|left_picket_1|-|b|0.14,1.18,0.35|f9e5ce|-3.08,0.69,-1.5300000000000002|-\n0|left_picket_2|-|b|0.14,1.18,0.35|f9e5ce|-3.08,0.69,-0.9200000000000002|-\n0|left_picket_3|-|b|0.14,1.18,0.35|f9e5ce|-3.08,0.69,-0.3100000000000003|-\n0|left_picket_4|-|b|0.14,1.18,0.35|f9e5ce|-3.08,0.69,0.2999999999999998|-\n0|left_picket_5|-|b|0.14,1.18,0.35|f9e5ce|-3.08,0.69,0.9099999999999997|-\n0|left_picket_6|-|b|0.14,1.18,0.35|f9e5ce|-3.08,0.69,1.5199999999999996|-\n0|left_picket_7|-|b|0.14,1.18,0.35|f9e5ce|-3.08,0.69,2.1299999999999994|-\n0|left_post_front|-|b|0.26,1.34,0.26|e8cfb4|-3.08,0.67,-2.3|-\n0|left_post_rear|-|b|0.26,1.34,0.26|e8cfb4|-3.08,0.67,2.36|-\n0|right_picket_0|-|b|0.14,1.18,0.35|f9e5ce|3.08,0.69,-2.14|-\n0|right_picket_1|-|b|0.14,1.18,0.35|f9e5ce|3.08,0.69,-1.5300000000000002|-\n0|right_picket_2|-|b|0.14,1.18,0.35|f9e5ce|3.08,0.69,-0.9200000000000002|-\n0|right_picket_3|-|b|0.14,1.18,0.35|f9e5ce|3.08,0.69,-0.3100000000000003|-\n0|right_picket_4|-|b|0.14,1.18,0.35|f9e5ce|3.08,0.69,0.2999999999999998|-\n0|right_picket_5|-|b|0.14,1.18,0.35|f9e5ce|3.08,0.69,0.9099999999999997|-\n0|right_picket_6|-|b|0.14,1.18,0.35|f9e5ce|3.08,0.69,1.5199999999999996|-\n0|right_picket_7|-|b|0.14,1.18,0.35|f9e5ce|3.08,0.69,2.1299999999999994|-\n0|right_post_front|-|b|0.26,1.34,0.26|e8cfb4|3.08,0.67,-2.3|-\n0|right_post_rear|-|b|0.26,1.34,0.26|e8cfb4|3.08,0.67,2.36|-\n0|rear_post_left|-|b|0.23,1.34,0.27|e8cfb4|-2.93,0.67,2.46|-\n0|rear_post_middle|-|b|0.23,1.34,0.27|e8cfb4|0,0.67,2.46|-\n0|rear_post_right|-|b|0.23,1.34,0.27|e8cfb4|2.93,0.67,2.46|-\n1|trunk|-|t|0.43,0.42,0.31,0.3,1.8|906b51|0,0.9,0|-\n1|root_base|-|b|0.58,0.18,0.55|b58966|0,0.09,0|-\n1|crown_base|-|t|1.85,1.55,1.98,1.75,0.64|729f79|0,1.81,0|-\n1|crown_mid|-|t|2.07,1.88,1.76,1.65,0.67|9bc18c|0,2.31,0.08|-\n1|crown_top|-|t|1.44,1.4,1.02,1.04,0.6|bdd3a1|0,2.81,0.04|-\n1|canopy_tuft_left|-|b|0.46,0.44,0.59|9bc18c|-0.89,2.21,-0.18|-\n1|canopy_tuft_right|-|b|0.47,0.45,0.58|729f79|0.91,2.13,0.14|-\n1|fruit1|-|b|0.16,0.16,0.16|e8aab2|-0.65,2,-0.77|-\n1|fruit2|-|b|0.15,0.16,0.15|e8aab2|0.57,2.44,-0.74|-\n1|fruit3|-|b|0.15,0.16,0.15|e8aab2|0.12,2.83,-0.52|-\n2|bottom|-|b|1.38,0.15,0.9|b88963|0,0.09,0|-\n2|side_front|-|b|1.45,0.3,0.13|b88963|0,0.31,-0.41|-\n2|side_back|-|b|1.45,0.3,0.13|b88963|0,0.31,0.41|-\n2|end_left|-|b|0.12,0.3,0.71|b88963|-0.67,0.31,0|-\n2|end_right|-|b|0.12,0.3,0.71|b88963|0.67,0.31,0|-\n2|soil|-|b|1.24,0.05,0.68|674c40|0,0.35,0|-\n2|lip_front|-|b|1.47,0.06,0.15|e0b887|0,0.49,-0.41|-\n2|lip_rear|-|b|1.47,0.06,0.15|e0b887|0,0.49,0.41|-\n2|sprout1|-|t|0.2,0.19,0.23,0.22,0.28|81ad74|-0.41,0.52,0|-\n2|sprout2|-|t|0.2,0.19,0.23,0.22,0.31|aed18b|0,0.535,0.09|-\n2|sprout3|-|t|0.2,0.19,0.23,0.22,0.27|81ad74|0.39,0.515,-0.08|-\n3|bottom|-|b|1.38,0.15,0.9|b88963|0,0.09,0|-\n3|side_front|-|b|1.45,0.3,0.13|b88963|0,0.31,-0.41|-\n3|side_back|-|b|1.45,0.3,0.13|b88963|0,0.31,0.41|-\n3|end_left|-|b|0.12,0.3,0.71|b88963|-0.67,0.31,0|-\n3|end_right|-|b|0.12,0.3,0.71|b88963|0.67,0.31,0|-\n3|soil|-|b|1.24,0.05,0.68|674c40|0,0.35,0|-\n3|lip_front|-|b|1.47,0.06,0.15|e0b887|0,0.49,-0.41|-\n3|lip_rear|-|b|1.47,0.06,0.15|e0b887|0,0.49,0.41|-\n3|sprout1|-|t|0.2,0.19,0.23,0.22,0.28|81ad74|-0.41,0.52,0|-\n3|sprout2|-|t|0.2,0.19,0.23,0.22,0.31|aed18b|0,0.535,0.09|-\n3|sprout3|-|t|0.2,0.19,0.23,0.22,0.27|81ad74|0.39,0.515,-0.08|-\n4|seat_base|-|b|1.47,0.16,0.52|c58e78|0,0.52,0|-\n4|cushion|-|b|1.35,0.1,0.44|e9b5bc|0,0.653,-0.02|-\n4|back_support|-|b|1.48,0.68,0.16|9bb8a6|0,0.93,0.27|-\n4|back_trim|-|b|1.5,0.075,0.2|f2d7c4|0,1.29,0.27|-\n4|arm_left|-|b|0.17,0.22,0.6|866854|-0.73,0.69,-0.01|-\n4|arm_right|-|b|0.17,0.22,0.6|866854|0.73,0.69,-0.01|-\n4|leg_left_front|-|b|0.16,0.52,0.16|866854|-0.6,0.26,-0.18|-\n4|leg_right_front|-|b|0.16,0.52,0.16|866854|0.6,0.26,-0.18|-\n4|leg_left_back|-|b|0.16,0.52,0.16|866854|-0.6,0.26,0.18|-\n4|leg_right_back|-|b|0.16,0.52,0.16|866854|0.6,0.26,0.18|-\n5|top|-|b|0.85,0.13,0.61|a87962|0,0.5,0|-\n5|inlay|-|b|0.6,0.012,0.41|eac29f|0,0.574,0|-\n5|leg_lf|-|b|0.13,0.46,0.13|765542|-0.29,0.23,-0.19|-\n5|leg_rf|-|b|0.13,0.46,0.13|765542|0.29,0.23,-0.19|-\n5|leg_lb|-|b|0.13,0.46,0.13|765542|-0.29,0.23,0.19|-\n5|leg_rb|-|b|0.13,0.46,0.13|765542|0.29,0.23,0.19|-\n5|teacup|-|t|0.17,0.17,0.14,0.14,0.14|d7a1a1|0.18,0.66,-0.04|-\n5|sprig|-|t|0.13,0.13,0.21,0.16,0.22|83a981|0.18,0.8,-0.04|-\n6|stone_base|-|t|0.64,0.43,0.58,0.41,0.085|cbb7a5|0,0.042,0|-\n6|stone_top|-|t|0.6,0.4,0.53,0.37,0.048|e8d5bd|0,0.101,0|-\n7|stone_base|-|t|0.64,0.43,0.58,0.41,0.085|cbb7a5|0,0.042,0|-\n7|stone_top|-|t|0.6,0.4,0.53,0.37,0.048|e8d5bd|0,0.101,0|-\n8|stone_base|-|t|0.64,0.43,0.58,0.41,0.085|cbb7a5|0,0.042,0|-\n8|stone_top|-|t|0.6,0.4,0.53,0.37,0.048|e8d5bd|0,0.101,0|-\n9|stone_base|-|t|0.64,0.43,0.58,0.41,0.085|cbb7a5|0,0.042,0|-\n9|stone_top|-|t|0.6,0.4,0.53,0.37,0.048|e8d5bd|0,0.101,0|-\n10|stone_base|-|t|0.64,0.43,0.58,0.41,0.085|cbb7a5|0,0.042,0|-\n10|stone_top|-|t|0.6,0.4,0.53,0.37,0.048|e8d5bd|0,0.101,0|-\n11|stem1|-|b|0.065,0.43,0.066|638865|-0.18,0.24,-0.02|-\n11|stem2|-|b|0.065,0.35,0.066|638865|0.17,0.205,0.12|-\n11|stem3|-|b|0.06,0.31,0.06|638865|0,0.185,-0.18|-\n11|leaf1|-|b|0.23,0.1,0.15|91b785|-0.26,0.18,-0.01|-\n11|leaf2|-|b|0.18,0.09,0.22|bed19f|0.24,0.13,0.11|-\n11|blossom1|-|b|0.36,0.22,0.35|e7a2b2|-0.18,0.51,-0.02|-\n11|blossom1_center|-|b|0.13,0.055,0.13|cb9d5a|-0.18,0.642,-0.02|-\n11|blossom2|-|b|0.31,0.2,0.32|ffe1b3|0.17,0.425,0.12|-\n11|blossom2_center|-|b|0.12,0.055,0.12|cb9d5a|0.17,0.542,0.12|-\n11|bud3|-|b|0.19,0.16,0.2|e7a2b2|0,0.37,-0.18|-\n12|stem1|-|b|0.065,0.43,0.066|638865|-0.18,0.24,-0.02|-\n12|stem2|-|b|0.065,0.35,0.066|638865|0.17,0.205,0.12|-\n12|stem3|-|b|0.06,0.31,0.06|638865|0,0.185,-0.18|-\n12|leaf1|-|b|0.23,0.1,0.15|91b785|-0.26,0.18,-0.01|-\n12|leaf2|-|b|0.18,0.09,0.22|bed19f|0.24,0.13,0.11|-\n12|blossom1|-|b|0.36,0.22,0.35|e7a2b2|-0.18,0.51,-0.02|-\n12|blossom1_center|-|b|0.13,0.055,0.13|cb9d5a|-0.18,0.642,-0.02|-\n12|blossom2|-|b|0.31,0.2,0.32|ffe1b3|0.17,0.425,0.12|-\n12|blossom2_center|-|b|0.12,0.055,0.12|cb9d5a|0.17,0.542,0.12|-\n12|bud3|-|b|0.19,0.16,0.2|e7a2b2|0,0.37,-0.18|-\n13|stem1|-|b|0.065,0.43,0.066|638865|-0.18,0.24,-0.02|-\n13|stem2|-|b|0.065,0.35,0.066|638865|0.17,0.205,0.12|-\n13|stem3|-|b|0.06,0.31,0.06|638865|0,0.185,-0.18|-\n13|leaf1|-|b|0.23,0.1,0.15|91b785|-0.26,0.18,-0.01|-\n13|leaf2|-|b|0.18,0.09,0.22|bed19f|0.24,0.13,0.11|-\n13|blossom1|-|b|0.36,0.22,0.35|e7a2b2|-0.18,0.51,-0.02|-\n13|blossom1_center|-|b|0.13,0.055,0.13|cb9d5a|-0.18,0.642,-0.02|-\n13|blossom2|-|b|0.31,0.2,0.32|ffe1b3|0.17,0.425,0.12|-\n13|blossom2_center|-|b|0.12,0.055,0.12|cb9d5a|0.17,0.542,0.12|-\n13|bud3|-|b|0.19,0.16,0.2|e7a2b2|0,0.37,-0.18|-\n14|stem1|-|b|0.065,0.43,0.066|638865|-0.18,0.24,-0.02|-\n14|stem2|-|b|0.065,0.35,0.066|638865|0.17,0.205,0.12|-\n14|stem3|-|b|0.06,0.31,0.06|638865|0,0.185,-0.18|-\n14|leaf1|-|b|0.23,0.1,0.15|91b785|-0.26,0.18,-0.01|-\n14|leaf2|-|b|0.18,0.09,0.22|bed19f|0.24,0.13,0.11|-\n14|blossom1|-|b|0.36,0.22,0.35|e7a2b2|-0.18,0.51,-0.02|-\n14|blossom1_center|-|b|0.13,0.055,0.13|cb9d5a|-0.18,0.642,-0.02|-\n14|blossom2|-|b|0.31,0.2,0.32|ffe1b3|0.17,0.425,0.12|-\n14|blossom2_center|-|b|0.12,0.055,0.12|cb9d5a|0.17,0.542,0.12|-\n14|bud3|-|b|0.19,0.16,0.2|e7a2b2|0,0.37,-0.18|-\n15|stem1|-|b|0.065,0.43,0.066|638865|-0.18,0.24,-0.02|-\n15|stem2|-|b|0.065,0.35,0.066|638865|0.17,0.205,0.12|-\n15|stem3|-|b|0.06,0.31,0.06|638865|0,0.185,-0.18|-\n15|leaf1|-|b|0.23,0.1,0.15|91b785|-0.26,0.18,-0.01|-\n15|leaf2|-|b|0.18,0.09,0.22|bed19f|0.24,0.13,0.11|-\n15|blossom1|-|b|0.36,0.22,0.35|e7a2b2|-0.18,0.51,-0.02|-\n15|blossom1_center|-|b|0.13,0.055,0.13|cb9d5a|-0.18,0.642,-0.02|-\n15|blossom2|-|b|0.31,0.2,0.32|ffe1b3|0.17,0.425,0.12|-\n15|blossom2_center|-|b|0.12,0.055,0.12|cb9d5a|0.17,0.542,0.12|-\n15|bud3|-|b|0.19,0.16,0.2|e7a2b2|0,0.37,-0.18|-\n16|stem1|-|b|0.065,0.43,0.066|638865|-0.18,0.24,-0.02|-\n16|stem2|-|b|0.065,0.35,0.066|638865|0.17,0.205,0.12|-\n16|stem3|-|b|0.06,0.31,0.06|638865|0,0.185,-0.18|-\n16|leaf1|-|b|0.23,0.1,0.15|91b785|-0.26,0.18,-0.01|-\n16|leaf2|-|b|0.18,0.09,0.22|bed19f|0.24,0.13,0.11|-\n16|blossom1|-|b|0.36,0.22,0.35|e7a2b2|-0.18,0.51,-0.02|-\n16|blossom1_center|-|b|0.13,0.055,0.13|cb9d5a|-0.18,0.642,-0.02|-\n16|blossom2|-|b|0.31,0.2,0.32|ffe1b3|0.17,0.425,0.12|-\n16|blossom2_center|-|b|0.12,0.055,0.12|cb9d5a|0.17,0.542,0.12|-\n16|bud3|-|b|0.19,0.16,0.2|e7a2b2|0,0.37,-0.18|-\n17|post|-|b|0.16,1.47,0.16|9b7958|0,0.735,0|-\n17|base|-|b|0.39,0.12,0.39|9b7958|0,0.07,0|-\n17|house|-|b|0.58,0.52,0.5|e3bfa0|0,1.55,0|-\n17|roof|-|t|0.76,0.66,0.58,0.5,0.27|dd9ead|0,1.94,0|-\n17|entrance|-|b|0.16,0.17,0.015|544c4c|0,1.61,-0.265|-\n17|perch|-|b|0.09,0.09,0.26|b28664|0,1.43,-0.39|-\n0|rear_rail_low|-|b|6.03,0.115,0.14|b08e77|0,0.47,2.48|-\n0|rear_rail_high|-|b|6.03,0.115,0.14|b08e77|0,0.92,2.48|-\n0|left_rail_low|-|b|0.14,0.115,4.7|b08e77|-3.08,0.47,0.02|-\n0|left_rail_high|-|b|0.14,0.115,4.7|b08e77|-3.08,0.92,0.02|-\n0|right_rail_low|-|b|0.14,0.115,4.7|b08e77|3.08,0.47,0.02|-\n0|right_rail_high|-|b|0.14,0.115,4.7|b08e77|3.08,0.92,0.02|-",
+  "visual_revision": "first-look-source-validated-with-fence-rails-and-supported-flowers"
+}

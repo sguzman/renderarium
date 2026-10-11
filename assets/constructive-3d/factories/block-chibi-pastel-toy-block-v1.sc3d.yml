@@ -1,0 +1,31 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-pastel-toy-block-v1
+  name: Block Chibi pastel toy block v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, pastel-toy-block]
+materials:
+  body: {role: body, base_color: "#f2b7b4", roughness: 0.98}
+  top: {role: top, base_color: "#ffdfb0", roughness: 0.98}
+  marker: {role: marker, base_color: "#9fbda9", roughness: 0.98}
+  star: {role: star, base_color: "#e8bf79", roughness: 0.98}
+  bottom: {role: bottom, base_color: "#c28e95", roughness: 0.98}
+parts:
+  root: {role: pastel-toy-block-root, parent: null, articulation: static}
+  block_body: {role: block_body, parent: root, geometry: {kind: cuboid, size: [0.41, 0.26, 0.39]}, material: body, transform: {translate: [0, 0.15, 0]}}
+  cap: {role: cap, parent: root, geometry: {kind: cuboid, size: [0.43, 0.07, 0.41]}, material: top, transform: {translate: [0, 0.32, 0]}}
+  stamp_center: {role: stamp_center, parent: root, geometry: {kind: cuboid, size: [0.16, 0.025, 0.16]}, material: marker, transform: {translate: [0, 0.371, 0]}}
+  front_badge: {role: front_badge, parent: root, geometry: {kind: cuboid, size: [0.21, 0.13, 0.014]}, material: star, transform: {translate: [0, 0.174, -0.202]}}
+  ground_feet: {role: ground_feet, parent: root, geometry: {kind: cuboid, size: [0.36, 0.05, 0.34]}, material: bottom, transform: {translate: [0, 0.029, 0]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred

@@ -1,0 +1,99 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-toilet-v1
+  name: Block Chibi Toilet v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, bathroom, toilet]
+materials:
+  porcelain: {role: toilet-ceramic, base_color: "#f7f1e9", roughness: 0.98}
+  edge: {role: seat-rim, base_color: "#fffafa", roughness: 0.98}
+  basin: {role: toilet-bowl-inner, base_color: "#9eb9c4", roughness: 0.98}
+  tank: {role: cistern, base_color: "#e6e1d8", roughness: 0.98}
+  hardware: {role: flush-button, base_color: "#c89d79", roughness: 0.98}
+  shadow: {role: inner-void, base_color: "#6f92a7", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  pedestal:
+    role: toilet-floor-pedestal
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.33,0.38], top: [0.51,0.55], height: 0.46}
+    material: porcelain
+    transform: {translate: [0, 0.23, -0.08]}
+    articulation: static
+  bowl:
+    role: toilet-bowl-body
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.55,0.65], top: [0.69,0.78], height: 0.32}
+    material: porcelain
+    transform: {translate: [0, 0.58, -0.07]}
+    articulation: static
+  bowl_recess:
+    role: bowl-inside-blue
+    parent: root
+    geometry: {kind: cuboid, size: [0.44, 0.027, 0.49]}
+    material: basin
+    transform: {translate: [0, 0.75, -0.08]}
+    articulation: static
+  inner_water:
+    role: water-within-bowl
+    parent: root
+    geometry: {kind: cuboid, size: [0.32, 0.012, 0.35]}
+    material: shadow
+    transform: {translate: [0, 0.772, -0.08]}
+    articulation: static
+  seat_back:
+    role: seat-porcelain-back
+    parent: root
+    geometry: {kind: cuboid, size: [0.73, 0.062, 0.14]}
+    material: edge
+    transform: {translate: [0, 0.805, 0.27]}
+    articulation: static
+  seat_front:
+    role: seat-porcelain-front
+    parent: root
+    geometry: {kind: cuboid, size: [0.73, 0.062, 0.13]}
+    material: edge
+    transform: {translate: [0, 0.805, -0.42]}
+    articulation: static
+  seat_left:
+    role: seat-side
+    parent: root
+    geometry: {kind: cuboid, size: [0.125, 0.062, 0.64]}
+    material: edge
+    transform: {translate: [-0.315, 0.805, -0.075]}
+    articulation: static
+  seat_right:
+    role: seat-side
+    parent: root
+    geometry: {kind: cuboid, size: [0.125, 0.062, 0.64]}
+    material: edge
+    transform: {translate: [0.315, 0.805, -0.075]}
+    articulation: static
+  cistern:
+    role: tank-vertical-body
+    parent: root
+    geometry: {kind: cuboid, size: [0.8, 0.73, 0.31]}
+    material: tank
+    transform: {translate: [0, 1.085, 0.42]}
+    articulation: static
+  cistern_lid:
+    role: tank-top
+    parent: root
+    geometry: {kind: cuboid, size: [0.86, 0.085, 0.36]}
+    material: edge
+    transform: {translate: [0, 1.49, 0.42]}
+    articulation: static
+  flush:
+    role: flush-mechanism
+    parent: root
+    geometry: {kind: cuboid, size: [0.15, 0.025, 0.12]}
+    material: hardware
+    transform: {translate: [0.18, 1.55, 0.42]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: initial-scene-review-pending, renderer_experiments: deferred}

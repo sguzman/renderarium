@@ -1,0 +1,128 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wood:
+    role: furniture-primary
+    base_color: "#7b5545"
+    roughness: 0.95
+  wood_dark:
+    role: furniture-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+  book_blue:
+    role: book
+    base_color: "#708aa0"
+    roughness: 0.96
+  book_gold:
+    role: book
+    base_color: "#c39a57"
+    roughness: 0.96
+  book_pink:
+    role: book
+    base_color: "#d7869f"
+    roughness: 0.98
+  box_cream:
+    role: storage-box
+    base_color: "#f1cdd8"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-tall-bookcase-v1
+  name: Block Chibi Tall Bookcase v1
+  kind: prop
+  root: root
+  tags: [bookshelf, block-chibi-room, tall-bookcase, grammar-specimen]
+
+parts:
+  root: {role: bookshelf-root, parent: null, articulation: static}
+
+  side_left:
+    role: bookshelf-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 1.65, 0.42]}
+    material: wood_dark
+    transform: {translate: [-0.42, 0.825, 0.0]}
+
+  side_right:
+    role: bookshelf-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 1.65, 0.42]}
+    material: wood_dark
+    transform: {translate: [0.42, 0.825, 0.0]}
+
+  shelf_bottom:
+    role: shelf-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.98, 0.12, 0.42]}
+    material: wood
+    transform: {translate: [0.0, 0.06, 0.0]}
+
+  shelf_mid:
+    role: shelf-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.98, 0.12, 0.42]}
+    material: wood
+    transform: {translate: [0.0, 0.60, 0.0]}
+
+  shelf_upper:
+    role: shelf-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.98, 0.12, 0.42]}
+    material: wood
+    transform: {translate: [0.0, 1.14, 0.0]}
+
+  shelf_top:
+    role: shelf-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.98, 0.12, 0.42]}
+    material: wood
+    transform: {translate: [0.0, 1.59, 0.0]}
+
+  book_1:
+    role: shelf-content
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.34, 0.26]}
+    material: book_blue
+    transform: {translate: [-0.22, 0.83, -0.02]}
+
+  book_2:
+    role: shelf-content
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.28, 0.26]}
+    material: book_pink
+    transform: {translate: [-0.06, 0.80, -0.02]}
+
+  book_3:
+    role: shelf-content
+    parent: root
+    geometry: {kind: cuboid, size: [0.14, 0.40, 0.26]}
+    material: book_gold
+    transform: {translate: [0.10, 0.86, -0.02]}
+
+  book_4:
+    role: shelf-content
+    parent: root
+    geometry: {kind: cuboid, size: [0.18, 0.34, 0.26]}
+    material: book_blue
+    transform: {translate: [0.22, 1.37, -0.02]}
+
+extensions:
+  taria:
+    object_grammar: bookshelf@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::bookshelf@0.1
+    specimen_intent: tall-bookcase
+    access_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

@@ -1,0 +1,105 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  warm_floor:
+    role: floor-substrate
+    base_color: "#a97861"
+    roughness: 0.99
+  warm_floor_dark:
+    role: floor-finish
+    base_color: "#93624f"
+    roughness: 0.99
+  warm_floor_light:
+    role: floor-finish
+    base_color: "#b9866d"
+    roughness: 0.99
+  cream_tile:
+    role: floor-finish
+    base_color: "#e9d7bd"
+    roughness: 0.99
+  rose_tile:
+    role: floor-finish
+    base_color: "#c98379"
+    roughness: 0.99
+
+asset:
+  id: block-chibi-warm-plank-floor-v1
+  name: Block Chibi Warm Plank Floor v1
+  kind: architecture
+  root: root
+  tags: [floor, block-chibi-room, plank-floor, grammar-specimen]
+
+parts:
+  root: {role: floor-root, parent: null, articulation: static}
+
+  substrate:
+    role: floor-structural-substrate
+    parent: root
+    geometry: {kind: cuboid, size: [2.30, 0.08, 2.00]}
+    material: warm_floor_dark
+    transform: {translate: [0.0, 0.04, 0.0]}
+
+  plank_1:
+    role: floor-plank
+    parent: root
+    geometry: {kind: cuboid, size: [0.36, 0.026, 1.92]}
+    material: warm_floor
+    transform: {translate: [-0.975, 0.095, 0.0]}
+
+  plank_2:
+    role: floor-plank
+    parent: root
+    geometry: {kind: cuboid, size: [0.36, 0.026, 1.92]}
+    material: warm_floor_light
+    transform: {translate: [-0.585, 0.095, 0.0]}
+
+  plank_3:
+    role: floor-plank
+    parent: root
+    geometry: {kind: cuboid, size: [0.36, 0.026, 1.92]}
+    material: warm_floor
+    transform: {translate: [-0.195, 0.095, 0.0]}
+
+  plank_4:
+    role: floor-plank
+    parent: root
+    geometry: {kind: cuboid, size: [0.36, 0.026, 1.92]}
+    material: warm_floor_light
+    transform: {translate: [0.195, 0.095, 0.0]}
+
+  plank_5:
+    role: floor-plank
+    parent: root
+    geometry: {kind: cuboid, size: [0.36, 0.026, 1.92]}
+    material: warm_floor
+    transform: {translate: [0.585, 0.095, 0.0]}
+
+  plank_6:
+    role: floor-plank
+    parent: root
+    geometry: {kind: cuboid, size: [0.36, 0.026, 1.92]}
+    material: warm_floor_light
+    transform: {translate: [0.975, 0.095, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: floor@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::floor@0.1
+    specimen_intent: warm-plank-floor
+    support_plane_y: 0.108
+    real_gap_width: 0.03
+    render_shading: flat
+    evaluation_status: awaiting-family-review

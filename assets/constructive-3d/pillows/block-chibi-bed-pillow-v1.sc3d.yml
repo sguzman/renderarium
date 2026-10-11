@@ -1,0 +1,72 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  cream:
+    role: pillow-textile
+    base_color: "#f2dfcf"
+    roughness: 0.99
+  cream_light:
+    role: pillow-textile-highlight
+    base_color: "#f8eadf"
+    roughness: 0.99
+  rose:
+    role: pillow-textile
+    base_color: "#d98aa2"
+    roughness: 0.99
+  rose_light:
+    role: pillow-textile-highlight
+    base_color: "#efb4c5"
+    roughness: 0.99
+  mauve:
+    role: pillow-textile
+    base_color: "#b7768f"
+    roughness: 0.99
+  mauve_light:
+    role: pillow-textile-highlight
+    base_color: "#d4a1b2"
+    roughness: 0.99
+
+asset:
+  id: block-chibi-bed-pillow-v1
+  name: Block Chibi Bed Pillow v1
+  kind: prop
+  root: root
+  tags: [pillow, block-chibi-room, bed-pillow, grammar-specimen]
+
+parts:
+  root: {role: pillow-root, parent: null, articulation: static}
+
+  body:
+    role: pillow-cushion-mass
+    parent: root
+    geometry: {kind: cuboid, size: [0.98, 0.18, 0.58]}
+    material: cream
+    transform: {translate: [0.0, 0.09, 0.0]}
+
+  center_panel:
+    role: pillow-puff-panel
+    parent: root
+    geometry: {kind: cuboid, size: [0.78, 0.05, 0.40]}
+    material: cream_light
+    transform: {translate: [0.0, 0.205, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: pillow@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::pillow@0.1
+    specimen_intent: bed-pillow
+    render_shading: flat
+    evaluation_status: awaiting-family-review

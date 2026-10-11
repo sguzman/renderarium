@@ -1,0 +1,127 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-range-v1
+  name: Block Chibi Kitchen Range v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, kitchen, range]
+materials:
+  body: {role: range-body, base_color: "#e8dac8", roughness: 0.98}
+  panel: {role: range-panel, base_color: "#c2a99a", roughness: 0.98}
+  dark: {role: oven-window, base_color: "#475462", roughness: 0.98}
+  black: {role: burner, base_color: "#373d43", roughness: 0.98}
+  trim: {role: metal-accent, base_color: "#b3b9bb", roughness: 0.98}
+  knob: {role: warm-control, base_color: "#d59e70", roughness: 0.98}
+parts:
+  root: {role: range-root, parent: null, articulation: static}
+  body:
+    role: range-base
+    parent: root
+    geometry: {kind: cuboid, size: [0.9, 0.84, 0.71]}
+    material: body
+    transform: {translate: [0, 0.42, 0]}
+    articulation: static
+  cooktop:
+    role: range-cooktop
+    parent: root
+    geometry: {kind: cuboid, size: [0.92, 0.07, 0.73]}
+    material: dark
+    transform: {translate: [0, 0.875, 0]}
+    articulation: static
+  burner_1:
+    role: front-burner
+    parent: root
+    geometry: {kind: cuboid, size: [0.24, 0.024, 0.2]}
+    material: black
+    transform: {translate: [-0.225, 0.924, -0.18]}
+    articulation: static
+  burner_2:
+    role: front-burner
+    parent: root
+    geometry: {kind: cuboid, size: [0.24, 0.024, 0.2]}
+    material: black
+    transform: {translate: [0.225, 0.924, -0.18]}
+    articulation: static
+  burner_3:
+    role: rear-burner
+    parent: root
+    geometry: {kind: cuboid, size: [0.24, 0.024, 0.2]}
+    material: black
+    transform: {translate: [-0.225, 0.924, 0.18]}
+    articulation: static
+  burner_4:
+    role: rear-burner
+    parent: root
+    geometry: {kind: cuboid, size: [0.24, 0.024, 0.2]}
+    material: black
+    transform: {translate: [0.225, 0.924, 0.18]}
+    articulation: static
+  oven_window:
+    role: oven-door-window
+    parent: root
+    geometry: {kind: cuboid, size: [0.69, 0.45, 0.023]}
+    material: dark
+    transform: {translate: [0, 0.46, -0.365]}
+    articulation: static
+  oven_trim:
+    role: oven-edge
+    parent: root
+    geometry: {kind: cuboid, size: [0.76, 0.045, 0.045]}
+    material: trim
+    transform: {translate: [0, 0.72, -0.385]}
+    articulation: static
+  oven_handle:
+    role: oven-door-handle
+    parent: root
+    geometry: {kind: cuboid, size: [0.63, 0.048, 0.045]}
+    material: trim
+    transform: {translate: [0, 0.665, -0.413]}
+    articulation: static
+  knob_1:
+    role: control-knob
+    parent: root
+    geometry: {kind: cuboid, size: [0.092, 0.087, 0.047]}
+    material: knob
+    transform: {translate: [-0.31, 0.79, -0.396]}
+    articulation: static
+  knob_2:
+    role: control-knob
+    parent: root
+    geometry: {kind: cuboid, size: [0.092, 0.087, 0.047]}
+    material: knob
+    transform: {translate: [-0.1, 0.79, -0.396]}
+    articulation: static
+  knob_3:
+    role: control-knob
+    parent: root
+    geometry: {kind: cuboid, size: [0.092, 0.087, 0.047]}
+    material: knob
+    transform: {translate: [0.1, 0.79, -0.396]}
+    articulation: static
+  knob_4:
+    role: control-knob
+    parent: root
+    geometry: {kind: cuboid, size: [0.092, 0.087, 0.047]}
+    material: knob
+    transform: {translate: [0.31, 0.79, -0.396]}
+    articulation: static
+  oven_foot_left:
+    role: range-foot
+    parent: root
+    geometry: {kind: cuboid, size: [0.13, 0.1, 0.13]}
+    material: panel
+    transform: {translate: [-0.31, 0.05, -0.25]}
+    articulation: static
+  oven_foot_right:
+    role: range-foot
+    parent: root
+    geometry: {kind: cuboid, size: [0.13, 0.1, 0.13]}
+    material: panel
+    transform: {translate: [0.31, 0.05, -0.25]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: first-review-pending}

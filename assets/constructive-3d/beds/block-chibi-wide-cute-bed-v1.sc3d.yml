@@ -1,0 +1,93 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wood:
+    role: frame
+    base_color: "#7b5545"
+    roughness: 0.95
+  wood_dark:
+    role: frame-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+  cream:
+    role: mattress
+    base_color: "#f5e6d5"
+    roughness: 0.98
+  textile:
+    role: blanket
+    base_color: "#d7869f"
+    roughness: 0.98
+  textile_light:
+    role: pillow
+    base_color: "#f1cdd8"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-wide-cute-bed-v1
+  name: Block Chibi Wide Cute Bed v1
+  kind: prop
+  root: root
+  tags: [bed, block-chibi-room, wide-cute-bed, grammar-specimen]
+
+parts:
+  root: {role: bed-root, parent: null, articulation: static}
+
+  base:
+    role: bed-support
+    parent: root
+    geometry: {kind: cuboid, size: [1.48, 0.28, 2.08]}
+    material: wood
+    transform: {translate: [0.0, 0.14, 0.0]}
+
+  mattress:
+    role: bed-mattress
+    parent: root
+    geometry: {kind: cuboid, size: [1.38, 0.22, 1.98]}
+    material: cream
+    transform: {translate: [0.0, 0.39, 0.0]}
+
+  headboard:
+    role: bed-headboard
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [1.50, 0.18]
+      top: [1.58, 0.20]
+      height: 0.92
+    material: wood_dark
+    transform: {translate: [0.0, 0.58, 0.95]}
+
+  pillow:
+    role: bed-pillow
+    parent: root
+    geometry: {kind: cuboid, size: [0.92, 0.20, 0.46]}
+    material: textile_light
+    transform: {translate: [0.0, 0.61, 0.58]}
+
+  blanket:
+    role: bed-blanket
+    parent: root
+    geometry: {kind: cuboid, size: [1.39, 0.09, 1.02]}
+    material: textile
+    transform: {translate: [0.0, 0.56, -0.38]}
+
+extensions:
+  taria:
+    object_grammar: bed@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::bed@0.1
+    specimen_intent: wide-cute-bed
+    head_direction: [0.0, 0.0, 1.0]
+    evaluation_status: awaiting-family-review

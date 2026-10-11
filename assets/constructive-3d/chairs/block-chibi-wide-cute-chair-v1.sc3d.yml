@@ -1,0 +1,112 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wood:
+    role: furniture-primary
+    base_color: "#7b5545"
+    roughness: 0.95
+  wood_dark:
+    role: furniture-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+  textile:
+    role: cushion
+    base_color: "#d7869f"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-wide-cute-chair-v1
+  name: Block Chibi Wide Cute Chair v1
+  kind: prop
+  root: root
+  description: >-
+    Wide squat chair with oversized back and cushion, testing a cute variation
+    within the same block-chibi chair realization grammar.
+  tags: [chair, block-chibi-room, wide-cute-chair, grammar-specimen]
+
+parts:
+  root:
+    role: chair-root
+    parent: null
+    articulation: static
+
+  seat:
+    role: chair-seat
+    parent: root
+    geometry: {kind: cuboid, size: [0.78, 0.16, 0.58]}
+    material: wood
+    transform: {translate: [0.0, 0.50, 0.0]}
+    articulation: static
+
+  cushion:
+    role: chair-cushion
+    parent: root
+    geometry: {kind: cuboid, size: [0.70, 0.08, 0.50]}
+    material: textile
+    transform: {translate: [0.0, 0.62, -0.01]}
+    articulation: static
+
+  back:
+    role: chair-back
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.76, 0.16]
+      top: [0.84, 0.18]
+      height: 0.72
+    material: wood_dark
+    transform: {translate: [0.0, 0.92, 0.25]}
+    articulation: static
+
+  leg_front_left:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.42, 0.16]}
+    material: wood_dark
+    transform: {translate: [-0.29, 0.21, -0.20]}
+    articulation: static
+
+  leg_front_right:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.42, 0.16]}
+    material: wood_dark
+    transform: {translate: [0.29, 0.21, -0.20]}
+    articulation: static
+
+  leg_back_left:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.42, 0.16]}
+    material: wood_dark
+    transform: {translate: [-0.29, 0.21, 0.20]}
+    articulation: static
+
+  leg_back_right:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.42, 0.16]}
+    material: wood_dark
+    transform: {translate: [0.29, 0.21, 0.20]}
+    articulation: static
+
+extensions:
+  taria:
+    object_grammar: chair@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::chair@0.1
+    specimen_intent: wide-cute-chair
+    use_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

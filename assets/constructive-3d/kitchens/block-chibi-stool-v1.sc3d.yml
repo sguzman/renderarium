@@ -1,0 +1,61 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-stool-v1
+  name: Block Chibi Kitchen Stool v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, kitchen, stool]
+materials:
+  wood: {role: stool-frame, base_color: "#755744", roughness: 0.98}
+  seat: {role: stool-cushion, base_color: "#dfa4a5", roughness: 0.98}
+  support: {role: stool-support, base_color: "#a97962", roughness: 0.98}
+parts:
+  root: {role: stool-root, parent: null, articulation: static}
+  seat_base:
+    role: stool-top
+    parent: root
+    geometry: {kind: cuboid, size: [0.48, 0.12, 0.47]}
+    material: wood
+    transform: {translate: [0, 0.49, 0]}
+    articulation: static
+  cushion:
+    role: soft-stool-seat
+    parent: root
+    geometry: {kind: cuboid, size: [0.44, 0.052, 0.43]}
+    material: seat
+    transform: {translate: [0, 0.576, 0]}
+    articulation: static
+  leg_front_left:
+    role: stool-leg
+    parent: root
+    geometry: {kind: cuboid, size: [0.105, 0.48, 0.105]}
+    material: support
+    transform: {translate: [-0.165, 0.24, -0.16]}
+    articulation: static
+  leg_front_right:
+    role: stool-leg
+    parent: root
+    geometry: {kind: cuboid, size: [0.105, 0.48, 0.105]}
+    material: support
+    transform: {translate: [0.165, 0.24, -0.16]}
+    articulation: static
+  leg_back_left:
+    role: stool-leg
+    parent: root
+    geometry: {kind: cuboid, size: [0.105, 0.48, 0.105]}
+    material: support
+    transform: {translate: [-0.165, 0.24, 0.16]}
+    articulation: static
+  leg_back_right:
+    role: stool-leg
+    parent: root
+    geometry: {kind: cuboid, size: [0.105, 0.48, 0.105]}
+    material: support
+    transform: {translate: [0.165, 0.24, 0.16]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: first-review-pending}

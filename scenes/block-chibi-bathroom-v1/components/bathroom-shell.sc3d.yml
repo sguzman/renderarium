@@ -1,0 +1,83 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-bathroom-v1-shell
+  name: Block Chibi Bathroom v1 tiled cutaway shell
+  kind: environment
+  root: root
+  tags: [block-chibi-room, bathroom, architecture, tiled]
+materials:
+  substrate: {role: floor-core, base_color: "#af9689", roughness: 0.98}
+  tile_cream: {role: floor-tile, base_color: "#f5e9da", roughness: 0.96}
+  tile_aqua: {role: floor-tile, base_color: "#c4ddd6", roughness: 0.97}
+  wall: {role: bathroom-wall, base_color: "#f2e6d9", roughness: 0.99}
+  sidewall: {role: bathroom-sidewall, base_color: "#ddc9b9", roughness: 0.99}
+  trim: {role: ceramic-trim, base_color: "#fff8eb", roughness: 0.95}
+  wall_tile_mint: {role: wall-tile-mint, base_color: "#b5cfc4", roughness: 0.95}
+  wall_tile_cream: {role: wall-tile-cream, base_color: "#e5e2d3", roughness: 0.95}
+parts:
+  root: {role: shell-root, parent: null, articulation: static}
+  floor_under: {role: floor-support, parent: root, geometry: {kind: cuboid, size: [5.80, 0.18, 4.70]}, material: substrate, transform: {translate: [0, 0, 0]}}
+  tile_0_0: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [-2.40, 0.106, -1.84]}}
+  tile_1_0: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [-1.44, 0.106, -1.84]}}
+  tile_2_0: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [-0.48, 0.106, -1.84]}}
+  tile_3_0: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [0.48, 0.106, -1.84]}}
+  tile_4_0: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [1.44, 0.106, -1.84]}}
+  tile_5_0: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [2.40, 0.106, -1.84]}}
+  tile_0_1: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [-2.40, 0.106, -0.92]}}
+  tile_1_1: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [-1.44, 0.106, -0.92]}}
+  tile_2_1: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [-0.48, 0.106, -0.92]}}
+  tile_3_1: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [0.48, 0.106, -0.92]}}
+  tile_4_1: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [1.44, 0.106, -0.92]}}
+  tile_5_1: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [2.40, 0.106, -0.92]}}
+  tile_0_2: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [-2.40, 0.106, 0.00]}}
+  tile_1_2: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [-1.44, 0.106, 0.00]}}
+  tile_2_2: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [-0.48, 0.106, 0.00]}}
+  tile_3_2: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [0.48, 0.106, 0.00]}}
+  tile_4_2: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [1.44, 0.106, 0.00]}}
+  tile_5_2: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [2.40, 0.106, 0.00]}}
+  tile_0_3: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [-2.40, 0.106, 0.92]}}
+  tile_1_3: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [-1.44, 0.106, 0.92]}}
+  tile_2_3: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [-0.48, 0.106, 0.92]}}
+  tile_3_3: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [0.48, 0.106, 0.92]}}
+  tile_4_3: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [1.44, 0.106, 0.92]}}
+  tile_5_3: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [2.40, 0.106, 0.92]}}
+  tile_0_4: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [-2.40, 0.106, 1.84]}}
+  tile_1_4: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [-1.44, 0.106, 1.84]}}
+  tile_2_4: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [-0.48, 0.106, 1.84]}}
+  tile_3_4: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [0.48, 0.106, 1.84]}}
+  tile_4_4: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_cream, transform: {translate: [1.44, 0.106, 1.84]}}
+  tile_5_4: {role: bathroom-checker-tile, parent: root, geometry: {kind: cuboid, size: [0.946, 0.026, 0.906]}, material: tile_aqua, transform: {translate: [2.40, 0.106, 1.84]}}
+  left_wall: {role: cutaway-left-wall, parent: root, geometry: {kind: cuboid, size: [0.18, 2.80, 4.70]}, material: sidewall, transform: {translate: [-2.81, 1.40, 0]}}
+  back_left_pier: {role: window-left-pier, parent: root, geometry: {kind: cuboid, size: [0.59, 2.80, 0.18]}, material: wall, transform: {translate: [-2.605, 1.40, 2.26]}}
+  back_right_pier: {role: window-right-pier, parent: root, geometry: {kind: cuboid, size: [3.86, 2.80, 0.18]}, material: wall, transform: {translate: [0.97, 1.40, 2.26]}}
+  back_below_window: {role: real-window-lower-wall, parent: root, geometry: {kind: cuboid, size: [1.35, 1.25, 0.18]}, material: wall, transform: {translate: [-1.705, 0.625, 2.26]}}
+  back_above_window: {role: real-window-upper-wall, parent: root, geometry: {kind: cuboid, size: [1.35, 0.38, 0.18]}, material: wall, transform: {translate: [-1.705, 2.61, 2.26]}}
+  back_trim: {role: baseboard, parent: root, geometry: {kind: cuboid, size: [5.50, 0.18, 0.07]}, material: trim, transform: {translate: [0, 0.205, 2.12]}}
+  left_trim: {role: baseboard, parent: root, geometry: {kind: cuboid, size: [0.07, 0.18, 4.50]}, material: trim, transform: {translate: [-2.676, 0.205, 0]}}
+  wall_tile_0_0: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_cream, transform: {translate: [-0.67, 1.07, 2.159]}}
+  wall_tile_1_0: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_mint, transform: {translate: [-0.23, 1.07, 2.159]}}
+  wall_tile_2_0: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_cream, transform: {translate: [0.21, 1.07, 2.159]}}
+  wall_tile_3_0: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_mint, transform: {translate: [0.65, 1.07, 2.159]}}
+  wall_tile_4_0: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_cream, transform: {translate: [1.09, 1.07, 2.159]}}
+  wall_tile_5_0: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_mint, transform: {translate: [1.53, 1.07, 2.159]}}
+  wall_tile_6_0: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_cream, transform: {translate: [1.97, 1.07, 2.159]}}
+  wall_tile_7_0: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_mint, transform: {translate: [2.41, 1.07, 2.159]}}
+  wall_tile_0_1: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_mint, transform: {translate: [-0.67, 1.39, 2.159]}}
+  wall_tile_1_1: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_cream, transform: {translate: [-0.23, 1.39, 2.159]}}
+  wall_tile_2_1: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_mint, transform: {translate: [0.21, 1.39, 2.159]}}
+  wall_tile_3_1: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_cream, transform: {translate: [0.65, 1.39, 2.159]}}
+  wall_tile_4_1: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_mint, transform: {translate: [1.09, 1.39, 2.159]}}
+  wall_tile_5_1: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_cream, transform: {translate: [1.53, 1.39, 2.159]}}
+  wall_tile_6_1: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_mint, transform: {translate: [1.97, 1.39, 2.159]}}
+  wall_tile_7_1: {role: glazed-wet-room-tile, parent: root, geometry: {kind: cuboid, size: [0.427, 0.30, 0.012]}, material: wall_tile_cream, transform: {translate: [2.41, 1.39, 2.159]}}
+extensions:
+  scenarium:
+    specification_ref: specification:block-chibi-bathroom-v1
+    real_window_opening: {center_x: -1.705, bottom_y: 1.25, top_y: 2.42, width: 1.35}
+    front_open: true
+    right_open: true
+    floor_support_y: 0.118

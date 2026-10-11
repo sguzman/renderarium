@@ -1,0 +1,27 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-birdhouse-v1
+  name: Block Chibi Garden Birdhouse v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garden, outdoor, birdhouse]
+materials:
+  post: {role: birdhouse-post, base_color: "#9b7958", roughness: 0.98}
+  wood: {role: birdhouse-box, base_color: "#e3bfa0", roughness: 0.98}
+  roof: {role: birdhouse-roof, base_color: "#dd9ead", roughness: 0.98}
+  hole: {role: birdhouse-opening, base_color: "#544c4c", roughness: 0.98}
+  peg: {role: birdhouse-perch, base_color: "#b28664", roughness: 0.98}
+parts:
+  root: {role: birdhouse-root, parent: null, articulation: static}
+  post: {role: support-post, parent: root, geometry: {kind: cuboid, size: [0.16, 1.47, 0.16]}, material: post, transform: {translate: [0, 0.735, 0]}}
+  base: {role: ground-foot, parent: root, geometry: {kind: cuboid, size: [0.39, 0.12, 0.39]}, material: post, transform: {translate: [0, 0.07, 0]}}
+  house: {role: birdhouse-body, parent: root, geometry: {kind: cuboid, size: [0.58, 0.52, 0.5]}, material: wood, transform: {translate: [0, 1.55, 0]}}
+  roof: {role: overhang-roof, parent: root, geometry: {kind: tapered_box, bottom: [0.76, 0.66], top: [0.58, 0.5], height: 0.27}, material: roof, transform: {translate: [0, 1.94, 0]}}
+  entrance: {role: birdhole-dark-square, parent: root, geometry: {kind: cuboid, size: [0.16, 0.17, 0.015]}, material: hole, transform: {translate: [0, 1.61, -0.265]}}
+  perch: {role: landing-peg, parent: root, geometry: {kind: cuboid, size: [0.09, 0.09, 0.26]}, material: peg, transform: {translate: [0, 1.43, -0.39]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, semantic_grammar: birdhouse, first_review: pending, effects: deferred}

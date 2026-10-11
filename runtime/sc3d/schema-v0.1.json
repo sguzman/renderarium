@@ -1,0 +1,2565 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taria.local/scenarium/constructive-3d-asset-v0.1.schema.json",
+  "title": "Scenarium Constructive 3D Asset Format v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "units",
+    "coordinates",
+    "asset",
+    "parts"
+  ],
+  "properties": {
+    "format": {
+      "const": "scenarium-constructive-3d"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "units": {
+      "const": "meters"
+    },
+    "coordinates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "handedness",
+        "up",
+        "forward"
+      ],
+      "properties": {
+        "handedness": {
+          "const": "right"
+        },
+        "up": {
+          "const": "y"
+        },
+        "forward": {
+          "const": "-z"
+        }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "root"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "character",
+            "prop",
+            "environment",
+            "building-element",
+            "effect",
+            "generic"
+          ]
+        },
+        "root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "default"
+        ],
+        "properties": {
+          "type": {
+            "const": "number"
+          },
+          "default": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "materials": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "base_color": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+          },
+          "roughness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "metalness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "emissive": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "double_sided": {
+            "type": "boolean"
+          },
+          "extensions": {
+            "type": "object"
+          },
+          "emissive_intensity": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Nonnegative intensity of a material's authored emissive color; 0 disables emitted surface glow."
+          }
+        }
+      }
+    },
+    "geometry_library": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/geometry"
+      }
+    },
+    "parts": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/part"
+      }
+    },
+    "extensions": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "scalarExpr": {
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "param"
+          ],
+          "properties": {
+            "param": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "vec2": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "oneOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "param"
+            ],
+            "properties": {
+              "param": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    "vec3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "oneOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "param"
+            ],
+            "properties": {
+              "param": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    "transform": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "translate": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "param"
+                ],
+                "properties": {
+                  "param": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "rotate_deg": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "param"
+                ],
+                "properties": {
+                  "param": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "scale": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "param"
+                ],
+                "properties": {
+                  "param": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "part": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "parent": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "geometry": {
+          "$ref": "#/$defs/geometry"
+        },
+        "material": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "pivot": {
+          "$ref": "#/$defs/vec3"
+        },
+        "anchors": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/vec3"
+          }
+        },
+        "attachment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "parent_anchor",
+            "child_anchor"
+          ],
+          "properties": {
+            "parent_anchor": {
+              "type": "string",
+              "minLength": 1
+            },
+            "child_anchor": {
+              "type": "string",
+              "minLength": 1
+            },
+            "offset": {
+              "$ref": "#/$defs/vec3"
+            }
+          }
+        },
+        "articulation": {
+          "enum": [
+            "static",
+            "rigid"
+          ]
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "geometry": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/cuboid"
+        },
+        {
+          "$ref": "#/$defs/roundedBox"
+        },
+        {
+          "$ref": "#/$defs/sphere"
+        },
+        {
+          "$ref": "#/$defs/ellipsoid"
+        },
+        {
+          "$ref": "#/$defs/cylinder"
+        },
+        {
+          "$ref": "#/$defs/cone"
+        },
+        {
+          "$ref": "#/$defs/capsule"
+        },
+        {
+          "$ref": "#/$defs/taperedBox"
+        },
+        {
+          "$ref": "#/$defs/wedge"
+        },
+        {
+          "$ref": "#/$defs/polygonPrism"
+        },
+        {
+          "$ref": "#/$defs/loft"
+        },
+        {
+          "$ref": "#/$defs/ribbonPath"
+        },
+        {
+          "$ref": "#/$defs/ribbonSweep"
+        },
+        {
+          "$ref": "#/$defs/union"
+        },
+        {
+          "$ref": "#/$defs/intersection"
+        },
+        {
+          "$ref": "#/$defs/difference"
+        },
+        {
+          "$ref": "#/$defs/geometryRef"
+        },
+        {
+          "$ref": "#/$defs/sdfGeometry"
+        }
+      ]
+    },
+    "cuboid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "size"
+      ],
+      "properties": {
+        "kind": {
+          "const": "cuboid"
+        },
+        "size": {
+          "$ref": "#/$defs/vec3"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "roundedBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "size",
+        "radius"
+      ],
+      "properties": {
+        "kind": {
+          "const": "rounded_box"
+        },
+        "size": {
+          "$ref": "#/$defs/vec3"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "segments": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sphere": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radius"
+      ],
+      "properties": {
+        "kind": {
+          "const": "sphere"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "ellipsoid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radii"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ellipsoid"
+        },
+        "radii": {
+          "$ref": "#/$defs/vec3"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "cylinder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radius",
+        "height"
+      ],
+      "properties": {
+        "kind": {
+          "const": "cylinder"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "height": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "segments": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "cone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radius",
+        "height"
+      ],
+      "properties": {
+        "kind": {
+          "const": "cone"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "height": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "segments": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "capsule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radius",
+        "length"
+      ],
+      "properties": {
+        "kind": {
+          "const": "capsule"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "length": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "segments": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "taperedBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "bottom",
+        "top",
+        "height"
+      ],
+      "properties": {
+        "kind": {
+          "const": "tapered_box"
+        },
+        "bottom": {
+          "$ref": "#/$defs/vec2"
+        },
+        "top": {
+          "$ref": "#/$defs/vec2"
+        },
+        "height": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "wedge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "size",
+        "slope"
+      ],
+      "properties": {
+        "kind": {
+          "const": "wedge"
+        },
+        "size": {
+          "$ref": "#/$defs/vec3"
+        },
+        "slope": {
+          "enum": [
+            "front-to-back",
+            "back-to-front"
+          ]
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "union": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "children"
+      ],
+      "properties": {
+        "op": {
+          "const": "union"
+        },
+        "children": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/geometry"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "intersection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "children"
+      ],
+      "properties": {
+        "op": {
+          "const": "intersection"
+        },
+        "children": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/geometry"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "difference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "base",
+        "subtract"
+      ],
+      "properties": {
+        "op": {
+          "const": "difference"
+        },
+        "base": {
+          "$ref": "#/$defs/geometry"
+        },
+        "subtract": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/geometry"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "geometryRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfGeometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "field"
+      ],
+      "properties": {
+        "kind": {
+          "const": "sdf"
+        },
+        "field": {
+          "$ref": "#/$defs/sdfField"
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "realization": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "enum": [
+                "backend_default",
+                "mesh",
+                "raymarch"
+              ]
+            },
+            "bounds": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "min",
+                "max"
+              ],
+              "properties": {
+                "min": {
+                  "$ref": "#/$defs/vec3"
+                },
+                "max": {
+                  "$ref": "#/$defs/vec3"
+                }
+              }
+            },
+            "target_cell_size": {
+              "$ref": "#/$defs/scalarExpr"
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfField": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sdfSphere"
+        },
+        {
+          "$ref": "#/$defs/sdfBox"
+        },
+        {
+          "$ref": "#/$defs/sdfRoundedBox"
+        },
+        {
+          "$ref": "#/$defs/sdfEllipsoid"
+        },
+        {
+          "$ref": "#/$defs/sdfCylinder"
+        },
+        {
+          "$ref": "#/$defs/sdfCapsule"
+        },
+        {
+          "$ref": "#/$defs/sdfUnion"
+        },
+        {
+          "$ref": "#/$defs/sdfIntersection"
+        },
+        {
+          "$ref": "#/$defs/sdfDifference"
+        },
+        {
+          "$ref": "#/$defs/sdfSmoothUnion"
+        },
+        {
+          "$ref": "#/$defs/sdfSmoothIntersection"
+        },
+        {
+          "$ref": "#/$defs/sdfSmoothDifference"
+        }
+      ]
+    },
+    "sdfSphere": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radius"
+      ],
+      "properties": {
+        "kind": {
+          "const": "sphere"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "size"
+      ],
+      "properties": {
+        "kind": {
+          "const": "box"
+        },
+        "size": {
+          "$ref": "#/$defs/vec3"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfRoundedBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "size",
+        "radius"
+      ],
+      "properties": {
+        "kind": {
+          "const": "rounded_box"
+        },
+        "size": {
+          "$ref": "#/$defs/vec3"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfEllipsoid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radii"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ellipsoid"
+        },
+        "radii": {
+          "$ref": "#/$defs/vec3"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfCylinder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radius",
+        "height"
+      ],
+      "properties": {
+        "kind": {
+          "const": "cylinder"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "height": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfCapsule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "radius",
+        "length"
+      ],
+      "properties": {
+        "kind": {
+          "const": "capsule"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "length": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "translate": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "rotate_deg": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "scale": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "param"
+                    ],
+                    "properties": {
+                      "param": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfUnion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "children"
+      ],
+      "properties": {
+        "op": {
+          "const": "union"
+        },
+        "children": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/sdfField"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfIntersection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "children"
+      ],
+      "properties": {
+        "op": {
+          "const": "intersection"
+        },
+        "children": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/sdfField"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfDifference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "base",
+        "subtract"
+      ],
+      "properties": {
+        "op": {
+          "const": "difference"
+        },
+        "base": {
+          "$ref": "#/$defs/sdfField"
+        },
+        "subtract": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sdfField"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfSmoothUnion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "radius",
+        "children"
+      ],
+      "properties": {
+        "op": {
+          "const": "smooth_union"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "children": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/sdfField"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfSmoothIntersection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "radius",
+        "children"
+      ],
+      "properties": {
+        "op": {
+          "const": "smooth_intersection"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "children": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/sdfField"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "sdfSmoothDifference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "radius",
+        "base",
+        "subtract"
+      ],
+      "properties": {
+        "op": {
+          "const": "smooth_difference"
+        },
+        "radius": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "base": {
+          "$ref": "#/$defs/sdfField"
+        },
+        "subtract": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sdfField"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "polygonPrism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "profile",
+        "depth"
+      ],
+      "properties": {
+        "kind": {
+          "const": "polygon_prism"
+        },
+        "profile": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/$defs/vec2"
+          }
+        },
+        "depth": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "loftSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "z",
+        "profile"
+      ],
+      "properties": {
+        "z": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "profile": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/$defs/vec2"
+          }
+        }
+      }
+    },
+    "loft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "sections"
+      ],
+      "properties": {
+        "kind": {
+          "const": "loft"
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/loftSection"
+          }
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "ribbonPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "path",
+        "width",
+        "depth"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ribbon_path"
+        },
+        "path": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/vec3"
+          }
+        },
+        "width": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "depth": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    },
+    "ribbonSweepSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "point",
+        "width",
+        "depth"
+      ],
+      "properties": {
+        "point": {
+          "$ref": "#/$defs/vec3"
+        },
+        "width": {
+          "$ref": "#/$defs/scalarExpr"
+        },
+        "depth": {
+          "$ref": "#/$defs/scalarExpr"
+        }
+      }
+    },
+    "ribbonSweep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "sections"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ribbon_sweep"
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/ribbonSweepSection"
+          }
+        },
+        "up_hint": {
+          "$ref": "#/$defs/vec3"
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "extensions": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

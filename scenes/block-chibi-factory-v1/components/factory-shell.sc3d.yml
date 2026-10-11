@@ -1,0 +1,97 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-factory-shell-v1
+  name: Pastel light-industrial assembly cell hall v1
+  kind: environment
+  root: root
+  tags: [block-chibi-room, light-industrial, factory, manufacturing-cell, cutaway]
+materials:
+  foundation: {role: foundation, base_color: "#7d8987", roughness: 0.98}
+  concrete: {role: concrete, base_color: "#d2d6c8", roughness: 0.98}
+  backwall: {role: backwall, base_color: "#e2e6df", roughness: 0.98}
+  leftwall: {role: leftwall, base_color: "#b6c8c4", roughness: 0.98}
+  post: {role: post, base_color: "#729b9a", roughness: 0.98}
+  trim: {role: trim, base_color: "#91b9b0", roughness: 0.98}
+  glass: {role: glass, base_color: "#a7ced0", roughness: 0.98}
+  frame: {role: frame, base_color: "#f4e5d3", roughness: 0.98}
+  window: {role: window, base_color: "#d6edef", roughness: 0.98}
+  safety: {role: safety, base_color: "#ebc68b", roughness: 0.98}
+  lane: {role: lane, base_color: "#c8c0ac", roughness: 0.98}
+  arrow: {role: arrow, base_color: "#8fb8ae", roughness: 0.98}
+  panel: {role: panel, base_color: "#d9aaa6", roughness: 0.98}
+  dark: {role: dark, base_color: "#688789", roughness: 0.98}
+  air: {role: air, base_color: "#9fb5b1", roughness: 0.98}
+  soft: {role: soft, base_color: "#f4e9d7", roughness: 0.98}
+parts:
+  root: {role: factory-cell-root, parent: null, articulation: static}
+  slab: {role: slab, parent: root, geometry: {kind: cuboid, size: [10.2, 0.24, 6.4]}, material: foundation, transform: {translate: [0, 0, 0]}}
+  concrete_floor: {role: concrete_floor, parent: root, geometry: {kind: cuboid, size: [10.06, 0.034, 6.23]}, material: concrete, transform: {translate: [0, 0.137, 0]}}
+  back_wall: {role: back_wall, parent: root, geometry: {kind: cuboid, size: [10.2, 4.2, 0.19]}, material: backwall, transform: {translate: [0, 2.1, 3.1]}}
+  left_wall: {role: left_wall, parent: root, geometry: {kind: cuboid, size: [0.19, 4.2, 6.4]}, material: leftwall, transform: {translate: [-5, 2.1, 0]}}
+  back_crown_beam: {role: back_crown_beam, parent: root, geometry: {kind: cuboid, size: [10.16, 0.38, 0.34]}, material: post, transform: {translate: [0, 4.02, 3.02]}}
+  left_crown_beam: {role: left_crown_beam, parent: root, geometry: {kind: cuboid, size: [0.32, 0.35, 6.23]}, material: post, transform: {translate: [-4.96, 4.02, 0]}}
+  rear_baseboard: {role: rear_baseboard, parent: root, geometry: {kind: cuboid, size: [9.78, 0.17, 0.11]}, material: trim, transform: {translate: [0, 0.25, 2.96]}}
+  left_baseboard: {role: left_baseboard, parent: root, geometry: {kind: cuboid, size: [0.12, 0.17, 6.02]}, material: trim, transform: {translate: [-4.85, 0.25, 0]}}
+  high_vent_a: {role: high_vent_a, parent: root, geometry: {kind: cuboid, size: [1.08, 0.34, 0.04]}, material: air, transform: {translate: [-1.45, 3.78, 2.995]}}
+  high_vent_b: {role: high_vent_b, parent: root, geometry: {kind: cuboid, size: [1.08, 0.34, 0.04]}, material: air, transform: {translate: [1.2, 3.78, 2.995]}}
+  high_vent_c: {role: high_vent_c, parent: root, geometry: {kind: cuboid, size: [1.08, 0.34, 0.04]}, material: air, transform: {translate: [3.83, 3.78, 2.995]}}
+  factory_sign_plate: {role: factory_sign_plate, parent: root, geometry: {kind: cuboid, size: [2.65, 0.49, 0.065]}, material: panel, transform: {translate: [-2.83, 3.56, 2.982]}}
+  factory_sign_left: {role: factory_sign_left, parent: root, geometry: {kind: cuboid, size: [0.28, 0.2, 0.071]}, material: soft, transform: {translate: [-3.65, 3.56, 2.942]}}
+  factory_sign_mid: {role: factory_sign_mid, parent: root, geometry: {kind: cuboid, size: [0.28, 0.2, 0.071]}, material: soft, transform: {translate: [-3.14, 3.56, 2.942]}}
+  factory_sign_right: {role: factory_sign_right, parent: root, geometry: {kind: cuboid, size: [0.28, 0.2, 0.071]}, material: soft, transform: {translate: [-2.63, 3.56, 2.942]}}
+  pedestrian_lane_left: {role: pedestrian_lane_left, parent: root, geometry: {kind: cuboid, size: [9.3, 0.012, 0.075]}, material: lane, transform: {translate: [0, 0.159, -1.57]}}
+  pedestrian_lane_right: {role: pedestrian_lane_right, parent: root, geometry: {kind: cuboid, size: [9.3, 0.012, 0.075]}, material: lane, transform: {translate: [0, 0.159, -2.76]}}
+  safety_front_band: {role: safety_front_band, parent: root, geometry: {kind: cuboid, size: [9.3, 0.009, 0.065]}, material: safety, transform: {translate: [0, 0.16, -2.47]}}
+  rear_post__4_78: {role: rear_post__4_78, parent: root, geometry: {kind: cuboid, size: [0.17, 4.1, 0.22]}, material: post, transform: {translate: [-4.78, 2.05, 2.985]}}
+  rear_post__2_39: {role: rear_post__2_39, parent: root, geometry: {kind: cuboid, size: [0.17, 4.1, 0.22]}, material: post, transform: {translate: [-2.39, 2.05, 2.985]}}
+  rear_post_0: {role: rear_post_0, parent: root, geometry: {kind: cuboid, size: [0.17, 4.1, 0.22]}, material: post, transform: {translate: [0, 2.05, 2.985]}}
+  rear_post_2_39: {role: rear_post_2_39, parent: root, geometry: {kind: cuboid, size: [0.17, 4.1, 0.22]}, material: post, transform: {translate: [2.39, 2.05, 2.985]}}
+  rear_post_4_78: {role: rear_post_4_78, parent: root, geometry: {kind: cuboid, size: [0.17, 4.1, 0.22]}, material: post, transform: {translate: [4.78, 2.05, 2.985]}}
+  window_0: {role: window_0, parent: root, geometry: {kind: cuboid, size: [1.52, 0.88, 0.04]}, material: glass, transform: {translate: [-3.55, 2.77, 2.98]}}
+  window_border_l_0: {role: window_border_l_0, parent: root, geometry: {kind: cuboid, size: [0.09, 1.02, 0.07]}, material: frame, transform: {translate: [-4.359999999999999, 2.77, 2.95]}}
+  window_border_r_0: {role: window_border_r_0, parent: root, geometry: {kind: cuboid, size: [0.09, 1.02, 0.07]}, material: frame, transform: {translate: [-2.7399999999999998, 2.77, 2.95]}}
+  window_border_top_0: {role: window_border_top_0, parent: root, geometry: {kind: cuboid, size: [1.7, 0.085, 0.08]}, material: frame, transform: {translate: [-3.55, 3.3, 2.95]}}
+  window_border_bottom_0: {role: window_border_bottom_0, parent: root, geometry: {kind: cuboid, size: [1.7, 0.085, 0.08]}, material: frame, transform: {translate: [-3.55, 2.25, 2.95]}}
+  window_1: {role: window_1, parent: root, geometry: {kind: cuboid, size: [1.52, 0.88, 0.04]}, material: glass, transform: {translate: [-1.21, 2.77, 2.98]}}
+  window_border_l_1: {role: window_border_l_1, parent: root, geometry: {kind: cuboid, size: [0.09, 1.02, 0.07]}, material: frame, transform: {translate: [-2.02, 2.77, 2.95]}}
+  window_border_r_1: {role: window_border_r_1, parent: root, geometry: {kind: cuboid, size: [0.09, 1.02, 0.07]}, material: frame, transform: {translate: [-0.3999999999999999, 2.77, 2.95]}}
+  window_border_top_1: {role: window_border_top_1, parent: root, geometry: {kind: cuboid, size: [1.7, 0.085, 0.08]}, material: frame, transform: {translate: [-1.21, 3.3, 2.95]}}
+  window_border_bottom_1: {role: window_border_bottom_1, parent: root, geometry: {kind: cuboid, size: [1.7, 0.085, 0.08]}, material: frame, transform: {translate: [-1.21, 2.25, 2.95]}}
+  window_2: {role: window_2, parent: root, geometry: {kind: cuboid, size: [1.52, 0.88, 0.04]}, material: glass, transform: {translate: [1.13, 2.77, 2.98]}}
+  window_border_l_2: {role: window_border_l_2, parent: root, geometry: {kind: cuboid, size: [0.09, 1.02, 0.07]}, material: frame, transform: {translate: [0.31999999999999984, 2.77, 2.95]}}
+  window_border_r_2: {role: window_border_r_2, parent: root, geometry: {kind: cuboid, size: [0.09, 1.02, 0.07]}, material: frame, transform: {translate: [1.94, 2.77, 2.95]}}
+  window_border_top_2: {role: window_border_top_2, parent: root, geometry: {kind: cuboid, size: [1.7, 0.085, 0.08]}, material: frame, transform: {translate: [1.13, 3.3, 2.95]}}
+  window_border_bottom_2: {role: window_border_bottom_2, parent: root, geometry: {kind: cuboid, size: [1.7, 0.085, 0.08]}, material: frame, transform: {translate: [1.13, 2.25, 2.95]}}
+  window_3: {role: window_3, parent: root, geometry: {kind: cuboid, size: [1.52, 0.88, 0.04]}, material: glass, transform: {translate: [3.4699999999999998, 2.77, 2.98]}}
+  window_border_l_3: {role: window_border_l_3, parent: root, geometry: {kind: cuboid, size: [0.09, 1.02, 0.07]}, material: frame, transform: {translate: [2.6599999999999997, 2.77, 2.95]}}
+  window_border_r_3: {role: window_border_r_3, parent: root, geometry: {kind: cuboid, size: [0.09, 1.02, 0.07]}, material: frame, transform: {translate: [4.279999999999999, 2.77, 2.95]}}
+  window_border_top_3: {role: window_border_top_3, parent: root, geometry: {kind: cuboid, size: [1.7, 0.085, 0.08]}, material: frame, transform: {translate: [3.4699999999999998, 3.3, 2.95]}}
+  window_border_bottom_3: {role: window_border_bottom_3, parent: root, geometry: {kind: cuboid, size: [1.7, 0.085, 0.08]}, material: frame, transform: {translate: [3.4699999999999998, 2.25, 2.95]}}
+  lane_arrow_shaft__4: {role: lane_arrow_shaft__4, parent: root, geometry: {kind: cuboid, size: [0.48, 0.014, 0.09]}, material: arrow, transform: {translate: [-4, 0.166, -2.16]}}
+  lane_arrow_tip_a__4: {role: lane_arrow_tip_a__4, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [-3.73, 0.166, -2.25], rotate_deg: [0, 24, 0]}}
+  lane_arrow_tip_b__4: {role: lane_arrow_tip_b__4, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [-3.73, 0.166, -2.07], rotate_deg: [0, -24, 0]}}
+  lane_arrow_shaft__2: {role: lane_arrow_shaft__2, parent: root, geometry: {kind: cuboid, size: [0.48, 0.014, 0.09]}, material: arrow, transform: {translate: [-2, 0.166, -2.16]}}
+  lane_arrow_tip_a__2: {role: lane_arrow_tip_a__2, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [-1.73, 0.166, -2.25], rotate_deg: [0, 24, 0]}}
+  lane_arrow_tip_b__2: {role: lane_arrow_tip_b__2, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [-1.73, 0.166, -2.07], rotate_deg: [0, -24, 0]}}
+  lane_arrow_shaft_0: {role: lane_arrow_shaft_0, parent: root, geometry: {kind: cuboid, size: [0.48, 0.014, 0.09]}, material: arrow, transform: {translate: [0, 0.166, -2.16]}}
+  lane_arrow_tip_a_0: {role: lane_arrow_tip_a_0, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [0.27, 0.166, -2.25], rotate_deg: [0, 24, 0]}}
+  lane_arrow_tip_b_0: {role: lane_arrow_tip_b_0, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [0.27, 0.166, -2.07], rotate_deg: [0, -24, 0]}}
+  lane_arrow_shaft_2: {role: lane_arrow_shaft_2, parent: root, geometry: {kind: cuboid, size: [0.48, 0.014, 0.09]}, material: arrow, transform: {translate: [2, 0.166, -2.16]}}
+  lane_arrow_tip_a_2: {role: lane_arrow_tip_a_2, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [2.27, 0.166, -2.25], rotate_deg: [0, 24, 0]}}
+  lane_arrow_tip_b_2: {role: lane_arrow_tip_b_2, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [2.27, 0.166, -2.07], rotate_deg: [0, -24, 0]}}
+  lane_arrow_shaft_4: {role: lane_arrow_shaft_4, parent: root, geometry: {kind: cuboid, size: [0.48, 0.014, 0.09]}, material: arrow, transform: {translate: [4, 0.166, -2.16]}}
+  lane_arrow_tip_a_4: {role: lane_arrow_tip_a_4, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [4.27, 0.166, -2.25], rotate_deg: [0, 24, 0]}}
+  lane_arrow_tip_b_4: {role: lane_arrow_tip_b_4, parent: root, geometry: {kind: cuboid, size: [0.23, 0.014, 0.075]}, material: arrow, transform: {translate: [4.27, 0.166, -2.07], rotate_deg: [0, -24, 0]}}
+extensions:
+  scenarium:
+    semantic_ref: specification:block-chibi-factory-v1
+    architectural_context: light-industrial-production-cell
+    concrete_floor_support_y: 0.154
+    roof_removed_for_camera_access: true
+    front_and_right_cutaway: true
+    roof_lighting_and_shader_simulation: deferred
+    floor_lane_markings_are_pedestrian_arrows_not_indoor_tiles: true

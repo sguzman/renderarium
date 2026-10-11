@@ -1,0 +1,34 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-rolling-tool-chest-v1
+  name: Block Chibi rolling tool chest v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garage, residential-garage, rolling-tool-chest]
+materials:
+  body: {role: body, base_color: "#b8828c", roughness: 0.98}
+  drawer: {role: drawer, base_color: "#e9bbc2", roughness: 0.98}
+  metal: {role: metal, base_color: "#868c8e", roughness: 0.98}
+  handle: {role: handle, base_color: "#f5e2d4", roughness: 0.98}
+  wheel: {role: wheel, base_color: "#4e5659", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  housing: {role: housing, parent: root, geometry: {kind: cuboid, size: [0.83, 1.01, 0.59]}, material: body, transform: {translate: [0, 0.575, 0]}}
+  drawer_0: {role: drawer_0, parent: root, geometry: {kind: cuboid, size: [0.72, 0.23, 0.04]}, material: drawer, transform: {translate: [0, 0.3, -0.319]}}
+  pull_0: {role: pull_0, parent: root, geometry: {kind: cuboid, size: [0.28, 0.045, 0.06]}, material: handle, transform: {translate: [0, 0.3, -0.352]}}
+  drawer_1: {role: drawer_1, parent: root, geometry: {kind: cuboid, size: [0.72, 0.23, 0.04]}, material: drawer, transform: {translate: [0, 0.59, -0.319]}}
+  pull_1: {role: pull_1, parent: root, geometry: {kind: cuboid, size: [0.28, 0.045, 0.06]}, material: handle, transform: {translate: [0, 0.59, -0.352]}}
+  drawer_2: {role: drawer_2, parent: root, geometry: {kind: cuboid, size: [0.72, 0.23, 0.04]}, material: drawer, transform: {translate: [0, 0.88, -0.319]}}
+  pull_2: {role: pull_2, parent: root, geometry: {kind: cuboid, size: [0.28, 0.045, 0.06]}, material: handle, transform: {translate: [0, 0.88, -0.352]}}
+  top: {role: top, parent: root, geometry: {kind: cuboid, size: [0.89, 0.08, 0.64]}, material: metal, transform: {translate: [0, 1.12, 0]}}
+  caster_0_0: {role: caster_0_0, parent: root, geometry: {kind: cuboid, size: [0.15, 0.15, 0.15]}, material: wheel, transform: {translate: [-0.3, 0.075, -0.2]}}
+  caster_0_1: {role: caster_0_1, parent: root, geometry: {kind: cuboid, size: [0.15, 0.15, 0.15]}, material: wheel, transform: {translate: [-0.3, 0.075, 0.2]}}
+  caster_1_0: {role: caster_1_0, parent: root, geometry: {kind: cuboid, size: [0.15, 0.15, 0.15]}, material: wheel, transform: {translate: [0.3, 0.075, -0.2]}}
+  caster_1_1: {role: caster_1_1, parent: root, geometry: {kind: cuboid, size: [0.15, 0.15, 0.15]}, material: wheel, transform: {translate: [0.3, 0.075, 0.2]}}
+  side_handle: {role: side_handle, parent: root, geometry: {kind: cuboid, size: [0.13, 0.25, 0.1]}, material: metal, transform: {translate: [0.46, 0.93, 0]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, context: residential-garage, review: pending, lighting: deferred}

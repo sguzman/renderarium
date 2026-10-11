@@ -1,0 +1,74 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-living-room-v1-shell
+  name: Block Chibi Living Room v1 cutaway shell
+  kind: environment
+  root: root
+  tags: [living-room, room-shell, block-chibi-room, cutaway]
+materials:
+  floor_dark: {role: floor-substrate, base_color: "#855c4b", roughness: 0.98}
+  floor_a: {role: floor-plank, base_color: "#bb886f", roughness: 0.98}
+  floor_b: {role: floor-plank, base_color: "#c79979", roughness: 0.98}
+  wall: {role: back-plaster-wall, base_color: "#eddcc6", roughness: 0.99}
+  wall_side: {role: side-plaster-wall, base_color: "#dec6b3", roughness: 0.99}
+  trim: {role: baseboard, base_color: "#f7ecde", roughness: 0.98}
+  art_frame: {role: wall-art-frame, base_color: "#795749", roughness: 0.96}
+  art_base: {role: wall-art-mat, base_color: "#f6eee1", roughness: 0.98}
+  art_green: {role: picture-color-block, base_color: "#8da28c", roughness: 0.98}
+  art_rose: {role: picture-color-block, base_color: "#c78694", roughness: 0.98}
+parts:
+  root: {role: architecture-root, parent: null, articulation: static}
+  floor_under:
+    role: structural-floor
+    parent: root
+    geometry: {kind: cuboid, size: [5.80, 0.18, 4.70]}
+    material: floor_dark
+    transform: {translate: [0, 0, 0]}
+  plank_1: {role: floor-plank, parent: root, geometry: {kind: cuboid, size: [0.92, 0.028, 4.54]}, material: floor_a, transform: {translate: [-2.40, 0.104, 0]}}
+  plank_2: {role: floor-plank, parent: root, geometry: {kind: cuboid, size: [0.92, 0.028, 4.54]}, material: floor_b, transform: {translate: [-1.44, 0.104, 0]}}
+  plank_3: {role: floor-plank, parent: root, geometry: {kind: cuboid, size: [0.92, 0.028, 4.54]}, material: floor_a, transform: {translate: [-0.48, 0.104, 0]}}
+  plank_4: {role: floor-plank, parent: root, geometry: {kind: cuboid, size: [0.92, 0.028, 4.54]}, material: floor_b, transform: {translate: [0.48, 0.104, 0]}}
+  plank_5: {role: floor-plank, parent: root, geometry: {kind: cuboid, size: [0.92, 0.028, 4.54]}, material: floor_a, transform: {translate: [1.44, 0.104, 0]}}
+  plank_6: {role: floor-plank, parent: root, geometry: {kind: cuboid, size: [0.92, 0.028, 4.54]}, material: floor_b, transform: {translate: [2.40, 0.104, 0]}}
+  left_wall: {role: cutaway-left-wall, parent: root, geometry: {kind: cuboid, size: [0.18, 2.80, 4.70]}, material: wall_side, transform: {translate: [-2.81, 1.40, 0]}}
+  back_wall_left:
+    role: window-left-pier
+    parent: root
+    geometry: {kind: cuboid, size: [3.575, 2.80, 0.18]}
+    material: wall
+    transform: {translate: [-1.1125, 1.40, 2.26]}
+  back_wall_right:
+    role: window-right-pier
+    parent: root
+    geometry: {kind: cuboid, size: [0.875, 2.80, 0.18]}
+    material: wall
+    transform: {translate: [2.4625, 1.40, 2.26]}
+  window_sill_wall:
+    role: below-window
+    parent: root
+    geometry: {kind: cuboid, size: [1.35, 1.08, 0.18]}
+    material: wall
+    transform: {translate: [1.35, 0.54, 2.26]}
+  window_lintel_wall:
+    role: above-window
+    parent: root
+    geometry: {kind: cuboid, size: [1.35, 0.47, 0.18]}
+    material: wall
+    transform: {translate: [1.35, 2.565, 2.26]}
+  left_baseboard: {role: trim, parent: root, geometry: {kind: cuboid, size: [0.075, 0.18, 4.54]}, material: trim, transform: {translate: [-2.675, 0.20, 0]}}
+  rear_baseboard: {role: trim, parent: root, geometry: {kind: cuboid, size: [5.50, 0.18, 0.075]}, material: trim, transform: {translate: [0, 0.20, 2.115]}}
+  picture_frame: {role: wall-art-frame, parent: root, geometry: {kind: cuboid, size: [0.71, 0.61, 0.06]}, material: art_frame, transform: {translate: [-1.80, 2.03, 2.12]}}
+  picture_mat: {role: wall-art-ground, parent: root, geometry: {kind: cuboid, size: [0.58, 0.48, 0.015]}, material: art_base, transform: {translate: [-1.80, 2.03, 2.079]}}
+  picture_green: {role: picture-abstract-landscape, parent: root, geometry: {kind: cuboid, size: [0.50, 0.24, 0.011]}, material: art_green, transform: {translate: [-1.80, 1.98, 2.067]}}
+  picture_rose: {role: picture-abstract-sky, parent: root, geometry: {kind: cuboid, size: [0.50, 0.13, 0.011]}, material: art_rose, transform: {translate: [-1.80, 2.17, 2.067]}}
+extensions:
+  scenarium:
+    semantic_ref: specification:block-chibi-living-room-v1
+    true_window_aperture: {width: 1.35, bottom_y: 1.08, top_y: 2.33, center_x: 1.35, back_wall_z: 2.26}
+    floor_support_y: 0.118
+    front_open: true
+    right_open: true

@@ -1,0 +1,34 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-factory-control-console-v1
+  name: Block Chibi factory control console v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, factory-control-console]
+materials:
+  body: {role: body, base_color: "#8facac", roughness: 0.98}
+  face: {role: face, base_color: "#c6d4c7", roughness: 0.98}
+  screen: {role: screen, base_color: "#95c6bf", roughness: 0.98}
+  button: {role: button, base_color: "#efb6b9", roughness: 0.98}
+  warning: {role: warning, base_color: "#e8cd90", roughness: 0.98}
+  stand: {role: stand, base_color: "#718c8c", roughness: 0.98}
+parts:
+  root: {role: factory-control-console-root, parent: null, articulation: static}
+  base: {role: base, parent: root, geometry: {kind: cuboid, size: [0.64, 0.15, 0.55]}, material: stand, transform: {translate: [0, 0.075, 0]}}
+  stand: {role: stand, parent: root, geometry: {kind: cuboid, size: [0.25, 0.97, 0.28]}, material: stand, transform: {translate: [0, 0.61, 0]}}
+  console: {role: console, parent: root, geometry: {kind: tapered_box, bottom: [0.82, 0.56], top: [0.75, 0.46], height: 0.52}, material: body, transform: {translate: [0, 1.2, 0]}}
+  control_face: {role: control_face, parent: root, geometry: {kind: cuboid, size: [0.66, 0.32, 0.035]}, material: face, transform: {translate: [0, 1.31, -0.295], rotate_deg: [-12, 0, 0]}}
+  display: {role: display, parent: root, geometry: {kind: cuboid, size: [0.36, 0.16, 0.042]}, material: screen, transform: {translate: [-0.15, 1.39, -0.319], rotate_deg: [-12, 0, 0]}}
+  push_button: {role: push_button, parent: root, geometry: {kind: cuboid, size: [0.15, 0.1, 0.04]}, material: button, transform: {translate: [0.23, 1.23, -0.324]}}
+  status_lamp: {role: status_lamp, parent: root, geometry: {kind: cuboid, size: [0.13, 0.1, 0.04]}, material: warning, transform: {translate: [0.22, 1.39, -0.324]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred

@@ -1,0 +1,32 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-feed-chute-v1
+  name: Block Chibi feed chute v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, feed-chute]
+materials:
+  body: {role: body, base_color: "#d7b69c", roughness: 0.98}
+  channel: {role: channel, base_color: "#a4bdb1", roughness: 0.98}
+  guide: {role: guide, base_color: "#8c9e95", roughness: 0.98}
+  input: {role: input, base_color: "#e6abac", roughness: 0.98}
+parts:
+  root: {role: feed-chute-root, parent: null, articulation: static}
+  left_guide: {role: left_guide, parent: root, geometry: {kind: cuboid, size: [1.21, 0.13, 0.075]}, material: guide, transform: {translate: [0, 1.06, -0.4], rotate_deg: [0, 0, -12]}}
+  right_guide: {role: right_guide, parent: root, geometry: {kind: cuboid, size: [1.21, 0.13, 0.075]}, material: guide, transform: {translate: [0, 1.06, 0.4], rotate_deg: [0, 0, -12]}}
+  sloped_feed_plate: {role: sloped_feed_plate, parent: root, geometry: {kind: cuboid, size: [1.21, 0.07, 0.73]}, material: channel, transform: {translate: [0, 1.04, 0], rotate_deg: [0, 0, -12]}}
+  support_l: {role: support_l, parent: root, geometry: {kind: cuboid, size: [0.12, 1.04, 0.13]}, material: body, transform: {translate: [-0.45, 0.52, -0.28]}}
+  support_r: {role: support_r, parent: root, geometry: {kind: cuboid, size: [0.12, 1.04, 0.13]}, material: body, transform: {translate: [-0.45, 0.52, 0.28]}}
+  support_exit: {role: support_exit, parent: root, geometry: {kind: cuboid, size: [0.13, 0.88, 0.13]}, material: body, transform: {translate: [0.5, 0.44, 0]}}
+  stock_on_chute: {role: stock_on_chute, parent: root, geometry: {kind: cuboid, size: [0.24, 0.14, 0.24]}, material: input, transform: {translate: [-0.22, 1.16, 0]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred

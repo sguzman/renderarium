@@ -1,0 +1,92 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pink:
+    role: lamp-housing
+    base_color: "#d7869f"
+    roughness: 0.96
+  pink_dark:
+    role: lamp-support
+    base_color: "#9f586f"
+    roughness: 0.97
+  cream:
+    role: lamp-housing
+    base_color: "#f1dfd1"
+    roughness: 0.97
+  warm_emit:
+    role: lamp-emitter
+    base_color: "#ffe3a3"
+    roughness: 0.75
+    emissive: "#ffd27a"
+    emissive_intensity: 0.65
+  brown:
+    role: lamp-support
+    base_color: "#6b4a3d"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-cozy-table-lamp-v1
+  name: Block Chibi Cozy Table Lamp v1
+  kind: prop
+  root: root
+  tags: [lamp, block-chibi-room, table-lamp, grammar-specimen]
+
+parts:
+  root: {role: lamp-root, parent: null, articulation: static}
+
+  base:
+    role: lamp-base
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.56, 0.56]
+      top: [0.44, 0.44]
+      height: 0.22
+    material: pink_dark
+    transform: {translate: [0.0, 0.11, 0.0]}
+
+  stem:
+    role: lamp-stem
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 0.46, 0.12]}
+    material: brown
+    transform: {translate: [0.0, 0.43, 0.0]}
+
+  shade:
+    role: lamp-shade
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.74, 0.74]
+      top: [0.48, 0.48]
+      height: 0.44
+    material: pink
+    transform: {translate: [0.0, 0.82, 0.0]}
+
+  emitter:
+    role: lamp-light-source
+    parent: root
+    geometry: {kind: cuboid, size: [0.34, 0.10, 0.34]}
+    material: warm_emit
+    transform: {translate: [0.0, 0.605, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: lamp@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::lamp@0.1
+    specimen_intent: cozy-table-lamp
+    support_strategy: table
+    evaluation_status: awaiting-family-review

@@ -1,0 +1,33 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-garage-workbench-v1
+  name: Block Chibi garage workbench v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garage, residential-garage, garage-workbench]
+materials:
+  wood: {role: wood, base_color: "#b88763", roughness: 0.98}
+  top: {role: top, base_color: "#e5bd97", roughness: 0.98}
+  steel: {role: steel, base_color: "#657b78", roughness: 0.98}
+  accent: {role: accent, base_color: "#c1d1bf", roughness: 0.98}
+  tool: {role: tool, base_color: "#a4a6a1", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  top: {role: top, parent: root, geometry: {kind: cuboid, size: [1.7, 0.14, 0.75]}, material: top, transform: {translate: [0, 0.92, 0]}}
+  top_inlay: {role: top_inlay, parent: root, geometry: {kind: cuboid, size: [1.48, 0.01, 0.58]}, material: wood, transform: {translate: [0, 1, 0]}}
+  leg_0_0: {role: leg_0_0, parent: root, geometry: {kind: cuboid, size: [0.13, 0.91, 0.13]}, material: steel, transform: {translate: [-0.68, 0.455, -0.27]}}
+  leg_0_1: {role: leg_0_1, parent: root, geometry: {kind: cuboid, size: [0.13, 0.91, 0.13]}, material: steel, transform: {translate: [-0.68, 0.455, 0.27]}}
+  leg_1_0: {role: leg_1_0, parent: root, geometry: {kind: cuboid, size: [0.13, 0.91, 0.13]}, material: steel, transform: {translate: [0.68, 0.455, -0.27]}}
+  leg_1_1: {role: leg_1_1, parent: root, geometry: {kind: cuboid, size: [0.13, 0.91, 0.13]}, material: steel, transform: {translate: [0.68, 0.455, 0.27]}}
+  lower_shelf: {role: lower_shelf, parent: root, geometry: {kind: cuboid, size: [1.42, 0.08, 0.57]}, material: wood, transform: {translate: [0, 0.24, 0]}}
+  back_rail: {role: back_rail, parent: root, geometry: {kind: cuboid, size: [1.69, 0.12, 0.09]}, material: steel, transform: {translate: [0, 0.82, 0.37]}}
+  vise_base: {role: vise_base, parent: root, geometry: {kind: cuboid, size: [0.28, 0.15, 0.21]}, material: steel, transform: {translate: [-0.58, 1.09, -0.22]}}
+  vise_jaw: {role: vise_jaw, parent: root, geometry: {kind: cuboid, size: [0.1, 0.16, 0.25]}, material: accent, transform: {translate: [-0.45, 1.16, -0.22]}}
+  wood_block: {role: wood_block, parent: root, geometry: {kind: cuboid, size: [0.41, 0.1, 0.32]}, material: wood, transform: {translate: [0.31, 1.05, 0.05]}}
+  measuring_bar: {role: measuring_bar, parent: root, geometry: {kind: cuboid, size: [0.42, 0.035, 0.05]}, material: tool, transform: {translate: [0.31, 1.13, 0.05]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, context: residential-garage, review: pending, lighting: deferred}

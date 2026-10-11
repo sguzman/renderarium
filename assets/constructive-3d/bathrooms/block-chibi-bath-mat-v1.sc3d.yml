@@ -1,0 +1,54 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-bath-mat-v1
+  name: Block Chibi Soft Bath Mat v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, bathroom, bath-mat]
+materials:
+  main: {role: absorbent-mat, base_color: "#dfabb9", roughness: 0.98}
+  border: {role: mat-border, base_color: "#f2d3d8", roughness: 0.98}
+  band: {role: woven-band, base_color: "#c888a2", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  mat:
+    role: floor-textile-field
+    parent: root
+    geometry: {kind: cuboid, size: [1.3, 0.043, 0.77]}
+    material: main
+    transform: {translate: [0, 0.027, 0]}
+    articulation: static
+  front_hem:
+    role: finished-edge
+    parent: root
+    geometry: {kind: cuboid, size: [1.22, 0.014, 0.07]}
+    material: border
+    transform: {translate: [0, 0.055, -0.32]}
+    articulation: static
+  rear_hem:
+    role: finished-edge
+    parent: root
+    geometry: {kind: cuboid, size: [1.22, 0.014, 0.07]}
+    material: border
+    transform: {translate: [0, 0.055, 0.32]}
+    articulation: static
+  stripe_left:
+    role: stripe-accent
+    parent: root
+    geometry: {kind: cuboid, size: [0.08, 0.012, 0.57]}
+    material: band
+    transform: {translate: [-0.48, 0.055, 0]}
+    articulation: static
+  stripe_right:
+    role: stripe-accent
+    parent: root
+    geometry: {kind: cuboid, size: [0.08, 0.012, 0.57]}
+    material: band
+    transform: {translate: [0.48, 0.055, 0]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: initial-scene-review-pending, renderer_experiments: deferred}

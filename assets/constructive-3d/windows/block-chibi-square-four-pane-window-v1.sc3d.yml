@@ -1,0 +1,101 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  frame:
+    role: window-frame
+    base_color: "#f3ead9"
+    roughness: 0.93
+  glass:
+    role: window-glazing
+    base_color: "#a9c1cf"
+    roughness: 0.72
+  recess:
+    role: window-recess
+    base_color: "#7f99a8"
+    roughness: 0.88
+
+asset:
+  id: block-chibi-square-four-pane-window-v1
+  name: Block Chibi Square Four-Pane Window v1
+  kind: architecture-fixture
+  root: root
+  tags: [window, block-chibi-room, grammar-specimen]
+
+parts:
+  root:
+    role: window-root
+    parent: null
+    articulation: static
+
+  frame_left:
+    role: window-frame
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 1.18, 0.12]}
+    material: frame
+    transform: {translate: [-0.56, 0.0, 0.0]}
+
+  frame_right:
+    role: window-frame
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 1.18, 0.12]}
+    material: frame
+    transform: {translate: [0.56, 0.0, 0.0]}
+
+  frame_top:
+    role: window-frame
+    parent: root
+    geometry: {kind: cuboid, size: [1, 0.12, 0.12]}
+    material: frame
+    transform: {translate: [0.0, 0.53, 0.0]}
+
+  frame_bottom:
+    role: window-sill
+    parent: root
+    geometry: {kind: cuboid, size: [1, 0.12, 0.14159999999999998]}
+    material: frame
+    transform: {translate: [0.0, -0.53, -0.0024]}
+
+  glazing:
+    role: window-glazing
+    parent: root
+    geometry: {kind: cuboid, size: [0.97, 0.9117999999999999, 0.035]}
+    material: glass
+    transform: {translate: [0.0, 0.0, 0.0744]}
+
+  mullion_1:
+    role: window-mullion
+    parent: root
+    geometry: {kind: cuboid, size: [0.0744, 0.94, 0.0936]}
+    material: frame
+    transform: {translate: [0, 0.0, -0.0048]}
+
+  muntin_1:
+    role: window-muntin
+    parent: root
+    geometry: {kind: cuboid, size: [1, 0.0744, 0.0912]}
+    material: frame
+    transform: {translate: [0.0, 0, -0.006]}
+
+extensions:
+  taria:
+    object_grammar: window@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::window@0.1
+    specimen_intent: square-four-pane-window
+    interior_forward: [0.0, 0.0, -1.0]
+    outer_bounds: [1.24, 1.18]
+    mounting_plane: wall
+    glazing_depth_offset: 0.0744
+    evaluation_status: awaiting-family-review

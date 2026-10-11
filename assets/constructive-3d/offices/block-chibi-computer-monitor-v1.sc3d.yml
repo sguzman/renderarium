@@ -1,0 +1,32 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-computer-monitor-v1
+  name: Block Chibi Desktop Monitor v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, office, computer-monitor]
+materials:
+  frame: {role: monitor-case, base_color: "#6d6c77", roughness: 0.98}
+  screen: {role: display-panel, base_color: "#87b4c2", roughness: 0.98}
+  accent: {role: screen-graphic, base_color: "#e9c9d0", roughness: 0.98}
+  stand: {role: monitor-support, base_color: "#9d8c8b", roughness: 0.98}
+  foot: {role: monitor-base, base_color: "#5d6473", roughness: 0.98}
+  light: {role: screen-icon, base_color: "#eee6ca", roughness: 0.98}
+parts:
+  root: {role: office-prop-root, parent: null, articulation: static}
+  foot: {role: desk-stand-base, parent: root, geometry: {kind: cuboid, size: [0.48, 0.045, 0.3]}, material: foot, transform: {translate: [0, 0.0225, 0]}}
+  stem: {role: display-post, parent: root, geometry: {kind: cuboid, size: [0.105, 0.36, 0.11]}, material: stand, transform: {translate: [0, 0.23, 0.06]}}
+  screen_case: {role: monitor-housing, parent: root, geometry: {kind: cuboid, size: [1.04, 0.68, 0.11]}, material: frame, transform: {translate: [0, 0.73, 0.05]}}
+  display: {role: monitor-visible-front, parent: root, geometry: {kind: cuboid, size: [0.92, 0.54, 0.02]}, material: screen, transform: {translate: [0, 0.73, -0.014]}}
+  task_panel: {role: on-screen-accent, parent: root, geometry: {kind: cuboid, size: [0.39, 0.27, 0.013]}, material: accent, transform: {translate: [-0.2, 0.73, -0.027]}}
+  side_panel: {role: screen-ui-side, parent: root, geometry: {kind: cuboid, size: [0.23, 0.35, 0.013]}, material: light, transform: {translate: [0.26, 0.73, -0.027]}}
+  bottom_icon: {role: power-indicator, parent: root, geometry: {kind: cuboid, size: [0.055, 0.05, 0.015]}, material: light, transform: {translate: [0.42, 0.44, -0.016]}}
+extensions:
+  scenarium:
+    style_ref: block-chibi-room
+    visual_status: initial-scene-review-pending
+    object_family: computer-monitor

@@ -1,0 +1,71 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  rose:
+    role: blanket-textile
+    base_color: "#d7869f"
+    roughness: 0.99
+  rose_light:
+    role: blanket-textile-accent
+    base_color: "#efb4c5"
+    roughness: 0.99
+  rose_dark:
+    role: blanket-textile-shadow
+    base_color: "#b96884"
+    roughness: 0.99
+  cream:
+    role: blanket-textile
+    base_color: "#f0dfcf"
+    roughness: 0.99
+
+asset:
+  id: block-chibi-folded-blanket-v1
+  name: Block Chibi Folded Blanket v1
+  kind: prop
+  root: root
+  tags: [blanket, block-chibi-room, folded-blanket, grammar-specimen]
+
+parts:
+  root: {role: blanket-root, parent: null, articulation: static}
+
+  fold_bottom:
+    role: blanket-fold-layer
+    parent: root
+    geometry: {kind: cuboid, size: [1.06, 0.050, 0.66]}
+    material: rose_dark
+    transform: {translate: [0.0, 0.025, 0.0]}
+
+  fold_middle:
+    role: blanket-fold-layer
+    parent: root
+    geometry: {kind: cuboid, size: [1.02, 0.045, 0.62]}
+    material: rose
+    transform: {translate: [0.03, 0.0725, -0.01]}
+
+  fold_top:
+    role: blanket-fold-layer
+    parent: root
+    geometry: {kind: cuboid, size: [0.98, 0.040, 0.58]}
+    material: rose_light
+    transform: {translate: [-0.02, 0.115, 0.02]}
+
+extensions:
+  taria:
+    object_grammar: blanket@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::blanket@0.1
+    specimen_intent: folded-blanket
+    render_shading: flat
+    evaluation_status: awaiting-family-review

@@ -1,0 +1,47 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-residential-garage-shell-v1
+  name: Continuous matte-concrete garage cutaway and open door framing
+  kind: environment
+  root: root
+  tags: [block-chibi-room, residential-garage, workshop, cutaway]
+materials:
+  foundation: {role: foundation, base_color: "#797c7c", roughness: 0.98}
+  concrete: {role: concrete, base_color: "#c4c4b9", roughness: 0.98}
+  seam: {role: seam, base_color: "#aaa99f", roughness: 0.98}
+  park: {role: park, base_color: "#f0e4cd", roughness: 0.98}
+  wall: {role: wall, base_color: "#e6e2d6", roughness: 0.98}
+  left: {role: left, base_color: "#c4d0c7", roughness: 0.98}
+  trim: {role: trim, base_color: "#fff0db", roughness: 0.98}
+  masonry: {role: masonry, base_color: "#a3b7af", roughness: 0.98}
+  door: {role: door, base_color: "#a2b9b4", roughness: 0.98}
+  yellow: {role: yellow, base_color: "#e8c394", roughness: 0.98}
+  grate: {role: grate, base_color: "#8c918d", roughness: 0.98}
+parts:
+  root: {role: garage-shell-root, parent: null, articulation: static}
+  slab: {role: slab, parent: root, geometry: {kind: cuboid, size: [7.6, 0.2, 6.2]}, material: foundation, transform: {translate: [0, 0, 0]}}
+  concrete_surface: {role: concrete_surface, parent: root, geometry: {kind: cuboid, size: [7.46, 0.026, 6.03]}, material: concrete, transform: {translate: [0, 0.113, 0]}}
+  rear_wall: {role: rear_wall, parent: root, geometry: {kind: cuboid, size: [7.6, 3.05, 0.17]}, material: wall, transform: {translate: [0, 1.525, 3.01]}}
+  left_wall: {role: left_wall, parent: root, geometry: {kind: cuboid, size: [0.17, 3.05, 6.2]}, material: left, transform: {translate: [-3.72, 1.525, 0]}}
+  rear_baseboard: {role: rear_baseboard, parent: root, geometry: {kind: cuboid, size: [7.35, 0.19, 0.08]}, material: trim, transform: {translate: [0, 0.205, 2.879]}}
+  left_baseboard: {role: left_baseboard, parent: root, geometry: {kind: cuboid, size: [0.08, 0.19, 5.95]}, material: trim, transform: {translate: [-3.575, 0.205, 0]}}
+  rear_accent_band: {role: rear_accent_band, parent: root, geometry: {kind: cuboid, size: [7.34, 0.1, 0.028]}, material: masonry, transform: {translate: [0, 2.64, 2.91]}}
+  garage_door_header: {role: garage_door_header, parent: root, geometry: {kind: cuboid, size: [7.31, 0.31, 0.23]}, material: door, transform: {translate: [0, 2.86, -2.91]}}
+  entrance_post_left: {role: entrance_post_left, parent: root, geometry: {kind: cuboid, size: [0.3, 2.76, 0.3]}, material: door, transform: {translate: [-3.48, 1.38, -2.91]}}
+  entrance_post_right: {role: entrance_post_right, parent: root, geometry: {kind: cuboid, size: [0.3, 2.76, 0.3]}, material: door, transform: {translate: [3.48, 1.38, -2.91]}}
+  threshold: {role: threshold, parent: root, geometry: {kind: cuboid, size: [7.12, 0.045, 0.27]}, material: grate, transform: {translate: [0, 0.147, -2.89]}}
+extensions:
+  scenarium:
+    scene_ref: specification:block-chibi-garage-v1
+    architectural_context: residential-garage
+    front_open_door: true
+    roof_intentionally_removed_for_diorama_review: true
+    concrete_floor_support_y: 0.126
+    floor_finish: continuous-smooth-matte-concrete
+    no_tile_like_stripes_or_paving_lines: true
+    parking_zone_markings: intentionally_omitted_after_human_review
+    canonical_runtime: pending

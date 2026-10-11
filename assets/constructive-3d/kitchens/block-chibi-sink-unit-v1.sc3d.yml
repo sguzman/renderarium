@@ -1,0 +1,138 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-sink-unit-v1
+  name: Block Chibi Sink Unit v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, kitchen, sink-unit]
+materials:
+  cab: {role: cabinet-body, base_color: "#91ac98", roughness: 0.98}
+  dark: {role: cabinet-shadow, base_color: "#698676", roughness: 0.98}
+  door: {role: cabinet-door, base_color: "#bdd0b2", roughness: 0.98}
+  counter: {role: countertop, base_color: "#f4e5d5", roughness: 0.98}
+  metal: {role: fixture-metal, base_color: "#c4ced1", roughness: 0.98}
+  water: {role: sink-basin, base_color: "#789eb0", roughness: 0.98}
+  handle: {role: handle, base_color: "#ba885d", roughness: 0.98}
+  wood: {role: small-wood, base_color: "#bc8a6b", roughness: 0.98}
+  accent: {role: accent, base_color: "#deb68a", roughness: 0.98}
+  shadow: {role: recess, base_color: "#536976", roughness: 0.98}
+parts:
+  root: {role: sink-unit-root, parent: null, articulation: static}
+  base:
+    role: sink-under-counter
+    parent: root
+    geometry: {kind: cuboid, size: [1.37, 0.78, 0.68]}
+    material: cab
+    transform: {translate: [0, 0.39, 0]}
+    articulation: static
+  door_left:
+    role: cabinet-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.58, 0.61, 0.035]}
+    material: door
+    transform: {translate: [-0.31, 0.41, -0.355]}
+    articulation: static
+  door_right:
+    role: cabinet-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.58, 0.61, 0.035]}
+    material: door
+    transform: {translate: [0.31, 0.41, -0.355]}
+    articulation: static
+  handle_left:
+    role: door-pull
+    parent: root
+    geometry: {kind: cuboid, size: [0.065, 0.15, 0.04]}
+    material: handle
+    transform: {translate: [-0.08, 0.42, -0.394]}
+    articulation: static
+  handle_right:
+    role: door-pull
+    parent: root
+    geometry: {kind: cuboid, size: [0.065, 0.15, 0.04]}
+    material: handle
+    transform: {translate: [0.08, 0.42, -0.394]}
+    articulation: static
+  counter:
+    role: worktop
+    parent: root
+    geometry: {kind: cuboid, size: [1.44, 0.12, 0.76]}
+    material: counter
+    transform: {translate: [0, 0.84, 0]}
+    articulation: static
+  basin:
+    role: wash-basin
+    parent: root
+    geometry: {kind: cuboid, size: [0.7, 0.02, 0.4]}
+    material: water
+    transform: {translate: [-0.23, 0.913, -0.025]}
+    articulation: static
+  sink_rim_front:
+    role: basin-rim
+    parent: root
+    geometry: {kind: cuboid, size: [0.78, 0.045, 0.035]}
+    material: metal
+    transform: {translate: [-0.23, 0.944, -0.24]}
+    articulation: static
+  sink_rim_back:
+    role: basin-rim
+    parent: root
+    geometry: {kind: cuboid, size: [0.78, 0.045, 0.035]}
+    material: metal
+    transform: {translate: [-0.23, 0.944, 0.19]}
+    articulation: static
+  sink_rim_left:
+    role: basin-rim
+    parent: root
+    geometry: {kind: cuboid, size: [0.035, 0.045, 0.4]}
+    material: metal
+    transform: {translate: [-0.625, 0.944, -0.025]}
+    articulation: static
+  sink_rim_right:
+    role: basin-rim
+    parent: root
+    geometry: {kind: cuboid, size: [0.035, 0.045, 0.4]}
+    material: metal
+    transform: {translate: [0.165, 0.944, -0.025]}
+    articulation: static
+  faucet_base:
+    role: tap-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.105, 0.08, 0.1]}
+    material: metal
+    transform: {translate: [-0.23, 0.94, 0.26]}
+    articulation: static
+  faucet_riser:
+    role: tap-upright
+    parent: root
+    geometry: {kind: cuboid, size: [0.065, 0.31, 0.07]}
+    material: metal
+    transform: {translate: [-0.23, 1.12, 0.26]}
+    articulation: static
+  faucet_spout:
+    role: tap-spout
+    parent: root
+    geometry: {kind: cuboid, size: [0.065, 0.07, 0.27]}
+    material: metal
+    transform: {translate: [-0.23, 1.27, 0.13]}
+    articulation: static
+  faucet_tip:
+    role: tap-outlet
+    parent: root
+    geometry: {kind: cuboid, size: [0.065, 0.1, 0.06]}
+    material: metal
+    transform: {translate: [-0.23, 1.205, -0.01]}
+    articulation: static
+  soap:
+    role: sink-soap-container
+    parent: root
+    geometry: {kind: cuboid, size: [0.15, 0.2, 0.14]}
+    material: accent
+    transform: {translate: [0.48, 1, 0.13]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: first-review-pending}

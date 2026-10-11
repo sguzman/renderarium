@@ -1,0 +1,74 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  rose:
+    role: blanket-textile
+    base_color: "#d7869f"
+    roughness: 0.99
+  rose_light:
+    role: blanket-textile-accent
+    base_color: "#efb4c5"
+    roughness: 0.99
+  rose_dark:
+    role: blanket-textile-shadow
+    base_color: "#b96884"
+    roughness: 0.99
+  cream:
+    role: blanket-textile
+    base_color: "#f0dfcf"
+    roughness: 0.99
+
+asset:
+  id: block-chibi-bed-cover-blanket-v1
+  name: Block Chibi Bed Cover Blanket v1
+  kind: prop
+  root: root
+  tags: [blanket, block-chibi-room, bed-cover, grammar-specimen]
+
+parts:
+  root: {role: blanket-root, parent: null, articulation: static}
+
+  top_panel:
+    role: blanket-cover-panel
+    parent: root
+    geometry: {kind: cuboid, size: [1.38, 0.040, 1.16]}
+    material: rose
+    transform: {translate: [0.0, 0.020, 0.0]}
+
+  foot_drop:
+    role: blanket-edge-drape
+    parent: root
+    geometry: {kind: cuboid, size: [1.38, 0.48, 0.040]}
+    material: rose_dark
+    transform: {translate: [0.0, -0.240, -0.600]}
+
+  fold_band:
+    role: blanket-fold-accent
+    parent: root
+    geometry: {kind: cuboid, size: [1.26, 0.018, 0.12]}
+    material: rose_light
+    transform: {translate: [0.0, 0.049, 0.43]}
+
+extensions:
+  taria:
+    object_grammar: blanket@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::blanket@0.1
+    specimen_intent: bed-cover-blanket
+    support_contract:
+      top_panel_support_plane_y: 0.0
+      foot_edge_z: -0.58
+    render_shading: flat
+    evaluation_status: awaiting-family-review

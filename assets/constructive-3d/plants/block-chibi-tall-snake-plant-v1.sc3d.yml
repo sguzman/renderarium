@@ -1,0 +1,329 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pot:
+    role: plant-container
+    base_color: "#a86f58"
+    roughness: 0.96
+  pot_dark:
+    role: plant-container-shadow
+    base_color: "#7f5143"
+    roughness: 0.97
+  soil:
+    role: plant-soil
+    base_color: "#4d4039"
+    roughness: 1.0
+  leaf_green:
+    role: snake-plant-leaf
+    base_color: "#6f9871"
+    roughness: 0.96
+  leaf_green_dark:
+    role: snake-plant-leaf
+    base_color: "#567b5d"
+    roughness: 0.97
+  leaf_green_light:
+    role: snake-plant-leaf
+    base_color: "#86aa79"
+    roughness: 0.96
+
+asset:
+  id: block-chibi-tall-snake-plant-v1
+  name: Block Chibi Tall Snake Plant v1
+  kind: prop
+  root: root
+  tags: [plant, snake-plant, block-chibi-room, named-subtype, grammar-specimen]
+
+parts:
+  root:
+    role: plant-root
+    parent: null
+    articulation: static
+
+  pot:
+    role: plant-anchor
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.74, 0.74]
+      top: [0.607, 0.607]
+      height: 0.56
+    material: pot
+    transform:
+      translate: [0.0, 0.28, 0.0]
+    articulation: static
+
+  soil_cap:
+    role: plant-soil
+    parent: root
+    geometry:
+      kind: cuboid
+      size: [0.533, 0.045, 0.533]
+    material: soil
+    transform:
+      translate: [0.0, 0.578, 0.0]
+    articulation: static
+
+  leaf_1_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.172, 0.1]
+      top: [0.21, 0.096]
+      height: 0.922
+    material: leaf_green_dark
+    transform:
+      translate: [0, 1.056, 0]
+      rotate_deg: [0, 0, 0]
+    articulation: static
+
+  leaf_1_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_1_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.21, 0.096]
+      top: [0.04, 0.042]
+      height: 0.358
+    material: leaf_green_dark
+    transform:
+      translate: [0.0, 0.628, 0.0]
+    articulation: static
+
+  leaf_2_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.164, 0.1]
+      top: [0.2, 0.096]
+      height: 0.835
+    material: leaf_green
+    transform:
+      translate: [-0.08, 1.013, 0.02]
+      rotate_deg: [2, 36, -6]
+    articulation: static
+
+  leaf_2_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_2_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.2, 0.096]
+      top: [0.04, 0.042]
+      height: 0.325
+    material: leaf_green
+    transform:
+      translate: [0.0, 0.568, 0.0]
+    articulation: static
+
+  leaf_3_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.164, 0.098]
+      top: [0.2, 0.094]
+      height: 0.792
+    material: leaf_green_light
+    transform:
+      translate: [0.08, 0.991, -0.02]
+      rotate_deg: [-2, -38, 7]
+    articulation: static
+
+  leaf_3_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_3_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.2, 0.094]
+      top: [0.04, 0.041]
+      height: 0.308
+    material: leaf_green_light
+    transform:
+      translate: [0.0, 0.538, 0.0]
+    articulation: static
+
+  leaf_4_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.156, 0.095]
+      top: [0.19, 0.091]
+      height: 0.72
+    material: leaf_green_dark
+    transform:
+      translate: [-0.04, 0.955, -0.1]
+      rotate_deg: [4, 88, -9]
+    articulation: static
+
+  leaf_4_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_4_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.19, 0.091]
+      top: [0.04, 0.04]
+      height: 0.28
+    material: leaf_green_dark
+    transform:
+      translate: [0.0, 0.488, 0.0]
+    articulation: static
+
+  leaf_5_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.156, 0.094]
+      top: [0.19, 0.09]
+      height: 0.691
+    material: leaf_green
+    transform:
+      translate: [0.04, 0.941, 0.1]
+      rotate_deg: [-4, -92, 10]
+    articulation: static
+
+  leaf_5_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_5_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.19, 0.09]
+      top: [0.04, 0.039]
+      height: 0.269
+    material: leaf_green
+    transform:
+      translate: [0.0, 0.468, 0.0]
+    articulation: static
+
+  leaf_6_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.148, 0.09]
+      top: [0.18, 0.086]
+      height: 0.634
+    material: leaf_green_light
+    transform:
+      translate: [-0.12, 0.912, 0.08]
+      rotate_deg: [-4, 138, -12]
+    articulation: static
+
+  leaf_6_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_6_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.18, 0.086]
+      top: [0.04, 0.038]
+      height: 0.246
+    material: leaf_green_light
+    transform:
+      translate: [0.0, 0.428, 0.0]
+    articulation: static
+
+  leaf_7_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.148, 0.09]
+      top: [0.18, 0.086]
+      height: 0.605
+    material: leaf_green
+    transform:
+      translate: [0.12, 0.897, -0.08]
+      rotate_deg: [4, -140, 13]
+    articulation: static
+
+  leaf_7_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_7_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.18, 0.086]
+      top: [0.04, 0.038]
+      height: 0.235
+    material: leaf_green
+    transform:
+      translate: [0.0, 0.408, 0.0]
+    articulation: static
+
+  leaf_8_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.139, 0.085]
+      top: [0.17, 0.082]
+      height: 0.547
+    material: leaf_green_dark
+    transform:
+      translate: [-0.12, 0.869, -0.09]
+      rotate_deg: [5, 175, -14]
+    articulation: static
+
+  leaf_8_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_8_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.17, 0.082]
+      top: [0.04, 0.036]
+      height: 0.213
+    material: leaf_green_dark
+    transform:
+      translate: [0.0, 0.368, 0.0]
+    articulation: static
+
+  leaf_9_body:
+    role: snake-plant-leaf-body
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.139, 0.084]
+      top: [0.17, 0.081]
+      height: 0.518
+    material: leaf_green_light
+    transform:
+      translate: [0.12, 0.854, 0.09]
+      rotate_deg: [-5, -175, 14]
+    articulation: static
+
+  leaf_9_tip:
+    role: snake-plant-leaf-tip
+    parent: leaf_9_body
+    geometry:
+      kind: tapered_box
+      bottom: [0.17, 0.081]
+      top: [0.04, 0.035]
+      height: 0.202
+    material: leaf_green_light
+    transform:
+      translate: [0.0, 0.348, 0.0]
+    articulation: static
+
+extensions:
+  taria:
+    object_grammar: plant@0.1
+    object_subtype: plant::snake-plant@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::snake-plant@0.1
+    specimen_intent: tall-snake-plant
+    morphology_target: named-snake-plant
+    evaluation_status: awaiting-family-review

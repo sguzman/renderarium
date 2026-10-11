@@ -1,0 +1,42 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-utility-bicycle-v1
+  name: Block Chibi utility bicycle v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garage, residential-garage, utility-bicycle]
+materials:
+  frame: {role: frame, base_color: "#92afab", roughness: 0.98}
+  wheel: {role: wheel, base_color: "#525960", roughness: 0.98}
+  spoke: {role: spoke, base_color: "#c9d3ce", roughness: 0.98}
+  seat: {role: seat, base_color: "#cf9ca8", roughness: 0.98}
+  handle: {role: handle, base_color: "#ae8975", roughness: 0.98}
+  pedal: {role: pedal, base_color: "#bca9a1", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  wheel_bottom_0: {role: wheel_bottom_0, parent: root, geometry: {kind: cuboid, size: [0.13, 0.1, 0.55]}, material: wheel, transform: {translate: [0, 0.05, -0.74]}}
+  wheel_top_0: {role: wheel_top_0, parent: root, geometry: {kind: cuboid, size: [0.13, 0.1, 0.55]}, material: wheel, transform: {translate: [0, 0.59, -0.74]}}
+  wheel_front_0: {role: wheel_front_0, parent: root, geometry: {kind: cuboid, size: [0.13, 0.48, 0.1]}, material: wheel, transform: {translate: [0, 0.32, -0.98]}}
+  wheel_back_0: {role: wheel_back_0, parent: root, geometry: {kind: cuboid, size: [0.13, 0.48, 0.1]}, material: wheel, transform: {translate: [0, 0.32, -0.5]}}
+  hub_0: {role: hub_0, parent: root, geometry: {kind: cuboid, size: [0.15, 0.15, 0.15]}, material: spoke, transform: {translate: [0, 0.32, -0.74]}}
+  wheel_bottom_1: {role: wheel_bottom_1, parent: root, geometry: {kind: cuboid, size: [0.13, 0.1, 0.55]}, material: wheel, transform: {translate: [0, 0.05, 0.74]}}
+  wheel_top_1: {role: wheel_top_1, parent: root, geometry: {kind: cuboid, size: [0.13, 0.1, 0.55]}, material: wheel, transform: {translate: [0, 0.59, 0.74]}}
+  wheel_front_1: {role: wheel_front_1, parent: root, geometry: {kind: cuboid, size: [0.13, 0.48, 0.1]}, material: wheel, transform: {translate: [0, 0.32, 0.5]}}
+  wheel_back_1: {role: wheel_back_1, parent: root, geometry: {kind: cuboid, size: [0.13, 0.48, 0.1]}, material: wheel, transform: {translate: [0, 0.32, 0.98]}}
+  hub_1: {role: hub_1, parent: root, geometry: {kind: cuboid, size: [0.15, 0.15, 0.15]}, material: spoke, transform: {translate: [0, 0.32, 0.74]}}
+  frame_top: {role: frame_top, parent: root, geometry: {kind: cuboid, size: [0.09, 0.1, 0.8]}, material: frame, transform: {translate: [0, 0.63, 0]}}
+  frame_down: {role: frame_down, parent: root, geometry: {kind: cuboid, size: [0.09, 0.64, 0.1]}, material: frame, transform: {translate: [0, 0.42, 0.05], rotate_deg: [27, 0, 0]}}
+  frame_diag: {role: frame_diag, parent: root, geometry: {kind: cuboid, size: [0.09, 0.74, 0.1]}, material: frame, transform: {translate: [0, 0.41, -0.26], rotate_deg: [-30, 0, 0]}}
+  front_fork: {role: front_fork, parent: root, geometry: {kind: cuboid, size: [0.09, 0.85, 0.1]}, material: frame, transform: {translate: [0, 0.66, -0.74], rotate_deg: [0, 0, 0]}}
+  rear_strut: {role: rear_strut, parent: root, geometry: {kind: cuboid, size: [0.09, 0.55, 0.1]}, material: frame, transform: {translate: [0, 0.42, 0.64], rotate_deg: [0, 0, 0]}}
+  handle_stem: {role: handle_stem, parent: root, geometry: {kind: cuboid, size: [0.09, 0.23, 0.1]}, material: handle, transform: {translate: [0, 1.05, -0.73]}}
+  handlebar: {role: handlebar, parent: root, geometry: {kind: cuboid, size: [0.64, 0.09, 0.09]}, material: handle, transform: {translate: [0, 1.17, -0.73]}}
+  seat_post: {role: seat_post, parent: root, geometry: {kind: cuboid, size: [0.09, 0.27, 0.1]}, material: frame, transform: {translate: [0, 0.82, 0.38]}}
+  saddle: {role: saddle, parent: root, geometry: {kind: cuboid, size: [0.36, 0.09, 0.34]}, material: seat, transform: {translate: [0, 0.98, 0.38]}}
+  pedal_crank: {role: pedal_crank, parent: root, geometry: {kind: cuboid, size: [0.32, 0.09, 0.11]}, material: pedal, transform: {translate: [0, 0.31, 0.08]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, context: residential-garage, review: pending, lighting: deferred}

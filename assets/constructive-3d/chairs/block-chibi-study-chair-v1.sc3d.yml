@@ -1,0 +1,100 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wood:
+    role: furniture-primary
+    base_color: "#7b5545"
+    roughness: 0.95
+  wood_dark:
+    role: furniture-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+  textile:
+    role: cushion
+    base_color: "#d7869f"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-study-chair-v1
+  name: Block Chibi Study Chair v1
+  kind: prop
+  root: root
+  description: >-
+    Straightforward four-leg chair specimen generated against the semantic
+    chair grammar and block-chibi-room realization grammar.
+  tags: [chair, block-chibi-room, study-chair, grammar-specimen]
+
+parts:
+  root:
+    role: chair-root
+    parent: null
+    articulation: static
+
+  seat:
+    role: chair-seat
+    parent: root
+    geometry: {kind: cuboid, size: [0.60, 0.12, 0.50]}
+    material: wood
+    transform: {translate: [0.0, 0.55, 0.0]}
+    articulation: static
+
+  back:
+    role: chair-back
+    parent: root
+    geometry: {kind: cuboid, size: [0.58, 0.66, 0.12]}
+    material: wood_dark
+    transform: {translate: [0.0, 0.92, 0.22]}
+    articulation: static
+
+  leg_front_left:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 0.50, 0.12]}
+    material: wood_dark
+    transform: {translate: [-0.22, 0.25, -0.17]}
+    articulation: static
+
+  leg_front_right:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 0.50, 0.12]}
+    material: wood_dark
+    transform: {translate: [0.22, 0.25, -0.17]}
+    articulation: static
+
+  leg_back_left:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 0.50, 0.12]}
+    material: wood_dark
+    transform: {translate: [-0.22, 0.25, 0.17]}
+    articulation: static
+
+  leg_back_right:
+    role: chair-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.12, 0.50, 0.12]}
+    material: wood_dark
+    transform: {translate: [0.22, 0.25, 0.17]}
+    articulation: static
+
+extensions:
+  taria:
+    object_grammar: chair@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::chair@0.1
+    specimen_intent: study-chair
+    use_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

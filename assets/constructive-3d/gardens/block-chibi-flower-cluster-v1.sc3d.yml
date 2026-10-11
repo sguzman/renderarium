@@ -1,0 +1,32 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-flower-cluster-v1
+  name: Block Chibi Garden Flowers v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garden, outdoor, flower-cluster]
+materials:
+  stem: {role: flower-stem, base_color: "#638865", roughness: 0.98}
+  leaf: {role: leaf, base_color: "#91b785", roughness: 0.98}
+  pink: {role: rose-petals, base_color: "#e7a2b2", roughness: 0.98}
+  cream: {role: flower-petals, base_color: "#ffe1b3", roughness: 0.98}
+  middle: {role: center, base_color: "#cb9d5a", roughness: 0.98}
+  mint: {role: light-leaf, base_color: "#bed19f", roughness: 0.98}
+parts:
+  root: {role: flower-cluster-root, parent: null, articulation: static}
+  stem1: {role: flower-stem, parent: root, geometry: {kind: cuboid, size: [0.065, 0.43, 0.066]}, material: stem, transform: {translate: [-0.18, 0.24, -0.02]}}
+  stem2: {role: flower-stem, parent: root, geometry: {kind: cuboid, size: [0.065, 0.35, 0.066]}, material: stem, transform: {translate: [0.17, 0.205, 0.12]}}
+  stem3: {role: flower-stem, parent: root, geometry: {kind: cuboid, size: [0.06, 0.31, 0.06]}, material: stem, transform: {translate: [0, 0.185, -0.18]}}
+  leaf1: {role: flower-leaf, parent: root, geometry: {kind: cuboid, size: [0.23, 0.1, 0.15]}, material: leaf, transform: {translate: [-0.26, 0.18, -0.01]}}
+  leaf2: {role: flower-leaf, parent: root, geometry: {kind: cuboid, size: [0.18, 0.09, 0.22]}, material: mint, transform: {translate: [0.24, 0.13, 0.11]}}
+  blossom1: {role: pink-four-petal-head, parent: root, geometry: {kind: cuboid, size: [0.36, 0.22, 0.35]}, material: pink, transform: {translate: [-0.18, 0.51, -0.02]}}
+  blossom1_center: {role: golden-flower-center, parent: root, geometry: {kind: cuboid, size: [0.13, 0.055, 0.13]}, material: middle, transform: {translate: [-0.18, 0.642, -0.02]}}
+  blossom2: {role: cream-flower-head, parent: root, geometry: {kind: cuboid, size: [0.31, 0.2, 0.32]}, material: cream, transform: {translate: [0.17, 0.425, 0.12]}}
+  blossom2_center: {role: golden-flower-center, parent: root, geometry: {kind: cuboid, size: [0.12, 0.055, 0.12]}, material: middle, transform: {translate: [0.17, 0.542, 0.12]}}
+  bud3: {role: green-bud, parent: root, geometry: {kind: cuboid, size: [0.19, 0.16, 0.2]}, material: pink, transform: {translate: [0, 0.37, -0.18]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, semantic_grammar: flower-cluster, first_review: pending, effects: deferred}

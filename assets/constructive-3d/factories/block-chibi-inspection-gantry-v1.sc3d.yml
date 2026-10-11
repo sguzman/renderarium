@@ -1,0 +1,38 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-inspection-gantry-v1
+  name: Block Chibi inspection gantry v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, inspection-gantry]
+materials:
+  post: {role: post, base_color: "#749998", roughness: 0.98}
+  cross: {role: cross, base_color: "#ecc8ad", roughness: 0.98}
+  sensor: {role: sensor, base_color: "#a5d3c8", roughness: 0.98}
+  indicator: {role: indicator, base_color: "#f3de9e", roughness: 0.98}
+  scanner: {role: scanner, base_color: "#718f9e", roughness: 0.98}
+  outline: {role: outline, base_color: "#f5ebe2", roughness: 0.98}
+parts:
+  root: {role: inspection-gantry-root, parent: null, articulation: static}
+  front_post: {role: front_post, parent: root, geometry: {kind: cuboid, size: [0.16, 1.82, 0.16]}, material: post, transform: {translate: [0, 0.91, -0.71]}}
+  rear_post: {role: rear_post, parent: root, geometry: {kind: cuboid, size: [0.16, 1.82, 0.16]}, material: post, transform: {translate: [0, 0.91, 0.71]}}
+  overhead_crossbar: {role: overhead_crossbar, parent: root, geometry: {kind: cuboid, size: [0.32, 0.22, 1.63]}, material: cross, transform: {translate: [0, 1.84, 0]}}
+  sensor_head: {role: sensor_head, parent: root, geometry: {kind: cuboid, size: [0.37, 0.27, 0.38]}, material: scanner, transform: {translate: [0, 1.66, 0]}}
+  lens: {role: lens, parent: root, geometry: {kind: cuboid, size: [0.2, 0.045, 0.23]}, material: sensor, transform: {translate: [0, 1.5, 0]}}
+  screen_mount: {role: screen_mount, parent: root, geometry: {kind: cuboid, size: [0.26, 0.35, 0.2]}, material: post, transform: {translate: [0.14, 1.95, -0.72]}}
+  screen_face: {role: screen_face, parent: root, geometry: {kind: cuboid, size: [0.027, 0.23, 0.18]}, material: outline, transform: {translate: [0.29, 1.96, -0.72]}}
+  green_light: {role: green_light, parent: root, geometry: {kind: cuboid, size: [0.047, 0.09, 0.09]}, material: sensor, transform: {translate: [0.32, 2.02, -0.72]}}
+  amber_light: {role: amber_light, parent: root, geometry: {kind: cuboid, size: [0.047, 0.09, 0.09]}, material: indicator, transform: {translate: [0.32, 1.89, -0.72]}}
+  floor_sensor_left: {role: floor_sensor_left, parent: root, geometry: {kind: cuboid, size: [0.29, 0.09, 0.14]}, material: cross, transform: {translate: [0, 0.98, -0.69]}}
+  floor_sensor_right: {role: floor_sensor_right, parent: root, geometry: {kind: cuboid, size: [0.29, 0.09, 0.14]}, material: cross, transform: {translate: [0, 0.98, 0.69]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred

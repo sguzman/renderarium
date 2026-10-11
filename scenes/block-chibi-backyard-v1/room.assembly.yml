@@ -1,0 +1,97 @@
+format: scenarium-sc3d-scene-assembly
+version: "0.1"
+id: block-chibi-backyard-v1
+name: Block Chibi Backyard v1
+description: >-
+  Cheerful spring residential backyard cutaway. Soft grass, low cream
+  picket fencing and real open sky, tiered shade tree, two raised garden
+  beds, six pink-and-cream flower clusters, five stepping stones, cozy
+  pastel patio bench, low tabletop with a pot and a little birdhouse.
+semantic_authority:
+  repository: sguzman/taria
+  specification: taria/scenarium/specifications/block-chibi-backyard-v1.yml
+  queue: taria/scenarium/queues/block-chibi-backyard-v1.yml
+style: block-chibi-room
+scene_function: garden-and-outdoor-rest
+architectural_context: residential-backyard
+season: mild-spring
+space:
+  handedness: right
+  up: y
+  forward: -z
+  site_size: [6.4, 5.2]
+  ground_top_y: 0.155
+  patio_top_y: 0.22
+  open_front: true
+  open_sky: true
+zones:
+  - {id: tree-shade, x_range: [-2.8, -1.4], z_range: [0.45, 1.95]}
+  - {id: raised-planting-left, x_range: [-2.72, -1.28], z_range: [-1.57, -0.69]}
+  - {id: raised-planting-back, x_range: [-1.21, 0.21], z_range: [1.10, 1.98]}
+  - {id: patio, x_range: [0.285, 2.835], z_range: [-1.73, 0.43]}
+  - {id: circulation, x_range: [-1.15, 0.55], z_range: [-2.55, -0.25]}
+  - {id: birdhouse, x_range: [-3.05, -2.45], z_range: [-0.30, 0.35]}
+components:
+  - id: shell
+    asset: scenes/block-chibi-backyard-v1/components/backyard-shell.sc3d.yml
+    transform: {translate: [0, 0, 0]}
+  - id: tree
+    asset: assets/constructive-3d/gardens/block-chibi-garden-tree-v1.sc3d.yml
+    transform: {translate: [-2.09, 0.155, 1.19]}
+  - id: flower-bed-left
+    asset: assets/constructive-3d/gardens/block-chibi-raised-garden-bed-v1.sc3d.yml
+    transform: {translate: [-2.01, 0.155, -1.14]}
+  - id: flower-bed-rear
+    asset: assets/constructive-3d/gardens/block-chibi-raised-garden-bed-v1.sc3d.yml
+    transform: {translate: [-0.5, 0.155, 1.52]}
+  - id: bench
+    asset: assets/constructive-3d/gardens/block-chibi-garden-bench-v1.sc3d.yml
+    transform: {translate: [1.62, 0.22, 0.12]}
+  - id: patio-table
+    asset: assets/constructive-3d/gardens/block-chibi-patio-table-v1.sc3d.yml
+    transform: {translate: [1.62, 0.22, -0.99]}
+  - id: stone-1
+    asset: assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml
+    transform: {translate: [-0.76, 0.155, -2.2]}
+  - id: stone-2
+    asset: assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml
+    transform: {translate: [-0.65, 0.155, -1.67]}
+  - id: stone-3
+    asset: assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml
+    transform: {translate: [-0.36, 0.155, -1.12]}
+  - id: stone-4
+    asset: assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml
+    transform: {translate: [-0.09, 0.155, -0.56]}
+  - id: stone-5
+    asset: assets/constructive-3d/gardens/block-chibi-stepping-stones-v1.sc3d.yml
+    transform: {translate: [0.29, 0.155, -0.22]}
+  - id: flowers-left-1
+    asset: assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml
+    transform: {translate: [-2.29, 0.5, -1.15]}
+  - id: flowers-left-2
+    asset: assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml
+    transform: {translate: [-1.78, 0.5, -1.12]}
+  - id: flowers-rear-1
+    asset: assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml
+    transform: {translate: [-0.81, 0.5, 1.53]}
+  - id: flowers-rear-2
+    asset: assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml
+    transform: {translate: [-0.28, 0.5, 1.49]}
+  - id: flowers-fence-1
+    asset: assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml
+    transform: {translate: [1.03, 0.13, 1.61]}
+  - id: flowers-fence-2
+    asset: assets/constructive-3d/gardens/block-chibi-flower-cluster-v1.sc3d.yml
+    transform: {translate: [2.45, 0.13, 1.55]}
+  - id: birdhouse
+    asset: assets/constructive-3d/gardens/block-chibi-birdhouse-v1.sc3d.yml
+    transform: {translate: [-2.76, 0.155, 0.04]}
+generated_output:
+  path: scenes/block-chibi-backyard-v1/generated/block-chibi-backyard-v1.sc3d.yml
+review:
+  primary_artifact: source-derived-interactive-3d-in-chat
+  state: pending-human-first-look
+  canonical_threejs: unverified
+  lighting_shadows_fog_shader: deferred
+  cast: none
+  sound: none

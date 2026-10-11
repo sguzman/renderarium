@@ -1,0 +1,205 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Scenarium · Factory v1 interactive preview</title><style>body{font:14px system-ui,sans-serif;background:#e9efe9;color:#34524b;margin:0;padding:20px;box-sizing:border-box}*{box-sizing:border-box}#factory-plain-v3{max-width:1100px;margin:auto}#factory-plain-v3>div:first-child{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-bottom:12px}button{border:1px solid #aec0b7;border-radius:9px;padding:8px 13px;background:#fffdf8;color:#3b5c53;cursor:pointer}button:hover{background:#d9eae2}label{display:flex;align-items:center;gap:4px}#fp-status{margin-left:auto;opacity:.7}#fp-canvas{border-radius:14px;box-shadow:0 2px 16px #566b5b18;cursor:grab;background:#e9f0eb;touch-action:none}#fp-error{border:1px solid #b72;border-radius:8px;padding:10px;color:#a32;margin:10px 0;white-space:pre-wrap}h1{font-size:24px;font-weight:650;margin:0 0 6px}.sub{color:#668074;margin:0 0 14px;font-size:13px}.foot{font-size:12px;color:#668074;margin:10px 0 0}</style></head><body><div id="factory-plain-v3"><h1>Factory v1 · Software depth preview</h1><p class="sub">Source-derived miniature factory · 16 components · 209 pieces · GPU/CPU depth buffer</p><div class="factory-viewer-controls"><div><button id="fp-reset">Reset view</button><button id="fp-top">Overhead</button><button id="fp-line">Production line</button><label><input id="fp-walls" type="checkbox" checked>Walls</label><label><input id="fp-products" type="checkbox" checked>Products</label><span id="fp-status">Loading</span></div><canvas id="fp-canvas" style="display:block;width:100%;height:min(75vh,600px);min-height:360px;touch-action:none"></canvas><div id="fp-error" style="display:none"></div><p class="foot">Drag to orbit · Scroll or pinch to zoom · Turn off walls or products to inspect the production line. Native WebGL / software Z-buffer, no external dependencies.</p></div>
+<script>
+(()=>{
+const host=document.getElementById('factory-plain-v3'),canvas=host.querySelector('#fp-canvas'),error=host.querySelector('#fp-error'),status=host.querySelector('#fp-status');
+try{
+const roots=[[0,0,0],[0,.105,0],[-4.28,.15,1.51],[-3.8,.15,.1],[-2.23,.15,0],[.35,.15,1.64],[2.2,.15,0],[4.23,.15,.28],[1.45,.15,1.68],[3.71,.15,2.31],[-2.2,.958,0],[-.95,.958,0],[.86,.958,0],[2.24,.958,0],[3.68,.15,1.13],[4.55,.15,1.52]];
+// Source-derived primitive specifications from Scenarium Factory v1 (209 meshes).
+const pieces=[];
+const color=h=>[0,2,4].map(i=>parseInt(h.slice(i,i+2),16));
+function b(g,d,h,p=[0,0,0],r=[0,0,0]){pieces.push({g,type:'b',d,p,r,color:color(h)})}
+function t(g,d,h,p=[0,0,0],r=[0,0,0]){pieces.push({g,type:'t',d,p,r,color:color(h)})}
+// Industrial hall shell: 58 parts.
+b(0,[10.2,.24,6.4],'7d8987');b(0,[10.06,.034,6.23],'d2d6c8',[0,.137,0]);b(0,[10.2,4.2,.19],'e2e6df',[0,2.1,3.1]);b(0,[.19,4.2,6.4],'b6c8c4',[-5,2.1,0]);
+b(0,[10.16,.38,.34],'729b9a',[0,4.02,3.02]);b(0,[.32,.35,6.23],'729b9a',[-4.96,4.02,0]);b(0,[9.78,.17,.11],'91b9b0',[0,.25,2.96]);b(0,[.12,.17,6.02],'91b9b0',[-4.85,.25,0]);
+for(const x of [-1.45,1.2,3.83])b(0,[1.08,.34,.04],'9fb5b1',[x,3.78,2.995]);
+b(0,[2.65,.49,.065],'d9aaa6',[-2.83,3.56,2.982]);for(const x of [-3.65,-3.14,-2.63])b(0,[.28,.2,.071],'f4e9d7',[x,3.56,2.942]);
+for(const z of [-1.57,-2.76])b(0,[9.3,.012,.075],'c8c0ac',[0,.159,z]);b(0,[9.3,.009,.065],'ebc68b',[0,.16,-2.47]);
+for(const x of [-4.78,-2.39,0,2.39,4.78])b(0,[.17,4.1,.22],'729b9a',[x,2.05,2.985]);
+for(let i=0;i<4;i++){const x=-3.55+2.34*i;b(0,[1.52,.88,.04],'a7ced0',[x,2.77,2.98]);for(const dx of [-.81,.81])b(0,[.09,1.02,.07],'f4e5d3',[x+dx,2.77,2.95]);for(const y of [3.30,2.25])b(0,[1.7,.085,.08],'f4e5d3',[x,y,2.95]);}
+for(const x of [-4,-2,0,2,4]){b(0,[.48,.014,.09],'8fb8ae',[x,.166,-2.16]);b(0,[.23,.014,.075],'8fb8ae',[x+.27,.166,-2.25],[0,24,0]);b(0,[.23,.014,.075],'8fb8ae',[x+.27,.166,-2.07],[0,-24,0]);}
+// Continuous supported belt: 35 parts.
+b(1,[7.1,.29,1.06],'789b9b',[0,.67,0]);b(1,[7.14,.06,.9],'5a777a',[0,.845,0]);for(const z of [-.53,.53])b(1,[7.18,.13,.095],'c9a28a',[0,.932,z]);for(const x of [-3.51,3.51])b(1,[.17,.2,.95],'e0d4bc',[x,.83,0]);
+for(const x of [-3,-1.5,0,1.5,3]){for(const z of [-.37,.37])b(1,[.15,.54,.14],'6b8586',[x,.34,z]);b(1,[.4,.11,1.02],'acc6b5',[x,.105,0]);}
+for(let i=0;i<14;i++)b(1,[.042,.008,.79],'93b1aa',[-3.1+i*.47,.884,0]);
+// Input stock receptacle: 12.
+b(2,[1.03,.73,.9],'799f9d',[0,.45,0]);b(2,[.87,.065,.71],'e7aaad',[0,.83,0]);for(const z of [-.45,.45])b(2,[1.08,.1,.1],'e7cdaa',[0,.89,z]);for(const x of [-.52,.52])b(2,[.1,.1,.85],'e7cdaa',[x,.89,0]);b(2,[.27,.24,.29],'e7aaad',[-.23,1.005,-.15]);b(2,[.28,.18,.3],'bcd0a6',[.19,.975,-.1]);b(2,[.29,.22,.24],'f4d9ac',[0,.995,.22]);b(2,[.58,.18,.015],'f9ecd9',[0,.56,-.457]);for(const x of [-.39,.39])b(2,[.13,.11,.13],'799f9d',[x,.055,-.31]);
+// Stock-feed chute: 7.
+for(const z of [-.4,.4])b(3,[1.21,.13,.075],'8c9e95',[0,1.06,z],[0,0,-12]);b(3,[1.21,.07,.73],'a4bdb1',[0,1.04,0],[0,0,-12]);for(const z of [-.28,.28])b(3,[.12,1.04,.13],'d7b69c',[-.45,.52,z]);b(3,[.13,.88,.13],'d7b69c',[.5,.44,0]);b(3,[.24,.14,.24],'e6abac',[-.22,1.16,0]);
+// Press straddles conveyor: 12.
+for(const z of [-.88,.88])b(4,[.3,2.35,.29],'81aeb0',[0,1.18,z]);b(4,[.74,.39,2.04],'e4b9a8',[0,2.33,0]);b(4,[.76,.45,.63],'9a7c87',[0,2.63,0]);b(4,[.28,.73,.31],'f6d7a6',[0,1.78,0]);b(4,[.65,.21,.57],'ce8f8c',[0,1.32,0]);b(4,[1.41,.08,.78],'f8ebe0',[0,.55,0]);b(4,[1.92,.09,.09],'eac780',[0,1.08,-.58]);b(4,[.16,.18,.045],'81aeb0',[.62,2.34,-.302]);b(4,[.16,.18,.045],'f6d7a6',[.37,2.34,-.302]);for(const z of [-1.03,1.03])b(4,[.63,1.24,.075],'f8ebe0',[0,1.34,z]);
+// Pick/place robot: 13.
+b(5,[.82,.18,.79],'638b8c',[0,.09,0]);t(5,[.56,.57,.45,.47,1.05],'9bc5b2',[0,.68,0]);b(5,[.7,.46,.56],'eab0ac',[0,1.43,-.09]);b(5,[.26,.3,.63],'b48194',[0,1.42,-.12]);b(5,[.28,1.02,.28],'eab0ac',[0,1.8,-.39],[-38,0,0]);b(5,[.43,.35,.38],'b48194',[0,2.11,-.73]);b(5,[.26,.87,.26],'f2c6ac',[0,1.82,-1.04],[35,0,0]);b(5,[.34,.27,.33],'b48194',[0,1.5,-1.31]);b(5,[.35,.18,.29],'668b8b',[0,1.3,-1.31]);for(const x of [-.17,.17])b(5,[.1,.31,.16],'668b8b',[x,1.15,-1.31]);b(5,[.29,.07,.12],'f1e4c8',[0,.995,-1.31]);b(5,[.25,.14,.025],'c4ded0',[0,1.44,-.402]);
+// Inspection gate: 11.
+for(const z of [-.71,.71])b(6,[.16,1.82,.16],'749998',[0,.91,z]);b(6,[.32,.22,1.63],'ecc8ad',[0,1.84,0]);b(6,[.37,.27,.38],'718f9e',[0,1.66,0]);b(6,[.2,.045,.23],'a5d3c8',[0,1.5,0]);b(6,[.26,.35,.2],'749998',[.14,1.95,-.72]);b(6,[.027,.23,.18],'f5ebe2',[.29,1.96,-.72]);b(6,[.047,.09,.09],'a5d3c8',[.32,2.02,-.72]);b(6,[.047,.09,.09],'f3de9e',[.32,1.89,-.72]);for(const z of [-.69,.69])b(6,[.29,.09,.14],'ecc8ad',[0,.98,z]);
+// Finished pallet: 12.
+for(const z of [-.57,0,.57])b(7,[1.43,.14,.21],'b89171',[0,.09,z]);for(const x of [-.53,0,.53])b(7,[.36,.1,1.45],'e6c69e',[x,.21,0]);b(7,[.57,.49,.54],'e6c69e',[-.32,.53,-.25]);b(7,[.57,.49,.54],'e6c69e',[.32,.53,-.25]);b(7,[.57,.49,.54],'b89171',[0,.53,.31]);b(7,[.63,.46,.58],'e6c69e',[0,1.02,-.25]);b(7,[.34,.12,.015],'f8efde',[0,1.05,-.55]);b(7,[.06,.46,.6],'89765f',[0,1.02,-.25]);
+// Console: 7.
+b(8,[.64,.15,.55],'718c8c',[0,.075,0]);b(8,[.25,.97,.28],'718c8c',[0,.61,0]);t(8,[.82,.56,.75,.46,.52],'8facac',[0,1.2,0]);b(8,[.66,.32,.035],'c6d4c7',[0,1.31,-.295],[-12,0,0]);b(8,[.36,.16,.042],'95c6bf',[-.15,1.39,-.319],[-12,0,0]);b(8,[.15,.1,.04],'efb6b9',[.23,1.23,-.324]);b(8,[.13,.1,.04],'e8cd90',[.22,1.39,-.324]);
+// Reused garage shelf: 14.
+for(const x of [-.71,.71])for(const z of [-.27,.27])b(9,[.1,1.95,.11],'798d86',[x,.975,z]);for(const y of [.24,.91,1.55,1.94])b(9,[1.54,.09,.69],'cba787',[0,y,0]);b(9,[.55,.46,.52],'deb9aa',[-.37,.53,0]);b(9,[.55,.46,.52],'a8bdab',[.35,.53,0]);b(9,[.64,.37,.5],'deb9aa',[.18,1.74,0]);b(9,[.29,.3,.3],'f4d4bd',[-.4,1.13,-.05]);for(const x of [-.37,.35])b(9,[.28,.07,.012],'fdf0dc',[x,.62,-.266]);
+// Four toy specimens, five pieces each.
+for(const g of [10,11,12,13]){b(g,[.41,.26,.39],'f2b7b4',[0,.15,0]);b(g,[.43,.07,.41],'ffdfb0',[0,.32,0]);b(g,[.16,.025,.16],'9fbda9',[0,.371,0]);b(g,[.21,.13,.014],'e8bf79',[0,.174,-.202]);b(g,[.36,.05,.34],'c28e95',[0,.029,0]);}
+// Two output cartons, four pieces each.
+for(const g of [14,15]){b(g,[.48,.44,.46],'f2d9b4',[0,.25,0]);b(g,[.53,.08,.51],'ddbaa0',[0,.505,0]);b(g,[.09,.014,.51],'b6c7b0',[0,.553,0]);b(g,[.27,.16,.014],'f8eee0',[0,.3,-.242]);}
+const expected=[58,35,12,7,12,13,11,12,7,14,5,5,5,5,4,4];
+for(let g=0;g<expected.length;g++)if(pieces.filter(x=>x.g===g).length!==expected[g])throw Error('Group '+g+' wrong count');
+if(pieces.length!==209)throw Error('Wrong geometry count '+pieces.length);
+const parts=pieces;
+
+// Scenarium factory source-bound depth preview. Native WebGL is primary;
+// CPU software Z-buffer provides correct occlusion when GPU/WebGL is disabled.
+const faces=[[0,1,2,3],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]];
+const sub=(a,b)=>a.map((x,i)=>x-b[i]);
+const dot=(a,b)=>a.reduce((sum,v,i)=>sum+v*b[i],0);
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const norm=v=>{let n=Math.hypot(...v)||1;return v.map(x=>x/n)};
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function rotate(v,r){
+ let[x,y,z]=v;
+ if(r[0]){const a=r[0]*Math.PI/180,c=Math.cos(a),s=Math.sin(a);[y,z]=[y*c-z*s,y*s+z*c];}
+ if(r[1]){const a=r[1]*Math.PI/180,c=Math.cos(a),s=Math.sin(a);[x,z]=[x*c+z*s,-x*s+z*c];}
+ if(r[2]){const a=r[2]*Math.PI/180,c=Math.cos(a),s=Math.sin(a);[x,y]=[x*c-y*s,x*s+y*c];}
+ return[x,y,z];
+}
+function visibleParts(){
+ const showWalls=host.querySelector('#fp-walls').checked;
+ const showProducts=host.querySelector('#fp-products').checked;
+ return parts.filter(p=>(showWalls||p.g!==0)&&(showProducts||p.g<10));
+}
+function surfaces(p){
+ const [bx,bz,tx,tz,h]=p.type==='b'?[p.d[0],p.d[2],p.d[0],p.d[2],p.d[1]]:p.d;
+ const c=p.p.map((v,i)=>v+roots[p.g][i]);
+ const corners=[[-bx/2,-h/2,-bz/2],[bx/2,-h/2,-bz/2],[bx/2,-h/2,bz/2],[-bx/2,-h/2,bz/2],[-tx/2,h/2,-tz/2],[tx/2,h/2,-tz/2],[tx/2,h/2,tz/2],[-tx/2,h/2,tz/2]]
+  .map(v=>rotate(v,p.r).map((a,i)=>a+c[i]));
+ return faces.map(f=>{
+  const [a,b,d,e]=f.map(i=>corners[i]);
+  let normal=norm(cross(sub(b,a),sub(d,a)));
+  const mid=a.map((v,i)=>(v+b[i]+d[i]+e[i])/4);
+  if(dot(normal,sub(mid,c))<0)normal=normal.map(x=>-x);
+  return {corners:f.map(i=>corners[i]),normal,color:p.color};
+ });
+}
+function camera(){
+ const eye=[target[0]+dist*Math.sin(az)*Math.cos(el),target[1]+dist*Math.sin(el),target[2]-dist*Math.cos(az)*Math.cos(el)];
+ const fwd=norm(sub(target,eye));const right=norm(cross(fwd,[0,1,0]));const up=cross(right,fwd);
+ return {eye,fwd,right,up};
+}
+let az=.60,el=.56,dist=18.3,target=[0,1.65,.1];
+const gl=null; // Explicitly force verified software Z-buffer rendering
+let draw,build;
+if(gl){
+ function compile(type,source){
+  const sh=gl.createShader(type);gl.shaderSource(sh,source);gl.compileShader(sh);
+  if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error('Shader compile: '+gl.getShaderInfoLog(sh));return sh;
+ }
+ const program=gl.createProgram();
+ gl.attachShader(program,compile(gl.VERTEX_SHADER,`attribute vec3 p;attribute vec3 n;attribute vec3 c;uniform mat4 vp;varying vec3 v;void main(){float light=max(dot(normalize(n),normalize(vec3(-.5,1.,-.6))),0.);v=c*(.70+.30*light);gl_Position=vp*vec4(p,1.);}`));
+ gl.attachShader(program,compile(gl.FRAGMENT_SHADER,`precision mediump float;varying vec3 v;void main(){gl_FragColor=vec4(v,1.);}`));
+ gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('Shader link: '+gl.getProgramInfoLog(program));
+ gl.useProgram(program);
+ const buffer=gl.createBuffer(),matrix=gl.getUniformLocation(program,'vp');let vertexCount=0;
+ function attrib(name,offset){const id=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(id);gl.vertexAttribPointer(id,3,gl.FLOAT,false,36,offset);}
+ function mul(a,b){const out=new Float32Array(16);for(let col=0;col<4;col++)for(let row=0;row<4;row++)for(let k=0;k<4;k++)out[col*4+row]+=a[k*4+row]*b[col*4+k];return out;}
+ function look(cam){const {eye,right:x,up:y,fwd}=cam,z=fwd.map(a=>-a);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1]);}
+ build=()=>{
+  const selected=visibleParts(),vertices=[];
+  for(const p of selected)for(const f of surfaces(p))for(const k of [0,1,2,0,2,3])vertices.push(...f.corners[k],...f.normal,...f.color.map(n=>n/255));
+  const data=new Float32Array(vertices);if(!data.every(Number.isFinite))throw Error('Bad factory coordinate');
+  vertexCount=data.length/9;gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
+  attrib('p',0);attrib('n',12);attrib('c',24);
+  status.textContent=selected.length+' / 209 pieces · GPU depth';draw();
+ };
+ draw=()=>{
+  const rect=canvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2),w=Math.max(1,Math.round(rect.width*dpr)),h=Math.max(1,Math.round(rect.height*dpr));
+  if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+  gl.viewport(0,0,w,h);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LESS);gl.depthMask(true);gl.disable(gl.BLEND);gl.disable(gl.CULL_FACE);
+  gl.clearDepth(1);gl.clearColor(.915,.941,.922,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const near=.2,far=90,f=1/Math.tan(37*Math.PI/360),projection=new Float32Array(16);
+  projection[0]=f/(w/h);projection[5]=f;projection[10]=-(far+near)/(far-near);projection[11]=-1;projection[14]=-(2*far*near)/(far-near);
+  gl.uniformMatrix4fv(matrix,false,mul(projection,look(camera())));gl.drawArrays(gl.TRIANGLES,0,vertexCount);
+  if(gl.getError()!==gl.NO_ERROR)throw Error('WebGL draw failure');
+ };
+}else{
+ const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw Error('No depth rendering context available');
+ let fb=null,depth=null,ww=0,hh=0;
+ function clipped(poly,near){
+  const out=[];
+  for(let i=0;i<poly.length;i++){
+   const a=poly[i],b=poly[(i+1)%poly.length],insideA=a[2]>=near,insideB=b[2]>=near;
+   if(insideA)out.push(a);
+   if(insideA!==insideB){const t=(near-a[2])/(b[2]-a[2]);out.push(a.map((v,j)=>v+t*(b[j]-v)));}
+  }
+  return out;
+ }
+ function raster(ta,tb,tc,color){
+  const [x0,y0,z0]=ta,[x1,y1,z1]=tb,[x2,y2,z2]=tc;
+  const minX=Math.max(0,Math.floor(Math.min(x0,x1,x2))),maxX=Math.min(ww-1,Math.ceil(Math.max(x0,x1,x2)));
+  const minY=Math.max(0,Math.floor(Math.min(y0,y1,y2))),maxY=Math.min(hh-1,Math.ceil(Math.max(y0,y1,y2)));
+  const edge=(ax,ay,bx,by,cx,cy)=>(cx-ax)*(by-ay)-(cy-ay)*(bx-ax);
+  const area=edge(x0,y0,x1,y1,x2,y2);if(Math.abs(area)<.01)return;
+  const scale=1/area,recip0=1/z0,recip1=1/z1,recip2=1/z2;
+  const data=fb.data;
+  for(let y=minY;y<=maxY;y++){
+   const py=y+.5;
+   for(let x=minX;x<=maxX;x++){
+    const px=x+.5;
+    const w0=edge(x1,y1,x2,y2,px,py)*scale;
+    if(w0<0)continue;
+    const w1=edge(x2,y2,x0,y0,px,py)*scale;
+    if(w1<0)continue;
+    const w2=1-w0-w1;if(w2<0)continue;
+    const invZ=w0*recip0+w1*recip1+w2*recip2;
+    const i=y*ww+x;
+    if(invZ<=depth[i]+1e-8)continue;
+    depth[i]=invZ;const j=i*4;
+    data[j]=color[0];data[j+1]=color[1];data[j+2]=color[2];
+   }
+  }
+ }
+ build=()=>{status.textContent=visibleParts().length+' / 209 pieces · CPU depth';draw();};
+ draw=()=>{
+  const rect=canvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,1),w=Math.max(1,Math.round(rect.width*dpr)),h=Math.max(1,Math.round(rect.height*dpr));
+  if(w!==ww||h!==hh){ww=w;hh=h;canvas.width=ww;canvas.height=hh;fb=ctx.createImageData(ww,hh);depth=new Float32Array(ww*hh);}
+  const data=fb.data;depth.fill(0);
+  for(let i=0;i<data.length;i+=4){data[i]=233;data[i+1]=240;data[i+2]=235;data[i+3]=255;}
+  const {eye,fwd,right,up}=camera(),focal=Math.min(ww,hh)*1.50;
+  for(const p of visibleParts())for(const f of surfaces(p)){
+   const mid=f.corners[0].map((v,i)=>f.corners.reduce((sum,c)=>sum+c[i],0)/4);
+   if(dot(f.normal,sub(eye,mid))<=0)continue;
+   const verts=f.corners.map(v=>{const d=sub(v,eye);return[dot(d,right),dot(d,up),dot(d,fwd)];});
+   const poly=clipped(verts,.2);if(poly.length<3)continue;
+   const lit=.70+.30*Math.max(0,dot(f.normal,norm([-.5,1,-.6])));
+   const rgb=f.color.map(v=>Math.max(0,Math.min(255,Math.round(v*lit))));
+   const projected=poly.map(([x,y,z])=>[ww/2+x*focal/z,hh/2-y*focal/z,z]);
+   for(let k=1;k+1<projected.length;k++)raster(projected[0],projected[k],projected[k+1],rgb);
+  }
+  ctx.putImageData(fb,0,0);
+ };
+}
+// Invalidate once per animation frame, rather than racing against pointer events.
+let queued=false;
+function redraw(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;try{draw()}catch(e){error.style.display='block';error.textContent=e.message}});}
+const pointers=new Map();let pinch=null;
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);pinch=null;canvas.style.cursor='grabbing'});
+canvas.addEventListener('pointermove',e=>{
+ if(!pointers.has(e.pointerId))return;
+ const prev=pointers.get(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pointers.size===1){az+=(e.clientX-prev[0])*.008;el=clamp(el+(e.clientY-prev[1])*.006,.08,1.49);}
+ else if(pointers.size===2){const[a,b]=[...pointers.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pinch&&d)dist=clamp(dist*pinch/d,5,35);pinch=d;}
+ redraw();
+});
+const release=e=>{pointers.delete(e.pointerId);pinch=null;if(!pointers.size)canvas.style.cursor='grab'};
+canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
+canvas.addEventListener('wheel',e=>{e.preventDefault();dist=clamp(dist*Math.exp(e.deltaY*.001),5,35);redraw()},{passive:false});
+host.querySelector('#fp-reset').addEventListener('click',()=>{az=.6;el=.56;dist=18.3;target=[0,1.65,.1];redraw()});
+host.querySelector('#fp-top').addEventListener('click',()=>{az=.22;el=1.42;dist=18;redraw()});
+host.querySelector('#fp-line').addEventListener('click',()=>{az=.12;el=.32;dist=15;redraw()});
+host.querySelector('#fp-walls').addEventListener('change',build);
+host.querySelector('#fp-products').addEventListener('change',build);
+if(typeof ResizeObserver!=='undefined')new ResizeObserver(redraw).observe(canvas);
+build();
+
+}catch(e){error.textContent=e.stack||e.message;error.style.display='block';status.textContent='Error';}
+})();
+</script></body></html>

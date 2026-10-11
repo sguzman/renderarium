@@ -1,0 +1,48 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-laundry-hamper-v1
+  name: Block Chibi Laundry Hamper v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, bathroom, laundry-hamper]
+materials:
+  wicker: {role: woven-wood-shape, base_color: "#b88b6d", roughness: 0.98}
+  lip: {role: basket-edge, base_color: "#8f674e", roughness: 0.98}
+  fabric: {role: folded-laundry, base_color: "#f2e5d9", roughness: 0.98}
+  accent: {role: pastel-laundry, base_color: "#e1b0b3", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  basket:
+    role: tapered-laundry-storage
+    parent: root
+    geometry: {kind: tapered_box, bottom: [0.6,0.53], top: [0.69,0.62], height: 0.67}
+    material: wicker
+    transform: {translate: [0, 0.335, 0]}
+    articulation: static
+  rim:
+    role: basket-upper-lip
+    parent: root
+    geometry: {kind: cuboid, size: [0.75, 0.07, 0.67]}
+    material: lip
+    transform: {translate: [0, 0.675, 0]}
+    articulation: static
+  laundry:
+    role: folded-fabric-top
+    parent: root
+    geometry: {kind: cuboid, size: [0.56, 0.12, 0.5]}
+    material: fabric
+    transform: {translate: [0, 0.74, 0]}
+    articulation: static
+  cloth_accent:
+    role: towel-fold
+    parent: root
+    geometry: {kind: cuboid, size: [0.3, 0.045, 0.44]}
+    material: accent
+    transform: {translate: [-0.08, 0.825, 0]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: initial-scene-review-pending, renderer_experiments: deferred}

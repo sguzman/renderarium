@@ -1,0 +1,62 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-towel-rail-v1
+  name: Block Chibi Towel Rail v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, bathroom, towel-rail]
+materials:
+  metal: {role: rail-hardware, base_color: "#c4b1a2", roughness: 0.98}
+  cloth: {role: hanging-towel, base_color: "#dfa2b5", roughness: 0.98}
+  trim: {role: cloth-hem, base_color: "#f4cbd1", roughness: 0.98}
+  hardware: {role: bracket, base_color: "#a57e68", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  bracket_left:
+    role: wall-anchor
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.15, 0.13]}
+    material: hardware
+    transform: {translate: [0, 0.24, -0.4]}
+    articulation: static
+  bracket_right:
+    role: wall-anchor
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.15, 0.13]}
+    material: hardware
+    transform: {translate: [0, 0.24, 0.4]}
+    articulation: static
+  rail:
+    role: continuous-towel-bar
+    parent: root
+    geometry: {kind: cuboid, size: [0.09, 0.09, 0.96]}
+    material: metal
+    transform: {translate: [0.13, 0.24, 0]}
+    articulation: static
+  towel_front:
+    role: textile-hanging-face
+    parent: root
+    geometry: {kind: cuboid, size: [0.075, 0.52, 0.53]}
+    material: cloth
+    transform: {translate: [0.2, -0.055, 0]}
+    articulation: static
+  hem:
+    role: towel-bottom-hem
+    parent: root
+    geometry: {kind: cuboid, size: [0.077, 0.07, 0.53]}
+    material: trim
+    transform: {translate: [0.202, -0.315, 0]}
+    articulation: static
+  stripe:
+    role: towel-decor-stripe
+    parent: root
+    geometry: {kind: cuboid, size: [0.08, 0.043, 0.46]}
+    material: trim
+    transform: {translate: [0.245, -0.19, 0]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: initial-scene-review-pending, renderer_experiments: deferred}

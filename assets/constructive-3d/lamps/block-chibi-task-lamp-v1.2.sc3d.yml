@@ -1,0 +1,151 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pink:
+    role: lamp-housing
+    base_color: "#d7869f"
+    roughness: 0.98
+  pink_light:
+    role: lamp-housing-accent
+    base_color: "#e39bb2"
+    roughness: 0.98
+  pink_dark:
+    role: lamp-support
+    base_color: "#9f586f"
+    roughness: 0.98
+  brown:
+    role: lamp-support
+    base_color: "#6b4a3d"
+    roughness: 0.98
+  warm_emit_on:
+    role: lamp-emitter-powered
+    base_color: "#fff0b8"
+    roughness: 0.82
+    emissive: "#ffd56f"
+    emissive_intensity: 2.8
+  warm_emit_off:
+    role: lamp-emitter-unpowered
+    base_color: "#d8c79d"
+    roughness: 0.98
+    emissive: "#000000"
+    emissive_intensity: 0.0
+
+asset:
+  id: block-chibi-task-lamp-v1.2
+  name: Block Chibi Task Lamp v1.2
+  kind: prop
+  root: root
+  tags: [lamp, block-chibi-room, task-lamp, grammar-specimen, direction-power-corrected]
+
+parts:
+  root: {role: lamp-root, parent: null, articulation: static}
+
+  base:
+    role: lamp-base
+    parent: root
+    geometry: {kind: cuboid, size: [0.74, 0.14, 0.58]}
+    material: pink_dark
+    transform: {translate: [0.0, 0.07, 0.0]}
+
+  base_joint:
+    role: lamp-joint
+    parent: root
+    geometry: {kind: cuboid, size: [0.22, 0.22, 0.22]}
+    material: brown
+    transform: {translate: [-0.18, 0.22, 0.0]}
+
+  lower_arm_pivot:
+    role: lamp-articulation-frame
+    parent: base_joint
+    transform:
+      translate: [0.0, 0.0, 0.0]
+      rotate_deg: [0.0, 0.0, -28.0]
+
+  lower_arm:
+    role: lamp-arm
+    parent: lower_arm_pivot
+    geometry: {kind: cuboid, size: [0.14, 0.62, 0.14]}
+    material: brown
+    transform: {translate: [0.0, 0.31, 0.0]}
+
+  elbow_joint:
+    role: lamp-joint
+    parent: lower_arm_pivot
+    geometry: {kind: cuboid, size: [0.22, 0.22, 0.22]}
+    material: pink
+    transform: {translate: [0.0, 0.62, 0.0]}
+
+  upper_arm_pivot:
+    role: lamp-articulation-frame
+    parent: elbow_joint
+    transform:
+      translate: [0.0, 0.0, 0.0]
+      rotate_deg: [0.0, 0.0, 62.0]
+
+  upper_arm:
+    role: lamp-arm
+    parent: upper_arm_pivot
+    geometry: {kind: cuboid, size: [0.14, 0.50, 0.14]}
+    material: brown
+    transform: {translate: [0.0, 0.25, 0.0]}
+
+  head_joint:
+    role: lamp-joint
+    parent: upper_arm_pivot
+    geometry: {kind: cuboid, size: [0.20, 0.20, 0.20]}
+    material: pink_dark
+    transform: {translate: [0.0, 0.50, 0.0]}
+
+  head_pivot:
+    role: lamp-articulation-frame
+    parent: head_joint
+    transform:
+      translate: [0.0, 0.0, 0.0]
+      rotate_deg: [0.0, 0.0, 55.0]
+
+  head:
+    role: lamp-head
+    parent: head_pivot
+    geometry:
+      kind: tapered_box
+      bottom: [0.44, 0.34]
+      top: [0.34, 0.26]
+      height: 0.34
+    material: pink
+    transform: {translate: [0.0, -0.17, 0.0]}
+
+  emitter:
+    role: lamp-light-source
+    parent: head_pivot
+    geometry: {kind: cuboid, size: [0.28, 0.055, 0.20]}
+    material: warm_emit_on
+    transform: {translate: [0.0, -0.355, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: lamp@0.2
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::lamp@0.3
+    predecessor: block-chibi-task-lamp-v1.1
+    specimen_intent: block-task-lamp
+    support_strategy: table
+    hierarchy_strategy: explicit-parented-chain
+    render_shading: flat
+    emission_direction_local: [0.0, -1.0, 0.0]
+    head_opening_direction_local: [0.0, -1.0, 0.0]
+    power_states:
+      on: {emitter_material: warm_emit_on, local_light: enabled}
+      off: {emitter_material: warm_emit_off, local_light: disabled}
+    evaluation_status: awaiting-v1.2-family-review

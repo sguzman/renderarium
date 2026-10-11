@@ -1,0 +1,66 @@
+format: scenarium-production-brief
+version: "0.1"
+
+id: quest-girl-v5-hair-brief
+status: planned
+predecessor: quest-girl-v4
+
+ontology_refs:
+  hair_grammar: taria/incubator/scenarium/ontology/block-chibi-hair-grammar@0.1
+  hair_archetypes: taria/incubator/scenarium/archetypes/block-chibi-hair-styles@0.1
+
+selected_archetype:
+  id: soft-full-bangs-ponytail
+  reason: >-
+    Keeps the dark-hair ponytail direction while directly addressing the
+    recurring slab, monobrow, sideburn, bald-gap, and weak-volume failures.
+
+freeze:
+  - eyebrows
+  - eyes
+  - eye_glints
+  - mouth
+  - blush
+
+required_hair_regions:
+  - crown
+  - fringe_base
+  - fringe_clumps
+  - temple_transition_left
+  - temple_transition_right
+  - side_mass_left
+  - side_mass_right
+  - back_mass
+  - ponytail_root
+  - ponytail_segments
+
+hard_constraints:
+  - no_continuous_dark_bar_across_both_eyebrows
+  - no_sideburn_like_face_plane_hair
+  - preserve_negative_space_around_both_eyes
+  - no_visible_scalp_gap_in_front_three_quarter_side_or_rear_three_quarter
+  - ponytail_root_must_be_visibly_connected
+  - fringe_clumps_must_not_be_equal_rectangles
+  - head_body_join_must_not_be_made_worse_by_hair
+
+preferred_geometry:
+  crown: [tapered_box, cuboid]
+  fringe_clumps: [wedge, prism, tapered_box]
+  temple_transition: [wedge, prism, tapered_box]
+  side_mass: [tapered_box, prism, wedge]
+  back_mass: [tapered_box, cuboid]
+  ponytail: [tapered_box, prism]
+
+review_views:
+  - front
+  - three_quarter
+  - side
+  - rear_three_quarter
+
+acceptance_questions:
+  - does_fringe_read_as_hair_not_forehead_armor
+  - are_both_eyes_and_eyebrow_breaks_clear
+  - do_temples_avoid_sideburn_read
+  - is_skull_coverage_continuous
+  - is_ponytail_visibly_connected
+  - does_hair_soften_or_neutrally_preserve_head_body_transition

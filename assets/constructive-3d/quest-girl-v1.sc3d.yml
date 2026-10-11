@@ -1,0 +1,550 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+asset:
+  id: quest-girl-v1
+  name: Quest Girl v1
+  kind: character
+  root: root
+  description: >-
+    First art-quality SC3D character candidate targeting a Pokemon Quest-like
+    block-chibi visual language with explicit rigid cuboid/prism construction.
+  tags:
+    - block-chibi
+    - pokemon-quest-target
+    - cute-girl
+    - static-beauty-proof
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+parameters:
+  head_width:
+    type: number
+    default: 1.28
+    min: 1.00
+    max: 1.55
+    description: Primary chibi head-width control.
+
+  eye_left_x:
+    type: number
+    default: 0.245
+    min: 0.18
+    max: 0.32
+    description: Left-side eye center in local head coordinates.
+
+  eye_right_x:
+    type: number
+    default: -0.245
+    min: -0.32
+    max: -0.18
+    description: Right-side eye center in local head coordinates.
+
+materials:
+  skin:
+    role: skin
+    base_color: "#f2c7aa"
+    roughness: 0.92
+
+  hair:
+    role: hair
+    base_color: "#4a2638"
+    roughness: 0.86
+
+  hair_shadow:
+    role: hair-shadow
+    base_color: "#37202f"
+    roughness: 0.90
+
+  dress:
+    role: costume-primary
+    base_color: "#cf6f91"
+    roughness: 0.90
+
+  dress_dark:
+    role: costume-secondary
+    base_color: "#9e496a"
+    roughness: 0.92
+
+  cream:
+    role: costume-trim
+    base_color: "#f4e5cc"
+    roughness: 0.94
+
+  eye:
+    role: facial-feature
+    base_color: "#30242d"
+    roughness: 1.0
+
+  eye_glint:
+    role: facial-highlight
+    base_color: "#fff8ec"
+    roughness: 0.88
+
+  blush:
+    role: facial-accent
+    base_color: "#df8291"
+    roughness: 0.96
+
+  shoe:
+    role: footwear
+    base_color: "#5e3840"
+    roughness: 0.90
+
+geometry_library:
+  eye_block:
+    kind: cuboid
+    size: [0.14, 0.19, 0.035]
+
+  eye_glint_block:
+    kind: cuboid
+    size: [0.045, 0.055, 0.018]
+
+  small_hand:
+    kind: cuboid
+    size: [0.235, 0.20, 0.235]
+
+parts:
+  root:
+    role: root
+    parent: null
+    articulation: static
+
+  torso:
+    role: torso
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.73, 0.43]
+      top: [0.59, 0.35]
+      height: 0.64
+    material: dress
+    transform:
+      translate: [0.0, 0.18, 0.0]
+    anchors:
+      neck: [0.0, 0.32, 0.0]
+      shoulder_left: [-0.36, 0.17, 0.0]
+      shoulder_right: [0.36, 0.17, 0.0]
+      hip_left: [-0.22, -0.30, 0.0]
+      hip_right: [0.22, -0.30, 0.0]
+    articulation: rigid
+
+  chest_panel:
+    role: costume-front-panel
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.44, 0.35, 0.045]
+    material: cream
+    transform:
+      translate: [0.0, 0.02, -0.205]
+    articulation: rigid
+
+  collar:
+    role: collar
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.46, 0.12, 0.055]
+    material: cream
+    transform:
+      translate: [0.0, 0.235, -0.19]
+    articulation: rigid
+
+  skirt:
+    role: skirt
+    parent: torso
+    geometry:
+      kind: tapered_box
+      bottom: [0.92, 0.56]
+      top: [0.68, 0.40]
+      height: 0.50
+    material: dress
+    transform:
+      translate: [0.0, -0.43, 0.0]
+    articulation: rigid
+
+  skirt_band:
+    role: skirt-trim
+    parent: skirt
+    geometry:
+      kind: cuboid
+      size: [0.84, 0.085, 0.055]
+    material: cream
+    transform:
+      translate: [0.0, -0.205, -0.285]
+    articulation: rigid
+
+  head:
+    role: head
+    parent: torso
+    geometry:
+      kind: cuboid
+      size:
+        - { param: head_width }
+        - 1.10
+        - 0.98
+    material: skin
+    anchors:
+      neck: [0.0, -0.55, 0.0]
+    attachment:
+      parent_anchor: neck
+      child_anchor: neck
+      offset: [0.0, 0.0, 0.0]
+    pivot: [0.0, -0.55, 0.0]
+    articulation: rigid
+
+  hair_back:
+    role: hair-back
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [1.36, 1.04, 0.30]
+    material: hair_shadow
+    transform:
+      translate: [0.0, 0.03, 0.39]
+    articulation: rigid
+
+  hair_top:
+    role: hair-top
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [1.34, 0.30, 0.92]
+    material: hair
+    transform:
+      translate: [0.0, 0.46, -0.01]
+    articulation: rigid
+
+  bang_left:
+    role: bang-left
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.34, 0.31, 0.13]
+    material: hair
+    transform:
+      translate: [-0.36, 0.245, -0.505]
+      rotate_deg: [0.0, 0.0, -7.0]
+    articulation: rigid
+
+  bang_center:
+    role: bang-center
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.25, 0.34, 0.13]
+    material: hair
+    transform:
+      translate: [-0.01, 0.255, -0.51]
+      rotate_deg: [0.0, 0.0, 4.0]
+    articulation: rigid
+
+  bang_right:
+    role: bang-right
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.31, 0.29, 0.13]
+    material: hair
+    transform:
+      translate: [0.36, 0.255, -0.505]
+      rotate_deg: [0.0, 0.0, 8.0]
+    articulation: rigid
+
+  side_lock_left:
+    role: hair-side-left
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.18, 0.52, 0.20]
+    material: hair
+    transform:
+      translate: [-0.585, -0.11, -0.40]
+      rotate_deg: [0.0, 0.0, -3.0]
+    articulation: rigid
+
+  side_lock_right:
+    role: hair-side-right
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.18, 0.52, 0.20]
+    material: hair
+    transform:
+      translate: [0.585, -0.11, -0.40]
+      rotate_deg: [0.0, 0.0, 3.0]
+    articulation: rigid
+
+  bow_left:
+    role: hair-bow-left
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.36, 0.22, 0.20]
+    material: dress_dark
+    transform:
+      translate: [-0.17, 0.66, 0.03]
+      rotate_deg: [0.0, 0.0, 18.0]
+    articulation: rigid
+
+  bow_right:
+    role: hair-bow-right
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.36, 0.22, 0.20]
+    material: dress_dark
+    transform:
+      translate: [0.17, 0.66, 0.03]
+      rotate_deg: [0.0, 0.0, -18.0]
+    articulation: rigid
+
+  bow_knot:
+    role: hair-bow-knot
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.20, 0.20, 0.22]
+    material: cream
+    transform:
+      translate: [0.0, 0.65, -0.015]
+    articulation: rigid
+
+  left_eye:
+    role: eye-left
+    parent: head
+    geometry:
+      ref: eye_block
+    material: eye
+    transform:
+      translate:
+        - { param: eye_left_x }
+        - 0.03
+        - -0.505
+    articulation: rigid
+
+  right_eye:
+    role: eye-right
+    parent: head
+    geometry:
+      ref: eye_block
+    material: eye
+    transform:
+      translate:
+        - { param: eye_right_x }
+        - 0.03
+        - -0.505
+    articulation: rigid
+
+  left_eye_glint:
+    role: eye-glint-left
+    parent: head
+    geometry:
+      ref: eye_glint_block
+    material: eye_glint
+    transform:
+      translate: [0.265, 0.072, -0.532]
+    articulation: rigid
+
+  right_eye_glint:
+    role: eye-glint-right
+    parent: head
+    geometry:
+      ref: eye_glint_block
+    material: eye_glint
+    transform:
+      translate: [-0.225, 0.072, -0.532]
+    articulation: rigid
+
+  mouth:
+    role: mouth
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.105, 0.045, 0.025]
+    material: eye
+    transform:
+      translate: [0.0, -0.185, -0.508]
+    articulation: rigid
+
+  blush_left:
+    role: blush-left
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.16, 0.055, 0.025]
+    material: blush
+    transform:
+      translate: [-0.40, -0.105, -0.508]
+    articulation: rigid
+
+  blush_right:
+    role: blush-right
+    parent: head
+    geometry:
+      kind: cuboid
+      size: [0.16, 0.055, 0.025]
+    material: blush
+    transform:
+      translate: [0.40, -0.105, -0.508]
+    articulation: rigid
+
+  sleeve_left:
+    role: sleeve-left
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.31, 0.34, 0.32]
+    material: dress
+    anchors:
+      proximal: [0.0, 0.17, 0.0]
+      distal: [0.0, -0.17, 0.0]
+    attachment:
+      parent_anchor: shoulder_left
+      child_anchor: proximal
+      offset: [0.0, 0.0, 0.0]
+    pivot: [0.0, 0.17, 0.0]
+    transform:
+      rotate_deg: [0.0, 0.0, -7.0]
+    articulation: rigid
+
+  sleeve_right:
+    role: sleeve-right
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.31, 0.34, 0.32]
+    material: dress
+    anchors:
+      proximal: [0.0, 0.17, 0.0]
+      distal: [0.0, -0.17, 0.0]
+    attachment:
+      parent_anchor: shoulder_right
+      child_anchor: proximal
+      offset: [0.0, 0.0, 0.0]
+    pivot: [0.0, 0.17, 0.0]
+    transform:
+      rotate_deg: [0.0, 0.0, 7.0]
+    articulation: rigid
+
+  forearm_left:
+    role: forearm-left
+    parent: sleeve_left
+    geometry:
+      kind: cuboid
+      size: [0.20, 0.38, 0.21]
+    material: skin
+    transform:
+      translate: [0.0, -0.35, -0.01]
+      rotate_deg: [0.0, 0.0, -2.0]
+    articulation: rigid
+
+  forearm_right:
+    role: forearm-right
+    parent: sleeve_right
+    geometry:
+      kind: cuboid
+      size: [0.20, 0.38, 0.21]
+    material: skin
+    transform:
+      translate: [0.0, -0.35, -0.01]
+      rotate_deg: [0.0, 0.0, 2.0]
+    articulation: rigid
+
+  hand_left:
+    role: hand-left
+    parent: forearm_left
+    geometry:
+      ref: small_hand
+    material: skin
+    transform:
+      translate: [0.0, -0.28, -0.015]
+    articulation: rigid
+
+  hand_right:
+    role: hand-right
+    parent: forearm_right
+    geometry:
+      ref: small_hand
+    material: skin
+    transform:
+      translate: [0.0, -0.28, -0.015]
+    articulation: rigid
+
+  leg_left:
+    role: leg-left
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.27, 0.48, 0.29]
+    material: cream
+    anchors:
+      proximal: [0.0, 0.24, 0.0]
+    attachment:
+      parent_anchor: hip_left
+      child_anchor: proximal
+      offset: [0.0, 0.0, 0.015]
+    pivot: [0.0, 0.24, 0.0]
+    articulation: rigid
+
+  leg_right:
+    role: leg-right
+    parent: torso
+    geometry:
+      kind: cuboid
+      size: [0.27, 0.48, 0.29]
+    material: cream
+    anchors:
+      proximal: [0.0, 0.24, 0.0]
+    attachment:
+      parent_anchor: hip_right
+      child_anchor: proximal
+      offset: [0.0, 0.0, 0.015]
+    pivot: [0.0, 0.24, 0.0]
+    articulation: rigid
+
+  shoe_left:
+    role: shoe-left
+    parent: leg_left
+    geometry:
+      kind: cuboid
+      size: [0.35, 0.21, 0.44]
+    material: shoe
+    transform:
+      translate: [0.0, -0.335, -0.06]
+    articulation: rigid
+
+  shoe_right:
+    role: shoe-right
+    parent: leg_right
+    geometry:
+      kind: cuboid
+      size: [0.35, 0.21, 0.44]
+    material: shoe
+    transform:
+      translate: [0.0, -0.335, -0.06]
+    articulation: rigid
+
+extensions:
+  taria:
+    visual_language_target: style-target:block-chibi-quest
+    style_exemplar: Pokemon Quest
+    experiment_phase: static-beauty-v1
+    acceptance_gate: human-static-aesthetic-review
+    evaluation_status: failed-aesthetic-baseline
+    preserved: true
+    evaluated_at: 2026-10-04
+    evaluation_summary: >-
+      Recognizable and structurally useful, but aggressively unattractive.
+      Hair slabs obscure the eyes, the head reads as a crate, the silhouette is
+      top-heavy, shoulders/arms read as stapled-on, and feet collapse into one
+      dark block. Preserve as the first controllable 3D baseline; do not overwrite.

@@ -1,0 +1,107 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pot:
+    role: plant-container
+    base_color: "#a86f58"
+    roughness: 0.96
+  pot_dark:
+    role: plant-container-shadow
+    base_color: "#7f5143"
+    roughness: 0.97
+  green:
+    role: foliage-primary
+    base_color: "#7ea27a"
+    roughness: 0.96
+  green_dark:
+    role: foliage-secondary
+    base_color: "#5f7f5d"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-tiny-sprout-pot-v1
+  name: Block Chibi Tiny Sprout Pot v1
+  kind: prop
+  root: root
+  tags: [plant, block-chibi-room, tiny-sprout-pot, grammar-specimen]
+
+parts:
+  root: {role: plant-root, parent: null, articulation: static}
+
+  pot:
+    role: plant-anchor
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.42, 0.42]
+      top: [0.34, 0.34]
+      height: 0.36
+    material: pot
+    transform: {translate: [0.0, 0.18, 0.0]}
+
+  stem:
+    role: plant-stem
+    parent: root
+    geometry: {kind: cuboid, size: [0.08, 0.34, 0.08]}
+    material: green_dark
+    transform: {translate: [0.0, 0.50, 0.0]}
+
+  leaf_left:
+    role: plant-foliage
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.10, 0.15]
+      top: [0.26, 0.22]
+      height: 0.30
+    material: green
+    transform:
+      translate: [-0.12, 0.66, -0.01]
+      rotate_deg: [8.0, 0.0, -35.0]
+
+  leaf_right:
+    role: plant-foliage
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.10, 0.15]
+      top: [0.26, 0.22]
+      height: 0.30
+    material: green
+    transform:
+      translate: [0.12, 0.67, 0.02]
+      rotate_deg: [-6.0, 0.0, 34.0]
+
+  leaf_top:
+    role: plant-foliage
+    parent: root
+    geometry:
+      kind: tapered_box
+      bottom: [0.11, 0.14]
+      top: [0.23, 0.20]
+      height: 0.34
+    material: green
+    transform:
+      translate: [0.0, 0.76, -0.035]
+      rotate_deg: [5.0, 0.0, 0.0]
+
+extensions:
+  taria:
+    object_grammar: plant@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::plant@0.1
+    specimen_intent: tiny-sprout-pot
+    display_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

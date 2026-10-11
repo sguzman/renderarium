@@ -1,0 +1,176 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  warm_floor:
+    role: floor-substrate
+    base_color: "#a97861"
+    roughness: 0.99
+  warm_floor_dark:
+    role: floor-finish
+    base_color: "#93624f"
+    roughness: 0.99
+  warm_floor_light:
+    role: floor-finish
+    base_color: "#b9866d"
+    roughness: 0.99
+  cream_tile:
+    role: floor-finish
+    base_color: "#e9d7bd"
+    roughness: 0.99
+  rose_tile:
+    role: floor-finish
+    base_color: "#c98379"
+    roughness: 0.99
+
+asset:
+  id: block-chibi-warm-tile-floor-v1
+  name: Block Chibi Warm Tile Floor v1
+  kind: architecture
+  root: root
+  tags: [floor, block-chibi-room, tile-floor, grammar-specimen]
+
+parts:
+  root: {role: floor-root, parent: null, articulation: static}
+
+  substrate:
+    role: floor-structural-substrate
+    parent: root
+    geometry: {kind: cuboid, size: [2.24, 0.08, 2.24]}
+    material: warm_floor_dark
+    transform: {translate: [0.0, 0.04, 0.0]}
+
+  tile_1:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: cream_tile
+    transform: {translate: [-0.81, 0.095, -0.81]}
+
+  tile_2:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: rose_tile
+    transform: {translate: [-0.27, 0.095, -0.81]}
+
+  tile_3:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: cream_tile
+    transform: {translate: [0.27, 0.095, -0.81]}
+
+  tile_4:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: rose_tile
+    transform: {translate: [0.81, 0.095, -0.81]}
+
+  tile_5:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: rose_tile
+    transform: {translate: [-0.81, 0.095, -0.27]}
+
+  tile_6:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: cream_tile
+    transform: {translate: [-0.27, 0.095, -0.27]}
+
+  tile_7:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: rose_tile
+    transform: {translate: [0.27, 0.095, -0.27]}
+
+  tile_8:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: cream_tile
+    transform: {translate: [0.81, 0.095, -0.27]}
+
+  tile_9:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: cream_tile
+    transform: {translate: [-0.81, 0.095, 0.27]}
+
+  tile_10:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: rose_tile
+    transform: {translate: [-0.27, 0.095, 0.27]}
+
+  tile_11:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: cream_tile
+    transform: {translate: [0.27, 0.095, 0.27]}
+
+  tile_12:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: rose_tile
+    transform: {translate: [0.81, 0.095, 0.27]}
+
+  tile_13:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: rose_tile
+    transform: {translate: [-0.81, 0.095, 0.81]}
+
+  tile_14:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: cream_tile
+    transform: {translate: [-0.27, 0.095, 0.81]}
+
+  tile_15:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: rose_tile
+    transform: {translate: [0.27, 0.095, 0.81]}
+
+  tile_16:
+    role: floor-tile
+    parent: root
+    geometry: {kind: cuboid, size: [0.50, 0.026, 0.50]}
+    material: cream_tile
+    transform: {translate: [0.81, 0.095, 0.81]}
+
+extensions:
+  taria:
+    object_grammar: floor@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::floor@0.1
+    specimen_intent: warm-tile-floor
+    support_plane_y: 0.108
+    tile_grid: [4, 4]
+    real_gap_width: 0.04
+    render_shading: flat
+    evaluation_status: awaiting-family-review

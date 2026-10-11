@@ -1,0 +1,89 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  pages:
+    role: book-pages
+    base_color: "#f3e8d2"
+    roughness: 0.98
+  blue:
+    role: book-cover
+    base_color: "#708aa0"
+    roughness: 0.96
+  blue_dark:
+    role: book-spine
+    base_color: "#53697a"
+    roughness: 0.97
+  pink:
+    role: book-cover
+    base_color: "#d7869f"
+    roughness: 0.97
+  pink_dark:
+    role: book-spine
+    base_color: "#ad627c"
+    roughness: 0.97
+  gold:
+    role: book-cover
+    base_color: "#c39a57"
+    roughness: 0.96
+  gold_dark:
+    role: book-spine
+    base_color: "#9a7743"
+    roughness: 0.97
+
+asset:
+  id: block-chibi-upright-shelf-book-v1
+  name: Block Chibi Upright Shelf Book v1
+  kind: prop
+  root: root
+  tags: [book, block-chibi-room, upright-shelf-book, grammar-specimen]
+
+parts:
+  root: {role: book-root, parent: null, articulation: static}
+
+  pages:
+    role: book-page-mass
+    parent: root
+    geometry: {kind: cuboid, size: [0.18, 0.72, 0.52]}
+    material: pages
+    transform: {translate: [0.0, 0.36, 0.0]}
+
+  cover_left:
+    role: book-cover
+    parent: root
+    geometry: {kind: cuboid, size: [0.026, 0.76, 0.56]}
+    material: blue
+    transform: {translate: [-0.103, 0.38, 0.0]}
+
+  cover_right:
+    role: book-cover
+    parent: root
+    geometry: {kind: cuboid, size: [0.026, 0.76, 0.56]}
+    material: blue
+    transform: {translate: [0.103, 0.38, 0.0]}
+
+  spine:
+    role: book-spine
+    parent: root
+    geometry: {kind: cuboid, size: [0.232, 0.76, 0.032]}
+    material: blue_dark
+    transform: {translate: [0.0, 0.38, -0.296]}
+
+extensions:
+  taria:
+    object_grammar: book@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::book@0.1
+    specimen_intent: upright-shelf-book
+    evaluation_status: awaiting-family-review

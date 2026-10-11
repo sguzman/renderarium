@@ -1,0 +1,64 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  rose:
+    role: rug-primary
+    base_color: "#d97b9b"
+    roughness: 0.99
+  rose_dark:
+    role: rug-secondary
+    base_color: "#b85f82"
+    roughness: 0.99
+  pink_light:
+    role: rug-secondary
+    base_color: "#efb7c8"
+    roughness: 0.99
+  cream:
+    role: rug-accent
+    base_color: "#f1dfd1"
+    roughness: 0.99
+
+asset:
+  id: block-chibi-runner-rug-v1
+  name: Block Chibi Runner Rug v1
+  kind: prop
+  root: root
+  tags: [rug, block-chibi-room, runner-rug, grammar-specimen]
+
+parts:
+  root: {role: rug-root, parent: null, articulation: static}
+
+  field:
+    role: rug-covering-surface
+    parent: root
+    geometry: {kind: cuboid, size: [0.70, 0.032, 2.05]}
+    material: rose_dark
+    transform: {translate: [0.0, 0.021, 0.0]}
+
+  center_stripe:
+    role: rug-stripe
+    parent: root
+    geometry: {kind: cuboid, size: [0.22, 0.008, 1.88]}
+    material: cream
+    transform: {translate: [0.0, 0.045, 0.0]}
+
+extensions:
+  taria:
+    object_grammar: rug@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::rug@0.1
+    specimen_intent: runner-rug
+    floor_clearance: 0.005
+    evaluation_status: awaiting-family-review

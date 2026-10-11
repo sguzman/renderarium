@@ -1,0 +1,121 @@
+id: contract:scenarium-taria-production-boundary-v1
+version: 1
+status: active
+effective_on: 2026-10-06
+canonical_copy:
+  repository: sguzman/taria
+  path: taria/scenarium/ontology/implementation-boundary.yml
+this_copy:
+  repository: sguzman/scenarium
+  path: contracts/taria-boundary.yml
+  canonical: false
+  role: operational-mirror
+
+parties:
+  semantic_authority:
+    repository: sguzman/taria
+    canonical_root: taria/scenarium
+    role: ontology-and-formal-semantics
+  production_authority:
+    repository: sguzman/scenarium
+    canonical_root: /
+    role: production-and-implementation
+
+principles:
+  - semantic-authority-lives-in-taria
+  - implementation-authority-lives-in-production-repository
+  - exactly-one-canonical-owner-per-object
+  - production-evidence-may-propose-but-does-not-silently-create-ontology
+  - vendored-contract-copies-are-noncanonical
+  - semantic-scene-precision-does-not-make-a-record-production-code
+  - repository-boundaries-are-operational-and-authority-boundaries-are-explicit
+
+ownership:
+  taria:
+    - scene-ontology-and-vocabulary
+    - scene-specification-semantics
+    - scene-contexts-archetypes-and-populations
+    - semantic-scene-records
+    - cardinality-compatibility-and-exclusion
+    - spatial-placement-support-occupancy-collision-and-clearance-semantics
+    - object-subtype-style-realization-and-composition-grammars
+    - semantic-camera-lighting-audio-rigging-motion-affordance-and-effect-contracts
+    - asset-adoption-and-realization-semantics
+    - evaluation-gate-and-production-state-meanings
+    - durable-evaluation-decisions
+    - durable-production-incident-knowledge
+    - provenance-semantics
+    - sc3d-conceptual-model
+    - canonical-sc3d-yaml-specification
+    - canonical-sc3d-schema
+    - sc3d-validation-semantics-and-capability-meanings
+  production_repository:
+    - hyperframes-implementations
+    - html-svg-css-javascript
+    - threejs-and-renderer-runtime
+    - parsers-adapters-preview-servers-and-build-scripts
+    - implementation-validator-code-and-tests
+    - concrete-production-sc3d-assets
+    - concrete-rig-files
+    - animation-and-timeline-code
+    - textures-images-audio-and-other-media-assets
+    - renderer-specific-shaders-and-material-implementations
+    - renderer-specific-transform-bindings
+    - implementation-manifests
+    - render-outputs-and-previews
+    - screenshots-contact-sheets-logs-and-qa-evidence
+    - temporary-production-candidates
+
+special_cases:
+  sc3d:
+    format_semantics_owner: taria
+    canonical_schema_owner: taria
+    concrete_asset_owner: production_repository
+    normative_examples_owner: taria
+    executable_parser_renderer_owner: production_repository
+  concrete_scene:
+    semantic_description_owner: taria
+    semantic_resolved_constraints_owner: taria
+    renderer_specific_realization_owner: production_repository
+  evaluation:
+    durable_decision_owner: taria
+    implementation_evidence_owner: production_repository
+  vendored_schema:
+    allowed: true
+    canonical: false
+    required_provenance:
+      - source_repository
+      - source_path
+      - contract_or_schema_version
+    preferred_provenance:
+      - source_commit
+      - source_sha256
+
+feedback:
+  production_to_taria:
+    sequence:
+      - production-observation
+      - implementation-evidence
+      - semantic-proposal
+      - taria-review
+      - canonical-adoption-or-rejection
+      - versioned-contract-update
+      - production-sync
+  taria_to_production:
+    sequence:
+      - semantic-change
+      - explicit-versioned-contract
+      - production-compatibility-work
+      - implementation-evidence
+
+conflict_resolution:
+  semantic_question: taria
+  implementation_question: production_repository
+  mismatch: explicit-integration-defect
+  silent_override: prohibited
+
+references:
+  canonical_human_contract: taria/scenarium/ontology/IMPLEMENTATION-BOUNDARY.md
+  canonical_machine_contract: taria/scenarium/ontology/implementation-boundary.yml
+  local_human_contract: docs/TARIA-BOUNDARY.md
+  local_machine_contract: contracts/taria-boundary.yml

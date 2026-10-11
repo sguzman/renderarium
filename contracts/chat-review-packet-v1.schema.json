@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sguzman/scenarium/blob/main/contracts/chat-review-packet-v1.schema.json",
+  "title": "Scenarium in-chat review transport packet v1",
+  "description": "A prepared validated source-data packet. It is never a delivery receipt or evidence that anything rendered in ChatGPT.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "scene",
+    "state",
+    "review_scope",
+    "renderer_claim",
+    "canonical_threejs_rendered_in_chat",
+    "human_accepted_this_packet",
+    "existing_visual_acceptance",
+    "source",
+    "canonical_semantics",
+    "presentation"
+  ],
+  "properties": {
+    "format": {
+      "const": "scenarium-chat-review-packet-v1"
+    },
+    "scene": {
+      "type": "string",
+      "pattern": "^block-chibi-[a-z-]+-v1$"
+    },
+    "state": {
+      "const": "prepared_not_presented"
+    },
+    "review_scope": {
+      "type": "string",
+      "minLength": 10
+    },
+    "renderer_claim": {
+      "const": "canonical_ir_alternate_renderer"
+    },
+    "canonical_threejs_rendered_in_chat": {
+      "const": false
+    },
+    "human_accepted_this_packet": {
+      "const": false
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "assembly_path",
+        "assembly_git_blob",
+        "preview_path",
+        "preview_git_blob",
+        "pinned_files"
+      ],
+      "properties": {
+        "repository": {
+          "const": "sguzman/scenarium"
+        },
+        "assembly_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assembly_git_blob": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "preview_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preview_git_blob": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "pinned_files": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "git_blob"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "git_blob": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{40}$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "canonical_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ir_kind",
+        "ir_sha256",
+        "schema_and_lowering",
+        "scene_id",
+        "geometry_part_count",
+        "component_count",
+        "primitive_hierarchy_base_color_transforms",
+        "material_effects_not_rendered"
+      ],
+      "properties": {
+        "ir_kind": {
+          "const": "Constructive3DIR"
+        },
+        "schema_and_lowering": {
+          "const": "passed_during_packet_creation"
+        },
+        "scene_id": {
+          "type": "string"
+        },
+        "geometry_part_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "component_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "primitive_hierarchy_base_color_transforms": {
+          "const": "strictly_matched"
+        },
+        "material_effects_not_rendered": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "emissive",
+              "metalness"
+            ]
+          },
+          "description": "Canonical shading features intentionally absent in the in-chat CPU depth backend; source base-color parity still checked."
+        },
+        "ir_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 of the exact --emit-ir-json UTF-8 output after successful canonical SC3D schema and semantic validation."
+        }
+      }
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "geometry_encoding",
+        "groups",
+        "parts",
+        "minimum_controls",
+        "depth",
+        "must_render_in_current_chat",
+        "note",
+        "material_model"
+      ],
+      "properties": {
+        "geometry_encoding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "groups": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object"
+          }
+        },
+        "parts": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minimum_controls": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "orbit",
+              "zoom",
+              "reset"
+            ]
+          }
+        },
+        "depth": {
+          "const": "per_fragment_z_buffer_required"
+        },
+        "must_render_in_current_chat": {
+          "const": true
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material_model": {
+          "const": "base_color_flat_shading_without_pbr_or_emissive"
+        }
+      }
+    },
+    "existing_visual_acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "scope",
+        "authority",
+        "approved_preview_git_blob",
+        "approved_assembly_git_blob",
+        "repeat_review"
+      ],
+      "properties": {
+        "status": {
+          "const": "accepted_prior_to_packet"
+        },
+        "scope": {
+          "const": "appearance_and_composition"
+        },
+        "authority": {
+          "const": "contracts/accepted-block-chibi-v1.json"
+        },
+        "approved_preview_git_blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "approved_assembly_git_blob": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "repeat_review": {
+          "const": "not_required"
+        }
+      },
+      "description": "Existing owner acceptance, distinct from whether this particular prepared in-chat packet was delivered."
+    }
+  }
+}

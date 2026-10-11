@@ -1,0 +1,36 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-garage-storage-shelf-v1
+  name: Block Chibi garage storage shelf v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, garage, residential-garage, garage-storage-shelf]
+materials:
+  frame: {role: frame, base_color: "#798d86", roughness: 0.98}
+  plank: {role: plank, base_color: "#cba787", roughness: 0.98}
+  box: {role: box, base_color: "#deb9aa", roughness: 0.98}
+  box2: {role: box2, base_color: "#a8bdab", roughness: 0.98}
+  paint: {role: paint, base_color: "#f4d4bd", roughness: 0.98}
+  label: {role: label, base_color: "#fdf0dc", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  upright_0_0: {role: upright_0_0, parent: root, geometry: {kind: cuboid, size: [0.1, 1.95, 0.11]}, material: frame, transform: {translate: [-0.71, 0.975, -0.27]}}
+  upright_0_1: {role: upright_0_1, parent: root, geometry: {kind: cuboid, size: [0.1, 1.95, 0.11]}, material: frame, transform: {translate: [-0.71, 0.975, 0.27]}}
+  upright_1_0: {role: upright_1_0, parent: root, geometry: {kind: cuboid, size: [0.1, 1.95, 0.11]}, material: frame, transform: {translate: [0.71, 0.975, -0.27]}}
+  upright_1_1: {role: upright_1_1, parent: root, geometry: {kind: cuboid, size: [0.1, 1.95, 0.11]}, material: frame, transform: {translate: [0.71, 0.975, 0.27]}}
+  shelf_0: {role: shelf_0, parent: root, geometry: {kind: cuboid, size: [1.54, 0.09, 0.69]}, material: plank, transform: {translate: [0, 0.24, 0]}}
+  shelf_1: {role: shelf_1, parent: root, geometry: {kind: cuboid, size: [1.54, 0.09, 0.69]}, material: plank, transform: {translate: [0, 0.91, 0]}}
+  shelf_2: {role: shelf_2, parent: root, geometry: {kind: cuboid, size: [1.54, 0.09, 0.69]}, material: plank, transform: {translate: [0, 1.55, 0]}}
+  shelf_3: {role: shelf_3, parent: root, geometry: {kind: cuboid, size: [1.54, 0.09, 0.69]}, material: plank, transform: {translate: [0, 1.94, 0]}}
+  bin_left: {role: bin_left, parent: root, geometry: {kind: cuboid, size: [0.55, 0.46, 0.52]}, material: box, transform: {translate: [-0.37, 0.53, 0]}}
+  bin_right: {role: bin_right, parent: root, geometry: {kind: cuboid, size: [0.55, 0.46, 0.52]}, material: box2, transform: {translate: [0.35, 0.53, 0]}}
+  bin_top: {role: bin_top, parent: root, geometry: {kind: cuboid, size: [0.64, 0.37, 0.5]}, material: box, transform: {translate: [0.18, 1.74, 0]}}
+  paint_can: {role: paint_can, parent: root, geometry: {kind: cuboid, size: [0.29, 0.3, 0.3]}, material: paint, transform: {translate: [-0.4, 1.13, -0.05]}}
+  label_left: {role: label_left, parent: root, geometry: {kind: cuboid, size: [0.28, 0.07, 0.012]}, material: label, transform: {translate: [-0.37, 0.62, -0.266]}}
+  label_right: {role: label_right, parent: root, geometry: {kind: cuboid, size: [0.28, 0.07, 0.012]}, material: label, transform: {translate: [0.35, 0.62, -0.266]}}
+extensions:
+  scenarium: {style_ref: block-chibi-room, context: residential-garage, review: pending, lighting: deferred}

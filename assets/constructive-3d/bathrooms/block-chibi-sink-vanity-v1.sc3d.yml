@@ -1,0 +1,128 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-sink-vanity-v1
+  name: Block Chibi Bathroom Vanity v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, bathroom, sink-vanity]
+materials:
+  cabinet: {role: sage-vanity-body, base_color: "#87a79a", roughness: 0.98}
+  doors: {role: vanity-door, base_color: "#b9d2bf", roughness: 0.98}
+  top: {role: cream-sink-counter, base_color: "#f6eee2", roughness: 0.98}
+  basin: {role: ceramic-sink-inset, base_color: "#a4c5cd", roughness: 0.98}
+  metal: {role: bath-tap-metal, base_color: "#c0b1a6", roughness: 0.98}
+  wood: {role: handle-wood, base_color: "#ae8269", roughness: 0.98}
+  deco: {role: soap-bottle, base_color: "#dd9eae", roughness: 0.98}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  body:
+    role: supported-vanity-cabinet
+    parent: root
+    geometry: {kind: cuboid, size: [1.25, 0.77, 0.67]}
+    material: cabinet
+    transform: {translate: [0, 0.385, 0]}
+    articulation: static
+  door_left:
+    role: vanity-left-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.54, 0.61, 0.035]}
+    material: doors
+    transform: {translate: [-0.29, 0.39, -0.352]}
+    articulation: static
+  door_right:
+    role: vanity-right-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.54, 0.61, 0.035]}
+    material: doors
+    transform: {translate: [0.29, 0.39, -0.352]}
+    articulation: static
+  handle_left:
+    role: vanity-handle
+    parent: root
+    geometry: {kind: cuboid, size: [0.06, 0.13, 0.04]}
+    material: wood
+    transform: {translate: [-0.08, 0.43, -0.39]}
+    articulation: static
+  handle_right:
+    role: vanity-handle
+    parent: root
+    geometry: {kind: cuboid, size: [0.06, 0.13, 0.04]}
+    material: wood
+    transform: {translate: [0.08, 0.43, -0.39]}
+    articulation: static
+  countertop:
+    role: sink-countertop
+    parent: root
+    geometry: {kind: cuboid, size: [1.34, 0.13, 0.77]}
+    material: top
+    transform: {translate: [0, 0.835, 0]}
+    articulation: static
+  sink_inset:
+    role: sink-bowl
+    parent: root
+    geometry: {kind: cuboid, size: [0.57, 0.02, 0.36]}
+    material: basin
+    transform: {translate: [-0.13, 0.913, -0.035]}
+    articulation: static
+  sink_front_rim:
+    role: rim-front
+    parent: root
+    geometry: {kind: cuboid, size: [0.66, 0.035, 0.035]}
+    material: top
+    transform: {translate: [-0.13, 0.94, -0.24]}
+    articulation: static
+  sink_back_rim:
+    role: rim-back
+    parent: root
+    geometry: {kind: cuboid, size: [0.66, 0.035, 0.035]}
+    material: top
+    transform: {translate: [-0.13, 0.94, 0.165]}
+    articulation: static
+  sink_left_rim:
+    role: rim-left
+    parent: root
+    geometry: {kind: cuboid, size: [0.035, 0.035, 0.4]}
+    material: top
+    transform: {translate: [-0.455, 0.94, -0.035]}
+    articulation: static
+  sink_right_rim:
+    role: rim-right
+    parent: root
+    geometry: {kind: cuboid, size: [0.035, 0.035, 0.4]}
+    material: top
+    transform: {translate: [0.195, 0.94, -0.035]}
+    articulation: static
+  tap_base:
+    role: faucet-base
+    parent: root
+    geometry: {kind: cuboid, size: [0.09, 0.1, 0.1]}
+    material: metal
+    transform: {translate: [-0.13, 0.96, 0.23]}
+    articulation: static
+  tap_stem:
+    role: faucet-neck
+    parent: root
+    geometry: {kind: cuboid, size: [0.065, 0.28, 0.065]}
+    material: metal
+    transform: {translate: [-0.13, 1.12, 0.23]}
+    articulation: static
+  tap_spout:
+    role: faucet-spout
+    parent: root
+    geometry: {kind: cuboid, size: [0.08, 0.07, 0.25]}
+    material: metal
+    transform: {translate: [-0.13, 1.26, 0.1]}
+    articulation: static
+  soap:
+    role: soap-dispenser
+    parent: root
+    geometry: {kind: cuboid, size: [0.13, 0.2, 0.13]}
+    material: deco
+    transform: {translate: [0.49, 1.01, 0.11]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: initial-scene-review-pending, renderer_experiments: deferred}

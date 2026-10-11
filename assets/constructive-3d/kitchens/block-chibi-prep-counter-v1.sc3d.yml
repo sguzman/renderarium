@@ -1,0 +1,110 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-prep-counter-v1
+  name: Block Chibi Prep Counter v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, kitchen, prep-counter]
+materials:
+  cab: {role: cabinet-body, base_color: "#91ac98", roughness: 0.98}
+  dark: {role: cabinet-shadow, base_color: "#698676", roughness: 0.98}
+  door: {role: cabinet-door, base_color: "#bdd0b2", roughness: 0.98}
+  counter: {role: countertop, base_color: "#f4e5d5", roughness: 0.98}
+  metal: {role: fixture-metal, base_color: "#c4ced1", roughness: 0.98}
+  water: {role: sink-basin, base_color: "#789eb0", roughness: 0.98}
+  handle: {role: handle, base_color: "#ba885d", roughness: 0.98}
+  wood: {role: small-wood, base_color: "#bc8a6b", roughness: 0.98}
+  accent: {role: accent, base_color: "#deb68a", roughness: 0.98}
+  shadow: {role: recess, base_color: "#536976", roughness: 0.98}
+parts:
+  root: {role: prep-counter-root, parent: null, articulation: static}
+  base:
+    role: worktop-cabinet
+    parent: root
+    geometry: {kind: cuboid, size: [1.02, 0.78, 0.68]}
+    material: cab
+    transform: {translate: [0, 0.39, 0]}
+    articulation: static
+  drawer:
+    role: drawer-front
+    parent: root
+    geometry: {kind: cuboid, size: [0.84, 0.19, 0.045]}
+    material: door
+    transform: {translate: [0, 0.65, -0.365]}
+    articulation: static
+  drawer_handle:
+    role: drawer-pull
+    parent: root
+    geometry: {kind: cuboid, size: [0.2, 0.052, 0.04]}
+    material: handle
+    transform: {translate: [0, 0.65, -0.399]}
+    articulation: static
+  cabinet_door_left:
+    role: storage-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.41, 0.43, 0.04]}
+    material: door
+    transform: {translate: [-0.23, 0.29, -0.364]}
+    articulation: static
+  cabinet_door_right:
+    role: storage-door
+    parent: root
+    geometry: {kind: cuboid, size: [0.41, 0.43, 0.04]}
+    material: door
+    transform: {translate: [0.23, 0.29, -0.364]}
+    articulation: static
+  cabinet_handle_left:
+    role: door-pull
+    parent: root
+    geometry: {kind: cuboid, size: [0.06, 0.12, 0.04]}
+    material: handle
+    transform: {translate: [-0.07, 0.32, -0.396]}
+    articulation: static
+  cabinet_handle_right:
+    role: door-pull
+    parent: root
+    geometry: {kind: cuboid, size: [0.06, 0.12, 0.04]}
+    material: handle
+    transform: {translate: [0.07, 0.32, -0.396]}
+    articulation: static
+  counter:
+    role: preparation-surface
+    parent: root
+    geometry: {kind: cuboid, size: [1.1, 0.115, 0.77]}
+    material: counter
+    transform: {translate: [0, 0.8375, 0]}
+    articulation: static
+  chop_board:
+    role: cutting-board
+    parent: root
+    geometry: {kind: cuboid, size: [0.48, 0.043, 0.3]}
+    material: wood
+    transform: {translate: [-0.16, 0.918, -0.055]}
+    articulation: static
+  chop_board_accent:
+    role: board-inlay
+    parent: root
+    geometry: {kind: cuboid, size: [0.36, 0.012, 0.22]}
+    material: accent
+    transform: {translate: [-0.16, 0.946, -0.055]}
+    articulation: static
+  storage_jar:
+    role: kitchen-jar
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.28, 0.16]}
+    material: water
+    transform: {translate: [0.33, 1.03, 0.17]}
+    articulation: static
+  jar_lid:
+    role: kitchen-jar-lid
+    parent: root
+    geometry: {kind: cuboid, size: [0.19, 0.036, 0.19]}
+    material: handle
+    transform: {translate: [0.33, 1.19, 0.17]}
+    articulation: static
+extensions:
+  scenarium: {style_ref: block-chibi-room, visual_status: first-review-pending}

@@ -1,0 +1,102 @@
+format: scenarium-constructive-3d
+version: "0.1"
+
+units: meters
+
+coordinates:
+  handedness: right
+  up: y
+  forward: -z
+
+requires:
+  - core.primitives
+  - core.rigid-hierarchy
+
+materials:
+  wood:
+    role: furniture-primary
+    base_color: "#7b5545"
+    roughness: 0.95
+  wood_dark:
+    role: furniture-secondary
+    base_color: "#5c3d35"
+    roughness: 0.96
+  cream:
+    role: furniture-accent
+    base_color: "#f4e8d2"
+    roughness: 0.98
+
+asset:
+  id: block-chibi-compact-hutch-desk-v1
+  name: Block Chibi Compact Hutch Desk v1
+  kind: prop
+  root: root
+  tags: [desk, block-chibi-room, compact-hutch-desk, grammar-specimen]
+
+parts:
+  root: {role: desk-root, parent: null, articulation: static}
+
+  top:
+    role: desk-work-surface
+    parent: root
+    geometry: {kind: cuboid, size: [0.98, 0.16, 0.56]}
+    material: wood
+    transform: {translate: [0.0, 0.74, 0.0]}
+
+  leg_front_left:
+    role: desk-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.68, 0.16]}
+    material: wood_dark
+    transform: {translate: [-0.35, 0.34, -0.17]}
+
+  leg_front_right:
+    role: desk-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.68, 0.16]}
+    material: wood_dark
+    transform: {translate: [0.35, 0.34, -0.17]}
+
+  leg_back_left:
+    role: desk-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.68, 0.16]}
+    material: wood_dark
+    transform: {translate: [-0.35, 0.34, 0.17]}
+
+  leg_back_right:
+    role: desk-support
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.68, 0.16]}
+    material: wood_dark
+    transform: {translate: [0.35, 0.34, 0.17]}
+
+  hutch_back:
+    role: desk-hutch
+    parent: root
+    geometry: {kind: cuboid, size: [0.86, 0.36, 0.12]}
+    material: wood_dark
+    transform: {translate: [0.0, 1.00, 0.22]}
+
+  hutch_shelf:
+    role: desk-upper-shelf
+    parent: root
+    geometry: {kind: cuboid, size: [0.80, 0.10, 0.24]}
+    material: wood
+    transform: {translate: [0.0, 1.14, 0.17]}
+
+  shallow_drawer:
+    role: desk-drawer
+    parent: root
+    geometry: {kind: cuboid, size: [0.42, 0.14, 0.15]}
+    material: cream
+    transform: {translate: [0.0, 0.61, -0.20]}
+
+extensions:
+  taria:
+    object_grammar: desk@0.1
+    style_grammar: block-chibi-room@0.1
+    realization_grammar: block-chibi-room::desk@0.1
+    specimen_intent: compact-hutch-desk
+    use_forward: [0.0, 0.0, -1.0]
+    evaluation_status: awaiting-family-review

@@ -1,0 +1,66 @@
+format: scenarium-sc3d-scene-assembly
+version: "0.1"
+id: block-chibi-garage-v1
+name: Block Chibi Garage v1
+description: >-
+  An inviting residential garage with a tiny rosy parked car, maintenance
+  workbench, wall tools, filing-style rolling tool chest, orderly rear
+  storage shelf, spare tires, and a mint utility bicycle. A continuous
+  concrete floor and an open entrance distinguish it from a home office.
+semantic_authority:
+  repository: sguzman/taria
+  specification: taria/scenarium/specifications/block-chibi-garage-v1.yml
+  task_queue: taria/scenarium/queues/block-chibi-garage-v1.yml
+style: block-chibi-room
+architectural_context: residential-garage
+scene_function: vehicle-parking-maintenance-and-hobby-work
+space:
+  handedness: right
+  up: y
+  forward: -z
+  footprint: [7.6, 6.2]
+  height: 3.05
+  floor_surface_y: 0.126
+  front_open: true
+  roof_removed_for_review: true
+  right_cutaway: true
+zones:
+  - {id: vehicle-bay, x_range: [-2.45, -0.49], z_range: [-1.75, 1.14]}
+  - {id: maintenance, x_range: [0.21, 2.0], z_range: [1.77, 2.55]}
+  - {id: storage, x_range: [2.18, 3.70], z_range: [0.1, 2.47]}
+  - {id: cycle-staging, x_range: [2.56, 3.37], z_range: [-2.71, -0.83]}
+  - {id: car-approach, x_range: [-2.55, -0.37], z_range: [-2.77, -1.78]}
+  - {id: walking-aisle, x_range: [-0.35, 0.26], z_range: [-2.50, 1.18]}
+components:
+  - id: shell
+    asset: scenes/block-chibi-garage-v1/components/garage-shell.sc3d.yml
+    transform: {translate: [0, 0, 0]}
+  - id: car
+    asset: assets/constructive-3d/garages/block-chibi-compact-car-v1.sc3d.yml
+    transform: {translate: [-1.47, 0.046, -0.26]}
+  - id: workbench
+    asset: assets/constructive-3d/garages/block-chibi-garage-workbench-v1.sc3d.yml
+    transform: {translate: [1.12, 0.126, 2.14]}
+  - id: pegboard
+    asset: assets/constructive-3d/garages/block-chibi-tool-pegboard-v1.sc3d.yml
+    transform: {translate: [1.12, 2, 2.875]}
+  - id: tool-chest
+    asset: assets/constructive-3d/garages/block-chibi-rolling-tool-chest-v1.sc3d.yml
+    transform: {translate: [-1.1, 0.126, 2.6]}
+  - id: spare-tires
+    asset: assets/constructive-3d/garages/block-chibi-spare-tire-stack-v1.sc3d.yml
+    transform: {translate: [-3.07, 0.041, 2.18]}
+  - id: storage-shelf
+    asset: assets/constructive-3d/garages/block-chibi-garage-storage-shelf-v1.sc3d.yml
+    transform: {translate: [2.96, 0.126, 2.13]}
+  - id: bicycle
+    asset: assets/constructive-3d/garages/block-chibi-utility-bicycle-v1.sc3d.yml
+    transform: {translate: [2.96, 0.126, -1.66]}
+generated_output:
+  path: scenes/block-chibi-garage-v1/generated/block-chibi-garage-v1.sc3d.yml
+review:
+  status: rear-wall-tool-chest-placement-visual-review-pending
+  renderer: alternate-source-bound-in-chat-webgl
+  canonical_threejs: not-validated
+  rendering_experiments: deferred
+  scene_review_not_release_admission: true

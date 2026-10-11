@@ -1,0 +1,29 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-shipping-carton-v1
+  name: Block Chibi shipping carton v1
+  kind: prop
+  root: root
+  tags: [block-chibi-room, light-industrial, toy-manufacturing, shipping-carton]
+materials:
+  box: {role: box, base_color: "#f2d9b4", roughness: 0.98}
+  lid: {role: lid, base_color: "#ddbaa0", roughness: 0.98}
+  ribbon: {role: ribbon, base_color: "#b6c7b0", roughness: 0.98}
+  label: {role: label, base_color: "#f8eee0", roughness: 0.98}
+parts:
+  root: {role: shipping-carton-root, parent: null, articulation: static}
+  carton_body: {role: carton_body, parent: root, geometry: {kind: cuboid, size: [0.48, 0.44, 0.46]}, material: box, transform: {translate: [0, 0.25, 0]}}
+  carton_lid: {role: carton_lid, parent: root, geometry: {kind: cuboid, size: [0.53, 0.08, 0.51]}, material: lid, transform: {translate: [0, 0.505, 0]}}
+  cross_tape: {role: cross_tape, parent: root, geometry: {kind: cuboid, size: [0.09, 0.014, 0.51]}, material: ribbon, transform: {translate: [0, 0.553, 0]}}
+  front_label: {role: front_label, parent: root, geometry: {kind: cuboid, size: [0.27, 0.16, 0.014]}, material: label, transform: {translate: [0, 0.3, -0.242]}}
+extensions:
+  scenarium:
+    style: block-chibi-room
+    process_context: miniature-toy-block-manufacturing
+    source_family_proof: first-specimen-provisional
+    human_visual_review: pending
+    dynamic_motion_simulation: deferred
