@@ -11,7 +11,7 @@ The accepted files and geometry hashes are preserved. **Visual acceptance is not
 ## Verification
 
 - Node.js 22 or newer; pnpm 10.15.1 via Corepack.
-- Install: `corepack pnpm install --no-frozen-lockfile`.
+- Install: `corepack pnpm install --frozen-lockfile`.
 - Canonical source-to-chat tests: `corepack pnpm verify:chat-preview-pipeline` (18 stages).
 - Public content boundary: `node tools/publication-gate.mjs`.
 - The public GitHub Actions workflow performs both canonical integration and Chromium/Three.js browser checks. A software WebGL fallback is not physical GPU evidence.
