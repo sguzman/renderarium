@@ -300,6 +300,8 @@
               retained: qualityPostPass.qualityOccluderSelection.retained,
               omitted: qualityPostPass.qualityOccluderSelection.omitted,
               visibility_restored: qualityPostPass.qualityOccluderSelection.visibilityRestored(),
+              evaluations: qualityPostPass.qualityOccluderSelection.evaluations,
+              selected_indices: [...qualityPostPass.qualityOccluderSelection.selectedIndices],
             }
           : null,
         ambient_occlusion_depth_texture: Boolean(

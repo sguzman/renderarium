@@ -28,7 +28,7 @@ SCENES = (
 )
 MODES = (
     "fog", "soft-light", "shadow-detail",
-    "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "fxaa",
+    "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "fxaa",
 )
 VIEWPORT = {"width": 512, "height": 384}
 METRIC = "cpu_submit_ms"
@@ -231,7 +231,7 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
             };
         }""")
         assert backend["width"] > 0 and backend["height"] > 0
-        if mode in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "fxaa"):
+        if mode in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "fxaa"):
             assert measured[-1]["draw_calls"] > 1, (
                 f"{mode}: missing expected multi-pass draw accounting"
             )
@@ -319,6 +319,14 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             trial_images["ambient-occlusion"],
             trial_images["ambient-occlusion-occluders"],
         )
+        trials["ambient-occlusion-camera-occluders"]["pixel_delta_from_full_ssao"] = pixel_distance(
+            trial_images["ambient-occlusion"],
+            trial_images["ambient-occlusion-camera-occluders"],
+        )
+        trials["ambient-occlusion-camera-occluders"]["pixel_delta_from_world_pruning"] = pixel_distance(
+            trial_images["ambient-occlusion-occluders"],
+            trial_images["ambient-occlusion-camera-occluders"],
+        )
         selection = trials["ambient-occlusion-occluders"]["settings"]["ambient_occlusion_occluders"]
         assert selection["visibility_restored"], f"{scene_id}: visibility not restored"
         assert selection["retained"] + selection["omitted"] == selection["total"]
@@ -328,6 +336,12 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
         assert selected_calls < full_calls, (
             f"{scene_id}: pruned SSAO did not save geometry draws"
         )
+        camera_selection = trials["ambient-occlusion-camera-occluders"]["settings"]["ambient_occlusion_occluders"]
+        assert camera_selection["strategy"] == "top-half-by-projected-viewport-coverage"
+        assert camera_selection["retained"] + camera_selection["omitted"] == camera_selection["total"]
+        assert camera_selection["omitted"] > 0 and camera_selection["visibility_restored"]
+        camera_calls = trials["ambient-occlusion-camera-occluders"]["measured_draws"][-1]["draw_calls"]
+        assert camera_calls < full_calls, f"{scene_id}: camera pruning did not save draws"
         all_modes = [baseline, *trials.values(), baseline_after]
         ref_backend = baseline["backend"]
         for row in all_modes:
@@ -378,6 +392,7 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             },
             "reduced_ssao_median_ratio_to_full_ssao": round(reduced_ms / full_ms, 4),
             "pruned_ssao_draw_call_savings": full_calls - selected_calls,
+            "camera_pruned_ssao_draw_call_savings": full_calls - camera_calls,
         }
     finally:
         proc.terminate()
@@ -473,6 +488,30 @@ def write_summary(rows: list[dict], path: Path) -> None:
             + f' | {full_calls} | {pruned_calls} | {full_calls-pruned_calls}'
             + f' | {pruned_ms/full_ms:.2f}x'
             + f' | {pixel["mean_abs_rgb_channel_delta_255"]:.4f} |'
+        )
+    table.extend([
+        "",
+        "## Viewport-aware AO selection compared with static world-space pruning",
+        "",
+        "Both select the largest half of ranked occluders, but the viewport-aware",
+        "variant recalculates ranks after camera movement. Pixel deltas do not",
+        "establish subjective quality.",
+        "",
+        "| Scene | World draws | Camera draws | World/full MAE | Camera/full MAE | Camera/world MAE | Camera/world CPU median |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ])
+    for row in rows:
+        world = row["experiments"]["ambient-occlusion-occluders"]
+        camera_row = row["experiments"]["ambient-occlusion-camera-occluders"]
+        wd = world["pixel_delta_from_full_ssao"]["mean_abs_rgb_channel_delta_255"]
+        cd = camera_row["pixel_delta_from_full_ssao"]["mean_abs_rgb_channel_delta_255"]
+        between = camera_row["pixel_delta_from_world_pruning"]["mean_abs_rgb_channel_delta_255"]
+        ratio = camera_row["warm_cost"]["median_ms"] / world["warm_cost"]["median_ms"]
+        table.append(
+            "| " + row["scene"].removeprefix("block-chibi-").removesuffix("-v1")
+            + f' | {row["draw_calls"]["ambient-occlusion-occluders"]}'
+            + f' | {row["draw_calls"]["ambient-occlusion-camera-occluders"]}'
+            + f" | {wd:.4f} | {cd:.4f} | {between:.4f} | {ratio:.2f}x |"
         )
     table.extend([
         "",

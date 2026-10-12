@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "fxaa"]);
+const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
 export const QUALITY_SSAO_SEED = 0x5ca3d70f;
 
@@ -75,44 +75,74 @@ export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim 
 export async function createQualityPostPass({ scene, camera }, experiment) {
   if (experiment !== "ambient-occlusion" &&
       experiment !== "ambient-occlusion-half" &&
-      experiment !== "ambient-occlusion-occluders") return null;
+      experiment !== "ambient-occlusion-occluders" &&
+      experiment !== "ambient-occlusion-camera-occluders") return null;
   if (!camera.isPerspectiveCamera && !camera.isOrthographicCamera) {
     throw new Error("SSAO requires an orthographic or perspective camera");
   }
   const { SSAOPass } = await import("/vendor/three/addons/postprocessing/SSAOPass.js");
   // A separate lower-cost quality trial; full-resolution SSAO is untouched.
   const reduced = experiment === "ambient-occlusion-half";
-  // Diagnostic-only occluder pruning: exclude the smallest half of
-  // visible meshes from SSAO depth/normal rendering, NEVER beauty rendering.
-  const selective = experiment === "ambient-occlusion-occluders";
+  const worldSelection = experiment === "ambient-occlusion-occluders";
+  const cameraSelection = experiment === "ambient-occlusion-camera-occluders";
   let PassClass = SSAOPass;
   let selection = null;
-  if (selective) {
-    scene.updateMatrixWorld(true);
-    const candidates = [];
-    scene.traverse(object => {
-      if (!object.isMesh || !object.visible) return;
-      const geometry = object.geometry;
-      if (geometry && !geometry.boundingSphere) geometry.computeBoundingSphere();
-      const radius = geometry?.boundingSphere
-        ? geometry.boundingSphere.radius * object.matrixWorld.getMaxScaleOnAxis()
-        : Number.POSITIVE_INFINITY;
-      candidates.push({ object, radius, index: candidates.length });
-    });
-    if (candidates.length < 2) {
-      throw new Error("Occluder selection requires at least two meshes");
-    }
-    candidates.sort((a, b) => b.radius - a.radius || a.index - b.index);
-    const keepCount = Math.ceil(candidates.length / 2);
-    const retained = new Set(candidates.slice(0, keepCount).map(item => item.object));
-    const omitted = candidates.slice(keepCount).map(item => item.object);
+  if (worldSelection || cameraSelection) {
     selection = {
-      strategy: "largest-half-by-world-radius",
-      total: candidates.length,
-      retained: retained.size,
-      omitted: omitted.length,
-      visibilityRestored: () => omitted.every(object => object.visible),
+      strategy: cameraSelection
+        ? "top-half-by-projected-viewport-coverage"
+        : "largest-half-by-world-radius",
+      total: 0, retained: 0, omitted: 0,
+      evaluations: 0, selectedIndices: [],
+      visibilityRestored: () => true,
     };
+    const selectOccluders = () => {
+      scene.updateMatrixWorld(true);
+      if (cameraSelection) camera.updateMatrixWorld(true);
+      const candidates = [];
+      scene.traverse(object => {
+        if (!object.isMesh || !object.visible) return;
+        const geometry = object.geometry;
+        if (geometry && !geometry.boundingSphere) geometry.computeBoundingSphere();
+        const radius = geometry?.boundingSphere
+          ? geometry.boundingSphere.radius * object.matrixWorld.getMaxScaleOnAxis()
+          : Number.POSITIVE_INFINITY;
+        let importance = radius;
+        if (cameraSelection && Number.isFinite(radius)) {
+          const worldCenter = geometry.boundingSphere.center.clone().applyMatrix4(object.matrixWorld);
+          const viewCenter = worldCenter.clone().applyMatrix4(camera.matrixWorldInverse);
+          if (camera.isPerspectiveCamera && -viewCenter.z + radius < camera.near) {
+            importance = 0;
+          } else {
+            const depth = camera.isPerspectiveCamera
+              ? Math.max(camera.near, -viewCenter.z)
+              : 1;
+            const proj = camera.projectionMatrix.elements;
+            const ndc = viewCenter.applyMatrix4(camera.projectionMatrix);
+            const rx = Math.abs(proj[0]) * radius / depth;
+            const ry = Math.abs(proj[5]) * radius / depth;
+            const w = Math.max(0, Math.min(1, ndc.x + rx) - Math.max(-1, ndc.x - rx));
+            const h = Math.max(0, Math.min(1, ndc.y + ry) - Math.max(-1, ndc.y - ry));
+            importance = w * h;
+          }
+        }
+        candidates.push({ object, importance, index: candidates.length });
+      });
+      if (candidates.length < 2) throw new Error("Occluder selection requires at least two visible meshes");
+      candidates.sort((a, b) => b.importance - a.importance || a.index - b.index);
+      const keep = Math.ceil(candidates.length / 2);
+      const retained = new Set(candidates.slice(0, keep).map(item => item.object));
+      selection.total = candidates.length;
+      selection.retained = keep;
+      selection.omitted = candidates.length - keep;
+      selection.evaluations++;
+      selection.selectedIndices = candidates.slice(0, keep)
+        .map(item => item.index).sort((a, b) => a - b);
+      return retained;
+    };
+    // Frozen world-space reference selects once. Camera strategy selects for
+    // every AO redraw, after the main scene render updates camera matrices.
+    const staticRetained = worldSelection ? selectOccluders() : null;
     PassClass = class extends SSAOPass {
       constructor(...args) {
         super(...args);
@@ -120,6 +150,7 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
       }
       _overrideVisibility() {
         super._overrideVisibility();
+        const retained = staticRetained ?? selectOccluders();
         this.scene.traverse(object => {
           if (object.isMesh && object.visible && !retained.has(object)) {
             object.visible = false;
@@ -141,6 +172,7 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
   pass.qualitySamplingSeed = QUALITY_SSAO_SEED;
   pass.qualityRandomRestored = Math.random === originalRandom;
   pass.qualityOccluderSelection = selection;
+  if (selection) selection.visibilityRestored = () => pass._hiddenOccluders.length === 0;
   pass.qualityResolutionScale = reduced ? 0.5 : 1;
   // SSAOPass defaults both depth shaders to perspective, even when the SC3D
   // preview camera is orthographic. Select the correct depth reconstruction.

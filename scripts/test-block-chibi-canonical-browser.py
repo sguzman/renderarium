@@ -357,7 +357,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     assert ordinary_settings["fxaa_enabled"] is False
 
                     quality_results = {}
-                    for experiment in ("fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "fxaa"):
+                    for experiment in ("fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "fxaa"):
                         settings, image_hash, draw_metrics = sample_quality(
                             "?diagnostic=1&qa=1&quality_experiment=" + experiment
                         )
@@ -383,7 +383,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert image_hash != ordinary_hash, (
                                 "Tone-mapping trial did not alter the diagnostic render"
                             )
-                        elif experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders"):
+                        elif experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders"):
                             reduced = experiment == "ambient-occlusion-half"
                             assert settings["ambient_occlusion_enabled"] is True
                             assert isinstance(settings["ambient_occlusion_sampling_seed"], int)
@@ -396,9 +396,16 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert settings["ambient_occlusion_radius"] == 0.65
                             assert settings["ambient_occlusion_projection_define"] == 0
                             assert settings["ambient_occlusion_depth_texture"] is True
-                            if experiment == "ambient-occlusion-occluders":
+                            if experiment in ("ambient-occlusion-occluders", "ambient-occlusion-camera-occluders"):
                                 selection = settings["ambient_occlusion_occluders"]
-                                assert selection["strategy"] == "largest-half-by-world-radius"
+                                assert selection["strategy"] == (
+                                    "top-half-by-projected-viewport-coverage"
+                                    if experiment == "ambient-occlusion-camera-occluders"
+                                    else "largest-half-by-world-radius"
+                                )
+                                assert selection["evaluations"] >= 1
+                                assert len(selection["selected_indices"]) == selection["retained"]
+                                assert len(set(selection["selected_indices"])) == selection["retained"]
                                 assert selection["retained"] == math.ceil(selection["total"] / 2)
                                 assert selection["omitted"] + selection["retained"] == selection["total"]
                                 assert selection["omitted"] > 0
@@ -429,7 +436,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert image_hash != ordinary_hash, (
                                 "FXAA compositor produced unchanged pixels"
                             )
-                        if experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "fxaa"):
+                        if experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "fxaa"):
                             assert draw_metrics[-1]["draw_calls"] > ordinary_metrics[-1]["draw_calls"], (
                                 f"{experiment} multi-pass draw count did not exceed the default"
                             )
@@ -484,6 +491,22 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         "ssao_draw_samples": perspective_ao_metrics,
                     }
 
+                    camera_pruned, camera_hash, camera_metrics = sample_quality(
+                        "?diagnostic=1&qa=1&projection=perspective"
+                        "&quality_experiment=ambient-occlusion-camera-occluders"
+                    )
+                    camera_selection = camera_pruned["ambient_occlusion_occluders"]
+                    assert camera_pruned["ambient_occlusion_projection_define"] == 1
+                    assert camera_selection["omitted"] > 0
+                    assert camera_selection["visibility_restored"]
+                    assert camera_selection["evaluations"] >= 1
+                    assert camera_metrics[-1]["draw_calls"] < perspective_ao_metrics[-1]["draw_calls"]
+                    assert camera_hash != perspective_hash
+                    quality_results["ambient-occlusion-camera-occluders"]["perspective"] = {
+                        "canvas_sha256": camera_hash,
+                        "draw_samples": camera_metrics,
+                        "settings": camera_pruned,
+                    }
                     quality_results["ambient-occlusion-occluders"]["perspective"] = {
                         "canvas_sha256": perspective_pruned_hash,
                         "draw_samples": perspective_pruned_metrics,
@@ -528,7 +551,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         "trials": quality_results,
                         "note": "Diagnostic experiments only, not new visual acceptance",
                     }
-                    print("PASS eight quality experiments, pruned AO submissions in both camera projections, unchanged defaults")
+                    print("PASS nine diagnostic quality experiments, camera-based pruning in both projections, unchanged defaults")
 
                 if report_json is not None:
                     destination = report_json if report_json.is_absolute() else ROOT / report_json

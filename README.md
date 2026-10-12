@@ -28,7 +28,8 @@ The production preview keeps its approved defaults. Diagnostic URLs may explicit
 `?diagnostic=1&quality_experiment=tone-map`,
 `?diagnostic=1&quality_experiment=ambient-occlusion`,
 `?diagnostic=1&quality_experiment=ambient-occlusion-half`,
-`?diagnostic=1&quality_experiment=ambient-occlusion-occluders`, or
+`?diagnostic=1&quality_experiment=ambient-occlusion-occluders`,
+`?diagnostic=1&quality_experiment=ambient-occlusion-camera-occluders`, or
 `?diagnostic=1&quality_experiment=fxaa`.
 Unsupported, repeated, or non-diagnostic experiment requests fail closed.
 These trials change only runtime lighting, fog, shadow-map settings, tone mapping or
@@ -38,7 +39,7 @@ post-processing composer. None changes
 SC3D source, geometry, materials or accepted camera presets. They are not new
 visual-acceptance verdicts.
 
-The factory Chromium regression checks all eight experiments against the
+The factory Chromium regression checks all nine experiments against the
 default diagnostic renderer, including changed pixels for fog/lighting,
 actual shadow-map settings, tone-mapped pixels, real SSAO pass allocation
 and changed framebuffer pixels in both camera projections, FXAA pixels and
@@ -64,7 +65,7 @@ retains its original drawing path and output settings.
 ## Renderer-cost comparisons
 
 The public Chromium job runs `scripts/benchmark-renderer-quality.py` after the
-existing seven-scene correctness matrix. It compares **all eight optional modes**
+existing seven-scene correctness matrix. It compares **all nine optional modes**
 against the same-scene default, including a second unchanged default check,
 using a fixed 512 × 384 viewport, three uncounted warmup draws and seven warm
 redraw samples per mode. Each mode uses a separate browser page but the same
@@ -152,3 +153,13 @@ the Factory Chromium test compares repeated identical SSAO screenshots.
 The full/pruned SSAO comparison therefore uses an identical 16-sample
 kernel/noise sequence rather than reporting randomized differences as
 occlusion-fidelity changes. The default renderer never uses this test hook.
+
+### Viewport-aware occluder selection
+
+`ambient-occlusion-camera-occluders` is a separate diagnostic trial that
+ranks mesh bounding spheres by approximate visible screen-space coverage.
+It recalculates the top half on every AO redraw with the current camera,
+for both perspective and orthographic projections. The world-radius
+reference remains unchanged, as does the full beauty render and the
+canonical scene data. Pixel and CPU comparisons are research diagnostics,
+not permission to promote the effect or discard small contact occluders.
