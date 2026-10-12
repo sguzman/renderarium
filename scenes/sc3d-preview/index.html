@@ -219,7 +219,7 @@
     scene.add(rim);
 
     // No quality trial is active during ordinary canonical preview use.
-    applyQualityExperiment({ THREE, scene, key, fill, rim }, qualityExperiment);
+    applyQualityExperiment({ THREE, scene, renderer, key, fill, rim }, qualityExperiment);
     if (qualityExperiment !== null) {
       document.documentElement.dataset.sc3dQualityExperiment = qualityExperiment;
     }
@@ -233,6 +233,8 @@
         rim_intensity: rim.intensity,
         shadow_map_size: [key.shadow.mapSize.x, key.shadow.mapSize.y],
         shadow_normal_bias: key.shadow.normalBias,
+        tone_mapping: renderer.toneMapping,
+        tone_mapping_exposure: renderer.toneMappingExposure,
       });
     }
 

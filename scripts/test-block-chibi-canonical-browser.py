@@ -340,7 +340,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     assert ordinary_settings["key_intensity"] == 3.1
 
                     quality_results = {}
-                    for experiment in ("fog", "soft-light", "shadow-detail"):
+                    for experiment in ("fog", "soft-light", "shadow-detail", "tone-map"):
                         settings, image_hash = sample_quality(
                             "?diagnostic=1&qa=1&quality_experiment=" + experiment
                         )
@@ -357,9 +357,15 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert image_hash != ordinary_hash, (
                                 "Lighting experiment did not alter the diagnostic render"
                             )
-                        else:
+                        elif experiment == "shadow-detail":
                             assert settings["shadow_map_size"] == [2048, 2048]
                             assert settings["shadow_normal_bias"] == 0.015
+                        else:
+                            assert settings["tone_mapping"] != ordinary_settings["tone_mapping"]
+                            assert settings["tone_mapping_exposure"] == 1.15
+                            assert image_hash != ordinary_hash, (
+                                "Tone-mapping trial did not alter the diagnostic render"
+                            )
                         quality_results[experiment] = {
                             "settings": settings,
                             "canvas_sha256": image_hash,
@@ -374,12 +380,37 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     assert after_hash == ordinary_hash, (
                         "Quality trials changed the default renderer image"
                     )
+                    def assert_quality_url_rejected(query: str) -> None:
+                        trial = browser.new_page(viewport={"width": 960, "height": 640})
+                        try:
+                            result = trial.goto(url + query)
+                            assert result is not None and result.ok
+                            trial.wait_for_function(
+                                "() => document.documentElement.dataset.sc3dError === 'true'",
+                                timeout=10000,
+                            )
+                            assert trial.locator("#sc3d-preview-error").count() == 1
+                            assert trial.evaluate(
+                                "() => window.__SC3D_READY__ !== true"
+                            ), "Invalid quality request rendered successfully"
+                        finally:
+                            trial.close()
+
+                    assert_quality_url_rejected("?quality_experiment=fog")
+                    assert_quality_url_rejected(
+                        "?diagnostic=1&quality_experiment=unsupported"
+                    )
+                    assert_quality_url_rejected(
+                        "?diagnostic=1&quality_experiment=fog&quality_experiment=soft-light"
+                    )
+
                     report["quality_experiments"] = {
+                        "rejected_invalid_requests": 3,
                         "default_canvas_sha256": ordinary_hash,
                         "trials": quality_results,
                         "note": "Diagnostic experiments only, not new visual acceptance",
                     }
-                    print("PASS three isolated quality experiments and unchanged default")
+                    print("PASS four isolated quality experiments, three rejected URLs, and unchanged default")
 
                 if report_json is not None:
                     destination = report_json if report_json.is_absolute() else ROOT / report_json

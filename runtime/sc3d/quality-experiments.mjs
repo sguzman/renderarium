@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "shadow-detail"]);
+const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map"]);
 export const QUALITY_EXPERIMENTS = MODES;
 
 export function selectQualityExperiment(params, diagnosticMode) {
@@ -18,7 +18,7 @@ export function selectQualityExperiment(params, diagnosticMode) {
   return requested[0];
 }
 
-export function applyQualityExperiment({ THREE, scene, key, fill, rim }, experiment) {
+export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim }, experiment) {
   if (experiment === null) return;
   if (!MODES.includes(experiment)) {
     throw new Error("Unsupported rendering-quality experiment");
@@ -36,6 +36,11 @@ export function applyQualityExperiment({ THREE, scene, key, fill, rim }, experim
     case "shadow-detail":
       key.shadow.mapSize.set(2048, 2048);
       key.shadow.normalBias = 0.015;
+      break;
+    case "tone-map":
+      // Tone mapping is a renderer-stage color transform, not new SC3D art.
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.15;
       break;
   }
 }
