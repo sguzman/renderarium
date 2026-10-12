@@ -82,12 +82,26 @@ jobs:
               python scripts/test-block-chibi-canonical-browser.py --scene "${scene}" --allow-swiftshader --report-json "artifacts/canonical-browser/${scene}.json"
             done
           } 2>&1 | tee artifacts/canonical-browser/browser-tests.log
+      - name: Benchmark six optional renderer modes on seven frozen scenes
+        shell: bash
+        run: |
+          mkdir -p artifacts/renderer-costs
+          python scripts/benchmark-renderer-quality.py --self-test
+          set -o pipefail
+          python scripts/benchmark-renderer-quality.py --allow-swiftshader --output-dir artifacts/renderer-costs 2>&1 | tee artifacts/renderer-costs/benchmark.log
       - name: Upload browser diagnostics even on failure
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: canonical-threejs-browser
           path: artifacts/canonical-browser/
+          if-no-files-found: warn
+      - name: Upload renderer cost comparisons even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: renderer-costs
+          path: artifacts/renderer-costs/
           if-no-files-found: warn
 
 # This CI checks real canonical source/Three.js and Chromium behavior.

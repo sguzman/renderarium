@@ -184,6 +184,15 @@
     function requestRender() {
       frameProof.requestRender();
     }
+    // Explicit test-only redraw trigger. Never surface it on a normal view:
+    // no continuous render loop, hotkey, or UI mutation.
+    if (qaMode && diagnosticMode) {
+      window.__SC3D_QA_REQUEST_FRAME__ = () => {
+        const nextFrame = frameProof.frameCount() + 1;
+        requestRender();
+        return nextFrame;
+      };
+    }
 
 
     let camera;

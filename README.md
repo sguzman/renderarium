@@ -58,3 +58,24 @@ FXAA runs in its own three-stage Three.js EffectComposer chain
 (RenderPass -> OutputPass -> FXAA ShaderPass) because FXAA expects sRGB input.
 It is never activated during ordinary rendering. The existing default renderer
 retains its original drawing path and output settings.
+
+## Renderer-cost comparisons
+
+The public Chromium job runs `scripts/benchmark-renderer-quality.py` after the
+existing seven-scene correctness matrix. It compares **all six optional modes**
+against the same-scene default, including a second unchanged default check,
+using a fixed 512 × 384 viewport, two uncounted warmup draws and three warm
+redraw samples per mode. Each mode uses a separate browser page but the same
+scene server and browser instance.
+
+The `renderer-costs` CI artifact includes per-scene JSON, an aggregate JSON
+and a Markdown table of within-scene median ratios. Every sample is an
+instrumented synchronous CPU-side renderer/composer submission, **not** GPU
+execution time, FPS, or a stable performance budget. Shader compilation during
+initial draws is excluded. Small differences are noisy, particularly on
+SwiftShader, and relative cost does not measure visual quality. The benchmark
+does not promote any trial to a default.
+
+Individual scene source blobs and default screenshots are checked before and
+after trial execution; no accepted scene files are changed. The QA-only
+redraw trigger is unavailable outside explicit diagnostic test mode.
