@@ -132,12 +132,31 @@
     // This preview is a static scene. Render only when the view or an
     // interaction changes; do not spin a GPU render loop while idle.
     let roomInteractions = null;
+    const qaFrames = [];
+    const qaMode = params.get("qa") === "1";
+    // Read-only, opt-in instrumentation. This records the CPU-side duration
+    // of renderer.render(), NOT asynchronous GPU execution time.
+    if (qaMode) {
+      window.__SC3D_QA_REPORT__ = () => qaFrames.map(frame => ({...frame}));
+    }
     const frameProof = createFrameProof({
       documentElement: document.documentElement,
       schedule: requestAnimationFrame,
       draw: () => {
         roomInteractions?.refresh();
+        const drawStart = qaMode ? performance.now() : 0;
         renderer.render(scene, camera);
+        if (qaMode) {
+          const renderInfo = renderer.info.render;
+          qaFrames.push({
+            frame: qaFrames.length + 1,
+            cpu_submit_ms: Math.max(0, performance.now() - drawStart),
+            draw_calls: renderInfo.calls,
+            triangles: renderInfo.triangles,
+            lines: renderInfo.lines,
+            points: renderInfo.points,
+          });
+        }
         window.__SC3D_READY__ = true;
       },
       onError: error => reportSc3dPreviewFailure(error?.message || error),

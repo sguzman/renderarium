@@ -143,7 +143,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                 page.on("requestfailed", lambda request: network_errors.append(
                     f"Request failed: {request.url}"))
                 navigation_start = time.perf_counter()
-                response = page.goto(url + "?projection=perspective&view=front-three-quarter")
+                response = page.goto(url + "?projection=perspective&view=front-three-quarter&qa=1")
                 assert response is not None and response.ok, (
                     f"Preview entrypoint failed: HTTP {response.status if response else 'none'}; "
                     f"network={network_errors}; page_errors={errors}")
@@ -245,6 +245,18 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     token in renderer_name.lower()
                     for token in ("swiftshader", "llvmpipe", "softpipe", "software rasterizer")
                 )
+                qa_frames = page.evaluate("() => window.__SC3D_QA_REPORT__?.()")
+                assert isinstance(qa_frames, list), "QA draw instrumentation unavailable"
+                assert len(qa_frames) == zoom_frame, (
+                    f"Instrumentation missed draws: {len(qa_frames)} vs {zoom_frame}"
+                )
+                for frame in qa_frames:
+                    assert (
+                        math.isfinite(frame["cpu_submit_ms"])
+                        and frame["cpu_submit_ms"] >= 0
+                        and frame["draw_calls"] > 0
+                        and frame["triangles"] > 0
+                    ), f"Invalid Three.js draw metrics: {frame}"
                 screenshots = {
                     "initial": original, "orbit": orbit_png, "wireframe": wire_png,
                     "reset": reset_png, "zoom": zoom_png,
@@ -264,6 +276,12 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     },
                     "browser": {
                         "navigation_to_ready_ms": ready_ms,
+                        "draw_samples": qa_frames,
+                        "draw_metric_note": (
+                            "cpu_submit_ms measures the blocking renderer.render() call, "
+                            "not asynchronous GPU frame time. Samples include interaction "
+                            "and redraw work on this runner."
+                        ),
                         "frame_numbers": {
                             "initial": initial_frame, "orbit": orbit_frame,
                             "wireframe": wire_frame, "reset": reset_frame,
@@ -293,7 +311,8 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                 print(
                     f"PASS canonical Three.js {scene}: {geometry_parts} geometries, "
                     f"{component_roots} components; orbit, wireframe, reset, zoom; "
-                    f"ready {ready_ms}ms; backend {report['backend_class']} "
+                    f"ready {ready_ms}ms; {len(qa_frames)} measured draws; "
+                    f"backend {report['backend_class']} "
                     f"({renderer_name})"
                 )
                 print("Timing is runner-specific; WebGL renderer identity is not physical GPU proof.")
