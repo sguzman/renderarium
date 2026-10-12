@@ -153,6 +153,10 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
             };
         }""")
         assert backend["width"] > 0 and backend["height"] > 0
+        if mode in ("ambient-occlusion", "ambient-occlusion-half", "fxaa"):
+            assert measured[-1]["draw_calls"] > 1, (
+                f"{mode}: missing expected multi-pass draw accounting"
+            )
         assert not errors, f"Browser errors for {mode}: {errors}"
         image_hash = hashlib.sha256(page.locator("#viewport canvas").screenshot()).hexdigest()
         return {
@@ -236,6 +240,11 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             "default_after": baseline_after,
             "reference_median_ms": round(reference_ms, 4),
             "relative_cost": relative,
+            "draw_calls": {
+                "default_before": baseline["measured_draws"][-1]["draw_calls"],
+                "default_after": baseline_after["measured_draws"][-1]["draw_calls"],
+                **{mode: row["measured_draws"][-1]["draw_calls"] for mode, row in trials.items()},
+            },
             "reduced_ssao_median_ratio_to_full_ssao": round(reduced_ms / full_ms, 4),
         }
     finally:
@@ -291,8 +300,8 @@ def main() -> None:
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--scene", choices=SCENES)
     parser.add_argument("--allow-swiftshader", action="store_true")
-    parser.add_argument("--warmups", type=int, default=2)
-    parser.add_argument("--samples", type=int, default=3)
+    parser.add_argument("--warmups", type=int, default=3)
+    parser.add_argument("--samples", type=int, default=7)
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts/renderer-costs"))
     args = parser.parse_args()
     if args.self_test:
@@ -346,6 +355,10 @@ def main() -> None:
             "scene_count": len(rows),
             "modes": MODES,
             "scenes": rows,
+            "draw_call_measurement": (
+                "Three.js renderer.info counts all submission passes after disabling "
+                "automatic reset in diagnostic QA; not unique scene meshes or GPU time."
+            ),
             "caveat": (
                 "Runner-dependent CPU-side render() duration, not GPU time or FPS. "
                 "No default change or artistic quality approval implied."

@@ -413,6 +413,10 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert image_hash != ordinary_hash, (
                                 "FXAA compositor produced unchanged pixels"
                             )
+                        if experiment in ("ambient-occlusion", "ambient-occlusion-half", "fxaa"):
+                            assert draw_metrics[-1]["draw_calls"] > ordinary_metrics[-1]["draw_calls"], (
+                                f"{experiment} multi-pass draw count did not exceed the default"
+                            )
                         quality_results[experiment] = {
                             "settings": settings,
                             "canvas_sha256": image_hash,

@@ -65,7 +65,7 @@ retains its original drawing path and output settings.
 The public Chromium job runs `scripts/benchmark-renderer-quality.py` after the
 existing seven-scene correctness matrix. It compares **all seven optional modes**
 against the same-scene default, including a second unchanged default check,
-using a fixed 512 × 384 viewport, two uncounted warmup draws and three warm
+using a fixed 512 × 384 viewport, three uncounted warmup draws and seven warm
 redraw samples per mode. Each mode uses a separate browser page but the same
 scene server and browser instance.
 
@@ -90,3 +90,8 @@ or the approved renderer. Browser QA verifies its internal dimensions and
 changed pixels. Cost artifacts compare its warm median against both the
 same-scene default and original SSAO. CPU-side timings are not physical GPU
 performance or a new visual acceptance decision.
+
+All per-frame Three.js draw-call and primitive counters in diagnostic QA use
+explicit reset boundaries, so multi-pass FXAA and SSAO reports reflect the
+complete draw chain instead of just the last internal pass. This does not
+change ordinary preview rendering or imply GPU execution time.

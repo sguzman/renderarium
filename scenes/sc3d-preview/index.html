@@ -143,6 +143,10 @@
     let qualityComposer = null;
     const qaFrames = [];
     const qaMode = params.get("qa") === "1";
+    // Three.js normally resets counters for each renderer.render() call.
+    // Opt-in QA counts all internal geometry/shader passes per redraw.
+    // The ordinary non-QA renderer keeps its original counters and behavior.
+    if (qaMode) renderer.info.autoReset = false;
     // Read-only, opt-in instrumentation. This measures synchronous draw
     // submission and optional post-processing work, NOT GPU execution time.
     if (qaMode) {
@@ -153,6 +157,7 @@
       schedule: requestAnimationFrame,
       draw: () => {
         roomInteractions?.refresh();
+        if (qaMode) renderer.info.reset();
         const drawStart = qaMode ? performance.now() : 0;
         if (qualityComposer) {
           qualityComposer.composer.render();
