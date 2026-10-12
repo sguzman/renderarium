@@ -28,7 +28,7 @@ SCENES = (
 )
 MODES = (
     "fog", "soft-light", "shadow-detail",
-    "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "fxaa",
+    "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa",
 )
 VIEWPORT = {"width": 512, "height": 384}
 METRIC = "cpu_submit_ms"
@@ -231,7 +231,7 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
             };
         }""")
         assert backend["width"] > 0 and backend["height"] > 0
-        if mode in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "fxaa"):
+        if mode in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"):
             assert measured[-1]["draw_calls"] > 1, (
                 f"{mode}: missing expected multi-pass draw accounting"
             )
@@ -331,6 +331,10 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             trial_images["ambient-occlusion"],
             trial_images["ambient-occlusion-camera-occluders-75"],
         )
+        trials["ambient-occlusion-camera-occluders-75-cached"]["pixel_delta_from_uncached"] = pixel_distance(
+            trial_images["ambient-occlusion-camera-occluders-75"],
+            trial_images["ambient-occlusion-camera-occluders-75-cached"],
+        )
         selection = trials["ambient-occlusion-occluders"]["settings"]["ambient_occlusion_occluders"]
         assert selection["visibility_restored"], f"{scene_id}: visibility not restored"
         assert selection["retained"] + selection["omitted"] == selection["total"]
@@ -354,6 +358,22 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
         assert camera_calls <= higher_draws < full_calls, (
             f"{scene_id}: 50%, 75%, and full AO must have monotonic draw counts"
         )
+        cached_trial = trials["ambient-occlusion-camera-occluders-75-cached"]
+        cached_selection = cached_trial["settings"]["ambient_occlusion_occluders"]
+        assert cached_selection["retainedFraction"] == 0.75
+        assert cached_selection["cache_hits"] >= samples, (
+            f"{scene_id}: selection was not reused during warm redraws"
+        )
+        assert cached_selection["evaluations"] < cached_selection["cache_hits"], (
+            f"{scene_id}: cached ranking still recomputed on every redraw"
+        )
+        assert cached_trial["canvas_sha256"] == trials[
+            "ambient-occlusion-camera-occluders-75"
+        ]["canvas_sha256"], f"{scene_id}: cached vs uncached images differ"
+        assert cached_trial["measured_draws"][-1]["draw_calls"] == higher_draws, (
+            f"{scene_id}: cached vs uncached draw count differs"
+        )
+        assert cached_trial["pixel_delta_from_uncached"]["changed_pixel_fraction"] == 0
         all_modes = [baseline, *trials.values(), baseline_after]
         ref_backend = baseline["backend"]
         for row in all_modes:
@@ -406,6 +426,7 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             "pruned_ssao_draw_call_savings": full_calls - selected_calls,
             "camera_pruned_ssao_draw_call_savings": full_calls - camera_calls,
             "camera_75_ssao_draw_call_savings": full_calls - higher_draws,
+            "cached_75_ssao_ranking_hits": cached_selection["cache_hits"],
         }
     finally:
         proc.terminate()
@@ -525,6 +546,27 @@ def write_summary(rows: list[dict], path: Path) -> None:
             + f' | {row["draw_calls"]["ambient-occlusion-occluders"]}'
             + f' | {row["draw_calls"]["ambient-occlusion-camera-occluders"]}'
             + f" | {wd:.4f} | {cd:.4f} | {between:.4f} | {ratio:.2f}x |"
+        )
+    table.extend([
+        "",
+        "## Camera-aware 75% ranking cache",
+        "",
+        "Cache vs uncached must have identical pixels and geometry draw counts.",
+        "Only ranked-occluder recomputation is elided on static redraws.",
+        "",
+        "| Scene | Uncached 75% ms | Cached 75% ms | Cached / uncached | Ranking recomputations | Cache hits |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ])
+    for row in rows:
+        original = row["experiments"]["ambient-occlusion-camera-occluders-75"]
+        cached_row = row["experiments"]["ambient-occlusion-camera-occluders-75-cached"]
+        cached_selection = cached_row["settings"]["ambient_occlusion_occluders"]
+        uncached_ms = original["warm_cost"]["median_ms"]
+        cached_ms = cached_row["warm_cost"]["median_ms"]
+        table.append(
+            "| " + row["scene"].removeprefix("block-chibi-").removesuffix("-v1")
+            + f" | {uncached_ms:.3f} | {cached_ms:.3f} | {cached_ms / uncached_ms:.2f}x"
+            + f' | {cached_selection["evaluations"]} | {cached_selection["cache_hits"]} |'
         )
     table.extend([
         "",

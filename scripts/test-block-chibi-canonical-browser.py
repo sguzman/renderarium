@@ -357,7 +357,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     assert ordinary_settings["fxaa_enabled"] is False
 
                     quality_results = {}
-                    for experiment in ("fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "fxaa"):
+                    for experiment in ("fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"):
                         settings, image_hash, draw_metrics = sample_quality(
                             "?diagnostic=1&qa=1&quality_experiment=" + experiment
                         )
@@ -383,7 +383,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert image_hash != ordinary_hash, (
                                 "Tone-mapping trial did not alter the diagnostic render"
                             )
-                        elif experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75"):
+                        elif experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached"):
                             reduced = experiment == "ambient-occlusion-half"
                             assert settings["ambient_occlusion_enabled"] is True
                             assert isinstance(settings["ambient_occlusion_sampling_seed"], int)
@@ -396,11 +396,13 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert settings["ambient_occlusion_radius"] == 0.65
                             assert settings["ambient_occlusion_projection_define"] == 0
                             assert settings["ambient_occlusion_depth_texture"] is True
-                            if experiment in ("ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75"):
+                            if experiment in ("ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached"):
                                 selection = settings["ambient_occlusion_occluders"]
                                 assert selection["strategy"] == (
                                     "top-three-quarters-by-projected-viewport-coverage"
                                     if experiment == "ambient-occlusion-camera-occluders-75"
+                                    else "top-three-quarters-by-projected-viewport-coverage-cached"
+                                    if experiment == "ambient-occlusion-camera-occluders-75-cached"
                                     else "top-half-by-projected-viewport-coverage"
                                     if experiment == "ambient-occlusion-camera-occluders"
                                     else "largest-half-by-world-radius"
@@ -408,11 +410,14 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                                 assert selection["evaluations"] >= 1
                                 assert len(selection["selected_indices"]) == selection["retained"]
                                 assert len(set(selection["selected_indices"])) == selection["retained"]
-                                expected_fraction = 0.75 if experiment.endswith("-75") else 0.5
+                                expected_fraction = 0.75 if experiment.endswith("-75") or experiment.endswith("-75-cached") else 0.5
                                 assert selection["retainedFraction"] == expected_fraction
                                 assert selection["retained"] == math.ceil(
                                     selection["total"] * expected_fraction
                                 )
+                                assert selection["cache_hits"] >= 0
+                                if experiment == "ambient-occlusion-camera-occluders-75-cached":
+                                    assert selection["evaluations"] >= 1
                                 assert selection["omitted"] + selection["retained"] == selection["total"]
                                 assert selection["omitted"] > 0
                                 assert selection["visibility_restored"] is True
@@ -442,7 +447,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert image_hash != ordinary_hash, (
                                 "FXAA compositor produced unchanged pixels"
                             )
-                        if experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "fxaa"):
+                        if experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"):
                             assert draw_metrics[-1]["draw_calls"] > ordinary_metrics[-1]["draw_calls"], (
                                 f"{experiment} multi-pass draw count did not exceed the default"
                             )
@@ -456,6 +461,17 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     more_draws = quality_results["ambient-occlusion-camera-occluders-75"]["draw_samples"][-1]["draw_calls"]
                     full_draws = quality_results["ambient-occlusion"]["draw_samples"][-1]["draw_calls"]
                     assert half_draws <= more_draws < full_draws
+                    cached = quality_results["ambient-occlusion-camera-occluders-75-cached"]
+                    uncached = quality_results["ambient-occlusion-camera-occluders-75"]
+                    assert cached["canvas_sha256"] == uncached["canvas_sha256"], (
+                        "Camera-selection caching altered identical static image"
+                    )
+                    assert cached["draw_samples"][-1]["draw_calls"] == (
+                        uncached["draw_samples"][-1]["draw_calls"]
+                    ), "Caching unexpectedly changed geometry draw budget"
+                    assert cached["settings"]["ambient_occlusion_occluders"]["selected_indices"] == (
+                        uncached["settings"]["ambient_occlusion_occluders"]["selected_indices"]
+                    )
                     # The identical full SSAO trial must have identical
                     # pixels across fresh browser pages. Otherwise comparing
                     # pruned vs full AO screenshots mixes RNG with geometry.

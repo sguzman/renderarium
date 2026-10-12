@@ -30,7 +30,8 @@ The production preview keeps its approved defaults. Diagnostic URLs may explicit
 `?diagnostic=1&quality_experiment=ambient-occlusion-half`,
 `?diagnostic=1&quality_experiment=ambient-occlusion-occluders`,
 `?diagnostic=1&quality_experiment=ambient-occlusion-camera-occluders`,
-`?diagnostic=1&quality_experiment=ambient-occlusion-camera-occluders-75`, or
+`?diagnostic=1&quality_experiment=ambient-occlusion-camera-occluders-75`,
+`?diagnostic=1&quality_experiment=ambient-occlusion-camera-occluders-75-cached`, or
 `?diagnostic=1&quality_experiment=fxaa`.
 Unsupported, repeated, or non-diagnostic experiment requests fail closed.
 These trials change only runtime lighting, fog, shadow-map settings, tone mapping or
@@ -40,7 +41,7 @@ post-processing composer. None changes
 SC3D source, geometry, materials or accepted camera presets. They are not new
 visual-acceptance verdicts.
 
-The factory Chromium regression checks all ten experiments against the
+The factory Chromium regression checks all eleven experiments against the
 default diagnostic renderer, including changed pixels for fog/lighting,
 actual shadow-map settings, tone-mapped pixels, real SSAO pass allocation
 and changed framebuffer pixels in both camera projections, FXAA pixels and
@@ -66,7 +67,7 @@ retains its original drawing path and output settings.
 ## Renderer-cost comparisons
 
 The public Chromium job runs `scripts/benchmark-renderer-quality.py` after the
-existing seven-scene correctness matrix. It compares **all ten optional modes**
+existing seven-scene correctness matrix. It compares **all eleven optional modes**
 against the same-scene default, including a second unchanged default check,
 using a fixed 512 × 384 viewport, three uncounted warmup draws and seven warm
 redraw samples per mode. Each mode uses a separate browser page but the same
@@ -192,3 +193,17 @@ scenes. More retained meshes improved this *descriptive pixel similarity*
 in every scene; it does not establish perceptual superiority. Neither
 trial consistently improved synchronous CPU submission duration, and
 these software-renderer figures are not physical GPU measurements.
+
+### Cached 75% camera-aware AO ranking
+
+`ambient-occlusion-camera-occluders-75-cached` is an **additional opt-in
+diagnostic mode**, not a replacement for the original 75% experiment.
+It caches the exact selected occluder set while camera pose, projection,
+and the scene presentation matrix remain unchanged, avoiding repeated
+mesh scoring and sorting on static redraws. Dynamic orbit/zoom modifies
+those transforms and forces fresh selection. Per-scene Chromium QA
+requires identical images and draw counts between cached and uncached
+75% rendering, tracks cache hits, and compares CPU-side timing.
+Because this is an experimental matrix-scoped cache, arbitrary external
+changes to descendant mesh transforms must explicitly invalidate it
+before any future production use.

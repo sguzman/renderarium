@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "fxaa"]);
+const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
 export const QUALITY_SSAO_SEED = 0x5ca3d70f;
 
@@ -72,12 +72,13 @@ export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim 
  * only for an explicit diagnostic request; production previews never allocate
  * its WebGL targets, compile its shaders, or alter their approved appearance.
  */
-export async function createQualityPostPass({ scene, camera }, experiment) {
+export async function createQualityPostPass({ scene, camera, presentation }, experiment) {
   if (experiment !== "ambient-occlusion" &&
       experiment !== "ambient-occlusion-half" &&
       experiment !== "ambient-occlusion-occluders" &&
       experiment !== "ambient-occlusion-camera-occluders" &&
-      experiment !== "ambient-occlusion-camera-occluders-75") return null;
+      experiment !== "ambient-occlusion-camera-occluders-75" &&
+      experiment !== "ambient-occlusion-camera-occluders-75-cached") return null;
   if (!camera.isPerspectiveCamera && !camera.isOrthographicCamera) {
     throw new Error("SSAO requires an orthographic or perspective camera");
   }
@@ -85,22 +86,29 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
   // A separate lower-cost quality trial; full-resolution SSAO is untouched.
   const reduced = experiment === "ambient-occlusion-half";
   const worldSelection = experiment === "ambient-occlusion-occluders";
+  const cacheSelection = experiment === "ambient-occlusion-camera-occluders-75-cached";
   const cameraSelection = experiment === "ambient-occlusion-camera-occluders" ||
-    experiment === "ambient-occlusion-camera-occluders-75";
-  const retainedFraction = experiment === "ambient-occlusion-camera-occluders-75"
-    ? 0.75 : 0.5;
+    experiment === "ambient-occlusion-camera-occluders-75" || cacheSelection;
+  const retainedFraction =
+    experiment === "ambient-occlusion-camera-occluders-75" || cacheSelection
+      ? 0.75 : 0.5;
+  if (cacheSelection && !presentation?.matrixWorld?.elements) {
+    throw new Error("Cached AO selection requires presentation matrix");
+  }
   let PassClass = SSAOPass;
   let selection = null;
   if (worldSelection || cameraSelection) {
     selection = {
-      strategy: cameraSelection
-        ? (retainedFraction === 0.75
-          ? "top-three-quarters-by-projected-viewport-coverage"
-          : "top-half-by-projected-viewport-coverage")
-        : "largest-half-by-world-radius",
+      strategy: cacheSelection
+        ? "top-three-quarters-by-projected-viewport-coverage-cached"
+        : cameraSelection
+          ? (retainedFraction === 0.75
+            ? "top-three-quarters-by-projected-viewport-coverage"
+            : "top-half-by-projected-viewport-coverage")
+          : "largest-half-by-world-radius",
       retainedFraction,
       total: 0, retained: 0, omitted: 0,
-      evaluations: 0, selectedIndices: [],
+      evaluations: 0, cacheHits: 0, selectedIndices: [],
       visibilityRestored: () => true,
     };
     const selectOccluders = () => {
@@ -147,9 +155,29 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
         .map(item => item.index).sort((a, b) => a - b);
       return retained;
     };
-    // Frozen world-space reference selects once. Camera strategy selects for
-    // every AO redraw, after the main scene render updates camera matrices.
+    // The cached trial avoids O(mesh-count) traverse/sort on static redraws,
+    // using three 4x4 matrices (48 scalar comparisons) as its invalidation
+    // signature. Its scope covers camera pose, projection and the entire
+    // approved scene's presentation transform. Scene assets remain immutable.
     const staticRetained = worldSelection ? selectOccluders() : null;
+    let cacheRetained = null;
+    let cacheSignature = null;
+    const cacheMatrices = cacheSelection
+      ? [camera.matrixWorld, camera.projectionMatrix, presentation.matrixWorld]
+      : [];
+    function selectedForFrame() {
+      if (staticRetained) return staticRetained;
+      if (!cacheSelection) return selectOccluders();
+      const currentSignature = cacheMatrices.flatMap(matrix => matrix.elements);
+      if (cacheRetained && cacheSignature &&
+          currentSignature.every((value, i) => value === cacheSignature[i])) {
+        selection.cacheHits++;
+        return cacheRetained;
+      }
+      cacheRetained = selectOccluders();
+      cacheSignature = cacheMatrices.flatMap(matrix => matrix.elements);
+      return cacheRetained;
+    }
     PassClass = class extends SSAOPass {
       constructor(...args) {
         super(...args);
@@ -157,7 +185,7 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
       }
       _overrideVisibility() {
         super._overrideVisibility();
-        const retained = staticRetained ?? selectOccluders();
+        const retained = selectedForFrame();
         this.scene.traverse(object => {
           if (object.isMesh && object.visible && !retained.has(object)) {
             object.visible = false;

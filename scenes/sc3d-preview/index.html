@@ -264,7 +264,7 @@
 
     // No quality trial is active during ordinary canonical preview use.
     applyQualityExperiment({ THREE, scene, renderer, key, fill, rim }, qualityExperiment);
-    qualityPostPass = await createQualityPostPass({ scene, camera }, qualityExperiment);
+    qualityPostPass = await createQualityPostPass({ scene, camera, presentation }, qualityExperiment);
     qualityComposer = await createQualityComposer({ scene, camera, renderer }, qualityExperiment);
     if (qualityExperiment !== null) {
       document.documentElement.dataset.sc3dQualityExperiment = qualityExperiment;
@@ -302,6 +302,7 @@
               omitted: qualityPostPass.qualityOccluderSelection.omitted,
               visibility_restored: qualityPostPass.qualityOccluderSelection.visibilityRestored(),
               evaluations: qualityPostPass.qualityOccluderSelection.evaluations,
+              cache_hits: qualityPostPass.qualityOccluderSelection.cacheHits,
               selected_indices: [...qualityPostPass.qualityOccluderSelection.selectedIndices],
             }
           : null,
