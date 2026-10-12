@@ -15,5 +15,6 @@ The accepted files and geometry hashes are preserved. **Visual acceptance is not
 - Canonical source-to-chat tests: `corepack pnpm verify:chat-preview-pipeline` (18 stages).
 - Public content boundary: `node tools/publication-gate.mjs`.
 - The public GitHub Actions workflow performs both canonical integration and Chromium/Three.js browser checks. A software WebGL fallback is not physical GPU evidence.
+- The seven-scene Chromium matrix also records `artifacts/canonical-browser/<scene>.json` for each scene: frozen assembly/preview pins, canonical source census, fresh redraw/frame evidence, screenshot diagnostics, navigation-to-ready time, and WebGL renderer/framebuffer properties. Timings are runner-dependent; screenshot fingerprints are not golden-image approvals.
 
 The source and tests are provided for agent-owned development and QA. Previously accepted creative work is not reopened automatically. Adding new content requires its own scoped review and an updated public file boundary.

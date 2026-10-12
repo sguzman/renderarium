@@ -79,7 +79,7 @@ jobs:
           {
             for scene in living-room kitchen bathroom office backyard garage factory; do
               echo "===== ${scene} ====="
-              python scripts/test-block-chibi-canonical-browser.py --scene "${scene}" --allow-swiftshader
+              python scripts/test-block-chibi-canonical-browser.py --scene "${scene}" --allow-swiftshader --report-json "artifacts/canonical-browser/${scene}.json"
             done
           } 2>&1 | tee artifacts/canonical-browser/browser-tests.log
       - name: Upload browser diagnostics even on failure
