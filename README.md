@@ -26,7 +26,8 @@ The production preview keeps its approved defaults. Diagnostic URLs may explicit
 `?diagnostic=1&quality_experiment=soft-light`,
 `?diagnostic=1&quality_experiment=shadow-detail`,
 `?diagnostic=1&quality_experiment=tone-map`,
-`?diagnostic=1&quality_experiment=ambient-occlusion`, or
+`?diagnostic=1&quality_experiment=ambient-occlusion`,
+`?diagnostic=1&quality_experiment=ambient-occlusion-half`, or
 `?diagnostic=1&quality_experiment=fxaa`.
 Unsupported, repeated, or non-diagnostic experiment requests fail closed.
 These trials change only runtime lighting, fog, shadow-map settings, tone mapping or
@@ -36,7 +37,7 @@ post-processing composer. None changes
 SC3D source, geometry, materials or accepted camera presets. They are not new
 visual-acceptance verdicts.
 
-The factory Chromium regression checks all six experiments against the
+The factory Chromium regression checks all seven experiments against the
 default diagnostic renderer, including changed pixels for fog/lighting,
 actual shadow-map settings, tone-mapped pixels, real SSAO pass allocation
 and changed framebuffer pixels in both camera projections, FXAA pixels and
@@ -62,7 +63,7 @@ retains its original drawing path and output settings.
 ## Renderer-cost comparisons
 
 The public Chromium job runs `scripts/benchmark-renderer-quality.py` after the
-existing seven-scene correctness matrix. It compares **all six optional modes**
+existing seven-scene correctness matrix. It compares **all seven optional modes**
 against the same-scene default, including a second unchanged default check,
 using a fixed 512 × 384 viewport, two uncounted warmup draws and three warm
 redraw samples per mode. Each mode uses a separate browser page but the same
@@ -79,3 +80,13 @@ does not promote any trial to a default.
 Individual scene source blobs and default screenshots are checked before and
 after trial execution; no accepted scene files are changed. The QA-only
 redraw trigger is unavailable outside explicit diagnostic test mode.
+
+### Reduced-resolution SSAO comparison
+
+The separate `ambient-occlusion-half` diagnostic variant runs eight depth
+samples at half-width and half-height internal resolution. It may have more
+visible edge artifacts, and does not replace the full 16-sample SSAO trial
+or the approved renderer. Browser QA verifies its internal dimensions and
+changed pixels. Cost artifacts compare its warm median against both the
+same-scene default and original SSAO. CPU-side timings are not physical GPU
+performance or a new visual acceptance decision.

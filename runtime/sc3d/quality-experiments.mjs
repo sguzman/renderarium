@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "fxaa"]);
+const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
 
 export function selectQualityExperiment(params, diagnosticMode) {
@@ -51,12 +51,16 @@ export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim 
  * its WebGL targets, compile its shaders, or alter their approved appearance.
  */
 export async function createQualityPostPass({ scene, camera }, experiment) {
-  if (experiment !== "ambient-occlusion") return null;
+  if (experiment !== "ambient-occlusion" &&
+      experiment !== "ambient-occlusion-half") return null;
   if (!camera.isPerspectiveCamera && !camera.isOrthographicCamera) {
     throw new Error("SSAO requires an orthographic or perspective camera");
   }
   const { SSAOPass } = await import("/vendor/three/addons/postprocessing/SSAOPass.js");
-  const pass = new SSAOPass(scene, camera, 1, 1, 16);
+  // A separate lower-cost quality trial; full-resolution SSAO is untouched.
+  const reduced = experiment === "ambient-occlusion-half";
+  const pass = new SSAOPass(scene, camera, 1, 1, reduced ? 8 : 16);
+  pass.qualityResolutionScale = reduced ? 0.5 : 1;
   // SSAOPass defaults both depth shaders to perspective, even when the SC3D
   // preview camera is orthographic. Select the correct depth reconstruction.
   const perspective = camera.isPerspectiveCamera ? 1 : 0;

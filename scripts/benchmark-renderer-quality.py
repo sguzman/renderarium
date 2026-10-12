@@ -25,7 +25,7 @@ SCENES = (
 )
 MODES = (
     "fog", "soft-light", "shadow-detail",
-    "tone-map", "ambient-occlusion", "fxaa",
+    "tone-map", "ambient-occlusion", "ambient-occlusion-half", "fxaa",
 )
 VIEWPORT = {"width": 512, "height": 384}
 METRIC = "cpu_submit_ms"
@@ -221,6 +221,9 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
                     row["warm_cost"]["median_ms"] - reference_ms, 4
                 ),
             }
+        reduced_ms = trials["ambient-occlusion-half"]["warm_cost"]["median_ms"]
+        full_ms = trials["ambient-occlusion"]["warm_cost"]["median_ms"]
+        assert full_ms > 0, f"{scene_id}: invalid full SSAO reference"
         return {
             "scene": scene_id,
             "frozen_source": {
@@ -233,6 +236,7 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             "default_after": baseline_after,
             "reference_median_ms": round(reference_ms, 4),
             "relative_cost": relative,
+            "reduced_ssao_median_ratio_to_full_ssao": round(reduced_ms / full_ms, 4),
         }
     finally:
         proc.terminate()

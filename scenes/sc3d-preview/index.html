@@ -163,7 +163,11 @@
           // Refresh camera matrices for perspective/orthographic zoom as well
           // as physical framebuffer dimensions before computing depth-based AO.
           const drawingSize = renderer.getDrawingBufferSize(new THREE.Vector2());
-          qualityPostPass.setSize(drawingSize.x, drawingSize.y);
+          const scale = qualityPostPass.qualityResolutionScale;
+          qualityPostPass.setSize(
+            Math.max(1, Math.round(drawingSize.x * scale)),
+            Math.max(1, Math.round(drawingSize.y * scale)),
+          );
           qualityPostPass.render(renderer, null, null);
         }
         if (qaMode) {
@@ -266,6 +270,11 @@
         tone_mapping_exposure: renderer.toneMappingExposure,
         ambient_occlusion_enabled: qualityPostPass !== null,
         ambient_occlusion_samples: qualityPostPass?.kernel.length ?? null,
+        ambient_occlusion_resolution_scale:
+          qualityPostPass?.qualityResolutionScale ?? null,
+        ambient_occlusion_render_size: qualityPostPass
+          ? [qualityPostPass.width, qualityPostPass.height]
+          : null,
         ambient_occlusion_projection_define:
           qualityPostPass?.ssaoMaterial.defines.PERSPECTIVE_CAMERA ?? null,
         ambient_occlusion_radius: qualityPostPass?.kernelRadius ?? null,

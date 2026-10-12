@@ -357,7 +357,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     assert ordinary_settings["fxaa_enabled"] is False
 
                     quality_results = {}
-                    for experiment in ("fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "fxaa"):
+                    for experiment in ("fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "fxaa"):
                         settings, image_hash, draw_metrics = sample_quality(
                             "?diagnostic=1&qa=1&quality_experiment=" + experiment
                         )
@@ -383,12 +383,22 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert image_hash != ordinary_hash, (
                                 "Tone-mapping trial did not alter the diagnostic render"
                             )
-                        elif experiment == "ambient-occlusion":
+                        elif experiment in ("ambient-occlusion", "ambient-occlusion-half"):
+                            reduced = experiment == "ambient-occlusion-half"
                             assert settings["ambient_occlusion_enabled"] is True
-                            assert settings["ambient_occlusion_samples"] == 16
+                            assert settings["ambient_occlusion_samples"] == (8 if reduced else 16)
+                            assert settings["ambient_occlusion_resolution_scale"] == (
+                                0.5 if reduced else 1
+                            )
                             assert settings["ambient_occlusion_radius"] == 0.65
                             assert settings["ambient_occlusion_projection_define"] == 0
                             assert settings["ambient_occlusion_depth_texture"] is True
+                            if reduced:
+                                w, h = settings["ambient_occlusion_render_size"]
+                                assert 0 < w < 960 and 0 < h < 640
+                                assert image_hash != quality_results["ambient-occlusion"]["canvas_sha256"], (
+                                    "Reduced SSAO should differ from full-resolution SSAO"
+                                )
                             assert image_hash != ordinary_hash, (
                                 "SSAO depth/normal post-pass produced unchanged pixels"
                             )
@@ -472,7 +482,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         "trials": quality_results,
                         "note": "Diagnostic experiments only, not new visual acceptance",
                     }
-                    print("PASS six quality experiments, orthographic/perspective SSAO, FXAA compositor, rejected URLs and unchanged defaults")
+                    print("PASS seven quality experiments, full/reduced SSAO, FXAA compositor, rejected URLs and unchanged defaults")
 
                 if report_json is not None:
                     destination = report_json if report_json.is_absolute() else ROOT / report_json
