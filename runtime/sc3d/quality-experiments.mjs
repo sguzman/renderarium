@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "fxaa"]);
+const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
 export const QUALITY_SSAO_SEED = 0x5ca3d70f;
 
@@ -76,7 +76,8 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
   if (experiment !== "ambient-occlusion" &&
       experiment !== "ambient-occlusion-half" &&
       experiment !== "ambient-occlusion-occluders" &&
-      experiment !== "ambient-occlusion-camera-occluders") return null;
+      experiment !== "ambient-occlusion-camera-occluders" &&
+      experiment !== "ambient-occlusion-camera-occluders-75") return null;
   if (!camera.isPerspectiveCamera && !camera.isOrthographicCamera) {
     throw new Error("SSAO requires an orthographic or perspective camera");
   }
@@ -84,7 +85,10 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
   // A separate lower-cost quality trial; full-resolution SSAO is untouched.
   const reduced = experiment === "ambient-occlusion-half";
   const worldSelection = experiment === "ambient-occlusion-occluders";
-  const cameraSelection = experiment === "ambient-occlusion-camera-occluders";
+  const cameraSelection = experiment === "ambient-occlusion-camera-occluders" ||
+    experiment === "ambient-occlusion-camera-occluders-75";
+  const retainedFraction = experiment === "ambient-occlusion-camera-occluders-75"
+    ? 0.75 : 0.5;
   let PassClass = SSAOPass;
   let selection = null;
   if (worldSelection || cameraSelection) {
@@ -92,6 +96,7 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
       strategy: cameraSelection
         ? "top-half-by-projected-viewport-coverage"
         : "largest-half-by-world-radius",
+      retainedFraction,
       total: 0, retained: 0, omitted: 0,
       evaluations: 0, selectedIndices: [],
       visibilityRestored: () => true,
@@ -130,7 +135,7 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
       });
       if (candidates.length < 2) throw new Error("Occluder selection requires at least two visible meshes");
       candidates.sort((a, b) => b.importance - a.importance || a.index - b.index);
-      const keep = Math.ceil(candidates.length / 2);
+      const keep = Math.ceil(candidates.length * retainedFraction);
       const retained = new Set(candidates.slice(0, keep).map(item => item.object));
       selection.total = candidates.length;
       selection.retained = keep;

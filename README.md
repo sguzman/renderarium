@@ -29,7 +29,8 @@ The production preview keeps its approved defaults. Diagnostic URLs may explicit
 `?diagnostic=1&quality_experiment=ambient-occlusion`,
 `?diagnostic=1&quality_experiment=ambient-occlusion-half`,
 `?diagnostic=1&quality_experiment=ambient-occlusion-occluders`,
-`?diagnostic=1&quality_experiment=ambient-occlusion-camera-occluders`, or
+`?diagnostic=1&quality_experiment=ambient-occlusion-camera-occluders`,
+`?diagnostic=1&quality_experiment=ambient-occlusion-camera-occluders-75`, or
 `?diagnostic=1&quality_experiment=fxaa`.
 Unsupported, repeated, or non-diagnostic experiment requests fail closed.
 These trials change only runtime lighting, fog, shadow-map settings, tone mapping or
@@ -39,7 +40,7 @@ post-processing composer. None changes
 SC3D source, geometry, materials or accepted camera presets. They are not new
 visual-acceptance verdicts.
 
-The factory Chromium regression checks all nine experiments against the
+The factory Chromium regression checks all ten experiments against the
 default diagnostic renderer, including changed pixels for fog/lighting,
 actual shadow-map settings, tone-mapped pixels, real SSAO pass allocation
 and changed framebuffer pixels in both camera projections, FXAA pixels and
@@ -65,7 +66,7 @@ retains its original drawing path and output settings.
 ## Renderer-cost comparisons
 
 The public Chromium job runs `scripts/benchmark-renderer-quality.py` after the
-existing seven-scene correctness matrix. It compares **all nine optional modes**
+existing seven-scene correctness matrix. It compares **all ten optional modes**
 against the same-scene default, including a second unchanged default check,
 using a fixed 512 × 384 viewport, three uncounted warmup draws and seven warm
 redraw samples per mode. Each mode uses a separate browser page but the same
@@ -170,3 +171,11 @@ occluder ranking is reevaluated after each redraw, hidden mesh visibility
 is restored, and the beauty pixels react to the interaction. The QA artifact
 records whether the retained indices changed; the test does not invent
 a requirement that every camera movement must change the winning occluders.
+
+### 75% camera-aware occluder retention
+
+The diagnostic `ambient-occlusion-camera-occluders-75` mode retains
+three quarters of ranked meshes instead of half. All seven scenes are
+benchmarked against 50% retention and full SSAO, with fixed sampling seeds,
+draw-count monotonicity checks, separate pixel deltas and warm CPU samples.
+The source assets and production renderer remain unchanged.
