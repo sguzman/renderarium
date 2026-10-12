@@ -190,6 +190,14 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
             frame = page.evaluate("() => window.__SC3D_QA_REPORT__().at(-1)")
             assert frame["frame"] == target, "Instrumentation missed requested frame"
             assert frame["draw_calls"] > 0, f"Invalid draw counts: {frame}"
+            for stage in ("primary_pipeline_cpu_ms", "ambient_occlusion_cpu_ms"):
+                assert math.isfinite(frame[stage]) and frame[stage] >= 0, (
+                    f"Invalid {stage} timing: {frame}"
+                )
+            assert (
+                frame["primary_pipeline_cpu_ms"] +
+                frame["ambient_occlusion_cpu_ms"] <= frame[METRIC] + 0.001
+            ), f"Stage measurements exceed recorded frame cost: {frame}"
             value = frame[METRIC]
             assert math.isfinite(value) and value >= 0, f"Invalid sample: {frame}"
             return frame
@@ -237,6 +245,14 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
             "warmup_draws": warm,
             "measured_draws": measured,
             "warm_cost": summarize([x[METRIC] for x in measured]),
+            "stage_costs": {
+                "primary_pipeline": summarize(
+                    [x["primary_pipeline_cpu_ms"] for x in measured]
+                ),
+                "ambient_occlusion_post": summarize(
+                    [x["ambient_occlusion_cpu_ms"] for x in measured]
+                ),
+            },
             "warm_resource_counts": {
                 field: measured[-1][field]
                 for field in resource_fields
@@ -407,6 +423,24 @@ def write_summary(rows: list[dict], path: Path) -> None:
         )
     table.extend([
         "",
+        "## SSAO stage submission costs",
+        "",
+        "These are synchronous CPU-side submission times, not GPU pass timings.",
+        "",
+        "| Scene | Full SSAO primary ms | Full SSAO post ms | Half SSAO post ms |",
+        "| --- | ---: | ---: | ---: |",
+    ])
+    for row in rows:
+        full = row["experiments"]["ambient-occlusion"]["stage_costs"]
+        half = row["experiments"]["ambient-occlusion-half"]["stage_costs"]
+        table.append(
+            "| " + row["scene"].removeprefix("block-chibi-").removesuffix("-v1")
+            + f' | {full["primary_pipeline"]["median_ms"]:.3f}'
+            + f' | {full["ambient_occlusion_post"]["median_ms"]:.3f}'
+            + f' | {half["ambient_occlusion_post"]["median_ms"]:.3f} |'
+        )
+    table.extend([
+        "",
         "## SSAO image-change and warm-cost comparison",
         "",
         "Pixel changes are descriptive, not a perceptual quality rating.",
@@ -497,6 +531,12 @@ def main() -> None:
             "scene_count": len(rows),
             "modes": MODES,
             "scenes": rows,
+            "stage_measurement": (
+                "primary_pipeline_cpu_ms times the default scene renderer or "
+                "the FXAA EffectComposer; ambient_occlusion_cpu_ms separately "
+                "times the depth/normal SSAO post-pass including resize checks. "
+                "Their sum is the synchronous call duration, not GPU time."
+            ),
             "resource_measurement": (
                 "Three.js renderer.info resource counters are snapshots of this "
                 "page's tracked WebGL objects; stable across measured warm draws. "

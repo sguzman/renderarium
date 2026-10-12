@@ -164,6 +164,7 @@
         } else {
           renderer.render(scene, camera);
         }
+        const primaryEnd = qaMode ? performance.now() : 0;
         if (qualityPostPass) {
           // Refresh camera matrices for perspective/orthographic zoom as well
           // as physical framebuffer dimensions before computing depth-based AO.
@@ -176,10 +177,14 @@
           qualityPostPass.render(renderer, null, null);
         }
         if (qaMode) {
+          const drawEnd = performance.now();
           const renderInfo = renderer.info.render;
           qaFrames.push({
             frame: qaFrames.length + 1,
-            cpu_submit_ms: Math.max(0, performance.now() - drawStart),
+            cpu_submit_ms: Math.max(0, drawEnd - drawStart),
+            primary_pipeline_cpu_ms: Math.max(0, primaryEnd - drawStart),
+            ambient_occlusion_cpu_ms: qualityPostPass
+              ? Math.max(0, drawEnd - primaryEnd) : 0,
             draw_calls: renderInfo.calls,
             triangles: renderInfo.triangles,
             lines: renderInfo.lines,

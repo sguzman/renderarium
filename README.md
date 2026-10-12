@@ -118,3 +118,12 @@ Each scene also records the percentage drift between its before/after
 default-render CPU medians; drift above 20% is flagged as a noisy
 comparison rather than an automatic correctness failure. No SwiftShader
 measurement alone authorizes a production effect or quality promotion.
+
+### Per-stage renderer costs
+
+Diagnostic QA frames distinguish the primary renderer/compositor CPU submission
+from the additional SSAO depth/normal pass. Per-stage warm medians appear in
+the benchmark JSON and Markdown artifact. FXAA's primary stage includes its
+entire EffectComposer chain; the separate ambient-occlusion stage is zero
+when no SSAO pass runs. This is a bounded synchronous JavaScript/WebGL
+submission measurement, **not** GPU stage timing or a frame-rate claim.
