@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map"]);
+const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion"]);
 export const QUALITY_EXPERIMENTS = MODES;
 
 export function selectQualityExperiment(params, diagnosticMode) {
@@ -43,4 +43,21 @@ export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim 
       renderer.toneMappingExposure = 1.15;
       break;
   }
+}
+
+/**
+ * A real depth- and normal-buffer SSAO pass. The addon is dynamically loaded
+ * only for an explicit diagnostic request; production previews never allocate
+ * its WebGL targets, compile its shaders, or alter their approved appearance.
+ */
+export async function createQualityPostPass({ scene, camera }, experiment) {
+  if (experiment !== "ambient-occlusion") return null;
+  const { SSAOPass } = await import("/vendor/three/addons/postprocessing/SSAOPass.js");
+  const pass = new SSAOPass(scene, camera, 1, 1, 16);
+  pass.output = SSAOPass.OUTPUT.Default;
+  pass.renderToScreen = true;
+  pass.kernelRadius = 0.65;
+  pass.minDistance = 0.001;
+  pass.maxDistance = 0.12;
+  return pass;
 }

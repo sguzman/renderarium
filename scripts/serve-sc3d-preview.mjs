@@ -21,6 +21,19 @@ const htmlPath = process.env.SC3D_SOFTWARE_PREVIEW === "1"
 const adapterPath = resolve(repoRoot, "runtime/sc3d/three-adapter-browser.mjs");
 const threePath = resolve(repoRoot, "node_modules/three/build/three.module.js");
 const threeCorePath = resolve(repoRoot, "node_modules/three/build/three.core.js");
+// Allow precisely the r180 addon imports required by SSAOPass. Do not expose
+// arbitrary files or permit URL-controlled traversal into node_modules.
+const ssaoAddonModules = [
+  "postprocessing/SSAOPass.js",
+  "postprocessing/Pass.js",
+  "math/SimplexNoise.js",
+  "shaders/SSAOShader.js",
+  "shaders/CopyShader.js",
+];
+const ssaoAddonRoutes = ssaoAddonModules.map(moduleName => [
+  "/vendor/three/addons/" + moduleName,
+  resolve(repoRoot, "node_modules/three/examples/jsm", moduleName),
+]);
 
 // Scene assemblies are lowered through the SAME canonical schema/semantic
 // loader used by production assembly, but stay in memory. Existing direct
@@ -54,6 +67,7 @@ const routes = new Map([
   ["/runtime/sc3d/preview-render-budget.mjs", renderBudgetModulePath],
   ["/runtime/sc3d/preview-frame-proof.mjs", frameProofModulePath],
   ["/runtime/sc3d/quality-experiments.mjs", qualityExperimentsModulePath],
+  ...ssaoAddonRoutes,
 ]);
 
 const server = createServer(async (request, response) => {

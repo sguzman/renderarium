@@ -79,12 +79,17 @@
     }, true);
   </script>
 
+  <!-- Only the explicit SSAO diagnostic dynamically imports Three.js addons.
+       The import map makes those pinned, locally served addons self-contained. -->
+  <script type="importmap">
+    { "imports": { "three": "/vendor/three.module.js" } }
+  </script>
   <script type="module">
     import * as THREE from "/vendor/three.module.js";
     import { previewPixelRatio } from "/runtime/sc3d/preview-render-budget.mjs";
     import { createFrameProof, assertFreshFrame } from "/runtime/sc3d/preview-frame-proof.mjs";
     import { buildSc3dObject, setStructureMode } from "/runtime/sc3d/three-adapter-browser.mjs";
-    import { selectQualityExperiment, applyQualityExperiment } from "/runtime/sc3d/quality-experiments.mjs";
+    import { selectQualityExperiment, applyQualityExperiment, createQualityPostPass } from "/runtime/sc3d/quality-experiments.mjs";
 
     const viewport = document.querySelector("#viewport");
     const status = document.querySelector("#status");
@@ -134,10 +139,11 @@
     // This preview is a static scene. Render only when the view or an
     // interaction changes; do not spin a GPU render loop while idle.
     let roomInteractions = null;
+    let qualityPostPass = null;
     const qaFrames = [];
     const qaMode = params.get("qa") === "1";
-    // Read-only, opt-in instrumentation. This records the CPU-side duration
-    // of renderer.render(), NOT asynchronous GPU execution time.
+    // Read-only, opt-in instrumentation. This measures synchronous draw
+    // submission and optional post-processing work, NOT GPU execution time.
     if (qaMode) {
       window.__SC3D_QA_REPORT__ = () => qaFrames.map(frame => ({...frame}));
     }
@@ -148,6 +154,13 @@
         roomInteractions?.refresh();
         const drawStart = qaMode ? performance.now() : 0;
         renderer.render(scene, camera);
+        if (qualityPostPass) {
+          // Refresh camera matrices for perspective/orthographic zoom as well
+          // as physical framebuffer dimensions before computing depth-based AO.
+          const drawingSize = renderer.getDrawingBufferSize(new THREE.Vector2());
+          qualityPostPass.setSize(drawingSize.x, drawingSize.y);
+          qualityPostPass.render(renderer, null, null);
+        }
         if (qaMode) {
           const renderInfo = renderer.info.render;
           qaFrames.push({
@@ -220,6 +233,7 @@
 
     // No quality trial is active during ordinary canonical preview use.
     applyQualityExperiment({ THREE, scene, renderer, key, fill, rim }, qualityExperiment);
+    qualityPostPass = await createQualityPostPass({ scene, camera }, qualityExperiment);
     if (qualityExperiment !== null) {
       document.documentElement.dataset.sc3dQualityExperiment = qualityExperiment;
     }
@@ -235,6 +249,12 @@
         shadow_normal_bias: key.shadow.normalBias,
         tone_mapping: renderer.toneMapping,
         tone_mapping_exposure: renderer.toneMappingExposure,
+        ambient_occlusion_enabled: qualityPostPass !== null,
+        ambient_occlusion_samples: qualityPostPass?.kernel.length ?? null,
+        ambient_occlusion_radius: qualityPostPass?.kernelRadius ?? null,
+        ambient_occlusion_depth_texture: Boolean(
+          qualityPostPass?.normalRenderTarget.depthTexture
+        ),
       });
     }
 
