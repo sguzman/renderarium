@@ -81,6 +81,22 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
         )
     generated = ROOT / f"scenes/block-chibi-{scene}-v1/generated/block-chibi-{scene}-v1.sc3d.yml"
     initial = generated.read_bytes() if generated.exists() else None
+    def verify_snapshot(stage: str) -> None:
+        current = generated.read_bytes() if generated.exists() else None
+        if current != initial:
+            def fingerprint(data: bytes | None) -> str:
+                if data is None:
+                    return "absent"
+                return (
+                    f"present:size={len(data)}:"
+                    f"sha256={hashlib.sha256(data).hexdigest()}"
+                )
+            raise AssertionError(
+                f"Canonical browser preview altered generated snapshot at {stage}: "
+                f"before={fingerprint(initial)}, after={fingerprint(current)}, "
+                f"path={generated.relative_to(ROOT)}"
+            )
+
     server_env = {**os.environ, "PORT": "0", "SC3D_SOFTWARE_PREVIEW": "0"}
 
     process = subprocess.Popen(
@@ -94,6 +110,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
     )
     try:
         url = await_server(process)
+        verify_snapshot("after preview server initialization")
         args = ["--no-sandbox", "--disable-dev-shm-usage"]
         if allow_swiftshader:
             args.append("--enable-unsafe-swiftshader")
@@ -304,6 +321,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         "The renderer string does not prove physical GPU use."
                     ),
                 }
+                verify_snapshot("after ordinary scene controls")
                 if scene == "factory":
                     # Quality trials share the real Three.js path, but never
                     # edit accepted source or activate on an ordinary preview.
@@ -344,6 +362,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             )
                         finally:
                             trial.close()
+                            verify_snapshot(f"after quality request {query}")
 
                     ordinary_settings, ordinary_hash, ordinary_metrics = sample_quality(
                         "?diagnostic=1&qa=1"
@@ -694,6 +713,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         finally:
                             probe.close()
                     quality_results["ambient-occlusion-camera-occluders-75-cached"]["interactive_probes"] = cache_probes
+                    verify_snapshot("after cached camera orbit/zoom probes")
 
                     after_settings, after_hash, after_metrics = sample_quality(
                         "?diagnostic=1&qa=1"
@@ -757,8 +777,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
         except subprocess.TimeoutExpired:
             process.kill()
             process.communicate(timeout=5)
-        current = generated.read_bytes() if generated.exists() else None
-        assert current == initial, "Canonical browser preview mutated generated snapshot"
+        verify_snapshot("after closing browser and preview server")
 
 
 if __name__ == "__main__":
