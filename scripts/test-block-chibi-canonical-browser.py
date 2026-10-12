@@ -619,6 +619,82 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             probe.close()
                     quality_results["ambient-occlusion-camera-occluders"]["interactive_probes"] = interactive_probes
 
+                    # The cached ranking must survive a static redraw, but
+                    # invalidate after actual camera/presentation movement.
+                    cache_probes = {}
+                    for projection in ("orthographic", "perspective"):
+                        probe = browser.new_page(viewport={"width": 960, "height": 640})
+                        cache_errors: list[str] = []
+                        probe.on("pageerror", lambda err: cache_errors.append(str(err)))
+                        try:
+                            projection_arg = (
+                                "&projection=perspective"
+                                if projection == "perspective" else ""
+                            )
+                            response = probe.goto(
+                                url + "?diagnostic=1&qa=1" + projection_arg
+                                + "&quality_experiment=ambient-occlusion-camera-occluders-75-cached"
+                            )
+                            assert response is not None and response.ok
+                            probe.wait_for_function(
+                                "() => window.__SC3D_READY__ === true && "
+                                "document.documentElement.dataset.sc3dReady === 'true'",
+                                timeout=30000,
+                            )
+                            get_selection = (
+                                "() => window.__SC3D_QUALITY_REPORT__().ambient_occlusion_occluders"
+                            )
+                            initial = probe.evaluate(get_selection)
+                            next_frame = probe.evaluate(
+                                "() => window.__SC3D_QA_REQUEST_FRAME__()"
+                            )
+                            probe.wait_for_function(
+                                "frame => Number(document.documentElement.dataset.sc3dFrame) >= frame",
+                                arg=next_frame, timeout=15000,
+                            )
+                            cached = probe.evaluate(get_selection)
+                            assert cached["evaluations"] == initial["evaluations"], (
+                                f"{projection}: static redraw unnecessarily rescored AO meshes"
+                            )
+                            assert cached["cache_hits"] > initial["cache_hits"], (
+                                f"{projection}: static redraw did not reuse occluder ranking"
+                            )
+                            rect = probe.locator("#viewport canvas").bounding_box()
+                            assert rect is not None
+                            x = rect["x"] + rect["width"] / 2
+                            y = rect["y"] + rect["height"] / 2
+                            probe.mouse.move(x, y)
+                            probe.mouse.down()
+                            probe.mouse.move(x + 175, y + 80, steps=8)
+                            probe.mouse.up()
+                            probe.wait_for_function(
+                                "(count) => window.__SC3D_QUALITY_REPORT__()."
+                                "ambient_occlusion_occluders.evaluations > count",
+                                arg=cached["evaluations"], timeout=15000,
+                            )
+                            after_orbit = probe.evaluate(get_selection)
+                            assert after_orbit["visibility_restored"]
+                            probe.mouse.move(x, y)
+                            probe.mouse.wheel(0, -380)
+                            probe.wait_for_function(
+                                "(count) => window.__SC3D_QUALITY_REPORT__()."
+                                "ambient_occlusion_occluders.evaluations > count",
+                                arg=after_orbit["evaluations"], timeout=15000,
+                            )
+                            after_zoom = probe.evaluate(get_selection)
+                            assert after_zoom["visibility_restored"]
+                            assert not cache_errors, cache_errors
+                            cache_probes[projection] = {
+                                "initial_evaluations": initial["evaluations"],
+                                "static_redraw_evaluations": cached["evaluations"],
+                                "static_redraw_hits": cached["cache_hits"],
+                                "orbit_evaluations": after_orbit["evaluations"],
+                                "zoom_evaluations": after_zoom["evaluations"],
+                            }
+                        finally:
+                            probe.close()
+                    quality_results["ambient-occlusion-camera-occluders-75-cached"]["interactive_probes"] = cache_probes
+
                     after_settings, after_hash, after_metrics = sample_quality(
                         "?diagnostic=1&qa=1"
                     )

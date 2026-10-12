@@ -168,14 +168,14 @@ export async function createQualityPostPass({ scene, camera, presentation }, exp
     function selectedForFrame() {
       if (staticRetained) return staticRetained;
       if (!cacheSelection) return selectOccluders();
-      const currentSignature = cacheMatrices.flatMap(matrix => matrix.elements);
+      const currentSignature = cacheMatrices.flatMap(matrix => Array.from(matrix.elements));
       if (cacheRetained && cacheSignature &&
           currentSignature.every((value, i) => value === cacheSignature[i])) {
         selection.cacheHits++;
         return cacheRetained;
       }
       cacheRetained = selectOccluders();
-      cacheSignature = cacheMatrices.flatMap(matrix => matrix.elements);
+      cacheSignature = cacheMatrices.flatMap(matrix => Array.from(matrix.elements));
       return cacheRetained;
     }
     PassClass = class extends SSAOPass {

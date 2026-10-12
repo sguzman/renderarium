@@ -207,3 +207,9 @@ requires identical images and draw counts between cached and uncached
 Because this is an experimental matrix-scoped cache, arbitrary external
 changes to descendant mesh transforms must explicitly invalidate it
 before any future production use.
+
+The Factory Chromium correctness suite confirms a static redraw reuses the
+cached ranking, while real orbit and wheel-zoom changes invalidate it
+for both orthographic and perspective cameras. The cache key uses copied
+numeric matrix elements (camera world, projection and scene presentation);
+holding references to mutable matrices would not detect movement.
