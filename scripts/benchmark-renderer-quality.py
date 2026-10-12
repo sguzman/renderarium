@@ -196,6 +196,18 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
 
         warm = [trigger() for _ in range(warmups)]
         measured = [trigger() for _ in range(samples)]
+        resource_fields = (
+            "resource_geometries", "resource_textures", "shader_programs"
+        )
+        for field in resource_fields:
+            values = [row[field] for row in measured]
+            assert all(
+                isinstance(value, int) and not isinstance(value, bool) and value >= 0
+                for value in values
+            ), f"{mode}: invalid Three.js {field} counters: {values}"
+            assert len(set(values)) == 1, (
+                f"{mode}: {field} kept changing across warm redraws: {values}"
+            )
         settings = page.evaluate("() => window.__SC3D_QUALITY_REPORT__()")
         assert settings["experiment"] == (mode or "none")
         backend = page.evaluate("""() => {
@@ -225,6 +237,10 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
             "warmup_draws": warm,
             "measured_draws": measured,
             "warm_cost": summarize([x[METRIC] for x in measured]),
+            "warm_resource_counts": {
+                field: measured[-1][field]
+                for field in resource_fields
+            },
             "settings": settings,
             "backend": backend,
             "canvas_sha256": image_hash,
@@ -289,11 +305,16 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             assert row["backend"] == ref_backend, (
                 f"{scene_id}: backend/framebuffer changed during comparison"
             )
-        reference_ms = statistics.median((
-            baseline["warm_cost"]["median_ms"],
-            baseline_after["warm_cost"]["median_ms"],
-        ))
-        assert reference_ms > 0, f"{scene_id}: zero baseline cost; cannot divide"
+        baseline_before_ms = baseline["warm_cost"]["median_ms"]
+        baseline_after_ms = baseline_after["warm_cost"]["median_ms"]
+        reference_ms = statistics.median((baseline_before_ms, baseline_after_ms))
+        assert baseline_before_ms > 0 and baseline_after_ms > 0, (
+            f"{scene_id}: zero baseline cost; cannot compare"
+        )
+        baseline_drift_percent = round(
+            100 * abs(baseline_after_ms - baseline_before_ms) / baseline_before_ms,
+            2,
+        )
         relative = {}
         for mode, row in trials.items():
             relative[mode] = {
@@ -318,6 +339,8 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             "experiments": trials,
             "default_after": baseline_after,
             "reference_median_ms": round(reference_ms, 4),
+            "baseline_drift_percent": baseline_drift_percent,
+            "baseline_drift_warning": baseline_drift_percent > 20,
             "relative_cost": relative,
             "draw_calls": {
                 "default_before": baseline["measured_draws"][-1]["draw_calls"],
@@ -349,6 +372,8 @@ def write_summary(rows: list[dict], path: Path) -> None:
         "Initial shader compilation/resize draws and warmups were excluded.",
         "Values are per-scene warm median ratios; smaller is less CPU submission",
         "time in this runner, not necessarily better artistic output.",
+        "The before/after baseline drift is reported; changes above 20% flag",
+        "a noisy comparison, not a failed correctness test.",
         "",
         "| " + " | ".join(headers) + " |",
         "| " + " | ".join(columns) + " |",
@@ -362,6 +387,23 @@ def write_summary(rows: list[dict], path: Path) -> None:
             "| " + row["scene"].removeprefix("block-chibi-").removesuffix("-v1")
             + " | " + f'{row["reference_median_ms"]:.3f}'
             + " | " + " | ".join(ratios) + " |"
+        )
+    table.extend([
+        "",
+        "## Baseline drift and renderer resources",
+        "",
+        "| Scene | Baseline drift | Warning >20% | Default textures | Full SSAO textures | FXAA textures |",
+        "| --- | ---: | :---: | ---: | ---: | ---: |",
+    ])
+    for row in rows:
+        base = row["default_before"]["warm_resource_counts"]["resource_textures"]
+        ssao = row["experiments"]["ambient-occlusion"]["warm_resource_counts"]["resource_textures"]
+        fxaa = row["experiments"]["fxaa"]["warm_resource_counts"]["resource_textures"]
+        flag = "yes" if row["baseline_drift_warning"] else "no"
+        table.append(
+            "| " + row["scene"].removeprefix("block-chibi-").removesuffix("-v1")
+            + f' | {row["baseline_drift_percent"]:.2f}% | {flag}'
+            + f" | {base} | {ssao} | {fxaa} |"
         )
     table.extend([
         "",
@@ -455,6 +497,12 @@ def main() -> None:
             "scene_count": len(rows),
             "modes": MODES,
             "scenes": rows,
+            "resource_measurement": (
+                "Three.js renderer.info resource counters are snapshots of this "
+                "page's tracked WebGL objects; stable across measured warm draws. "
+                "They are not process-wide GPU bytes or a VRAM measurement."
+            ),
+            "baseline_drift_warning_threshold_percent": 20,
             "image_delta_measurement": (
                 "Mean absolute 8-bit sRGB channel difference and changed-pixel "
                 "fraction, never a perceptual quality or correctness score."

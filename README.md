@@ -106,3 +106,15 @@ These **describe image differences**, not objective artistic quality:
 a larger pixel delta is not proof of a worse or better render. CI installs
 Pillow exclusively for these diagnostic calculations; no new SC3D
 runtime dependency or ordinary rendering work is introduced.
+
+### Resource stability and timing drift
+
+During seven measured warm redraws, the QA harness asserts that Three.js
+geometries, textures, and compiled program counts do not continuously increase.
+Per-mode counters are included in each scene's JSON artifact. These are
+renderer-managed WebGL object counts, not VRAM byte measurements.
+
+Each scene also records the percentage drift between its before/after
+default-render CPU medians; drift above 20% is flagged as a noisy
+comparison rather than an automatic correctness failure. No SwiftShader
+measurement alone authorizes a production effect or quality promotion.
