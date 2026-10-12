@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "warm-light", "cool-light", "no-shadow", "hard-shadow", "soft-shadow-vsm", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"]);
+const MODES = Object.freeze(["fog", "soft-light", "warm-light", "cool-light", "no-shadow", "hard-shadow", "soft-shadow-vsm", "shadow-vsm-tight", "shadow-vsm-wide", "shadow-bias-moderate", "shadow-bias-strong", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
 export const QUALITY_SSAO_SEED = 0x5ca3d70f;
 
@@ -82,6 +82,26 @@ export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim 
       renderer.shadowMap.type = THREE.VSMShadowMap;
       key.shadow.radius = 3;
       key.shadow.blurSamples = 8;
+      break;
+    case "shadow-vsm-tight":
+      renderer.shadowMap.type = THREE.VSMShadowMap;
+      key.shadow.radius = 1;
+      key.shadow.blurSamples = 8;
+      break;
+    case "shadow-vsm-wide":
+      renderer.shadowMap.type = THREE.VSMShadowMap;
+      key.shadow.radius = 6;
+      key.shadow.blurSamples = 16;
+      break;
+    case "shadow-bias-moderate":
+      // Independent bias trial at the original default shadow resolution.
+      key.shadow.normalBias = 0.012;
+      key.shadow.bias = -0.0002;
+      break;
+    case "shadow-bias-strong":
+      // Intentionally large offset to expose peter-panning/contact loss.
+      key.shadow.normalBias = 0.045;
+      key.shadow.bias = -0.0005;
       break;
     case "shadow-detail":
       key.shadow.mapSize.set(2048, 2048);

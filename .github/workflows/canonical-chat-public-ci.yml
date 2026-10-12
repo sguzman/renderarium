@@ -89,6 +89,12 @@ jobs:
           python scripts/capture-lighting-shadow-gallery.py --self-test
           set -o pipefail
           python scripts/capture-lighting-shadow-gallery.py --allow-swiftshader --output-dir artifacts/lighting-shadow-gallery 2>&1 | tee artifacts/lighting-shadow-gallery/gallery.log
+      - name: Capture seven shadow bias and blur studies
+        shell: bash
+        run: |
+          mkdir -p artifacts/shadow-study
+          set -o pipefail
+          python scripts/capture-lighting-shadow-gallery.py --study shadow --allow-swiftshader --output-dir artifacts/shadow-study 2>&1 | tee artifacts/shadow-study/shadow-study.log
       - name: Benchmark eleven optional renderer modes on seven frozen scenes
         shell: bash
         run: |
@@ -116,6 +122,13 @@ jobs:
         with:
           name: lighting-shadow-gallery
           path: artifacts/lighting-shadow-gallery/
+          if-no-files-found: warn
+      - name: Upload shadow bias and blur studies even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: shadow-study
+          path: artifacts/shadow-study/
           if-no-files-found: warn
 
 # This CI checks real canonical source/Three.js and Chromium behavior.

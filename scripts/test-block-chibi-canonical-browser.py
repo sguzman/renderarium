@@ -376,7 +376,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     assert ordinary_settings["fxaa_enabled"] is False
 
                     quality_results = {}
-                    for experiment in ("fog", "soft-light", "warm-light", "cool-light", "no-shadow", "hard-shadow", "soft-shadow-vsm", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"):
+                    for experiment in ("fog", "soft-light", "warm-light", "cool-light", "no-shadow", "hard-shadow", "soft-shadow-vsm", "shadow-vsm-tight", "shadow-vsm-wide", "shadow-bias-moderate", "shadow-bias-strong", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"):
                         settings, image_hash, draw_metrics = sample_quality(
                             "?diagnostic=1&qa=1&quality_experiment=" + experiment
                         )
@@ -416,6 +416,22 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert settings["shadow_type"] == 3
                             assert settings["shadow_radius"] == 3
                             assert image_hash != ordinary_hash
+                        elif experiment == "shadow-vsm-tight":
+                            assert settings["shadow_type"] == 3
+                            assert settings["shadow_radius"] == 1
+                            assert settings["shadow_blur_samples"] == 8
+                        elif experiment == "shadow-vsm-wide":
+                            assert settings["shadow_type"] == 3
+                            assert settings["shadow_radius"] == 6
+                            assert settings["shadow_blur_samples"] == 16
+                        elif experiment == "shadow-bias-moderate":
+                            assert settings["shadow_type"] == 2
+                            assert settings["shadow_normal_bias"] == 0.012
+                            assert settings["shadow_bias"] == -0.0002
+                        elif experiment == "shadow-bias-strong":
+                            assert settings["shadow_type"] == 2
+                            assert settings["shadow_normal_bias"] == 0.045
+                            assert settings["shadow_bias"] == -0.0005
                         elif experiment == "shadow-detail":
                             assert settings["shadow_map_size"] == [2048, 2048]
                             assert settings["shadow_normal_bias"] == 0.015

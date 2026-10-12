@@ -20,7 +20,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageStat
 
 ROOT = Path(__file__).resolve().parents[1]
 SCENES = ("living-room", "kitchen", "bathroom", "office", "backyard", "garage", "factory")
-MODES = (
+LIGHTING_MODES = (
     ("default", None, "APPROVED DEFAULT"),
     ("soft-light", "soft-light", "SOFT LIGHT"),
     ("warm-light", "warm-light", "WARM KEY"),
@@ -30,6 +30,16 @@ MODES = (
     ("soft-shadow-vsm", "soft-shadow-vsm", "SOFT SHADOWS / VSM"),
     ("shadow-detail", "shadow-detail", "SHADOW DETAIL"),
 )
+SHADOW_MODES = (
+    ("default", None, "APPROVED DEFAULT"),
+    ("hard-shadow", "hard-shadow", "HARD SHADOWS"),
+    ("shadow-detail", "shadow-detail", "HIGH RES + BIAS"),
+    ("shadow-bias-moderate", "shadow-bias-moderate", "MODERATE BIAS"),
+    ("shadow-bias-strong", "shadow-bias-strong", "STRONG BIAS"),
+    ("shadow-vsm-tight", "shadow-vsm-tight", "VSM TIGHT"),
+    ("soft-shadow-vsm", "soft-shadow-vsm", "VSM DEFAULT BLUR"),
+    ("shadow-vsm-wide", "shadow-vsm-wide", "VSM WIDE BLUR"),
+)
 WIDTH, HEIGHT, HEADER = 512, 384, 32
 
 
@@ -37,15 +47,15 @@ def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def make_sheet(images: dict[str, bytes]) -> Image.Image:
-    if set(images) != {entry[0] for entry in MODES}:
+def make_sheet(images: dict[str, bytes], modes=LIGHTING_MODES) -> Image.Image:
+    if set(images) != {entry[0] for entry in modes}:
         raise ValueError("Exactly eight source screenshots required")
     sheet = Image.new(
         "RGB", (WIDTH * 4, (HEIGHT + HEADER) * 2),
         (21, 23, 29),
     )
     draw = ImageDraw.Draw(sheet)
-    for i, (mode, _, label) in enumerate(MODES):
+    for i, (mode, _, label) in enumerate(modes):
         with Image.open(BytesIO(images[mode])) as opened:
             rgb = opened.convert("RGB")
         if rgb.size != (WIDTH, HEIGHT):
@@ -59,7 +69,7 @@ def make_sheet(images: dict[str, bytes]) -> Image.Image:
 
 def self_test() -> None:
     images = {}
-    for mode, _, _ in MODES:
+    for mode, _, _ in LIGHTING_MODES:
         im = Image.new("RGB", (WIDTH, HEIGHT), (130, 140, 150))
         blob = BytesIO()
         im.save(blob, format="PNG")
@@ -76,7 +86,13 @@ def self_test() -> None:
         pass
     else:
         raise AssertionError("Incomplete comparison accepted")
-    print("PASS actual-render lighting/shadow gallery layout self-test")
+    shadow_images = {
+        mode: images[LIGHTING_MODES[i][0]]
+        for i, (mode, _, _) in enumerate(SHADOW_MODES)
+    }
+    shadow_sheet = make_sheet(shadow_images, SHADOW_MODES)
+    assert shadow_sheet.size == result.size
+    print("PASS lighting and shadow-only gallery layout self-tests")
 
 
 def await_server(process: subprocess.Popen[str]) -> str:
@@ -151,6 +167,7 @@ def main() -> None:
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--allow-swiftshader", action="store_true")
     parser.add_argument("--scene", choices=SCENES)
+    parser.add_argument("--study", choices=("lighting", "shadow"), default="lighting")
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts/lighting-shadow-gallery"))
     args = parser.parse_args()
     if args.self_test:
@@ -158,6 +175,7 @@ def main() -> None:
         return
     from playwright.sync_api import sync_playwright
 
+    modes = SHADOW_MODES if args.study == "shadow" else LIGHTING_MODES
     destination = args.output_dir if args.output_dir.is_absolute() else ROOT / args.output_dir
     destination.mkdir(parents=True, exist_ok=True)
     ledger = json.loads((ROOT / "contracts/accepted-block-chibi-v1.json").read_text())
@@ -199,21 +217,30 @@ def main() -> None:
                     url = await_server(proc)
                     images = {}
                     settings = {}
-                    for slug, experiment, _ in MODES:
+                    for slug, experiment, _ in modes:
                         png, parameters = render_one(browser, url, experiment)
                         images[slug] = png
                         settings[slug] = parameters
                     default = images["default"]
                     changed = {
                         slug: compare(default, images[slug])
-                        for slug, _, _ in MODES if slug != "default"
+                        for slug, _, _ in modes if slug != "default"
                     }
-                    for mode in ("warm-light", "cool-light", "no-shadow",
-                                 "hard-shadow", "soft-shadow-vsm"):
-                        assert not changed[mode]["identical"], (
-                            f"{scene_id}: {mode} has no measurable effect"
-                        )
-                    final_sheet = make_sheet(images)
+                    # Lighting comparisons include large color changes;
+                    # bias adjustments can be intentionally subtle. Do not
+                    # reject a shadow trial just for pixel identity at one
+                    # view: record its pixels and settings for review.
+                    if args.study == "lighting":
+                        for mode in ("warm-light", "cool-light", "no-shadow",
+                                     "hard-shadow", "soft-shadow-vsm"):
+                            assert not changed[mode]["identical"], (
+                                f"{scene_id}: {mode} has no measurable effect"
+                            )
+                    if args.study == "shadow":
+                        assert settings["shadow-vsm-tight"]["shadow_radius"] == 1
+                        assert settings["shadow-vsm-wide"]["shadow_radius"] == 6
+                        assert settings["shadow-bias-strong"]["shadow_normal_bias"] == 0.045
+                    final_sheet = make_sheet(images, modes)
                     file_path = destination / f"{scene_name}.png"
                     final_sheet.save(file_path, format="PNG", optimize=True)
                     record = {
@@ -222,7 +249,8 @@ def main() -> None:
                         "sheet_file": file_path.name,
                         "sheet_sha256": sha256(file_path.read_bytes()),
                         "dimensions": list(final_sheet.size),
-                        "render_order": [x[0] for x in MODES],
+                        "study": args.study,
+                        "render_order": [x[0] for x in modes],
                         "screenshot_sha256": {
                             k: sha256(v) for k, v in images.items()
                         },
@@ -238,7 +266,7 @@ def main() -> None:
                         "sheet": file_path.name,
                         "sha256": record["sheet_sha256"],
                     })
-                    print(f"PASS {scene_name}: 8 matched-camera renders and sheet", flush=True)
+                    print(f"PASS {scene_name}: {args.study} 8 matched-camera renders and sheet", flush=True)
                 finally:
                     proc.terminate()
                     try:
@@ -253,9 +281,10 @@ def main() -> None:
     (destination / "index.json").write_text(
         json.dumps({
             "schema": "renderarium-lighting-shadow-gallery-v1",
+            "study": args.study,
             "scene_count": len(results),
             "viewport": [WIDTH, HEIGHT],
-            "experiments": [mode for mode, _, _ in MODES],
+            "experiments": [mode for mode, _, _ in modes],
             "scenes": results,
             "note": "Screenshots from actual frozen scene sources, not quality approval",
         }, indent=2) + "\n", encoding="utf-8"

@@ -246,3 +246,17 @@ lighting, and four shadow configurations. These are screenshots of
 the actual browser scene, not illustrations or new 3D assets.
 Publication and frozen-source checks run before the capture; none of
 these modes is promoted to production without separate visual review.
+
+### Shadow bias and filter study (diagnostic only)
+
+The `shadow-study` Chromium artifact contains matching, authentic
+camera views of the seven approved environments. Each sheet compares
+the unchanged default, hard shadows, increased resolution, moderate
+and strong normal-depth bias, and tight/default/wide VSM filtering.
+All changes are to Three.js preview lights and shadow settings only.
+
+A deliberately strong bias helps expose lost contact shading; broader
+VSM blur can reduce stair-stepped edges but may wash out small shadows.
+This study does not approve either effect for the production renderer.
+The gallery records settings and pixel differences to enable visual
+review of bias artifacts and shadow-edge softness across environments.
