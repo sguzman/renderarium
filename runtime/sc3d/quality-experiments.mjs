@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"]);
+const MODES = Object.freeze(["fog", "soft-light", "warm-light", "cool-light", "no-shadow", "hard-shadow", "soft-shadow-vsm", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
 export const QUALITY_SSAO_SEED = 0x5ca3d70f;
 
@@ -54,6 +54,34 @@ export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim 
       key.intensity = 2.2;
       fill.intensity = 0.75;
       rim.intensity = 0.55;
+      break;
+    case "warm-light":
+      // Golden key / cool subdued fill; no SC3D material edits.
+      key.color.set("#ffc48d");
+      key.intensity = 2.8;
+      fill.color.set("#aecbff");
+      fill.intensity = 0.75;
+      rim.intensity = 0.6;
+      break;
+    case "cool-light":
+      // Cooler directional illumination, warmer secondary fill.
+      key.color.set("#b7daff");
+      key.intensity = 2.8;
+      fill.color.set("#ffe0bb");
+      fill.intensity = 1.05;
+      rim.intensity = 0.5;
+      break;
+    case "no-shadow":
+      renderer.shadowMap.enabled = false;
+      key.castShadow = false;
+      break;
+    case "hard-shadow":
+      renderer.shadowMap.type = THREE.BasicShadowMap;
+      break;
+    case "soft-shadow-vsm":
+      renderer.shadowMap.type = THREE.VSMShadowMap;
+      key.shadow.radius = 3;
+      key.shadow.blurSamples = 8;
       break;
     case "shadow-detail":
       key.shadow.mapSize.set(2048, 2048);

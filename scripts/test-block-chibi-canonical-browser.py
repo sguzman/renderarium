@@ -376,7 +376,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     assert ordinary_settings["fxaa_enabled"] is False
 
                     quality_results = {}
-                    for experiment in ("fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"):
+                    for experiment in ("fog", "soft-light", "warm-light", "cool-light", "no-shadow", "hard-shadow", "soft-shadow-vsm", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"):
                         settings, image_hash, draw_metrics = sample_quality(
                             "?diagnostic=1&qa=1&quality_experiment=" + experiment
                         )
@@ -393,6 +393,29 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert image_hash != ordinary_hash, (
                                 "Lighting experiment did not alter the diagnostic render"
                             )
+                        elif experiment == "warm-light":
+                            assert settings["key_color"] == "#ffc48d"
+                            assert settings["fill_color"] == "#aecbff"
+                            assert settings["key_intensity"] == 2.8
+                            assert image_hash != ordinary_hash
+                        elif experiment == "cool-light":
+                            assert settings["key_color"] == "#b7daff"
+                            assert settings["fill_color"] == "#ffe0bb"
+                            assert settings["key_intensity"] == 2.8
+                            assert image_hash != ordinary_hash
+                        elif experiment == "no-shadow":
+                            assert settings["shadow_enabled"] is False
+                            assert settings["key_cast_shadow"] is False
+                            assert image_hash != ordinary_hash
+                        elif experiment == "hard-shadow":
+                            assert settings["shadow_enabled"] is True
+                            assert settings["shadow_type"] == 0
+                            assert image_hash != ordinary_hash
+                        elif experiment == "soft-shadow-vsm":
+                            assert settings["shadow_enabled"] is True
+                            assert settings["shadow_type"] == 3
+                            assert settings["shadow_radius"] == 3
+                            assert image_hash != ordinary_hash
                         elif experiment == "shadow-detail":
                             assert settings["shadow_map_size"] == [2048, 2048]
                             assert settings["shadow_normal_bias"] == 0.015

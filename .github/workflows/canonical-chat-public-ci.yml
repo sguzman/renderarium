@@ -82,6 +82,13 @@ jobs:
               python scripts/test-block-chibi-canonical-browser.py --scene "${scene}" --allow-swiftshader --report-json "artifacts/canonical-browser/${scene}.json"
             done
           } 2>&1 | tee artifacts/canonical-browser/browser-tests.log
+      - name: Capture seven actual scene lighting and shadow comparison sheets
+        shell: bash
+        run: |
+          mkdir -p artifacts/lighting-shadow-gallery
+          python scripts/capture-lighting-shadow-gallery.py --self-test
+          set -o pipefail
+          python scripts/capture-lighting-shadow-gallery.py --allow-swiftshader --output-dir artifacts/lighting-shadow-gallery 2>&1 | tee artifacts/lighting-shadow-gallery/gallery.log
       - name: Benchmark eleven optional renderer modes on seven frozen scenes
         shell: bash
         run: |
@@ -102,6 +109,13 @@ jobs:
         with:
           name: renderer-costs
           path: artifacts/renderer-costs/
+          if-no-files-found: warn
+      - name: Upload actual scene lighting and shadow gallery even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighting-shadow-gallery
+          path: artifacts/lighting-shadow-gallery/
           if-no-files-found: warn
 
 # This CI checks real canonical source/Three.js and Chromium behavior.

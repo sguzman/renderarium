@@ -228,3 +228,21 @@ The JSON records each sheet's SHA-256, dimensions, and amplification.
 These sheets locate visual changes for agent-assisted review; they
 are neither artistic acceptance nor physical GPU benchmarks. No scene
 source, approved snapshot or default renderer is touched.
+
+### Environment lighting and shadow visual comparisons
+
+The diagnostic-only modes `warm-light`, `cool-light`, `no-shadow`,
+`hard-shadow`, and `soft-shadow-vsm` change only the Three.js preview's
+lights or shadow-map behavior. Warm and cool trials alter directional
+light colors and intensities; shadow trials compare disabled shadows,
+unfiltered BasicShadowMap, blurred VSMShadowMap, and the existing
+`shadow-detail` option. The original `soft-light` trial and unchanged
+default remain available.
+
+The Chromium workflow saves real, matched-camera visual contact sheets
+for all seven accepted environments under the `lighting-shadow-gallery`
+artifact. Each scene's sheet compares the default, soft/warm/cool
+lighting, and four shadow configurations. These are screenshots of
+the actual browser scene, not illustrations or new 3D assets.
+Publication and frozen-source checks run before the capture; none of
+these modes is promoted to production without separate visual review.
