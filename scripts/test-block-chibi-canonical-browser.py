@@ -304,6 +304,83 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         "The renderer string does not prove physical GPU use."
                     ),
                 }
+                if scene == "factory":
+                    # Quality trials share the real Three.js path, but never
+                    # edit accepted source or activate on an ordinary preview.
+                    def sample_quality(query: str) -> tuple[dict, str]:
+                        trial = browser.new_page(viewport={"width": 960, "height": 640})
+                        trial_errors: list[str] = []
+                        trial.on("pageerror", lambda error: trial_errors.append(str(error)))
+                        trial.on("requestfailed", lambda request: trial_errors.append(
+                            f"Request failed: {request.url}"))
+                        try:
+                            result = trial.goto(url + query)
+                            assert result is not None and result.ok
+                            trial.wait_for_function(
+                                "() => window.__SC3D_READY__ === true "
+                                "&& document.documentElement.dataset.sc3dReady === 'true'",
+                                timeout=30000,
+                            )
+                            settings = trial.evaluate(
+                                "() => window.__SC3D_QUALITY_REPORT__?.()"
+                            )
+                            assert isinstance(settings, dict), "Quality QA settings missing"
+                            image = trial.locator("#viewport canvas").screenshot()
+                            assert not trial_errors, f"Quality trial browser errors: {trial_errors}"
+                            return settings, hashlib.sha256(image).hexdigest()
+                        finally:
+                            trial.close()
+
+                    ordinary_settings, ordinary_hash = sample_quality(
+                        "?diagnostic=1&qa=1"
+                    )
+                    assert ordinary_settings["experiment"] == "none"
+                    assert ordinary_settings["fog_near"] is None
+                    assert ordinary_settings["shadow_map_size"] == [1024, 1024]
+                    assert ordinary_settings["key_intensity"] == 3.1
+
+                    quality_results = {}
+                    for experiment in ("fog", "soft-light", "shadow-detail"):
+                        settings, image_hash = sample_quality(
+                            "?diagnostic=1&qa=1&quality_experiment=" + experiment
+                        )
+                        assert settings["experiment"] == experiment
+                        if experiment == "fog":
+                            assert settings["fog_near"] == 6
+                            assert settings["fog_far"] == 15
+                            assert image_hash != ordinary_hash, (
+                                "Fog experiment did not alter the diagnostic render"
+                            )
+                        elif experiment == "soft-light":
+                            assert settings["key_intensity"] == 2.2
+                            assert settings["fill_intensity"] == 0.75
+                            assert image_hash != ordinary_hash, (
+                                "Lighting experiment did not alter the diagnostic render"
+                            )
+                        else:
+                            assert settings["shadow_map_size"] == [2048, 2048]
+                            assert settings["shadow_normal_bias"] == 0.015
+                        quality_results[experiment] = {
+                            "settings": settings,
+                            "canvas_sha256": image_hash,
+                            "different_from_default": image_hash != ordinary_hash,
+                        }
+                    # A fresh canonical diagnostic render remains unchanged
+                    # after running the trials in separate browser pages.
+                    after_settings, after_hash = sample_quality(
+                        "?diagnostic=1&qa=1"
+                    )
+                    assert after_settings == ordinary_settings
+                    assert after_hash == ordinary_hash, (
+                        "Quality trials changed the default renderer image"
+                    )
+                    report["quality_experiments"] = {
+                        "default_canvas_sha256": ordinary_hash,
+                        "trials": quality_results,
+                        "note": "Diagnostic experiments only, not new visual acceptance",
+                    }
+                    print("PASS three isolated quality experiments and unchanged default")
+
                 if report_json is not None:
                     destination = report_json if report_json.is_absolute() else ROOT / report_json
                     destination.parent.mkdir(parents=True, exist_ok=True)

@@ -15,6 +15,7 @@ const softwareModulePath = resolve(repoRoot, "runtime/sc3d/canvas-preview-browse
 const roomInteractionsModulePath = resolve(repoRoot, "scenes/cozy-reader-room-v1/room-interactions-browser.mjs");
 const renderBudgetModulePath = resolve(repoRoot, "runtime/sc3d/preview-render-budget.mjs");
 const frameProofModulePath = resolve(repoRoot, "runtime/sc3d/preview-frame-proof.mjs");
+const qualityExperimentsModulePath = resolve(repoRoot, "runtime/sc3d/quality-experiments.mjs");
 const htmlPath = process.env.SC3D_SOFTWARE_PREVIEW === "1"
   ? softwareHtmlPath : webglHtmlPath;
 const adapterPath = resolve(repoRoot, "runtime/sc3d/three-adapter-browser.mjs");
@@ -52,6 +53,7 @@ const routes = new Map([
   ["/scenes/cozy-reader-room-v1/room-interactions-browser.mjs", roomInteractionsModulePath],
   ["/runtime/sc3d/preview-render-budget.mjs", renderBudgetModulePath],
   ["/runtime/sc3d/preview-frame-proof.mjs", frameProofModulePath],
+  ["/runtime/sc3d/quality-experiments.mjs", qualityExperimentsModulePath],
 ]);
 
 const server = createServer(async (request, response) => {

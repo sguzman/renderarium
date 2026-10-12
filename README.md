@@ -18,3 +18,19 @@ The accepted files and geometry hashes are preserved. **Visual acceptance is not
 - The seven-scene Chromium matrix also records `artifacts/canonical-browser/<scene>.json` for each scene: frozen assembly/preview pins, canonical source census, fresh redraw/frame evidence, screenshot diagnostics, navigation-to-ready time, per-draw CPU submission measurements (not GPU frame time), Three.js draw calls/triangle counts, and WebGL renderer/framebuffer properties. Timings are runner-dependent; screenshot fingerprints are not golden-image approvals.
 
 The source and tests are provided for agent-owned development and QA. Previously accepted creative work is not reopened automatically. Adding new content requires its own scoped review and an updated public file boundary.
+
+## Optional renderer-quality experiments
+
+The production preview keeps its approved defaults. Diagnostic URLs may explicitly request
+`?diagnostic=1&quality_experiment=fog`,
+`?diagnostic=1&quality_experiment=soft-light`, or
+`?diagnostic=1&quality_experiment=shadow-detail`.
+Unsupported, repeated, or non-diagnostic experiment requests fail closed.
+These trials change only runtime lighting, fog or shadow-map settings; none changes
+SC3D source, geometry, materials or accepted camera presets. They are not new
+visual-acceptance verdicts.
+
+The factory Chromium regression checks all three experiments against the
+default diagnostic renderer, including changed pixels for fog/lighting,
+actual shadow-map settings, and repeatability of the untouched default.
+Its experiment evidence is included in the factory browser JSON artifact.

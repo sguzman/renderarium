@@ -84,6 +84,7 @@
     import { previewPixelRatio } from "/runtime/sc3d/preview-render-budget.mjs";
     import { createFrameProof, assertFreshFrame } from "/runtime/sc3d/preview-frame-proof.mjs";
     import { buildSc3dObject, setStructureMode } from "/runtime/sc3d/three-adapter-browser.mjs";
+    import { selectQualityExperiment, applyQualityExperiment } from "/runtime/sc3d/quality-experiments.mjs";
 
     const viewport = document.querySelector("#viewport");
     const status = document.querySelector("#status");
@@ -93,6 +94,7 @@
     const params = new URLSearchParams(location.search);
     const requestedView = params.get("view");
     const diagnosticMode = params.get("diagnostic") === "1";
+    const qualityExperiment = selectQualityExperiment(params, diagnosticMode);
     const requestedProjection = params.get("projection");
     const diagnosticRenderMode = params.get("render_mode") ?? "beauty";
     const optionalNumberParam = (name) => {
@@ -215,6 +217,24 @@
     const rim = new THREE.DirectionalLight("#ffe7f1", 0.8);
     rim.position.set(2.0, 4.0, 5.0);
     scene.add(rim);
+
+    // No quality trial is active during ordinary canonical preview use.
+    applyQualityExperiment({ THREE, scene, key, fill, rim }, qualityExperiment);
+    if (qualityExperiment !== null) {
+      document.documentElement.dataset.sc3dQualityExperiment = qualityExperiment;
+    }
+    if (qaMode) {
+      window.__SC3D_QUALITY_REPORT__ = () => ({
+        experiment: qualityExperiment ?? "none",
+        fog_near: scene.fog?.near ?? null,
+        fog_far: scene.fog?.far ?? null,
+        key_intensity: key.intensity,
+        fill_intensity: fill.intensity,
+        rim_intensity: rim.intensity,
+        shadow_map_size: [key.shadow.mapSize.x, key.shadow.mapSize.y],
+        shadow_normal_bias: key.shadow.normalBias,
+      });
+    }
 
     if (diagnosticMode && diagnosticRenderMode === "wireframe") {
       setStructureMode(character, true);
