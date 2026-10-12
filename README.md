@@ -213,3 +213,18 @@ cached ranking, while real orbit and wheel-zoom changes invalidate it
 for both orthographic and perspective cameras. The cache key uses copied
 numeric matrix elements (camera world, projection and scene presentation);
 holding references to mutable matrices would not detect movement.
+
+### Automated SSAO comparison sheets
+
+The `renderer-costs` GitHub Actions artifact now contains
+`inspection/<scene>.png` for all seven accepted environments.
+Each sheet includes authentic diagnostic screenshots of full SSAO,
+camera-ranked 50%, camera-ranked 75%, and the cached 75% variant.
+The second row shows RGB difference maps amplified **8×** (clamped
+per 8-bit channel). The cached-vs-uncached difference should be black
+because the benchmark requires pixel identity.
+
+The JSON records each sheet's SHA-256, dimensions, and amplification.
+These sheets locate visual changes for agent-assisted review; they
+are neither artistic acceptance nor physical GPU benchmarks. No scene
+source, approved snapshot or default renderer is touched.

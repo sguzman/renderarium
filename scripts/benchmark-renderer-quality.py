@@ -19,7 +19,7 @@ import statistics
 import subprocess
 import time
 
-from PIL import Image, ImageChops, ImageStat
+from PIL import Image, ImageChops, ImageDraw, ImageStat
 
 ROOT = Path(__file__).resolve().parents[1]
 SCENES = (
@@ -87,6 +87,69 @@ def pixel_distance(first_png: bytes, second_png: bytes) -> dict:
     }
 
 
+def render_ao_inspection_sheet(images: dict[str, bytes]) -> Image.Image:
+    """Lay out authentic previews and contrast-amplified pixel differences.
+
+    A visual diagnostic for later autonomous inspection, NOT a perceptual
+    metric or an assertion that any occluder-pruning policy is acceptable.
+    """
+    modes = (
+        "ambient-occlusion",
+        "ambient-occlusion-camera-occluders",
+        "ambient-occlusion-camera-occluders-75",
+        "ambient-occlusion-camera-occluders-75-cached",
+    )
+    previews = []
+    for mode in modes:
+        with Image.open(BytesIO(images[mode])) as opened:
+            previews.append(opened.convert("RGB"))
+    sizes = {preview.size for preview in previews}
+    if len(sizes) != 1:
+        raise ValueError(f"SSAO inspection sheet images differ in dimensions: {sizes}")
+    width, height = previews[0].size
+    if width <= 0 or height <= 0:
+        raise ValueError("SSAO inspection images must contain pixels")
+    header = 28
+    footer = 20
+    sheet = Image.new(
+        "RGB", (width * 4, (height + header) * 2 + footer), (18, 18, 18)
+    )
+    draw = ImageDraw.Draw(sheet)
+    labels = ("Full SSAO", "Camera 50%", "Camera 75%", "Camera 75% cached")
+    diff_labels = (
+        "Unmodified reference",
+        "Difference vs full (8x)",
+        "Difference vs full (8x)",
+        "Difference vs uncached (8x)",
+    )
+    # Preserve authentic pixels in the top row; do not contrast-enhance them.
+    for column, (preview, label) in enumerate(zip(previews, labels)):
+        x = width * column
+        draw.text((x + 8, 8), label, fill=(240, 240, 240))
+        sheet.paste(preview, (x, header))
+    # Multiply each channel of the absolute difference by 8, clamping at 255.
+    # This is intentionally only an inspection aid, not linear-light energy.
+    black = Image.new("RGB", previews[0].size, (0, 0, 0))
+    differences = (
+        black,
+        ImageChops.difference(previews[0], previews[1]),
+        ImageChops.difference(previews[0], previews[2]),
+        ImageChops.difference(previews[2], previews[3]),
+    )
+    for column, (difference, label) in enumerate(zip(differences, diff_labels)):
+        x = width * column
+        y = height + header
+        draw.text((x + 8, y + 8), label, fill=(240, 240, 240))
+        enhanced = difference.point(lambda value: min(255, value * 8))
+        sheet.paste(enhanced, (x, y + header))
+    draw.text(
+        (8, 2 * (height + header) + 3),
+        "Inspection-only sRGB differences, amplified 8x; not a visual acceptance verdict",
+        fill=(240, 240, 240),
+    )
+    return sheet
+
+
 def check_self_test() -> None:
     assert summarize([1.0, 3.0, 2.0, 5.0, 4.0]) == {
         "count": 5, "median_ms": 3.0, "p90_ms": 5.0,
@@ -125,7 +188,27 @@ def check_self_test() -> None:
         pass
     else:
         raise AssertionError("Mismatched image sizes must be rejected")
-    print("PASS renderer cost and image-delta statistics self-test")
+    sheet = render_ao_inspection_sheet({
+        "ambient-occlusion": before_png,
+        "ambient-occlusion-camera-occluders": after_png,
+        "ambient-occlusion-camera-occluders-75": before_png,
+        "ambient-occlusion-camera-occluders-75-cached": before_png,
+    })
+    assert sheet.size == (8, (1 + 28) * 2 + 20)
+    assert sheet.getpixel((0, 28)) == (0, 0, 0)
+    assert sheet.getpixel((0, 1 + 28 + 28)) == (0, 0, 0)
+    try:
+        render_ao_inspection_sheet({
+            "ambient-occlusion": before_png,
+            "ambient-occlusion-camera-occluders": after_png,
+            "ambient-occlusion-camera-occluders-75": encode(Image.new("RGB", (3, 1))),
+            "ambient-occlusion-camera-occluders-75-cached": before_png,
+        })
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Mismatched inspection sheet dimensions accepted")
+    print("PASS renderer cost, image deltas and inspection-sheet self-test")
 
 
 def await_server(proc: subprocess.Popen[str]) -> str:
@@ -265,7 +348,9 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
         page.close()
 
 
-def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> dict:
+def run_scene(
+    browser, name: str, ledger: dict, warmups: int, samples: int, inspection_dir: Path
+) -> dict:
     scene_id = f"block-chibi-{name}-v1"
     accepted = next(
         (v for v in ledger["recorded_scenes"] if v["scene"] == scene_id), None
@@ -374,6 +459,10 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             f"{scene_id}: cached vs uncached draw count differs"
         )
         assert cached_trial["pixel_delta_from_uncached"]["changed_pixel_fraction"] == 0
+        inspection_dir.mkdir(parents=True, exist_ok=True)
+        inspection_path = inspection_dir / f"{name}.png"
+        inspection_sheet = render_ao_inspection_sheet(trial_images)
+        inspection_sheet.save(inspection_path, format="PNG", optimize=True)
         all_modes = [baseline, *trials.values(), baseline_after]
         ref_backend = baseline["backend"]
         for row in all_modes:
@@ -405,6 +494,13 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
         assert full_ms > 0, f"{scene_id}: invalid full SSAO reference"
         return {
             "scene": scene_id,
+            "inspection_sheet": {
+                "artifact_path": f"inspection/{name}.png",
+                "sha256": hashlib.sha256(inspection_path.read_bytes()).hexdigest(),
+                "dimensions": [inspection_sheet.width, inspection_sheet.height],
+                "diff_amplification": 8,
+                "note": "Descriptive sRGB pixel differences only; not quality acceptance",
+            },
             "frozen_source": {
                 "assembly_blob": accepted["assembly_git_blob"],
                 "preview_blob": accepted["preview_git_blob"],
@@ -633,7 +729,10 @@ def main() -> None:
         )
         try:
             for name in chosen:
-                row = run_scene(browser, name, ledger, args.warmups, args.samples)
+                row = run_scene(
+                    browser, name, ledger, args.warmups, args.samples,
+                    out / "inspection",
+                )
                 rows.append(row)
                 (out / f"{name}.json").write_text(
                     json.dumps(row, indent=2) + "\n", encoding="utf-8"
@@ -659,6 +758,10 @@ def main() -> None:
             "viewport": VIEWPORT,
             "scene_count": len(rows),
             "modes": MODES,
+            "inspection_sheet_note": (
+                "Seven 4-column, 2-row PNG sheets of actual previews and "
+                "8x-amplified absolute RGB differences, not quality verdicts."
+            ),
             "scenes": rows,
             "stage_measurement": (
                 "primary_pipeline_cpu_ms times the default scene renderer or "
