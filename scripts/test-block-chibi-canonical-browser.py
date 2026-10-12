@@ -512,6 +512,87 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         "draw_samples": perspective_pruned_metrics,
                         "settings": perspective_pruned,
                     }
+                    # The camera-aware selection must be recalculated on real
+                    # user interactions, not only initial page construction.
+                    # The beauty image must change without leaving meshes
+                    # hidden after an orbit or zoom redraw.
+                    interactive_probes = {}
+                    for projection in ("orthographic", "perspective"):
+                        probe = browser.new_page(viewport={"width": 960, "height": 640})
+                        probe_errors: list[str] = []
+                        probe.on("pageerror", lambda err: probe_errors.append(str(err)))
+                        try:
+                            projection_arg = (
+                                "&projection=perspective"
+                                if projection == "perspective" else ""
+                            )
+                            response = probe.goto(
+                                url + "?diagnostic=1&qa=1"
+                                + projection_arg
+                                + "&quality_experiment=ambient-occlusion-camera-occluders"
+                            )
+                            assert response is not None and response.ok
+                            probe.wait_for_function(
+                                "() => window.__SC3D_READY__ === true "
+                                "&& document.documentElement.dataset.sc3dReady === 'true'",
+                                timeout=30000,
+                            )
+                            canvas = probe.locator("#viewport canvas")
+                            before = probe.evaluate(
+                                "() => window.__SC3D_QUALITY_REPORT__().ambient_occlusion_occluders"
+                            )
+                            original_image = canvas.screenshot()
+                            rect = canvas.bounding_box()
+                            assert rect is not None
+                            x = rect["x"] + rect["width"] / 2
+                            y = rect["y"] + rect["height"] / 2
+                            probe.mouse.move(x, y)
+                            probe.mouse.down()
+                            probe.mouse.move(x + 180, y + 85, steps=8)
+                            probe.mouse.up()
+                            probe.wait_for_function(
+                                "(count) => window.__SC3D_QUALITY_REPORT__()."
+                                "ambient_occlusion_occluders.evaluations > count",
+                                arg=before["evaluations"],
+                                timeout=15000,
+                            )
+                            orbited = probe.evaluate(
+                                "() => window.__SC3D_QUALITY_REPORT__().ambient_occlusion_occluders"
+                            )
+                            assert orbited["visibility_restored"]
+                            assert orbited["retained"] + orbited["omitted"] == orbited["total"]
+                            assert len(orbited["selected_indices"]) == orbited["retained"]
+                            assert canvas.screenshot() != original_image, (
+                                f"{projection} camera AO orbit did not change rendered pixels"
+                            )
+                            probe.mouse.move(x, y)
+                            probe.mouse.wheel(0, -380)
+                            probe.wait_for_function(
+                                "(count) => window.__SC3D_QUALITY_REPORT__()."
+                                "ambient_occlusion_occluders.evaluations > count",
+                                arg=orbited["evaluations"],
+                                timeout=15000,
+                            )
+                            zoomed = probe.evaluate(
+                                "() => window.__SC3D_QUALITY_REPORT__().ambient_occlusion_occluders"
+                            )
+                            assert zoomed["visibility_restored"]
+                            assert zoomed["retained"] + zoomed["omitted"] == zoomed["total"]
+                            assert not probe_errors, probe_errors
+                            interactive_probes[projection] = {
+                                "initial_evaluations": before["evaluations"],
+                                "after_orbit_evaluations": orbited["evaluations"],
+                                "after_zoom_evaluations": zoomed["evaluations"],
+                                "initial_retained": before["retained"],
+                                "orbit_retained": orbited["retained"],
+                                "zoom_retained": zoomed["retained"],
+                                "camera_aware_selection_changed_on_orbit":
+                                    before["selected_indices"] != orbited["selected_indices"],
+                            }
+                        finally:
+                            probe.close()
+                    quality_results["ambient-occlusion-camera-occluders"]["interactive_probes"] = interactive_probes
+
                     after_settings, after_hash, after_metrics = sample_quality(
                         "?diagnostic=1&qa=1"
                     )
@@ -551,7 +632,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         "trials": quality_results,
                         "note": "Diagnostic experiments only, not new visual acceptance",
                     }
-                    print("PASS nine diagnostic quality experiments, camera-based pruning in both projections, unchanged defaults")
+                    print("PASS nine diagnostic experiments, orthographic/perspective camera-aware orbit and zoom, unchanged defaults")
 
                 if report_json is not None:
                     destination = report_json if report_json.is_absolute() else ROOT / report_json

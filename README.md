@@ -163,3 +163,10 @@ for both perspective and orthographic projections. The world-radius
 reference remains unchanged, as does the full beauty render and the
 canonical scene data. Pixel and CPU comparisons are research diagnostics,
 not permission to promote the effect or discard small contact occluders.
+
+The Factory Chromium correctness test additionally performs real mouse-orbit
+and wheel-zoom interactions in both camera projections. It verifies that
+occluder ranking is reevaluated after each redraw, hidden mesh visibility
+is restored, and the beauty pixels react to the interaction. The QA artifact
+records whether the retained indices changed; the test does not invent
+a requirement that every camera movement must change the winning occluders.
