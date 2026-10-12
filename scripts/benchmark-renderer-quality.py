@@ -28,7 +28,7 @@ SCENES = (
 )
 MODES = (
     "fog", "soft-light", "shadow-detail",
-    "tone-map", "ambient-occlusion", "ambient-occlusion-half", "fxaa",
+    "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "fxaa",
 )
 VIEWPORT = {"width": 512, "height": 384}
 METRIC = "cpu_submit_ms"
@@ -231,7 +231,7 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
             };
         }""")
         assert backend["width"] > 0 and backend["height"] > 0
-        if mode in ("ambient-occlusion", "ambient-occlusion-half", "fxaa"):
+        if mode in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "fxaa"):
             assert measured[-1]["draw_calls"] > 1, (
                 f"{mode}: missing expected multi-pass draw accounting"
             )
@@ -315,6 +315,19 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
             trial_images["ambient-occlusion"],
             trial_images["ambient-occlusion-half"],
         )
+        trials["ambient-occlusion-occluders"]["pixel_delta_from_full_ssao"] = pixel_distance(
+            trial_images["ambient-occlusion"],
+            trial_images["ambient-occlusion-occluders"],
+        )
+        selection = trials["ambient-occlusion-occluders"]["settings"]["ambient_occlusion_occluders"]
+        assert selection["visibility_restored"], f"{scene_id}: visibility not restored"
+        assert selection["retained"] + selection["omitted"] == selection["total"]
+        assert selection["omitted"] > 0
+        full_calls = trials["ambient-occlusion"]["measured_draws"][-1]["draw_calls"]
+        selected_calls = trials["ambient-occlusion-occluders"]["measured_draws"][-1]["draw_calls"]
+        assert selected_calls < full_calls, (
+            f"{scene_id}: pruned SSAO did not save geometry draws"
+        )
         all_modes = [baseline, *trials.values(), baseline_after]
         ref_backend = baseline["backend"]
         for row in all_modes:
@@ -364,6 +377,7 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
                 **{mode: row["measured_draws"][-1]["draw_calls"] for mode, row in trials.items()},
             },
             "reduced_ssao_median_ratio_to_full_ssao": round(reduced_ms / full_ms, 4),
+            "pruned_ssao_draw_call_savings": full_calls - selected_calls,
         }
     finally:
         proc.terminate()
@@ -438,6 +452,27 @@ def write_summary(rows: list[dict], path: Path) -> None:
             + f' | {full["primary_pipeline"]["median_ms"]:.3f}'
             + f' | {full["ambient_occlusion_post"]["median_ms"]:.3f}'
             + f' | {half["ambient_occlusion_post"]["median_ms"]:.3f} |'
+        )
+    table.extend([
+        "",
+        "## Experimental SSAO occluder pruning",
+        "",
+        "Only AO depth/normal occluders are pruned; original scene geometry is intact.",
+        "",
+        "| Scene | Full AO draws | Pruned AO draws | Draws saved | Pruned/full CPU median | Pixel delta from full AO (0-255) |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ])
+    for row in rows:
+        full_calls = row["draw_calls"]["ambient-occlusion"]
+        pruned_calls = row["draw_calls"]["ambient-occlusion-occluders"]
+        full_ms = row["experiments"]["ambient-occlusion"]["warm_cost"]["median_ms"]
+        pruned_ms = row["experiments"]["ambient-occlusion-occluders"]["warm_cost"]["median_ms"]
+        pixel = row["experiments"]["ambient-occlusion-occluders"]["pixel_delta_from_full_ssao"]
+        table.append(
+            "| " + row["scene"].removeprefix("block-chibi-").removesuffix("-v1")
+            + f' | {full_calls} | {pruned_calls} | {full_calls-pruned_calls}'
+            + f' | {pruned_ms/full_ms:.2f}x'
+            + f' | {pixel["mean_abs_rgb_channel_delta_255"]:.4f} |'
         )
     table.extend([
         "",

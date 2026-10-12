@@ -27,7 +27,8 @@ The production preview keeps its approved defaults. Diagnostic URLs may explicit
 `?diagnostic=1&quality_experiment=shadow-detail`,
 `?diagnostic=1&quality_experiment=tone-map`,
 `?diagnostic=1&quality_experiment=ambient-occlusion`,
-`?diagnostic=1&quality_experiment=ambient-occlusion-half`, or
+`?diagnostic=1&quality_experiment=ambient-occlusion-half`,
+`?diagnostic=1&quality_experiment=ambient-occlusion-occluders`, or
 `?diagnostic=1&quality_experiment=fxaa`.
 Unsupported, repeated, or non-diagnostic experiment requests fail closed.
 These trials change only runtime lighting, fog, shadow-map settings, tone mapping or
@@ -37,7 +38,7 @@ post-processing composer. None changes
 SC3D source, geometry, materials or accepted camera presets. They are not new
 visual-acceptance verdicts.
 
-The factory Chromium regression checks all seven experiments against the
+The factory Chromium regression checks all eight experiments against the
 default diagnostic renderer, including changed pixels for fog/lighting,
 actual shadow-map settings, tone-mapped pixels, real SSAO pass allocation
 and changed framebuffer pixels in both camera projections, FXAA pixels and
@@ -63,7 +64,7 @@ retains its original drawing path and output settings.
 ## Renderer-cost comparisons
 
 The public Chromium job runs `scripts/benchmark-renderer-quality.py` after the
-existing seven-scene correctness matrix. It compares **all seven optional modes**
+existing seven-scene correctness matrix. It compares **all eight optional modes**
 against the same-scene default, including a second unchanged default check,
 using a fixed 512 × 384 viewport, three uncounted warmup draws and seven warm
 redraw samples per mode. Each mode uses a separate browser page but the same
@@ -127,3 +128,16 @@ the benchmark JSON and Markdown artifact. FXAA's primary stage includes its
 entire EffectComposer chain; the separate ambient-occlusion stage is zero
 when no SSAO pass runs. This is a bounded synchronous JavaScript/WebGL
 submission measurement, **not** GPU stage timing or a frame-rate claim.
+
+### Diagnostic-only occluder pruning
+
+`ambient-occlusion-occluders` selects the largest half of currently visible
+meshes by world-space bounding-sphere radius (stable traversal-order ties)
+for the SSAO depth/normal pass only. The ordinary beauty pass retains every
+mesh and all initial visibility states are restored. The full SSAO experiment
+and accepted default appearance are unchanged. This trial can omit small but
+visually important contact shadows; it is not an approved quality policy.
+
+The seven-scene benchmark compares per-frame draw calls, warmed CPU
+submission, pixel differences from full SSAO, and stability in separate
+diagnostic pages; Factory QA also checks orthographic/perspective variants.
