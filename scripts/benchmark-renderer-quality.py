@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from io import BytesIO
 import json
 import math
 import os
@@ -17,6 +18,8 @@ import selectors
 import statistics
 import subprocess
 import time
+
+from PIL import Image, ImageChops, ImageStat
 
 ROOT = Path(__file__).resolve().parents[1]
 SCENES = (
@@ -55,6 +58,35 @@ def summarize(samples: list[float]) -> dict:
     }
 
 
+def pixel_distance(first_png: bytes, second_png: bytes) -> dict:
+    """Quantify pixel changes, without claiming subjective quality.
+
+    MAE is measured in 8-bit sRGB values (0..255), not linear-light energy
+    or a perceptual score. Transparent channels are intentionally excluded.
+    """
+    with Image.open(BytesIO(first_png)) as first_image, Image.open(
+        BytesIO(second_png)
+    ) as second_image:
+        a = first_image.convert("RGB")
+        b = second_image.convert("RGB")
+    if a.size != b.size:
+        raise ValueError(f"Image size changed: {a.size} != {b.size}")
+    if a.width <= 0 or a.height <= 0:
+        raise ValueError("Image must contain pixels")
+    delta = ImageChops.difference(a, b)
+    means = ImageStat.Stat(delta).mean
+    r, g, blue = delta.split()
+    mask = ImageChops.lighter(ImageChops.lighter(r, g), blue)
+    changed_pixels = a.width * a.height - mask.histogram()[0]
+    return {
+        "mean_abs_rgb_channel_delta_255": round(sum(means) / 3, 4),
+        "normalized_mean_abs_delta": round(sum(means) / (3 * 255), 6),
+        "changed_pixel_fraction": round(
+            changed_pixels / (a.width * a.height), 6
+        ),
+    }
+
+
 def check_self_test() -> None:
     assert summarize([1.0, 3.0, 2.0, 5.0, 4.0]) == {
         "count": 5, "median_ms": 3.0, "p90_ms": 5.0,
@@ -67,7 +99,33 @@ def check_self_test() -> None:
             pass
         else:
             raise AssertionError(f"Invalid samples accepted: {bad}")
-    print("PASS renderer cost sample statistics self-test")
+    blank = Image.new("RGB", (2, 1), (0, 0, 0))
+    changed = blank.copy()
+    changed.putpixel((0, 0), (255, 0, 0))
+
+    def encode(im: Image.Image) -> bytes:
+        buffer = BytesIO()
+        im.save(buffer, format="PNG")
+        return buffer.getvalue()
+
+    before_png, after_png = encode(blank), encode(changed)
+    assert pixel_distance(before_png, before_png) == {
+        "mean_abs_rgb_channel_delta_255": 0,
+        "normalized_mean_abs_delta": 0,
+        "changed_pixel_fraction": 0,
+    }
+    assert pixel_distance(before_png, after_png) == {
+        "mean_abs_rgb_channel_delta_255": 42.5,
+        "normalized_mean_abs_delta": 0.166667,
+        "changed_pixel_fraction": 0.5,
+    }
+    try:
+        pixel_distance(before_png, encode(Image.new("RGB", (3, 1))))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Mismatched image sizes must be rejected")
+    print("PASS renderer cost and image-delta statistics self-test")
 
 
 def await_server(proc: subprocess.Popen[str]) -> str:
@@ -158,8 +216,10 @@ def sample_page(browser, url: str, mode: str | None, warmups: int, samples: int)
                 f"{mode}: missing expected multi-pass draw accounting"
             )
         assert not errors, f"Browser errors for {mode}: {errors}"
-        image_hash = hashlib.sha256(page.locator("#viewport canvas").screenshot()).hexdigest()
+        image_png = page.locator("#viewport canvas").screenshot()
+        image_hash = hashlib.sha256(image_png).hexdigest()
         return {
+            "_image_png": image_png,
             "mode": mode or "default",
             "cold_draws": cold,
             "warmup_draws": warm,
@@ -203,6 +263,25 @@ def run_scene(browser, name: str, ledger: dict, warmups: int, samples: int) -> d
         baseline_after = sample_page(browser, url, None, warmups, samples)
         assert baseline["canvas_sha256"] == baseline_after["canvas_sha256"], (
             f"{scene_id}: diagnostic default changed during experiment comparison"
+        )
+        # Remove binary screenshots from machine-readable results while
+        # retaining quantitative image differences for every experiment.
+        baseline_png = baseline.pop("_image_png")
+        after_png = baseline_after.pop("_image_png")
+        assert pixel_distance(baseline_png, after_png)["changed_pixel_fraction"] == 0, (
+            f"{scene_id}: default changed pixel values"
+        )
+        trial_images = {
+            mode: row.pop("_image_png")
+            for mode, row in trials.items()
+        }
+        for mode, row in trials.items():
+            row["pixel_delta_from_default"] = pixel_distance(
+                baseline_png, trial_images[mode]
+            )
+        trials["ambient-occlusion-half"]["pixel_delta_from_full_ssao"] = pixel_distance(
+            trial_images["ambient-occlusion"],
+            trial_images["ambient-occlusion-half"],
         )
         all_modes = [baseline, *trials.values(), baseline_after]
         ref_backend = baseline["backend"]
@@ -286,6 +365,27 @@ def write_summary(rows: list[dict], path: Path) -> None:
         )
     table.extend([
         "",
+        "## SSAO image-change and warm-cost comparison",
+        "",
+        "Pixel changes are descriptive, not a perceptual quality rating.",
+        "",
+        "| Scene | Full SSAO vs default | Half SSAO vs default | Half / full cost | Half vs full pixel delta (0-255) |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ])
+    for row in rows:
+        full = row["relative_cost"]["ambient-occlusion"]["median_relative_to_default"]
+        half = row["relative_cost"]["ambient-occlusion-half"]["median_relative_to_default"]
+        mae = row["experiments"]["ambient-occlusion-half"]["pixel_delta_from_full_ssao"][
+            "mean_abs_rgb_channel_delta_255"
+        ]
+        table.append(
+            "| " + row["scene"].removeprefix("block-chibi-").removesuffix("-v1")
+            + f" | {full:.2f}x | {half:.2f}x | "
+            + f'{row["reduced_ssao_median_ratio_to_full_ssao"]:.2f}x'
+            + f" | {mae:.4f} |"
+        )
+    table.extend([
+        "",
         "Source geometry and accepted appearances were not modified.",
         "Software WebGL/SwiftShader is a regression environment, not a GPU benchmark.",
         "See individual scene JSON for per-draw samples, backend, image fingerprints,",
@@ -355,6 +455,10 @@ def main() -> None:
             "scene_count": len(rows),
             "modes": MODES,
             "scenes": rows,
+            "image_delta_measurement": (
+                "Mean absolute 8-bit sRGB channel difference and changed-pixel "
+                "fraction, never a perceptual quality or correctness score."
+            ),
             "draw_call_measurement": (
                 "Three.js renderer.info counts all submission passes after disabling "
                 "automatic reset in diagnostic QA; not unique scene meshes or GPU time."

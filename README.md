@@ -95,3 +95,14 @@ All per-frame Three.js draw-call and primitive counters in diagnostic QA use
 explicit reset boundaries, so multi-pass FXAA and SSAO reports reflect the
 complete draw chain instead of just the last internal pass. This does not
 change ordinary preview rendering or imply GPU execution time.
+
+### Image-change diagnostics
+
+The benchmark also computes per-mode 8-bit sRGB pixel differences from
+the matching unchanged default screenshot. For full versus reduced SSAO,
+it records the mean absolute RGB channel delta (0–255) and fraction of
+different pixels, alongside their relative warm CPU submission costs.
+These **describe image differences**, not objective artistic quality:
+a larger pixel delta is not proof of a worse or better render. CI installs
+Pillow exclusively for these diagnostic calculations; no new SC3D
+runtime dependency or ordinary rendering work is introduced.
