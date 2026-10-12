@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion"]);
+const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
 
 export function selectQualityExperiment(params, diagnosticMode) {
@@ -68,4 +68,28 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
   pass.minDistance = 0.001;
   pass.maxDistance = 0.12;
   return pass;
+}
+
+/**
+ * Opt-in compositing pipeline. FXAA operates after color-space conversion,
+ * as required by Three.js OutputPass, and never changes default previews.
+ */
+export async function createQualityComposer({ scene, camera, renderer }, experiment) {
+  if (experiment !== "fxaa") return null;
+  const [
+    { EffectComposer }, { RenderPass }, { ShaderPass },
+    { OutputPass }, { FXAAShader },
+  ] = await Promise.all([
+    import("/vendor/three/addons/postprocessing/EffectComposer.js"),
+    import("/vendor/three/addons/postprocessing/RenderPass.js"),
+    import("/vendor/three/addons/postprocessing/ShaderPass.js"),
+    import("/vendor/three/addons/postprocessing/OutputPass.js"),
+    import("/vendor/three/addons/shaders/FXAAShader.js"),
+  ]);
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  composer.addPass(new OutputPass());
+  const fxaaPass = new ShaderPass(FXAAShader);
+  composer.addPass(fxaaPass);
+  return { composer, fxaaPass };
 }

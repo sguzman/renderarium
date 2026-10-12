@@ -89,7 +89,7 @@
     import { previewPixelRatio } from "/runtime/sc3d/preview-render-budget.mjs";
     import { createFrameProof, assertFreshFrame } from "/runtime/sc3d/preview-frame-proof.mjs";
     import { buildSc3dObject, setStructureMode } from "/runtime/sc3d/three-adapter-browser.mjs";
-    import { selectQualityExperiment, applyQualityExperiment, createQualityPostPass } from "/runtime/sc3d/quality-experiments.mjs";
+    import { selectQualityExperiment, applyQualityExperiment, createQualityPostPass, createQualityComposer } from "/runtime/sc3d/quality-experiments.mjs";
 
     const viewport = document.querySelector("#viewport");
     const status = document.querySelector("#status");
@@ -140,6 +140,7 @@
     // interaction changes; do not spin a GPU render loop while idle.
     let roomInteractions = null;
     let qualityPostPass = null;
+    let qualityComposer = null;
     const qaFrames = [];
     const qaMode = params.get("qa") === "1";
     // Read-only, opt-in instrumentation. This measures synchronous draw
@@ -153,7 +154,11 @@
       draw: () => {
         roomInteractions?.refresh();
         const drawStart = qaMode ? performance.now() : 0;
-        renderer.render(scene, camera);
+        if (qualityComposer) {
+          qualityComposer.composer.render();
+        } else {
+          renderer.render(scene, camera);
+        }
         if (qualityPostPass) {
           // Refresh camera matrices for perspective/orthographic zoom as well
           // as physical framebuffer dimensions before computing depth-based AO.
@@ -234,6 +239,7 @@
     // No quality trial is active during ordinary canonical preview use.
     applyQualityExperiment({ THREE, scene, renderer, key, fill, rim }, qualityExperiment);
     qualityPostPass = await createQualityPostPass({ scene, camera }, qualityExperiment);
+    qualityComposer = await createQualityComposer({ scene, camera, renderer }, qualityExperiment);
     if (qualityExperiment !== null) {
       document.documentElement.dataset.sc3dQualityExperiment = qualityExperiment;
     }
@@ -257,6 +263,14 @@
         ambient_occlusion_depth_texture: Boolean(
           qualityPostPass?.normalRenderTarget.depthTexture
         ),
+        fxaa_enabled: qualityComposer !== null,
+        fxaa_pass_count: qualityComposer?.composer.passes.length ?? null,
+        fxaa_resolution: qualityComposer
+          ? [
+              qualityComposer.fxaaPass.uniforms.resolution.value.x,
+              qualityComposer.fxaaPass.uniforms.resolution.value.y,
+            ]
+          : null,
       });
     }
 
@@ -337,6 +351,15 @@
         width, height, deviceRatio: window.devicePixelRatio || 1,
       }));
       renderer.setSize(width, height, false);
+      if (qualityComposer) {
+        qualityComposer.composer.setPixelRatio(renderer.getPixelRatio());
+        qualityComposer.composer.setSize(width, height);
+        const drawingSize = renderer.getDrawingBufferSize(new THREE.Vector2());
+        qualityComposer.fxaaPass.uniforms.resolution.value.set(
+          1 / Math.max(1, drawingSize.x),
+          1 / Math.max(1, drawingSize.y),
+        );
+      }
       const aspect = width / height;
 
       if (camera.isPerspectiveCamera) {

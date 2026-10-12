@@ -25,19 +25,22 @@ The production preview keeps its approved defaults. Diagnostic URLs may explicit
 `?diagnostic=1&quality_experiment=fog`,
 `?diagnostic=1&quality_experiment=soft-light`,
 `?diagnostic=1&quality_experiment=shadow-detail`,
-`?diagnostic=1&quality_experiment=tone-map`, or
-`?diagnostic=1&quality_experiment=ambient-occlusion`.
+`?diagnostic=1&quality_experiment=tone-map`,
+`?diagnostic=1&quality_experiment=ambient-occlusion`, or
+`?diagnostic=1&quality_experiment=fxaa`.
 Unsupported, repeated, or non-diagnostic experiment requests fail closed.
 These trials change only runtime lighting, fog, shadow-map settings, tone mapping or
 a depth/normal-buffer screen-space ambient-occlusion (SSAO) pass with explicit
-orthographic and perspective depth reconstruction. None changes
+orthographic and perspective depth reconstruction, or an FXAA color-space-aware
+post-processing composer. None changes
 SC3D source, geometry, materials or accepted camera presets. They are not new
 visual-acceptance verdicts.
 
-The factory Chromium regression checks all five experiments against the
+The factory Chromium regression checks all six experiments against the
 default diagnostic renderer, including changed pixels for fog/lighting,
 actual shadow-map settings, tone-mapped pixels, real SSAO pass allocation
-and changed framebuffer pixels in both camera projections, CPU-side draw
+and changed framebuffer pixels in both camera projections, FXAA pixels and
+resolution settings, CPU-side draw
 submission samples for each experiment, three rejected invalid URLs,
 and repeatability of the untouched default.
 Its experiment evidence is included in the factory browser JSON artifact.
@@ -50,3 +53,8 @@ effect, **not** a new artistic approval or proof of physical GPU speed.
 
 The QA timing samples include first-frame shader compilation and render-on-demand
 work on the runner; they are not GPU timings or cross-machine performance budgets.
+
+FXAA runs in its own three-stage Three.js EffectComposer chain
+(RenderPass -> OutputPass -> FXAA ShaderPass) because FXAA expects sRGB input.
+It is never activated during ordinary rendering. The existing default renderer
+retains its original drawing path and output settings.

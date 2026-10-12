@@ -21,16 +21,23 @@ const htmlPath = process.env.SC3D_SOFTWARE_PREVIEW === "1"
 const adapterPath = resolve(repoRoot, "runtime/sc3d/three-adapter-browser.mjs");
 const threePath = resolve(repoRoot, "node_modules/three/build/three.module.js");
 const threeCorePath = resolve(repoRoot, "node_modules/three/build/three.core.js");
-// Allow precisely the r180 addon imports required by SSAOPass. Do not expose
+// Allow precisely the r180 addon imports required by SSAO and FXAA. Do not expose
 // arbitrary files or permit URL-controlled traversal into node_modules.
-const ssaoAddonModules = [
+const qualityAddonModules = [
   "postprocessing/SSAOPass.js",
   "postprocessing/Pass.js",
   "math/SimplexNoise.js",
   "shaders/SSAOShader.js",
   "shaders/CopyShader.js",
+  "postprocessing/EffectComposer.js",
+  "postprocessing/RenderPass.js",
+  "postprocessing/ShaderPass.js",
+  "postprocessing/MaskPass.js",
+  "postprocessing/OutputPass.js",
+  "shaders/FXAAShader.js",
+  "shaders/OutputShader.js",
 ];
-const ssaoAddonRoutes = ssaoAddonModules.map(moduleName => [
+const qualityAddonRoutes = qualityAddonModules.map(moduleName => [
   "/vendor/three/addons/" + moduleName,
   resolve(repoRoot, "node_modules/three/examples/jsm", moduleName),
 ]);
@@ -67,7 +74,7 @@ const routes = new Map([
   ["/runtime/sc3d/preview-render-budget.mjs", renderBudgetModulePath],
   ["/runtime/sc3d/preview-frame-proof.mjs", frameProofModulePath],
   ["/runtime/sc3d/quality-experiments.mjs", qualityExperimentsModulePath],
-  ...ssaoAddonRoutes,
+  ...qualityAddonRoutes,
 ]);
 
 const server = createServer(async (request, response) => {
