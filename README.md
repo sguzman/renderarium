@@ -221,7 +221,7 @@ The `renderer-costs` GitHub Actions artifact now contains
 Each sheet includes authentic diagnostic screenshots of full SSAO,
 camera-ranked 50%, camera-ranked 75%, and the cached 75% variant.
 The second row shows RGB difference maps amplified **8×** (clamped
-per 8-bit channel). The cached-vs-uncached difference should be black
+per RGB component, range 0–255). The cached-vs-uncached difference should be black
 because the benchmark requires pixel identity.
 
 The JSON records each sheet's SHA-256, dimensions, and amplification.
