@@ -399,8 +399,10 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             if experiment in ("ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75"):
                                 selection = settings["ambient_occlusion_occluders"]
                                 assert selection["strategy"] == (
-                                    "top-half-by-projected-viewport-coverage"
-                                    if experiment in ("ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75")
+                                    "top-three-quarters-by-projected-viewport-coverage"
+                                    if experiment == "ambient-occlusion-camera-occluders-75"
+                                    else "top-half-by-projected-viewport-coverage"
+                                    if experiment == "ambient-occlusion-camera-occluders"
                                     else "largest-half-by-world-radius"
                                 )
                                 assert selection["evaluations"] >= 1

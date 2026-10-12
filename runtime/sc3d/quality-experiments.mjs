@@ -94,7 +94,9 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
   if (worldSelection || cameraSelection) {
     selection = {
       strategy: cameraSelection
-        ? "top-half-by-projected-viewport-coverage"
+        ? (retainedFraction === 0.75
+          ? "top-three-quarters-by-projected-viewport-coverage"
+          : "top-half-by-projected-viewport-coverage")
         : "largest-half-by-world-radius",
       retainedFraction,
       total: 0, retained: 0, omitted: 0,

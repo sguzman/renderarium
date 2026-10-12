@@ -179,3 +179,16 @@ three quarters of ranked meshes instead of half. All seven scenes are
 benchmarked against 50% retention and full SSAO, with fixed sampling seeds,
 draw-count monotonicity checks, separate pixel deltas and warm CPU samples.
 The source assets and production renderer remain unchanged.
+
+### Measured occluder tradeoff (public CI, 12 October 2026)
+
+[CI 38255297986](https://github.com/sguzman/renderarium/actions/runs/38255297986)
+passed the canonical and ten-mode Chromium tests. At fixed diagnostic
+resolution on SwiftShader, the camera-aware 50% retention trial reduced
+full-SSAO draw calls by about 23–25%, with per-scene mean absolute sRGB
+pixel differences of 1.35–2.80 (0–255). Keeping 75% reduced draw calls by
+roughly 9–12%, and image differences fell to 0.007–0.59 across all seven
+scenes. More retained meshes improved this *descriptive pixel similarity*
+in every scene; it does not establish perceptual superiority. Neither
+trial consistently improved synchronous CPU submission duration, and
+these software-renderer figures are not physical GPU measurements.
