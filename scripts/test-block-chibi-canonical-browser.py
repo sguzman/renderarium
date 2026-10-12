@@ -255,7 +255,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         math.isfinite(frame["cpu_submit_ms"])
                         and frame["cpu_submit_ms"] >= 0
                         and frame["draw_calls"] > 0
-                        and frame["triangles"] > 0
+                        and frame["triangles"] + frame["lines"] + frame["points"] > 0
                     ), f"Invalid Three.js draw metrics: {frame}"
                 screenshots = {
                     "initial": original, "orbit": orbit_png, "wireframe": wire_png,
