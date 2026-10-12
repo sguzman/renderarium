@@ -80,10 +80,10 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
             f"{scene_id}: frozen {kind} source changed"
         )
     generated = ROOT / f"scenes/block-chibi-{scene}-v1/generated/block-chibi-{scene}-v1.sc3d.yml"
-    initial = generated.read_bytes() if generated.exists() else None
+    initial_snapshot = generated.read_bytes() if generated.exists() else None
     def verify_snapshot(stage: str) -> None:
         current = generated.read_bytes() if generated.exists() else None
-        if current != initial:
+        if current != initial_snapshot:
             def fingerprint(data: bytes | None) -> str:
                 if data is None:
                     return "absent"
@@ -93,7 +93,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                 )
             raise AssertionError(
                 f"Canonical browser preview altered generated snapshot at {stage}: "
-                f"before={fingerprint(initial)}, after={fingerprint(current)}, "
+                f"before={fingerprint(initial_snapshot)}, after={fingerprint(current)}, "
                 f"path={generated.relative_to(ROOT)}"
             )
 
