@@ -52,8 +52,16 @@ export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim 
  */
 export async function createQualityPostPass({ scene, camera }, experiment) {
   if (experiment !== "ambient-occlusion") return null;
+  if (!camera.isPerspectiveCamera && !camera.isOrthographicCamera) {
+    throw new Error("SSAO requires an orthographic or perspective camera");
+  }
   const { SSAOPass } = await import("/vendor/three/addons/postprocessing/SSAOPass.js");
   const pass = new SSAOPass(scene, camera, 1, 1, 16);
+  // SSAOPass defaults both depth shaders to perspective, even when the SC3D
+  // preview camera is orthographic. Select the correct depth reconstruction.
+  const perspective = camera.isPerspectiveCamera ? 1 : 0;
+  pass.ssaoMaterial.defines.PERSPECTIVE_CAMERA = perspective;
+  pass.depthRenderMaterial.defines.PERSPECTIVE_CAMERA = perspective;
   pass.output = SSAOPass.OUTPUT.Default;
   pass.renderToScreen = true;
   pass.kernelRadius = 0.65;

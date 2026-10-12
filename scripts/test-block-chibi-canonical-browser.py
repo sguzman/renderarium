@@ -307,7 +307,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                 if scene == "factory":
                     # Quality trials share the real Three.js path, but never
                     # edit accepted source or activate on an ordinary preview.
-                    def sample_quality(query: str) -> tuple[dict, str]:
+                    def sample_quality(query: str) -> tuple[dict, str, list[dict]]:
                         trial = browser.new_page(viewport={"width": 960, "height": 640})
                         trial_errors: list[str] = []
                         trial.on("pageerror", lambda error: trial_errors.append(str(error)))
@@ -326,12 +326,26 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             )
                             assert isinstance(settings, dict), "Quality QA settings missing"
                             image = trial.locator("#viewport canvas").screenshot()
+                            measurements = trial.evaluate(
+                                "() => window.__SC3D_QA_REPORT__?.()"
+                            )
+                            assert isinstance(measurements, list) and measurements
+                            assert all(
+                                math.isfinite(sample["cpu_submit_ms"])
+                                and sample["cpu_submit_ms"] >= 0
+                                and sample["draw_calls"] > 0
+                                for sample in measurements
+                            ), f"Invalid quality draw measurements: {measurements}"
                             assert not trial_errors, f"Quality trial browser errors: {trial_errors}"
-                            return settings, hashlib.sha256(image).hexdigest()
+                            return (
+                                settings,
+                                hashlib.sha256(image).hexdigest(),
+                                measurements,
+                            )
                         finally:
                             trial.close()
 
-                    ordinary_settings, ordinary_hash = sample_quality(
+                    ordinary_settings, ordinary_hash, ordinary_metrics = sample_quality(
                         "?diagnostic=1&qa=1"
                     )
                     assert ordinary_settings["experiment"] == "none"
@@ -343,7 +357,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
 
                     quality_results = {}
                     for experiment in ("fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion"):
-                        settings, image_hash = sample_quality(
+                        settings, image_hash, draw_metrics = sample_quality(
                             "?diagnostic=1&qa=1&quality_experiment=" + experiment
                         )
                         assert settings["experiment"] == experiment
@@ -372,6 +386,7 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             assert settings["ambient_occlusion_enabled"] is True
                             assert settings["ambient_occlusion_samples"] == 16
                             assert settings["ambient_occlusion_radius"] == 0.65
+                            assert settings["ambient_occlusion_projection_define"] == 0
                             assert settings["ambient_occlusion_depth_texture"] is True
                             assert image_hash != ordinary_hash, (
                                 "SSAO depth/normal post-pass produced unchanged pixels"
@@ -380,10 +395,33 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             "settings": settings,
                             "canvas_sha256": image_hash,
                             "different_from_default": image_hash != ordinary_hash,
+                            "draw_samples": draw_metrics,
                         }
                     # A fresh canonical diagnostic render remains unchanged
                     # after running the trials in separate browser pages.
-                    after_settings, after_hash = sample_quality(
+                    # Perspective depth reconstruction is a separate shader
+                    # variant, tested against its own matching-camera baseline.
+                    perspective_default, perspective_hash, perspective_metrics = sample_quality(
+                        "?diagnostic=1&qa=1&projection=perspective"
+                    )
+                    perspective_ssao, perspective_ao_hash, perspective_ao_metrics = sample_quality(
+                        "?diagnostic=1&qa=1&projection=perspective"
+                        "&quality_experiment=ambient-occlusion"
+                    )
+                    assert perspective_default["ambient_occlusion_enabled"] is False
+                    assert perspective_ssao["ambient_occlusion_enabled"] is True
+                    assert perspective_ssao["ambient_occlusion_projection_define"] == 1
+                    assert perspective_ao_hash != perspective_hash, (
+                        "Perspective SSAO did not alter the rendered scene"
+                    )
+                    quality_results["ambient-occlusion"]["perspective"] = {
+                        "default_canvas_sha256": perspective_hash,
+                        "ssao_canvas_sha256": perspective_ao_hash,
+                        "default_draw_samples": perspective_metrics,
+                        "ssao_draw_samples": perspective_ao_metrics,
+                    }
+
+                    after_settings, after_hash, after_metrics = sample_quality(
                         "?diagnostic=1&qa=1"
                     )
                     assert after_settings == ordinary_settings
@@ -417,10 +455,12 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     report["quality_experiments"] = {
                         "rejected_invalid_requests": 3,
                         "default_canvas_sha256": ordinary_hash,
+                        "default_draw_samples": ordinary_metrics,
+                        "default_after_draw_samples": after_metrics,
                         "trials": quality_results,
                         "note": "Diagnostic experiments only, not new visual acceptance",
                     }
-                    print("PASS five isolated quality experiments (including depth/normal SSAO), three rejected URLs, and unchanged default")
+                    print("PASS five quality experiments, orthographic/perspective SSAO, three rejected URLs and unchanged defaults")
 
                 if report_json is not None:
                     destination = report_json if report_json.is_absolute() else ROOT / report_json

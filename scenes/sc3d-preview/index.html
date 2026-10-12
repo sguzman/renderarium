@@ -251,6 +251,8 @@
         tone_mapping_exposure: renderer.toneMappingExposure,
         ambient_occlusion_enabled: qualityPostPass !== null,
         ambient_occlusion_samples: qualityPostPass?.kernel.length ?? null,
+        ambient_occlusion_projection_define:
+          qualityPostPass?.ssaoMaterial.defines.PERSPECTIVE_CAMERA ?? null,
         ambient_occlusion_radius: qualityPostPass?.kernelRadius ?? null,
         ambient_occlusion_depth_texture: Boolean(
           qualityPostPass?.normalRenderTarget.depthTexture
