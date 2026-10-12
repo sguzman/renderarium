@@ -7,12 +7,28 @@
  * Requires the repository's existing yaml, ajv, and three dependencies.
  */
 import assert from "node:assert/strict";
+import {
+  QUALITY_SSAO_SEED, withDeterministicQualityRandom,
+} from "../runtime/sc3d/quality-experiments.mjs";
 import { spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+// Deterministic shader-noise sampling must be reproducible and must never
+// leave Math.random replaced after success or exceptions.
+assert(Number.isInteger(QUALITY_SSAO_SEED) && QUALITY_SSAO_SEED > 0);
+const originalRandom = Math.random;
+const sampled = () => withDeterministicQualityRandom(
+  () => Array.from({length: 16}, () => Math.random())
+);
+assert.deepEqual(sampled(), sampled(), "AO seeded sampling differs across runs");
+assert.equal(Math.random, originalRandom, "AO random override leaked after success");
+assert.throws(() => withDeterministicQualityRandom(() => {
+  throw new Error("Constructor failure");
+}), /Constructor failure/);
+assert.equal(Math.random, originalRandom, "AO random override leaked after failure");
 const id = "block-chibi-factory-v1";
 const assembly = "scenes/" + id + "/room.assembly.yml";
 const output = resolve(root, "scenes", id, "generated", id + ".sc3d.yml");

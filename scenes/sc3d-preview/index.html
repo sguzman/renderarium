@@ -283,6 +283,8 @@
         tone_mapping_exposure: renderer.toneMappingExposure,
         ambient_occlusion_enabled: qualityPostPass !== null,
         ambient_occlusion_samples: qualityPostPass?.kernel.length ?? null,
+        ambient_occlusion_sampling_seed: qualityPostPass?.qualitySamplingSeed ?? null,
+        ambient_occlusion_random_restored: qualityPostPass?.qualityRandomRestored ?? null,
         ambient_occlusion_resolution_scale:
           qualityPostPass?.qualityResolutionScale ?? null,
         ambient_occlusion_render_size: qualityPostPass

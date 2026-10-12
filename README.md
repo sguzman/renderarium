@@ -141,3 +141,14 @@ visually important contact shadows; it is not an approved quality policy.
 The seven-scene benchmark compares per-frame draw calls, warmed CPU
 submission, pixel differences from full SSAO, and stability in separate
 diagnostic pages; Factory QA also checks orthographic/perspective variants.
+
+### Reproducible SSAO sampling
+
+The optional SSAO diagnostics now construct their kernels and noise textures
+with a fixed pseudorandom seed. Only the synchronous SSAO construction
+temporarily substitutes `Math.random`; it is always restored, including on
+exceptions. Node entrypoint tests verify stable streams and restoration, and
+the Factory Chromium test compares repeated identical SSAO screenshots.
+The full/pruned SSAO comparison therefore uses an identical 16-sample
+kernel/noise sequence rather than reporting randomized differences as
+occlusion-fidelity changes. The default renderer never uses this test hook.

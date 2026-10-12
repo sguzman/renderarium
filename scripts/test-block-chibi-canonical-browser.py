@@ -386,6 +386,9 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                         elif experiment in ("ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders"):
                             reduced = experiment == "ambient-occlusion-half"
                             assert settings["ambient_occlusion_enabled"] is True
+                            assert isinstance(settings["ambient_occlusion_sampling_seed"], int)
+                            assert settings["ambient_occlusion_sampling_seed"] > 0
+                            assert settings["ambient_occlusion_random_restored"] is True
                             assert settings["ambient_occlusion_samples"] == (8 if reduced else 16)
                             assert settings["ambient_occlusion_resolution_scale"] == (
                                 0.5 if reduced else 1
@@ -436,6 +439,18 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                             "different_from_default": image_hash != ordinary_hash,
                             "draw_samples": draw_metrics,
                         }
+                    # The identical full SSAO trial must have identical
+                    # pixels across fresh browser pages. Otherwise comparing
+                    # pruned vs full AO screenshots mixes RNG with geometry.
+                    stable_settings, stable_hash, stable_metrics = sample_quality(
+                        "?diagnostic=1&qa=1&quality_experiment=ambient-occlusion"
+                    )
+                    assert stable_settings == quality_results["ambient-occlusion"]["settings"]
+                    assert stable_hash == quality_results["ambient-occlusion"]["canvas_sha256"], (
+                        "Full SSAO differs between runs; sampling noise is not reproducible"
+                    )
+                    quality_results["ambient-occlusion"]["repeated_canvas_sha256"] = stable_hash
+                    quality_results["ambient-occlusion"]["repeated_draw_samples"] = stable_metrics
                     # A fresh canonical diagnostic render remains unchanged
                     # after running the trials in separate browser pages.
                     # Perspective depth reconstruction is a separate shader

@@ -2,6 +2,28 @@
 // They run only when explicitly requested in diagnostic previews.
 const MODES = Object.freeze(["fog", "soft-light", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
+export const QUALITY_SSAO_SEED = 0x5ca3d70f;
+
+/**
+ * Three.js SSAOPass constructs a randomized sample kernel and noise texture.
+ * A fixed, local seed permits like-for-like image comparisons between browser
+ * pages. The global RNG is replaced ONLY within a synchronous constructor,
+ * restored even if construction throws, and never used for default previews.
+ */
+export function withDeterministicQualityRandom(callback) {
+  if (typeof callback !== "function") throw new TypeError("Expected constructor callback");
+  const original = Math.random;
+  let state = QUALITY_SSAO_SEED;
+  Math.random = () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 0x100000000;
+  };
+  try {
+    return callback();
+  } finally {
+    Math.random = original;
+  }
+}
 
 export function selectQualityExperiment(params, diagnosticMode) {
   if (!params || typeof params.getAll !== "function") {
@@ -112,7 +134,12 @@ export async function createQualityPostPass({ scene, camera }, experiment) {
       }
     };
   }
-  const pass = new PassClass(scene, camera, 1, 1, reduced ? 8 : 16);
+  const originalRandom = Math.random;
+  const pass = withDeterministicQualityRandom(
+    () => new PassClass(scene, camera, 1, 1, reduced ? 8 : 16)
+  );
+  pass.qualitySamplingSeed = QUALITY_SSAO_SEED;
+  pass.qualityRandomRestored = Math.random === originalRandom;
   pass.qualityOccluderSelection = selection;
   pass.qualityResolutionScale = reduced ? 0.5 : 1;
   // SSAOPass defaults both depth shaders to perspective, even when the SC3D
