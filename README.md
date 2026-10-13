@@ -309,3 +309,19 @@ self-shadowing, moderate bias, stronger bias, and a guarded
 normal/depth bias candidate. Changes are **never** applied to accepted
 source geometry or the default renderer. Visual review remains
 necessary before treating any specific bias as an improvement.
+
+### Separate Garage vehicle candidates (not accepted)
+
+SC3D v2 candidate bicycle and car assets live alongside the untouched v1
+source vehicles under `assets/constructive-3d/garages/`. The bicycle uses
+a tubular triangular frame, 20-segment tires and spoke assemblies rather
+than rectangular wheels; the car uses cylindrical tires and a revised
+body/cabin silhouette. The candidate JSON geometry record in
+`runtime/sc3d/garage-vehicle-prototypes-v2.json` is kept in SC3D
+part parity for in-chat experimental previews.
+
+The `vehicle-prototype-qa` CI artifact tests schema/semantic validity
+and captures genuine Three.js Chromium perspective views. **Neither
+candidate is installed into the approved Garage**, and neither is
+visually accepted. Any replacement requires a separate comparison
+and explicit approval of the revised scene.
