@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10"]);
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10"].sort());
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
