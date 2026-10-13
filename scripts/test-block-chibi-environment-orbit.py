@@ -233,7 +233,7 @@ def main() -> None:
     ]
     before = [p.read_bytes() if p.exists() else None for p in generated_paths]
     proc = subprocess.Popen(
-        ["node", "scripts/serve-sc3d-preview.mjs", "--environments"],
+        ["node", "scripts/launch-environments.mjs", "--no-open"],
         cwd=ROOT,
         env={**os.environ, "PORT": "0"},
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
