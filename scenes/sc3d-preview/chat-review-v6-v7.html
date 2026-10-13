@@ -1,0 +1,115 @@
+<!doctype html><meta charset="utf-8"/><style>body{margin:0;background:#15191f;color:#eaeff5;font:14px system-ui}#rv-car-fixed-4102{background:#1c2531;overflow:hidden}#rv-car-fixed-4102 header{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:9px;background:#273442}#rv-car-fixed-4102 button{border:1px solid #4b6073;background:#364657;color:#eef5fa;border-radius:5px;padding:6px 9px;cursor:pointer}#rv-car-fixed-4102 button.selected{background:#146e9e;border-color:#5dd1ff}#rv-car-fixed-4102 canvas{width:100%;height:450px;touch-action:none;cursor:grab;display:block}#rv-car-fixed-4102 footer{padding:9px;color:#c4d2e4}</style><div id="rv-car-fixed-4102"><header><b>Renderarium · v6 vs v7 geometry review</b><button data-model="v6">v6 baseline</button><button data-model="v7">v7 repair candidate</button><span style="flex:1"></span><button data-view="three">3/4</button><button data-view="side">Side</button><button data-view="front">Front</button><button data-view="rear">Rear</button></header><canvas></canvas><footer id="rv-car-status-4102">Car geometry is embedded locally in this viewer.</footer></div><script>(()=>{
+const root=document.getElementById('rv-car-fixed-4102'),canvas=root.querySelector('canvas'),label=root.querySelector('#rv-car-status-4102');
+const ctx=canvas.getContext('2d',{alpha:false,willReadFrequently:false});
+if(!ctx){label.textContent='Canvas drawing unavailable';return}
+const kinds=['cuboid','rounded_box','tapered_box','cylinder','polygon_prism','loft','ribbon_path'];
+function unpackLzw(encoded){
+ const raw=atob(encoded),codes=[];
+ for(let i=0;i<raw.length;i+=3){let a=raw.charCodeAt(i),b=raw.charCodeAt(i+1),c=raw.charCodeAt(i+2);codes.push((a<<4)|(b>>4),(b&15)<<8|c)}
+ const dict=Array.from({length:256},(_,i)=>String.fromCharCode(i));
+ let prev=dict[codes[0]],parts=[prev];
+ for(let i=1;i<2659;i++){
+  let code=codes[i],word=dict[code];
+  if(word===undefined){if(code!==dict.length)throw Error('Corrupt model data');word=prev+prev[0]}
+  parts.push(word);if(dict.length<4096)dict.push(prev+word[0]);prev=word;
+ }
+ return parts.join('');
+}
+const packed=JSON.parse(unpackLzw("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"));
+const colors=packed[0],v6=packed[1],v7=v6.slice();
+for(const [i,part] of packed[2])v7[i]=part;
+v7.push(...packed[3]);
+function unpack([k,c,g,pos,rot]){
+ let geom={kind:kinds[k]};
+ switch(k){
+ case 0:geom.size=g[0];break;
+ case 1:geom.size=g[0];geom.radius=g[1];geom.segments=g[2];break;
+ case 2:geom.bottom=g[0];geom.top=g[1];geom.height=g[2];break;
+ case 3:geom.radius=g[0];geom.height=g[1];geom.segments=g[2];break;
+ case 4:geom.profile=g[0];geom.depth=g[1];break;
+ case 5:geom.sections=g[0].map(s=>({z:s[0],profile:s[1]}));break;
+ case 6:geom.path=g[0];geom.width=g[1];geom.depth=g[2];break;
+ default:throw Error('Unknown SC3D primitive '+k);
+ }
+ return [geom,{translate:pos,rotate_deg:rot},colors[c]];
+}
+const m=Object.fromEntries(colors.map(c=>[c,c]));
+const payload={v6:{p:v6.map(unpack),m},v7:{p:v7.map(unpack),m}};
+let yaw=2.525,pitch=.22,radius=5.25,drag=false,lastX=0,lastY=0,geometry=null,version='v5';
+const matLight=[-.46,.8,-.4], matFill=[.7,.45,.7];
+const colorConvert=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);
+const emit=[];let mesh, matColor;
+function vec(p){return [p[0],p[1],p[2]]}
+function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]}
+function diff(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]]}
+function normalized(x){const n=Math.hypot(...x)||1;return x.map(v=>v/n)}
+function rot(p,d){const x=d[0]*Math.PI/180,y=d[1]*Math.PI/180,z=d[2]*Math.PI/180;let[a,b,c]=p;let t=a*Math.cos(z)-b*Math.sin(z);b=a*Math.sin(z)+b*Math.cos(z);a=t;t=a*Math.cos(y)+c*Math.sin(y);c=-a*Math.sin(y)+c*Math.cos(y);a=t;t=b*Math.cos(x)-c*Math.sin(x);c=b*Math.sin(x)+c*Math.cos(x);b=t;return [a,b,c]}
+function transform(pt,geo,part){let p=pt;const g=geo.transform||{};if(g.scale)p=p.map((x,i)=>x*g.scale[i]);if(g.rotate_deg)p=rot(p,g.rotate_deg);if(g.translate)p=p.map((x,i)=>x+g.translate[i]);const tr=part||{};if(tr.scale)p=p.map((x,i)=>x*tr.scale[i]);if(tr.rotate_deg)p=rot(p,tr.rotate_deg);if(tr.translate)p=p.map((x,i)=>x+tr.translate[i]);return p}
+function triangle(a,b,c){a=transform(a,mesh,mesh.transformPart);b=transform(b,mesh,mesh.transformPart);c=transform(c,mesh,mesh.transformPart);const norm=normalized(cross(diff(b,a),diff(c,a)));for(const p of [a,b,c])emit.push(...p,...norm,...matColor)}
+function quad(a,b,c,d){triangle(a,b,c);triangle(a,c,d)}
+function cuboid(w,h,d){const x=w/2,y=h/2,z=d/2;const a=[-x,-y,-z],b=[x,-y,-z],c=[x,y,-z],e=[-x,y,-z],f=[-x,-y,z],g=[x,-y,z],i=[x,y,z],j=[-x,y,z];quad(a,b,c,e);quad(g,f,j,i);quad(f,a,e,j);quad(b,g,i,c);quad(e,c,i,j);quad(f,g,b,a)}
+function tapered(g){let [bw,bd]=g.bottom,[tw,td]=g.top,h=g.height;
+const lo=[[-bw/2,-h/2,-bd/2],[bw/2,-h/2,-bd/2],[bw/2,-h/2,bd/2],[-bw/2,-h/2,bd/2]];
+const hi=[[-tw/2,h/2,-td/2],[tw/2,h/2,-td/2],[tw/2,h/2,td/2],[-tw/2,h/2,td/2]];
+quad(lo[3],lo[2],lo[1],lo[0]);quad(hi[0],hi[1],hi[2],hi[3]);for(let i=0;i<4;i++)quad(lo[i],lo[(i+1)%4],hi[(i+1)%4],hi[i]);}
+function cylinder(g){let N=g.segments||20,r=g.radius,h=g.height;for(let i=0;i<N;i++){let t=i*Math.PI*2/N,u=(i+1)*Math.PI*2/N;let x=Math.cos(t)*r,z=Math.sin(t)*r,X=Math.cos(u)*r,Z=Math.sin(u)*r;quad([x,-h/2,z],[X,-h/2,Z],[X,h/2,Z],[x,h/2,z]);triangle([0,h/2,0],[x,h/2,z],[X,h/2,Z]);triangle([0,-h/2,0],[X,-h/2,Z],[x,-h/2,z])}}
+function rounded(g){let [w,h,d]=g.size,r=Math.min(g.radius,w/2,h/2,d/2),S=Math.max(2,g.segments||3);
+ const outline=(inset)=>{let radius=Math.max(.001,r-inset),x=w/2-inset-radius,y=h/2-inset-radius,pts=[];for(const [cx,cy,start] of [[x,y,0],[-x,y,90],[-x,-y,180],[x,-y,270]]){for(let i=0;i<=S;i++){let ang=(start+i*90/S)*Math.PI/180;pts.push([cx+radius*Math.cos(ang),cy+radius*Math.sin(ang)])}}return pts};
+ const rings=[{z:-d/2,inset:r*.65},{z:-d/2+r*.7,inset:0},{z:d/2-r*.7,inset:0},{z:d/2,inset:r*.65}];
+ const profiles=rings.map(({z,inset})=>outline(inset).map(([x,y])=>[x,y,z]));
+ for(let j=0;j<profiles.length-1;j++)for(let i=0;i<profiles[j].length;i++){let n=(i+1)%profiles[j].length;quad(profiles[j][i],profiles[j][n],profiles[j+1][n],profiles[j+1][i]);}
+ const low=profiles[0],high=profiles.at(-1);for(let i=1;i<low.length-1;i++){triangle(low[0],low[i+1],low[i]);triangle(high[0],high[i],high[i+1]);}}
+function inTri(p,a,b,c){let v0=[c[0]-a[0],c[1]-a[1]],v1=[b[0]-a[0],b[1]-a[1]],v2=[p[0]-a[0],p[1]-a[1]];let dot00=v0[0]**2+v0[1]**2,dot01=v0[0]*v1[0]+v0[1]*v1[1],dot02=v0[0]*v2[0]+v0[1]*v2[1],dot11=v1[0]**2+v1[1]**2,dot12=v1[0]*v2[0]+v1[1]*v2[1];let den=dot00*dot11-dot01*dot01;if(Math.abs(den)<1e-12)return false;let u=(dot11*dot02-dot01*dot12)/den,v=(dot00*dot12-dot01*dot02)/den;return u>1e-7&&v>1e-7&&u+v<1-1e-7}
+function ears(prof){let n=prof.length,id=Array.from({length:n},(_,i)=>i),faces=[];const area=prof.reduce((s,p,i)=>s+p[0]*prof[(i+1)%n][1]-prof[(i+1)%n][0]*p[1],0),sgn=area>=0?1:-1;
+let steps=0;while(id.length>3&&++steps<3*n*n){let found=false;for(let i=0;i<id.length;i++){let a=id[(i+id.length-1)%id.length],b=id[i],c=id[(i+1)%id.length];const pa=prof[a],pb=prof[b],pc=prof[c];const orient=(pb[0]-pa[0])*(pc[1]-pa[1])-(pb[1]-pa[1])*(pc[0]-pa[0]);if(sgn*orient<=1e-8)continue;if(id.some(k=>k!==a&&k!==b&&k!==c&&inTri(prof[k],pa,pb,pc)))continue;faces.push([a,b,c]);id.splice(i,1);found=true;break}if(!found)break}if(id.length===3)faces.push([...id]);return faces}
+function polygon(g){const p=g.profile,z=g.depth/2;for(let i=0;i<p.length;i++){let j=(i+1)%p.length;quad([p[i][0],p[i][1],-z],[p[j][0],p[j][1],-z],[p[j][0],p[j][1],z],[p[i][0],p[i][1],z])}for(let [a,b,c]of ears(p)){triangle([p[a][0],p[a][1],-z],[p[c][0],p[c][1],-z],[p[b][0],p[b][1],-z]);triangle([p[a][0],p[a][1],z],[p[b][0],p[b][1],z],[p[c][0],p[c][1],z])}}
+function loft(g){const ss=g.sections;for(let j=0;j<ss.length-1;j++){let a=ss[j],b=ss[j+1];for(let i=0;i<a.profile.length;i++){let n=(i+1)%a.profile.length;quad([...a.profile[i],a.z],[...a.profile[n],a.z],[...b.profile[n],b.z],[...b.profile[i],b.z])}}for(const [s,reversed]of [[ss[0],true],[ss.at(-1),false]])for(const [a,b,c]of ears(s.profile)){let p=[a,b,c].map(i=>[...s.profile[i],s.z]);triangle(...(reversed?[p[0],p[2],p[1]]:p))}}
+function ribbon(g){const path=g.path;for(let i=1;i<path.length;i++){let p=path[i-1],q=path[i],mid=p.map((x,j)=>(x+q[j])/2),d=normalized(diff(q,p)),u=[0,1,0];let axis=cross(u,d),l=Math.hypot(...axis);let xx,zz;if(l<1e-7){xx=[1,0,0];zz=[0,0,1]}else{axis=axis.map(v=>v/l);let dot=u.reduce((s,v,j)=>s+v*d[j],0);const angle=Math.acos(Math.max(-1,Math.min(1,dot)));const R=p=>{let c=Math.cos(angle),s=Math.sin(angle),o=cross(axis,p),k=axis.reduce((a,v,j)=>a+v*p[j],0);return p.map((v,j)=>v*c+o[j]*s+axis[j]*k*(1-c))};xx=R([1,0,0]);zz=R([0,0,1])}
+const v=(x,y,z)=>mid.map((m,k)=>m+xx[k]*x+d[k]*y+zz[k]*z),w=g.width/2,h=Math.hypot(...diff(q,p))/2,t=g.depth/2;
+let a=v(-w,-h,-t),b=v(w,-h,-t),c=v(w,h,-t),e=v(-w,h,-t),f=v(-w,-h,t),G=v(w,-h,t),H=v(w,h,t),J=v(-w,h,t);quad(a,b,c,e);quad(f,J,H,G);quad(a,f,G,b);quad(e,c,H,J);quad(a,e,J,f);quad(b,G,H,c)}}
+
+function build(key){
+ emit.length=0;let dat=payload[key];if(!dat)throw Error('Unknown car version');let materials=dat.m;
+ for(let [g,t,m]of dat.p){mesh=g;mesh.transformPart=t;matColor=colorConvert(materials[m]||'#999999');
+ switch(g.kind){case'cuboid':cuboid(...g.size);break;case'rounded_box':rounded(g);break;case'tapered_box':tapered(g);break;case'cylinder':cylinder(g);break;case'polygon_prism':polygon(g);break;case'loft':loft(g);break;case'ribbon_path':ribbon(g);break;default:throw Error('Unknown geometry '+g.kind)} }
+ geometry=new Float32Array(emit);version=key;
+ label.textContent=`SC3D source geometry · Car ${key} · ${dat.p.length} parts · drag to orbit · scroll to zoom`;
+ root.querySelectorAll('[data-model]').forEach(b=>b.classList.toggle('selected',b.dataset.model===key));draw();
+}
+function draw(){
+if(!geometry)return;
+const rect=canvas.getBoundingClientRect();const targetWidth=Math.min(750,Math.max(320,Math.round(rect.width*.9))),targetHeight=Math.round(targetWidth*Math.min(1.0,rect.height/Math.max(1,rect.width)));const w=targetWidth,h=Math.max(250,targetHeight);
+if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}
+const image=ctx.createImageData(w,h),data=image.data,zbuf=new Float32Array(w*h);
+const cp=Math.cos(pitch), eye=[radius*Math.sin(yaw)*cp,.9+radius*Math.sin(pitch),radius*Math.cos(yaw)*cp],origin=[0,.9,0];
+const forward=normalized(diff(origin,eye)),right=normalized(cross(forward,[0,1,0])),up=cross(right,forward),scale=1/Math.tan(35*Math.PI/360),unit=h*scale/2;
+for(let y=0;y<h;y++){let t=y/h;let bg=[24+7*t,33+5*t,44+6*t];for(let x=0;x<w;x++){let off=(y*w+x)*4;data[off]=bg[0];data[off+1]=bg[1];data[off+2]=bg[2];data[off+3]=255}}
+const pr=p=>{let d=diff(p,eye),depth=d[0]*forward[0]+d[1]*forward[1]+d[2]*forward[2];if(depth<.035)return null;return [w/2+(d[0]*right[0]+d[1]*right[1]+d[2]*right[2])*unit/depth,h/2-(d[0]*up[0]+d[1]*up[1]+d[2]*up[2])*unit/depth,1/depth]};
+const light=normalized(matLight),fill=normalized(matFill),temp=geometry;
+for(let a=0;a<temp.length;a+=27){
+ const A=pr([temp[a],temp[a+1],temp[a+2]]),B=pr([temp[a+9],temp[a+10],temp[a+11]]),C=pr([temp[a+18],temp[a+19],temp[a+20]]);
+ if(!A||!B||!C)continue;
+ const n=[temp[a+3],temp[a+4],temp[a+5]], direct=Math.max(0,n[0]*light[0]+n[1]*light[1]+n[2]*light[2]),fillValue=Math.max(0,n[0]*fill[0]+n[1]*fill[1]+n[2]*fill[2]);
+ const shade=Math.min(1.2,.59+direct*.47+fillValue*.12);
+ const rgb=[Math.min(255,Math.round(temp[a+6]*255*shade)),Math.min(255,Math.round(temp[a+7]*255*shade)),Math.min(255,Math.round(temp[a+8]*255*shade))];
+ let minX=Math.max(0,Math.floor(Math.min(A[0],B[0],C[0]))),maxX=Math.min(w-1,Math.ceil(Math.max(A[0],B[0],C[0]))),minY=Math.max(0,Math.floor(Math.min(A[1],B[1],C[1]))),maxY=Math.min(h-1,Math.ceil(Math.max(A[1],B[1],C[1])));
+ if(minX>maxX||minY>maxY)continue;
+ const edge=(a,b,x,y)=>(x-a[0])*(b[1]-a[1])-(y-a[1])*(b[0]-a[0]);
+ const area=edge(A,B,C[0],C[1]);if(Math.abs(area)<.0001)continue;const inv=1/area,sign=area>0?1:-1;
+ for(let y=minY;y<=maxY;y++){for(let x=minX;x<=maxX;x++){const X=x+.5,Y=y+.5,w0=edge(B,C,X,Y),w1=edge(C,A,X,Y),w2=edge(A,B,X,Y);
+ if(w0*sign<0||w1*sign<0||w2*sign<0)continue;const zz=(w0*A[2]+w1*B[2]+w2*C[2])*inv,idx=y*w+x;if(zz<=zbuf[idx])continue;zbuf[idx]=zz;const k=idx*4;data[k]=rgb[0];data[k+1]=rgb[1];data[k+2]=rgb[2];}}
+}
+ctx.putImageData(image,0,0);
+}
+const presets={three:[2.525,.22,5.25],side:[Math.PI/2,.12,5.1],front:[Math.PI,.12,5.15],rear:[0,.12,5.15]};
+root.querySelectorAll('[data-model]').forEach(b=>b.addEventListener('click',()=>build(b.dataset.model)));
+root.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{[yaw,pitch,radius]=presets[b.dataset.view];draw()}));
+let dirty=false;const schedule=()=>{if(dirty)return;dirty=true;requestAnimationFrame(()=>{dirty=false;draw()})};
+canvas.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-lastX)*.009;pitch=Math.max(-.65,Math.min(1.32,pitch+(e.clientY-lastY)*.007));lastX=e.clientX;lastY=e.clientY;schedule()});
+canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('pointercancel',()=>drag=false);
+canvas.addEventListener('wheel',e=>{e.preventDefault();radius=Math.max(2.7,Math.min(14,radius*Math.exp(e.deltaY*.001)));schedule()},{passive:false});
+new ResizeObserver(schedule).observe(canvas);
+try{build('v6')}catch(e){label.textContent='Unable to render SC3D: '+e.message}
+})();
+</script>
