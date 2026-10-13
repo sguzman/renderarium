@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7"]);
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8"]);
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,8 +28,8 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7"].includes(name)) {
-   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
+ } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8"].includes(name)) {
+   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?147:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
 
 
@@ -78,6 +78,63 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
      }
    }
 
+
+   if(name==="car_v8"){
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     // The candidate has a real door skin volume and separate front/rear
+     // assemblies; glass is no longer one long window running over the rear wheel.
+     const src=ir.parts;
+     for(const side of ["left","right"]){
+       const f="front_door_"+side, r="rear_door_"+side;
+       for(const id of [f,r]){
+         assert(src[id] && !src[id].geometry,
+           "v8 needs a separate load-bearing door assembly: "+id);
+       }
+       for(const [id,parent] of [
+         ["front_door_skin_"+side,f],["rear_door_skin_"+side,r],
+         ["front_side_glass_"+side,f],["rear_side_glass_"+side,r],
+         ["upper_door_shoulder_"+side,f],["rear_door_shoulder_"+side,r],
+         ["window_sill_"+side,f],["rear_window_sill_"+side,r],
+         ["front_door_a_frame_"+side,f],["front_door_b_frame_"+side,f],
+         ["rear_door_b_frame_"+side,r],["rear_door_c_frame_"+side,r],
+         ["front_handle_"+side,f],["rear_handle_"+side,r],
+       ]){
+         assert.equal(src[id]?.parent,parent,"v8 door part is detached: "+id);
+       }
+       const fg=byName.get("front_side_glass_"+side).geometry.sections;
+       const rg=byName.get("rear_side_glass_"+side).geometry.sections;
+       const q=byName.get("quarter_glass_"+side).geometry.sections;
+       assert(fg[0].z<fg.at(-1).z&&rg[0].z<rg.at(-1).z,
+         "v8 front/rear door glass must be spatially ordered");
+       assert(rg.at(-1).z<q[0].z,
+         "v8 door glass must terminate before fixed rear quarter glazing");
+       assert.equal(src["quarter_glass_"+side].parent,"root",
+         "Fixed rear quarter pane incorrectly moves with door");
+       for(const door of ["front","rear"]){
+         const skin=byName.get(door+"_door_skin_"+side);
+         assert(skin?.kind==="loft"&&skin.geometry.sections.length>=4,
+           "v8 missing closed stamped shell: "+door+"_"+side);
+         const section=skin.geometry.sections[1];
+         assert(section.profile.some(p=>p[1]>=1.325),
+           "Door skin does not meet the window sill");
+         assert(section.profile.some(p=>p[1]<.69),
+           "Door skin does not reach the sill/rocker");
+         assert(src[door+"_handle_"+side].parent===door+"_door_"+side,
+           "v8 handle detached from door");
+         for(const level of ["lower","upper"]){
+           assert(byName.has(door+"_hinge_"+level+"_"+side),
+             "v8 door hinge mechanically unsupported");
+         }
+       }
+       const rocker=byName.get("outer_rocker_plate_"+side);
+       assert(rocker.position[1]+rocker.geometry.size[1]/2>.70,
+         "v8 structural rocker does not connect with door foot");
+       for(const end of ["leading","trailing"]){
+         assert(byName.get("front_door_"+end+"_gap_"+side)?.kind==="ribbon_path");
+         assert(byName.get("rear_door_"+end+"_gap_"+side)?.kind==="ribbon_path");
+       }
+     }
+   }
    if(name==="car_v7"){
      const byName=new Map(entry.parts.map(p=>[p.id,p]));
      for(const id of ["mid_lower_shell","front_lower_apron","rear_lower_apron"])
