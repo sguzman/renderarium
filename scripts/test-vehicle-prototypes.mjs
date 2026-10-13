@@ -29,7 +29,7 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
  } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8"].includes(name)) {
-   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?147:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
+   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
 
 
@@ -83,6 +83,21 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
      const byName=new Map(entry.parts.map(p=>[p.id,p]));
      // The candidate has a real door skin volume and separate front/rear
      // assemblies; glass is no longer one long window running over the rear wheel.
+     assert(!byName.has("sculpted_side_left")&&!byName.has("sculpted_side_right"),
+       "v8 doors still sit on decorative continuous outer panels");
+     for(const side of ["left","right"]){
+       const front=byName.get("front_fender_skin_"+side),rear=byName.get("rear_quarter_skin_"+side);
+       assert(front?.kind==="polygon_prism"&&rear?.kind==="polygon_prism",
+         "v8 needs independent steel fender and quarter panels");
+       const frontEdge=Math.min(...front.geometry.profile.map(x=>x[0]));
+       const rearEdge=Math.max(...rear.geometry.profile.map(x=>x[0]));
+       assert(frontEdge>=.70 && rearEdge<=-.70,
+         "v8 fenders have not left a real door opening");
+       const fs=byName.get("front_door_skin_"+side).geometry.sections,
+         rs=byName.get("rear_door_skin_"+side).geometry.sections;
+       assert(fs[0].z>=-frontEdge && rs.at(-1).z<=-rearEdge,
+         "v8 door skins collide with fixed outer quarter/fender cutout");
+     }
      const src=ir.parts;
      for(const side of ["left","right"]){
        const f="front_door_"+side, r="rear_door_"+side;
