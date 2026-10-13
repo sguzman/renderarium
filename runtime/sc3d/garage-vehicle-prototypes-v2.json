@@ -31614,7 +31614,7 @@
               0.042,
               0.055
             ],
-            "radius": 0.025,
+            "radius": 0.018,
             "segments": 4
           },
           "material": "body",
