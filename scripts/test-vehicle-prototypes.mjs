@@ -43,6 +43,23 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
      assert(byName.has("continuous_belt")&&byName.has("hood_continuity"),
        "Body/hood transitions missing");
      assert(byName.has("left_front_pillar")&&byName.has("right_rear_pillar"));
+     // In the tapered cabin, each window must sit outside the body panel,
+     // not disappear within it when viewed side-on.
+     const roofSideWidthAtY = (y) => {
+       const g=cabin.geometry;
+       const fraction=(y-(cabin.position[1]-g.height/2))/g.height;
+       return (g.bottom[0] + fraction*(g.top[0]-g.bottom[0]))/2;
+     };
+     for (const side of ["left","right"]) {
+       for (const kind of ["front_window","rear_window_side"]) {
+         const w=byName.get(kind+"_"+side);
+         assert(w&&Math.abs(w.position[0]) > roofSideWidthAtY(w.position[1])+0.01,
+           "Side glass embedded under cabin panel: "+kind+"_"+side);
+       }
+     }
+     const belt=byName.get("continuous_belt");
+     assert(belt.geometry.size[1] <= .04,
+       "Oversized trim bar returned along body beltline");
    }
  }
  for(const part of entry.parts){

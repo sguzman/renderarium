@@ -40,8 +40,8 @@ parts:
   tail_lamp_left: {role: tail_lamp_left, parent: root, geometry: {kind: cuboid, size: [0.32, 0.14, 0.032]}, material: tail, transform: {translate: [-0.61, 0.845, 1.474], rotate_deg: [0, 0, 0]}}
   headlamp_right: {role: headlamp_right, parent: root, geometry: {kind: cuboid, size: [0.31, 0.135, 0.038]}, material: lights, transform: {translate: [0.61, 0.845, -1.472], rotate_deg: [0, 0, 0]}}
   tail_lamp_right: {role: tail_lamp_right, parent: root, geometry: {kind: cuboid, size: [0.32, 0.14, 0.032]}, material: tail, transform: {translate: [0.61, 0.845, 1.474], rotate_deg: [0, 0, 0]}}
-  front_window_left: {role: front_window_left, parent: root, geometry: {kind: cuboid, size: [0.023, 0.34, 0.53]}, material: glass, transform: {translate: [-0.628, 1.47, -0.2], rotate_deg: [0, 0, -8]}}
-  rear_window_side_left: {role: rear_window_side_left, parent: root, geometry: {kind: cuboid, size: [0.023, 0.34, 0.43]}, material: window, transform: {translate: [-0.628, 1.47, 0.43], rotate_deg: [0, 0, -8]}}
+  front_window_left: {role: front_window_left, parent: root, geometry: {kind: cuboid, size: [0.023, 0.34, 0.53]}, material: glass, transform: {translate: [-0.658, 1.47, -0.2], rotate_deg: [0, 0, -8]}}
+  rear_window_side_left: {role: rear_window_side_left, parent: root, geometry: {kind: cuboid, size: [0.023, 0.34, 0.43]}, material: window, transform: {translate: [-0.658, 1.47, 0.43], rotate_deg: [0, 0, -8]}}
   b_pillar_left: {role: b_pillar_left, parent: root, geometry: {kind: cuboid, size: [0.037, 0.48, 0.036]}, material: roof, transform: {translate: [-0.634, 1.47, 0.116], rotate_deg: [0, 0, 0]}}
   door_handle_left: {role: door_handle_left, parent: root, geometry: {kind: cuboid, size: [0.024, 0.033, 0.15]}, material: trim, transform: {translate: [-0.9, 1.01, -0.21], rotate_deg: [0, 0, 0]}}
   door_seam_left: {role: door_seam_left, parent: root, geometry: {kind: cuboid, size: [0.016, 0.31, 0.014]}, material: detail, transform: {translate: [-0.894, 0.83, 0.16], rotate_deg: [0, 0, 0]}}
@@ -73,8 +73,8 @@ parts:
   fender_rear_left_7: {role: fender_rear_left_7, parent: root, geometry: {kind: cylinder, radius: 0.023, height: 0.12327, segments: 12}, material: arch, transform: {translate: [-0.957, 0.62317, 0.69483], rotate_deg: [-135, 0, 0]}}
   fender_rear_left_8: {role: fender_rear_left_8, parent: root, geometry: {kind: cylinder, radius: 0.023, height: 0.12327, segments: 12}, material: arch, transform: {translate: [-0.957, 0.52467, 0.62327], rotate_deg: [-153, 0, 0]}}
   fender_rear_left_9: {role: fender_rear_left_9, parent: root, geometry: {kind: cylinder, radius: 0.023, height: 0.12327, segments: 12}, material: arch, transform: {translate: [-0.957, 0.40888, 0.58564], rotate_deg: [-171, 0, 0]}}
-  front_window_right: {role: front_window_right, parent: root, geometry: {kind: cuboid, size: [0.023, 0.34, 0.53]}, material: glass, transform: {translate: [0.628, 1.47, -0.2], rotate_deg: [0, 0, 8]}}
-  rear_window_side_right: {role: rear_window_side_right, parent: root, geometry: {kind: cuboid, size: [0.023, 0.34, 0.43]}, material: window, transform: {translate: [0.628, 1.47, 0.43], rotate_deg: [0, 0, 8]}}
+  front_window_right: {role: front_window_right, parent: root, geometry: {kind: cuboid, size: [0.023, 0.34, 0.53]}, material: glass, transform: {translate: [0.658, 1.47, -0.2], rotate_deg: [0, 0, 8]}}
+  rear_window_side_right: {role: rear_window_side_right, parent: root, geometry: {kind: cuboid, size: [0.023, 0.34, 0.43]}, material: window, transform: {translate: [0.658, 1.47, 0.43], rotate_deg: [0, 0, 8]}}
   b_pillar_right: {role: b_pillar_right, parent: root, geometry: {kind: cuboid, size: [0.037, 0.48, 0.036]}, material: roof, transform: {translate: [0.634, 1.47, 0.116], rotate_deg: [0, 0, 0]}}
   door_handle_right: {role: door_handle_right, parent: root, geometry: {kind: cuboid, size: [0.024, 0.033, 0.15]}, material: trim, transform: {translate: [0.9, 1.01, -0.21], rotate_deg: [0, 0, 0]}}
   door_seam_right: {role: door_seam_right, parent: root, geometry: {kind: cuboid, size: [0.016, 0.31, 0.014]}, material: detail, transform: {translate: [0.894, 0.83, 0.16], rotate_deg: [0, 0, 0]}}
@@ -106,8 +106,8 @@ parts:
   fender_rear_right_7: {role: fender_rear_right_7, parent: root, geometry: {kind: cylinder, radius: 0.023, height: 0.12327, segments: 12}, material: arch, transform: {translate: [0.957, 0.62317, 0.69483], rotate_deg: [-135, 0, 0]}}
   fender_rear_right_8: {role: fender_rear_right_8, parent: root, geometry: {kind: cylinder, radius: 0.023, height: 0.12327, segments: 12}, material: arch, transform: {translate: [0.957, 0.52467, 0.62327], rotate_deg: [-153, 0, 0]}}
   fender_rear_right_9: {role: fender_rear_right_9, parent: root, geometry: {kind: cylinder, radius: 0.023, height: 0.12327, segments: 12}, material: arch, transform: {translate: [0.957, 0.40888, 0.58564], rotate_deg: [-171, 0, 0]}}
-  continuous_belt: {role: continuous_belt, parent: root, geometry: {kind: rounded_box, size: [1.73, 0.105, 2.8], radius: 0.042, segments: 3}, material: side, transform: {translate: [0, 1.08, 0.02], rotate_deg: [0, 0, 0]}}
-  hood_continuity: {role: hood_continuity, parent: root, geometry: {kind: rounded_box, size: [1.4, 0.04, 0.78], radius: 0.019, segments: 3}, material: roof, transform: {translate: [0, 1.252, -0.94], rotate_deg: [0, 0, 0]}}
+  continuous_belt: {role: continuous_belt, parent: root, geometry: {kind: rounded_box, size: [1.7, 0.034, 2.76], radius: 0.012, segments: 3}, material: body, transform: {translate: [0, 1.087, 0.02], rotate_deg: [0, 0, 0]}}
+  hood_continuity: {role: hood_continuity, parent: root, geometry: {kind: rounded_box, size: [1.24, 0.018, 0.64], radius: 0.008, segments: 3}, material: body, transform: {translate: [0, 1.248, -0.94], rotate_deg: [0, 0, 0]}}
   left_front_pillar: {role: left_front_pillar, parent: root, geometry: {kind: cuboid, size: [0.044, 0.42, 0.043]}, material: roof, transform: {translate: [-0.63, 1.46, -0.56], rotate_deg: [24, 0, -6]}}
   left_rear_pillar: {role: left_rear_pillar, parent: root, geometry: {kind: cuboid, size: [0.044, 0.43, 0.044]}, material: roof, transform: {translate: [-0.63, 1.46, 0.95], rotate_deg: [-23, 0, -6]}}
   left_rocker: {role: left_rocker, parent: root, geometry: {kind: rounded_box, size: [0.045, 0.085, 1.27], radius: 0.018, segments: 3}, material: lower, transform: {translate: [-0.85, 0.61, 0.025], rotate_deg: [0, 0, 0]}}

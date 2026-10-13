@@ -2229,7 +2229,7 @@
           },
           "material": "glass",
           "position": [
-            -0.628,
+            -0.658,
             1.47,
             -0.2
           ],
@@ -2251,7 +2251,7 @@
           },
           "material": "window",
           "position": [
-            -0.628,
+            -0.658,
             1.47,
             0.43
           ],
@@ -2905,7 +2905,7 @@
           },
           "material": "glass",
           "position": [
-            0.628,
+            0.658,
             1.47,
             -0.2
           ],
@@ -2927,7 +2927,7 @@
           },
           "material": "window",
           "position": [
-            0.628,
+            0.658,
             1.47,
             0.43
           ],
@@ -3573,18 +3573,19 @@
           "id": "continuous_belt",
           "kind": "rounded_box",
           "geometry": {
+            "kind": "rounded_box",
             "size": [
-              1.73,
-              0.105,
-              2.8
+              1.7,
+              0.034,
+              2.76
             ],
-            "radius": 0.042,
+            "radius": 0.012,
             "segments": 3
           },
-          "material": "side",
+          "material": "body",
           "position": [
             0,
-            1.08,
+            1.087,
             0.02
           ],
           "rotation": [
@@ -3597,18 +3598,19 @@
           "id": "hood_continuity",
           "kind": "rounded_box",
           "geometry": {
+            "kind": "rounded_box",
             "size": [
-              1.4,
-              0.04,
-              0.78
+              1.24,
+              0.018,
+              0.64
             ],
-            "radius": 0.019,
+            "radius": 0.008,
             "segments": 3
           },
-          "material": "roof",
+          "material": "body",
           "position": [
             0,
-            1.252,
+            1.248,
             -0.94
           ],
           "rotation": [
