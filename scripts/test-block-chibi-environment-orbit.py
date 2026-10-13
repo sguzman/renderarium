@@ -122,7 +122,14 @@ def test_scene(browser, url: str, scene_name: str, out: Path) -> dict:
             "Full camera orbit produced repeated/unvarying frames"
         )
         # 4 x 175 x 0.009 rad is approximately one full revolution.
-        assert vector_distance(initial["camera_position"], views[-1]) < 0.6, (
+        orbit_displacement = vector_distance(
+            initial["camera_position"], views[-1]
+        )
+        orbit_radius = vector_distance(
+            initial["camera_position"], initial["camera_target"]
+        )
+        assert orbit_radius > 0
+        assert orbit_displacement / orbit_radius < 0.025, (
             "Four quarter-orbits did not return near the starting view"
         )
         before, _ = snapshot(page)
@@ -145,6 +152,14 @@ def test_scene(browser, url: str, scene_name: str, out: Path) -> dict:
         rear, rear_png = snapshot(page)
         assert rear_png != first
         screenshots["rear"] = rear_png
+        # Right-button camera pan translates the orbit target; geometry
+        # and presentation rotation must remain stable.
+        before, _ = snapshot(page)
+        drag(page, rect, 52, -35, button="right")
+        wait_frame(page, before["frame"])
+        panned, _ = snapshot(page)
+        assert vector_distance(before["camera_target"], panned["camera_target"]) > 0.01
+        assert panned["mesh_count"] == initial["mesh_count"]
         before, _ = snapshot(page)
         page.locator("#reset").click()
         wait_frame(page, before["frame"])
@@ -153,9 +168,35 @@ def test_scene(browser, url: str, scene_name: str, out: Path) -> dict:
             "Camera reset did not restore the exact starting pose"
         )
         assert reset["mesh_count"] == initial["mesh_count"]
+        assert vector_distance(reset["camera_target"], initial["camera_target"]) < 1e-6
         # Static geometry and light configuration restored after camera movement.
         assert max(abs(v) for v in reset["presentation_rotation"]) < 1e-10
         assert not errors, errors
+        if scene_name == "living-room":
+            response = page.goto(
+                url + "?scene=living-room&projection=orthographic", timeout=60000
+            )
+            assert response is not None and response.ok
+            page.wait_for_function(
+                "() => window.__SC3D_READY__ === true && "
+                "window.__SC3D_ENVIRONMENT_REPORT__?.().camera_projection === 'orthographic'",
+                timeout=60000,
+            )
+            ortho, ortho_png = snapshot(page)
+            ortho_rect = page.locator("#viewport canvas").bounding_box()
+            assert ortho_rect
+            drag(page, ortho_rect, 115)
+            wait_frame(page, ortho["frame"])
+            orbited, _ = snapshot(page)
+            assert vector_distance(ortho["camera_position"], orbited["camera_position"]) > 0.03
+            before, _ = snapshot(page)
+            page.mouse.wheel(0, -310)
+            wait_frame(page, before["frame"])
+            ortho_zoom, _ = snapshot(page)
+            assert ortho_zoom["camera_zoom"] > before["camera_zoom"]
+            assert ortho_zoom["mesh_count"] == initial["mesh_count"]
+            screenshots["orthographic"] = ortho_png
+            assert not errors, errors
         out.mkdir(parents=True, exist_ok=True)
         for name in ("initial", "orbit-2", "zoomed", "above"):
             (out / f"{scene_name}-{name}.png").write_bytes(screenshots[name])

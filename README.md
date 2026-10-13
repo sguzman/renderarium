@@ -288,3 +288,8 @@ scene identifiers, errors, and geometry/presentation rotation. Source
 snapshots remain byte-identical. Each environment gets genuine Chromium
 screenshots and JSON QA evidence; this is browser correctness, not a
 guarantee of physical GPU speed or subjective visual quality.
+
+The browser matrix also checks right-button panning and resetting the orbit
+target, plus an orthographic orbit/zoom regression on the Living Room.
+The 360-degree test compares its final camera position using a ratio
+relative to orbit distance rather than an arbitrary world-space tolerance.
