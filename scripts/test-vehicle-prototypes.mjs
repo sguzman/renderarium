@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10"].sort());
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10","car_v11"].sort());
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,8 +28,8 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10"].includes(name)) {
-   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v9"?156:name==="car_v10"?167:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
+ } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10","car_v11"].includes(name)) {
+   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v9"?156:name==="car_v10"?167:name==="car_v11"?167:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
 
 
@@ -81,6 +81,53 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
 
 
 
+
+   if(name==="car_v11"){
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     const earlier=prototypes.entries.car_v10;
+     const prevByName=new Map(earlier.parts.map(p=>[p.id,p]));
+     const cabin=byName.get("roof_cap"),oldCabin=prevByName.get("roof_cap");
+     assert(cabin.position[1]<oldCabin.position[1]-.09,
+       "v11 did not substantially lower roofline");
+     const hood=byName.get("hood"),oldHood=prevByName.get("hood");
+     assert(hood.geometry.sections[0].z<oldHood.geometry.sections[0].z-.23,
+       "v11 nose still has toy-length front overhang");
+     const wheel=byName.get("tire_front_left"),oldWheel=prevByName.get("tire_front_left");
+     assert(wheel.position[2]<oldWheel.position[2]-.09,
+       "v11 front axle not moved with overhang");
+     const bumper=byName.get("front_bumper");
+     assert(bumper.position[2]<prevByName.get("front_bumper").position[2]-.2,
+       "v11 nose left behind front bumper");
+     assert(Math.abs(byName.get("tire_rear_left").position[2]-
+       prevByName.get("tire_rear_left").position[2])<.001,
+       "v11 should preserve rear axle geometry");
+     const windshield=byName.get("windshield");
+     assert(windshield.geometry.sections[1].profile[0][1]<
+       prevByName.get("windshield").geometry.sections[1].profile[0][1]-.08,
+       "v11 windshield does not follow reduced roof height");
+     for(const side of ["left","right"]){
+       for(const door of ["front","rear"]){
+         const id=door+"_side_glass_"+side,glass=byName.get(id),
+           oldGlass=prevByName.get(id);
+         assert.equal(ir.parts[id]?.parent,door+"_door_"+side,
+           "v11 glazing detached from its door");
+         assert(glass.geometry.sections[1].profile[1][1]<
+           oldGlass.geometry.sections[1].profile[1][1]-.07,
+           "v11 door glass not adjusted to new roof");
+       }
+       const edge=byName.get("roof_edge_"+side);
+       assert(edge.position[1]<prevByName.get("roof_edge_"+side).position[1]-.08,
+         "v11 roof edge not aligned to lowered greenhouse");
+       const fender=byName.get("front_fender_skin_"+side);
+       assert(fender.geometry.profile[0][0]>
+         prevByName.get("front_fender_skin_"+side).geometry.profile[0][0]+.24,
+         "v11 front fenders did not follow extended nose");
+     }
+     const hoodTip=hood.geometry.sections[0].z;
+     const bumperCenter=bumper.position[2];
+     assert(hoodTip>bumperCenter-.12 && hoodTip<bumperCenter+.17,
+       "v11 hood nose and bumper remain disconnected");
+   }
    if(name==="car_v10"){
      const byName=new Map(entry.parts.map(p=>[p.id,p]));
      const src=ir.parts;
