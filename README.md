@@ -339,3 +339,16 @@ hood, cabin and rear deck, two side windows separated by a B pillar,
 door panels, and visible wheel-arch outlines. The earlier car v2 is
 retained for comparison. The accepted garage assembly, preview,
 vehicle v1 assets and frozen scene signatures are unchanged.
+
+### Independent compact car v4 silhouette study
+
+The car v4 candidate removes v3's raised rectangular side doors, lowers and
+reproportions the hood, extends the main cabin into the beltline, and aligns
+its roof/windshield/rear glazing. Its new subtle pillars and rocker detail
+remain authored SC3D geometry. It retains the existing car v3 and v2 records
+for side-by-side inspection from identical camera views in the chat.
+
+Automated candidate QA now validates v4 cabin/body overlap, omission of
+v3's raised door slabs, wheel count, all candidate SC3D source parity,
+and distinct real Chromium/Three.js raster views for v3 versus v4.
+The accepted Garage scene and the approved bicycle remain unchanged.

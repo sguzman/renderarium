@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2"]);
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3"]);
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,9 +28,22 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (name==="car" || name==="car_v2") {
-   assert.equal(parts.length,name==="car"?86:31);
-   assert(entry.parts.filter(p=>p.id.startsWith("tire_")).length===4);
+ } else if (["car","car_v2","car_v3"].includes(name)) {
+   assert.equal(parts.length,name==="car"?89:name==="car_v3"?86:31);
+   assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
+   if (name==="car") {
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     const body=byName.get("belt_body"),cabin=byName.get("cabin");
+     assert(body&&cabin);
+     const bodyTop=body.position[1]+body.geometry.height/2;
+     const cabinBottom=cabin.position[1]-cabin.geometry.height/2;
+     assert(cabinBottom < bodyTop - 0.025,"Cabin must overlap main body instead of floating");
+     assert(!byName.has("front_door_left")&&!byName.has("rear_panel_left"),
+       "Raised rectangular side-panel slabs returned");
+     assert(byName.has("continuous_belt")&&byName.has("hood_continuity"),
+       "Body/hood transitions missing");
+     assert(byName.has("left_front_pillar")&&byName.has("right_rear_pillar"));
+   }
  }
  for(const part of entry.parts){
    const actual=ir.parts[part.id];
@@ -38,6 +51,6 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    assert.equal(actual.geometry.kind,part.kind);
    assert.equal(actual.material?.name??actual.material,part.material);
  }
- console.log("PASS SC3D "+name+" v2 source / JSON parity: "+parts.length+" geometries");
+ console.log("PASS SC3D "+name+" candidate source / JSON parity: "+parts.length+" geometries");
 }
 console.log("Vehicle prototypes are separate candidates; no accepted garage assembly edits.");

@@ -12,7 +12,7 @@ from io import BytesIO
 from PIL import Image, ImageStat
 
 ROOT=Path(__file__).resolve().parents[1]
-MODELS=("bicycle","car")
+MODELS=("bicycle","car","car_v3")
 VIEWS=("front-three-quarter","side","rear-three-quarter")
 
 def server_url(proc):
@@ -79,6 +79,10 @@ def main():
                         proc.kill();proc.communicate(timeout=5)
         finally:
             browser.close()
+    for view in VIEWS:
+        assert report["car"]["views"][view] != report["car_v3"]["views"][view], (
+            f"Car v4 rendered pixel-identically to v3 in {view}"
+        )
     (destination/"report.json").write_text(json.dumps(report,indent=2)+"\n")
 
 if __name__=="__main__":
