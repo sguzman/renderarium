@@ -40,6 +40,16 @@ SHADOW_MODES = (
     ("soft-shadow-vsm", "soft-shadow-vsm", "VSM DEFAULT BLUR"),
     ("shadow-vsm-wide", "shadow-vsm-wide", "VSM WIDE BLUR"),
 )
+FLOOR_MODES = (
+    ("default", None, "APPROVED DEFAULT"),
+    ("shadow-overhead-unsafe", "shadow-overhead-unsafe", "OVERHEAD VSM / ZERO BIAS"),
+    ("shadow-overhead-bias-012", "shadow-overhead-bias-012", "OVERHEAD / BIAS 0.012"),
+    ("shadow-overhead-bias-025", "shadow-overhead-bias-025", "OVERHEAD / BIAS 0.025"),
+    ("shadow-overhead-bias-040", "shadow-overhead-bias-040", "OVERHEAD / BIAS 0.040"),
+    ("shadow-overhead-safe", "shadow-overhead-safe", "OVERHEAD / BIAS + DEPTH"),
+    ("shadow-overhead-pcf", "shadow-overhead-pcf", "OVERHEAD / PCF SOFT"),
+    ("shadow-vsm-wide", "shadow-vsm-wide", "BASELINE WIDE VSM"),
+)
 WIDTH, HEIGHT, HEADER = 512, 384, 32
 
 
@@ -92,6 +102,11 @@ def self_test() -> None:
     }
     shadow_sheet = make_sheet(shadow_images, SHADOW_MODES)
     assert shadow_sheet.size == result.size
+    floor_images = {
+        mode: images[LIGHTING_MODES[i][0]]
+        for i, (mode, _, _) in enumerate(FLOOR_MODES)
+    }
+    assert make_sheet(floor_images, FLOOR_MODES).size == result.size
     print("PASS lighting and shadow-only gallery layout self-tests")
 
 
@@ -167,7 +182,7 @@ def main() -> None:
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--allow-swiftshader", action="store_true")
     parser.add_argument("--scene", choices=SCENES)
-    parser.add_argument("--study", choices=("lighting", "shadow"), default="lighting")
+    parser.add_argument("--study", choices=("lighting", "shadow", "floor"), default="lighting")
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts/lighting-shadow-gallery"))
     args = parser.parse_args()
     if args.self_test:
@@ -175,7 +190,8 @@ def main() -> None:
         return
     from playwright.sync_api import sync_playwright
 
-    modes = SHADOW_MODES if args.study == "shadow" else LIGHTING_MODES
+    modes = (FLOOR_MODES if args.study == "floor" else
+             SHADOW_MODES if args.study == "shadow" else LIGHTING_MODES)
     destination = args.output_dir if args.output_dir.is_absolute() else ROOT / args.output_dir
     destination.mkdir(parents=True, exist_ok=True)
     ledger = json.loads((ROOT / "contracts/accepted-block-chibi-v1.json").read_text())
@@ -236,6 +252,11 @@ def main() -> None:
                             assert not changed[mode]["identical"], (
                                 f"{scene_id}: {mode} has no measurable effect"
                             )
+                    if args.study == "floor":
+                        assert settings["shadow-overhead-unsafe"]["shadow_normal_bias"] == 0
+                        assert settings["shadow-overhead-bias-025"]["shadow_normal_bias"] == 0.025
+                        assert settings["shadow-overhead-safe"]["shadow_bias"] == -0.0002
+                        assert settings["shadow-overhead-pcf"]["shadow_type"] == 2
                     if args.study == "shadow":
                         assert settings["shadow-vsm-tight"]["shadow_radius"] == 1
                         assert settings["shadow-vsm-wide"]["shadow_radius"] == 6

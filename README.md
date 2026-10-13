@@ -298,3 +298,14 @@ The browser matrix also checks right-button panning and resetting the orbit
 target, plus an orthographic orbit/zoom regression on the Living Room.
 The 360-degree test compares its final camera position using a ratio
 relative to orbit distance rather than an arbitrary world-space tolerance.
+
+### High-sun shadow artifact regression (diagnostic only)
+
+The dedicated `floor-artifact-study` Chromium job reproduces a near-vertical
+key light, 2048px VSM shadow map, and wide blur. Real, identical-angle
+environment screenshots vary only the normal-depth bias or use PCF as
+a control. It includes zero bias intentionally to reveal speckled
+self-shadowing, moderate bias, stronger bias, and a guarded
+normal/depth bias candidate. Changes are **never** applied to accepted
+source geometry or the default renderer. Visual review remains
+necessary before treating any specific bias as an improvement.

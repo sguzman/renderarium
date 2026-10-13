@@ -1,6 +1,6 @@
 // Rendering-quality trials are deliberately separate from frozen SC3D assets.
 // They run only when explicitly requested in diagnostic previews.
-const MODES = Object.freeze(["fog", "soft-light", "warm-light", "cool-light", "no-shadow", "hard-shadow", "soft-shadow-vsm", "shadow-vsm-tight", "shadow-vsm-wide", "shadow-bias-moderate", "shadow-bias-strong", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"]);
+const MODES = Object.freeze(["fog", "soft-light", "warm-light", "cool-light", "no-shadow", "hard-shadow", "soft-shadow-vsm", "shadow-vsm-tight", "shadow-vsm-wide", "shadow-overhead-unsafe", "shadow-overhead-bias-012", "shadow-overhead-bias-025", "shadow-overhead-bias-040", "shadow-overhead-safe", "shadow-overhead-pcf", "shadow-bias-moderate", "shadow-bias-strong", "shadow-detail", "tone-map", "ambient-occlusion", "ambient-occlusion-half", "ambient-occlusion-occluders", "ambient-occlusion-camera-occluders", "ambient-occlusion-camera-occluders-75", "ambient-occlusion-camera-occluders-75-cached", "fxaa"]);
 export const QUALITY_EXPERIMENTS = MODES;
 export const QUALITY_SSAO_SEED = 0x5ca3d70f;
 
@@ -93,6 +93,36 @@ export function applyQualityExperiment({ THREE, scene, renderer, key, fill, rim 
       key.shadow.radius = 6;
       key.shadow.blurSamples = 16;
       break;
+    case "shadow-overhead-unsafe":
+    case "shadow-overhead-bias-012":
+    case "shadow-overhead-bias-025":
+    case "shadow-overhead-bias-040":
+    case "shadow-overhead-safe":
+    case "shadow-overhead-pcf": {
+      // Source-preserving reproduction of the reported near-vertical
+      // sun and wide VSM blur. Bias is varied independently.
+      const overhead = experiment.startsWith("shadow-overhead");
+      if (!overhead) throw new Error("Invalid overhead trial");
+      key.position.set(0, 8, 0.7);
+      key.intensity = 2.7;
+      fill.intensity = 0.9;
+      renderer.shadowMap.type = experiment === "shadow-overhead-pcf"
+        ? THREE.PCFSoftShadowMap : THREE.VSMShadowMap;
+      key.shadow.mapSize.set(2048, 2048);
+      key.shadow.radius = 5.5;
+      key.shadow.blurSamples = 8;
+      const biases = {
+        "shadow-overhead-unsafe": 0,
+        "shadow-overhead-bias-012": 0.012,
+        "shadow-overhead-bias-025": 0.025,
+        "shadow-overhead-bias-040": 0.040,
+        "shadow-overhead-safe": 0.025,
+        "shadow-overhead-pcf": 0.015,
+      };
+      key.shadow.normalBias = biases[experiment];
+      key.shadow.bias = experiment === "shadow-overhead-safe" ? -0.0002 : 0;
+      break;
+    }
     case "shadow-bias-moderate":
       // Independent bias trial at the original default shadow resolution.
       key.shadow.normalBias = 0.012;
