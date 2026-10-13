@@ -112,6 +112,8 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Render candidate bicycles and cars through actual WebGL
         run: python scripts/capture-vehicle-prototypes.py
+      - name: Exercise canonical interactive car version comparison in Chromium
+        run: python scripts/test-vehicle-review-browser.py
       - name: Upload independent vehicle candidate views
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
