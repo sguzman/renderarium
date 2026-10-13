@@ -96,6 +96,25 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
      assert(glass.at(-1).z>1.34,"v10 glass does not extend into hatch");
      assert(glass[0].profile[0][1]-glass.at(-1).profile[0][1]>.5,
         "v10 glass has no substantial tailgate slope");
+
+     const body=byName.get("belt_body"),under=byName.get("mid_lower_shell");
+     assert(body.kind==="loft"&&under.kind==="loft",
+       "v10 must replace square full-length belly with shaped structural shells");
+     assert(body.geometry.sections.length>=7&&under.geometry.sections.length>=7,
+       "v10 requires enough stations for realistic fender-to-tail taper");
+     const bodyS=body.geometry.sections;
+     const underS=under.geometry.sections;
+     assert(bodyS.at(-1).profile[0][0]<bodyS[3].profile[0][0]-.12,
+       "v10 chassis tail remains too square");
+     assert(bodyS[0].profile[2][1]<bodyS[3].profile[2][1]-.06,
+       "v10 nose still has a flat upper crash structure");
+     assert(underS.at(-1).profile[0][0]<underS[3].profile[0][0]-.07,
+       "v10 lower shell must taper with liftgate");
+     for(const s of bodyS){
+       assert(s.profile.length===8,"malformed v10 body station");
+       assert(s.profile[3][0]>s.profile[4][0],
+         "v10 formed body has inward-facing top geometry");
+     }
      const skin=byName.get("rear_deck").geometry.sections;
      assert(skin.length>=5&&skin[0].z>1.3,
        "v10 must expose a distinct lower stamped liftgate");
