@@ -34,6 +34,12 @@
   <main>
     <header>
       <strong id="title">SC3D preview</strong>
+      <label id="vehicle-choice" hidden>Car version
+        <select id="vehicle" aria-label="Select actual SC3D vehicle candidate"></select>
+      </label>
+      <button id="vehicle-side" type="button" hidden>side</button>
+      <button id="vehicle-front" type="button" hidden>front</button>
+      <button id="vehicle-rear" type="button" hidden>rear</button>
       <label id="environment-choice" hidden>Environment
         <select id="environment" aria-label="Choose environment"></select>
       </label>
@@ -110,6 +116,8 @@
     const reset = document.querySelector("#reset");
     const params = new URLSearchParams(location.search);
     const environmentMode = params.has("scene");
+    const vehicleMode = params.has("vehicle");
+    const requestedVehicle = params.get("vehicle");
     const requestedEnvironment = params.get("scene");
     const requestedView = params.get("view");
     const diagnosticMode = params.get("diagnostic") === "1";
@@ -132,15 +140,36 @@
       document.querySelector("#viewport").style.minHeight = "100vh";
     }
 
-    const irUrl = environmentMode
-      ? "/asset-ir.json?scene=" + encodeURIComponent(requestedEnvironment)
+    const irUrl = vehicleMode
+      ? "/asset-ir.json?vehicle=" + encodeURIComponent(requestedVehicle)
+      : environmentMode ? "/asset-ir.json?scene=" + encodeURIComponent(requestedEnvironment)
       : "/asset-ir.json";
-    const ir = await fetch(irUrl, { cache: "no-store" }).then((r) => {
+    let ir = await fetch(irUrl, { cache: "no-store" }).then((r) => {
       if (!r.ok) throw new Error(`asset load failed: HTTP ${r.status}`);
       return r.json();
     });
 
     title.textContent = `${ir.asset.name ?? ir.asset.id} · SC3D ${ir.version}`;
+    if (vehicleMode) {
+      const catalogResponse = await fetch("/vehicle-list.json", {cache:"no-store"});
+      if (!catalogResponse.ok) throw new Error("Canonical SC3D vehicle gallery is unavailable");
+      const catalog = await catalogResponse.json();
+      if (!catalog.versions.includes(requestedVehicle)) throw new Error("Unknown car version");
+      const choice = document.querySelector("#vehicle");
+      for (const version of catalog.versions) {
+        const option = document.createElement("option");
+        option.value = version;
+        option.textContent = "Car " + version;
+        choice.append(option);
+      }
+      choice.value = requestedVehicle;
+      document.querySelector("#vehicle-choice").hidden = false;
+      document.querySelector("#vehicle-side").hidden = false;
+      document.querySelector("#vehicle-front").hidden = false;
+      document.querySelector("#vehicle-rear").hidden = false;
+      document.querySelector(".note").textContent =
+        "Canonical Three.js/WebGL rendering from original SC3D sources. Drag to orbit, wheel to zoom; switching car versions preserves your viewing angle.";
+    }
     if (environmentMode) {
       const catalogResponse = await fetch("/environment-list.json", {cache:"no-store"});
       if (!catalogResponse.ok) throw new Error("Seven-scene gallery server is not available");
@@ -269,7 +298,7 @@
 
     function createCamera() {
       if (requestedProjection === "perspective" ||
-          (environmentMode && requestedProjection !== "orthographic")) {
+          ((environmentMode || vehicleMode) && requestedProjection !== "orthographic")) {
         const fov = Number.isFinite(requestedFov) && requestedFov > 1 && requestedFov < 120
           ? requestedFov
           : 24;
@@ -281,7 +310,7 @@
     camera = createCamera();
 
     const presentation = new THREE.Group();
-    const character = buildSc3dObject(ir);
+    let character = buildSc3dObject(ir);
     presentation.add(character);
     scene.add(presentation);
 
@@ -296,7 +325,7 @@
       new THREE.MeshStandardMaterial({ color: "#8e8583", roughness: 1 }),
     );
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.82;
+    ground.position.y = vehicleMode ? -0.015 : -0.82;
     ground.receiveShadow = true;
     scene.add(ground);
 
@@ -488,6 +517,66 @@
     new ResizeObserver(resize).observe(viewport);
     resize();
 
+    if (vehicleMode) {
+      const choice = document.querySelector("#vehicle");
+      let switching = false;
+      choice.addEventListener("change", async () => {
+        if (switching) return;
+        switching = true;
+        choice.disabled = true;
+        const nextVersion = choice.value;
+        const beforeAsset = ir.asset.id;
+        const beforeOffset = camera.position.clone().sub(boundCenter);
+        const previousRadius = bounds.getBoundingSphere(new THREE.Sphere()).radius;
+        try {
+          const response = await fetch("/asset-ir.json?vehicle=" + encodeURIComponent(nextVersion), {cache:"no-store"});
+          if (!response.ok) throw new Error("SC3D model fetch failed: HTTP " + response.status);
+          const nextIr = await response.json();
+          if (nextIr.asset.id !== "block-chibi-compact-car-" + nextVersion) {
+            throw new Error("SC3D model identity mismatch");
+          }
+          const nextCharacter = buildSc3dObject(nextIr);
+          // Preserve user orbit and zoom relative to each model's bounds.
+          presentation.remove(character);
+          character.traverse(node => {
+            if (node.isMesh) {
+              node.geometry.dispose();
+              if (Array.isArray(node.material)) node.material.forEach(material => material.dispose());
+              else node.material?.dispose();
+            }
+          });
+          character = nextCharacter;
+          ir = nextIr;
+          presentation.add(character);
+          bounds.setFromObject(character);
+          bounds.getSize(boundSize);
+          bounds.getCenter(boundCenter);
+          const nextRadius = bounds.getBoundingSphere(new THREE.Sphere()).radius;
+          const factor = Math.max(0.2, nextRadius / Math.max(0.001, previousRadius));
+          camera.position.copy(boundCenter).add(beforeOffset.multiplyScalar(factor));
+          camera.lookAt(boundCenter);
+          camera.updateProjectionMatrix();
+          baseHalfHeight = Math.max(1.85, boundSize.y * 0.58);
+          if (structure.checked) setStructureMode(character, true);
+          document.documentElement.dataset.sc3dVehicle = nextVersion;
+          title.textContent = `${ir.asset.name ?? ir.asset.id} · SC3D ${ir.version}`;
+          status.textContent = `validated · ${Object.keys(ir.parts).length} parts · canonical Three.js · ${nextVersion}`;
+          history.replaceState(null, "", "?vehicle=" + encodeURIComponent(nextVersion));
+          requestRender();
+        } catch (error) {
+          choice.value = beforeAsset.slice(-2);
+          status.textContent = "Vehicle change failed: " + String(error?.message ?? error);
+          status.style.color = "#ffb7a3";
+        } finally {
+          choice.disabled = false;
+          switching = false;
+        }
+      });
+      document.documentElement.dataset.sc3dVehicle = requestedVehicle;
+      document.querySelector("#vehicle-side").addEventListener("click", () => setViewPreset("side"));
+      document.querySelector("#vehicle-front").addEventListener("click", () => setViewPreset("front"));
+      document.querySelector("#vehicle-rear").addEventListener("click", () => setViewPreset("rear-three-quarter"));
+    }
     structure.addEventListener("change", () => { setStructureMode(character, structure.checked); requestRender(); });
     reset.addEventListener("click", resetView);
     if (environmentMode) {
@@ -504,6 +593,20 @@
       character.traverse(object => { if (object.isMesh) count++; });
       return count;
     })();
+    if (vehicleMode) {
+      window.__SC3D_VEHICLE_REPORT__ = () => ({
+        engine: "Three.js WebGLRenderer",
+        asset_id: ir.asset.id,
+        source_part_count: Object.values(ir.parts).filter(part => part.geometry).length,
+        mesh_count: (() => {let n = 0; character.traverse(object => {if (object.isMesh) n++;}); return n;})(),
+        camera_position: camera.position.toArray(),
+        camera_target: boundCenter.toArray(),
+        camera_zoom: camera.zoom,
+        presentation_rotation: presentation.rotation.toArray().slice(0, 3),
+        renderer_context: renderer.getContext().constructor.name,
+        frame: frameProof.frameCount(),
+      });
+    }
     if (environmentMode) {
       window.__SC3D_ENVIRONMENT_REPORT__ = () => ({
         engine: "Three.js WebGLRenderer",
@@ -522,7 +625,7 @@
     renderer.domElement.addEventListener("pointerdown", (event) => {
       if (event.button !== 0 && event.button !== 2) return;
       dragging = true;
-      panning = environmentMode && (event.button === 2 || event.shiftKey);
+      panning = (environmentMode || vehicleMode) && (event.button === 2 || event.shiftKey);
       lastX = event.clientX;
       lastY = event.clientY;
       renderer.domElement.setPointerCapture(event.pointerId);
@@ -532,7 +635,7 @@
       if (!dragging) return;
       const dx = event.clientX - lastX;
       const dy = event.clientY - lastY;
-      if (environmentMode) {
+      if (environmentMode || vehicleMode) {
         if (panning) {
           const distance = camera.position.distanceTo(boundCenter);
           const scale = camera.isPerspectiveCamera
@@ -585,7 +688,7 @@
       panning = false;
     });
     renderer.domElement.addEventListener("contextmenu", event => {
-      if (environmentMode) event.preventDefault();
+      if (environmentMode || vehicleMode) event.preventDefault();
     });
 
     renderer.domElement.addEventListener("wheel", (event) => {
