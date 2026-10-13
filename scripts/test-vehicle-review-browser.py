@@ -63,7 +63,7 @@ def main():
                 before=report(page)
                 assert before["source_part_count"]==80
                 assert page.locator("#viewport canvas").count()==1
-                assert page.locator("#vehicle option").count()==9
+                assert page.locator("#vehicle option").count()==10
                 metrics=page.evaluate("() => window.__SC3D_QA_REPORT__?.()")
                 assert metrics and metrics[-1]["draw_calls"]>0
                 # Actual pointer events must change the perspective camera.
@@ -101,6 +101,11 @@ def main():
                 page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v10'",timeout=45000)
                 v10=report(page)
                 assert v10["source_part_count"]==167
+                page.locator("#vehicle").select_option("v11")
+                page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v11'",timeout=45000)
+                v11=report(page)
+                assert v11["source_part_count"]==167
+                assert near(direction(v10),direction(v11),.001),"v11 switch changed viewing angle"
                 assert near(direction(v9),direction(v10),.001),"v10 switch changed orbit direction"
                 assert near(direction(v8),direction(v9),.001),"v9 switch changed camera orientation"
                 assert near(direction(v7),direction(v8),.001),"v8 switch changed user camera angle"
