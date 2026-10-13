@@ -87,6 +87,12 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
      assert(hood.kind==="loft"&&hood.geometry.sections.length>=5,
        "v9 hood must be a genuinely tapered stamped loft");
      const hoodS=hood.geometry.sections;
+     for(const [label,item] of [["hood",hood],["rear hatch",byName.get("rear_deck")]]){
+       for(const section of item.geometry.sections){
+         assert(section.profile[3][0]>section.profile[4][0],
+           "v9 "+label+" top polygons face inward and disappear under culling");
+       }
+     }
      assert(hoodS.at(-1).profile[2][1]-hoodS[0].profile[2][1]>.18,
        "v9 hood has not acquired a downward nose slope");
      assert(hoodS[0].z<hoodS.at(-1).z,"v9 hood stations reversed");
