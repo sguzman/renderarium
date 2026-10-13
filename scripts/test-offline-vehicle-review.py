@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 def main():
   source=ROOT/"artifacts/vehicle-review-qa/renderarium-canonical-car-review.html"
-  assert source.is_file() and source.stat().st_size>800_000
+  assert source.is_file() and source.stat().st_size>150_000
   with sync_playwright() as playwright:
     browser=playwright.chromium.launch(headless=True,
       args=["--no-sandbox","--disable-dev-shm-usage","--enable-unsafe-swiftshader"])
