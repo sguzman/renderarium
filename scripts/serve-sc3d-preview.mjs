@@ -7,13 +7,16 @@ import { loadSc3dFile } from "../runtime/sc3d/load.mjs";
 
 const repoRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const environmentMode = process.argv[2] === "--environments";
+const vehicleMode = process.argv[2] === "--vehicles";
+const vehicleVersions = Object.freeze(["v2","v3","v4","v5","v6"]);
+const vehicleSource = version => resolve(repoRoot, `assets/constructive-3d/garages/block-chibi-compact-car-${version}.sc3d.yml`);
 const environmentNames = Object.freeze([
   "living-room", "kitchen", "bathroom", "office",
   "backyard", "garage", "factory",
 ]);
 const assetPath = environmentMode
   ? resolve(repoRoot, "scenes/block-chibi-living-room-v1/room.assembly.yml")
-  : resolve(process.argv[2] ?? "assets/constructive-3d/quest-girl-minimal.sc3d.yml");
+  : resolve(vehicleMode ? vehicleSource("v5") : (process.argv[2] ?? "assets/constructive-3d/quest-girl-minimal.sc3d.yml"));
 const port = Number(process.env.PORT ?? 4177);
 
 const webglHtmlPath = resolve(repoRoot, "scenes/sc3d-preview/index.html");
@@ -61,6 +64,18 @@ const ir = assetPath.endsWith(".assembly.yml")
     ))
   : await loadSc3dFile(assetPath);
 const assetJson = JSON.stringify(ir);
+const vehicleCache = new Map(vehicleMode ? [["v5", assetJson]] : []);
+async function vehicleIr(version) {
+  if (!vehicleMode || !vehicleVersions.includes(version)) return null;
+  if (!vehicleCache.has(version)) {
+    const candidate = await loadSc3dFile(vehicleSource(version));
+    if (candidate.asset.id !== "block-chibi-compact-car-" + version) {
+      throw new Error("Vehicle candidate source identity mismatch: " + version);
+    }
+    vehicleCache.set(version, JSON.stringify(candidate));
+  }
+  return vehicleCache.get(version);
+}
 const environmentCache = new Map(environmentMode ? [["living-room", assetJson]] : []);
 function environmentIr(scene) {
   if (!environmentNames.includes(scene)) return null;
@@ -113,9 +128,16 @@ const server = createServer(async (request, response) => {
       response.end(JSON.stringify({scenes: environmentNames}));
       return;
     }
+    if (url.pathname === "/vehicle-list.json" && vehicleMode) {
+      response.writeHead(200, {"content-type":"application/json; charset=utf-8","cache-control":"no-store"});
+      response.end(JSON.stringify({versions: vehicleVersions, initial: "v5"}));
+      return;
+    }
     if (url.pathname === "/asset-ir.json") {
       const requested = url.searchParams.get("scene") ?? "living-room";
-      const body = environmentMode ? environmentIr(requested) : assetJson;
+      const body = vehicleMode
+        ? await vehicleIr(url.searchParams.get("vehicle") ?? "v5")
+        : environmentMode ? environmentIr(requested) : assetJson;
       if (body === null) {
         response.writeHead(400, {"content-type":"text/plain; charset=utf-8"});
         response.end("Unknown accepted environment");
@@ -156,6 +178,7 @@ server.listen(port, "127.0.0.1", () => {
   console.log(`SC3D preview: http://127.0.0.1:${listeningPort}/`);
   console.log(environmentMode
     ? "scene gallery: seven accepted environments (use ?scene=living-room)"
+    : vehicleMode ? "vehicle gallery: real SC3D car v2-v6 (default ?vehicle=v5)"
     : `asset: ${assetPath}`);
   console.log(`validated parts: ${Object.keys(ir.parts).length}`);
 });
