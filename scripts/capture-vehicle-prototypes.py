@@ -12,7 +12,7 @@ from io import BytesIO
 from PIL import Image, ImageStat
 
 ROOT=Path(__file__).resolve().parents[1]
-MODELS=("bicycle","car","car_v5")
+MODELS=("bicycle","car","car_v5","car_v7")
 VIEWS=("front-three-quarter","side","rear-three-quarter")
 
 def server_url(proc):
@@ -79,6 +79,10 @@ def main():
                         proc.kill();proc.communicate(timeout=5)
         finally:
             browser.close()
+    for view in VIEWS:
+        assert report["car_v7"]["views"][view] != report["car"]["views"][view], (
+            f"v7 glazing/shell patch produced no visible change from v6 in {view}"
+        )
     for view in VIEWS:
         assert report["car"]["views"][view] != report["car_v5"]["views"][view], (
             f"Car v6 rendered pixel-identically to v5 in {view}"
