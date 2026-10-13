@@ -34551,7 +34551,7 @@
               0.194,
               0.038
             ],
-            "radius": 0.022,
+            "radius": 0.015,
             "segments": 4
           },
           "material": "lower",
@@ -34849,7 +34849,7 @@
               0.194,
               0.038
             ],
-            "radius": 0.022,
+            "radius": 0.015,
             "segments": 4
           },
           "material": "lower",
