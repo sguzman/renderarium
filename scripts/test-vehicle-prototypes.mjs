@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4"]);
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5"]);
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,11 +28,56 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (["car","car_v2","car_v3","car_v4"].includes(name)) {
-   assert.equal(parts.length,name==="car"?80:name==="car_v4"?89:name==="car_v3"?86:31);
+ } else if (["car","car_v2","car_v3","car_v4","car_v5"].includes(name)) {
+   assert.equal(parts.length,name==="car"?96:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
 
+
    if(name==="car"){
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     assert(!byName.has("cabin"),"v6 opaque cabin shell would hide side glass");
+     const roof=byName.get("roof_cap"),body=byName.get("belt_body");
+     assert(roof&&body);
+     const required=["front_upper_belt","rear_upper_belt","dashboard",
+       "front_roof_crossmember","rear_roof_crossmember"];
+     for(const id of required)assert(byName.has(id),"v6 missing frame component "+id);
+     assert(byName.get("windshield").kind==="loft");
+     assert(byName.get("rear_window").kind==="loft");
+     for(const side of ["left","right"]){
+       assert(byName.get("roof_edge_"+side)?.kind==="rounded_box");
+       assert(byName.get("upper_door_shoulder_"+side)?.kind==="rounded_box");
+       assert(byName.get("window_sill_"+side)?.kind==="rounded_box");
+       assert(byName.get("front_side_glass_"+side)?.kind==="loft");
+       assert(byName.get("rear_side_glass_"+side)?.kind==="loft");
+       assert(byName.has("a_pillar_"+side)&&byName.has("b_pillar_"+side)
+         &&byName.has("c_pillar_"+side),"v6 structural pillars missing");
+       const shoulder=byName.get("upper_door_shoulder_"+side);
+       const glass=byName.get("front_side_glass_"+side);
+       const glassBottom=glass.geometry.sections[0].profile[0][1];
+       assert(Math.abs((shoulder.position[1]+shoulder.geometry.size[1]/2)-glassBottom)<.04,
+         "v6 side windows do not rest on door shoulders");
+     }
+     const front=byName.get("windshield").geometry.sections;
+     assert(front[0].z<front[1].z&&front[0].profile[0][1]<front[1].profile[0][1],
+       "v6 windshield does not slope upward and rearward");
+     const tires=["tire_front_left","tire_front_right","tire_rear_left","tire_rear_right"]
+       .map(id=>{assert(byName.has(id));return byName.get(id)});
+     assert(tires.every(p=>p.position[1]-p.geometry.radius>=0),"v6 tire sinks into ground");
+     assert(Math.abs(tires[0].position[0]+tires[1].position[0])<.00001,
+       "v6 front wheel track asymmetric");
+     assert(Math.abs(tires[2].position[0]+tires[3].position[0])<.00001,
+       "v6 rear wheel track asymmetric");
+     assert(Math.abs((tires[2].position[2]-tires[0].position[2])-2.03)<.00001,
+       "v6 wheelbase mismatch");
+     for(const side of ["left","right"]){
+       const p=byName.get("sculpted_side_"+side);
+       assert(p?.kind==="polygon_prism");
+       const archTop=Math.max(...p.geometry.profile.map(x=>x[1]).filter(y=>y<.9));
+       assert(archTop>tires[0].position[1]+tires[0].geometry.radius+.07,
+         "v6 wheel arch clearance insufficient");
+     }
+   }
+   if(name==="car_v5"){
      const byName=new Map(entry.parts.map(p=>[p.id,p]));
      const body=byName.get("belt_body"), cabin=byName.get("cabin");
      assert(body&&cabin&&cabin.position[1]-cabin.geometry.height/2
