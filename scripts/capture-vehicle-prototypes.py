@@ -12,7 +12,7 @@ from io import BytesIO
 from PIL import Image, ImageStat
 
 ROOT=Path(__file__).resolve().parents[1]
-MODELS=("bicycle","car","car_v5","car_v7","car_v8")
+MODELS=("bicycle","car","car_v5","car_v7","car_v8","car_v9")
 VIEWS=("front-three-quarter","side","rear-three-quarter")
 
 def server_url(proc):
@@ -79,6 +79,10 @@ def main():
                         proc.kill();proc.communicate(timeout=5)
         finally:
             browser.close()
+    for view in VIEWS:
+        assert report["car_v9"]["views"][view] != report["car_v8"]["views"][view], (
+            f"v9 lofted hood/hatch produced no visible change from v8 in {view}"
+        )
     for view in VIEWS:
         assert report["car_v8"]["views"][view] != report["car_v7"]["views"][view], (
             f"v8 articulated-door geometry produced no visible change from v7 in {view}"
