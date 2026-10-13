@@ -24,6 +24,9 @@ def main():
       page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v6'",timeout=30000)
       v6=page.evaluate("() => window.__SC3D_VEHICLE_REPORT__?.()")
       assert v6["source_part_count"]==96
+      page.locator("#vehicle").select_option("v7")
+      page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v7'",timeout=30000)
+      assert page.evaluate("() => window.__SC3D_VEHICLE_REPORT__?.().source_part_count")==99
       page.locator("#vehicle").select_option("v4")
       page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v4'",timeout=30000)
       assert page.locator("#viewport canvas").count()==1
