@@ -8,7 +8,7 @@ import { loadSc3dFile } from "../runtime/sc3d/load.mjs";
 const repoRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const environmentMode = process.argv[2] === "--environments";
 const vehicleMode = process.argv[2] === "--vehicles";
-const vehicleVersions = Object.freeze(["v2","v3","v4","v5","v6","v7"]);
+const vehicleVersions = Object.freeze(["v2","v3","v4","v5","v6","v7","v8"]);
 const vehicleSource = version => resolve(repoRoot, `assets/constructive-3d/garages/block-chibi-compact-car-${version}.sc3d.yml`);
 const environmentNames = Object.freeze([
   "living-room", "kitchen", "bathroom", "office",
@@ -178,7 +178,7 @@ server.listen(port, "127.0.0.1", () => {
   console.log(`SC3D preview: http://127.0.0.1:${listeningPort}/`);
   console.log(environmentMode
     ? "scene gallery: seven accepted environments (use ?scene=living-room)"
-    : vehicleMode ? "vehicle gallery: real SC3D car v2-v6 (default ?vehicle=v5)"
+    : vehicleMode ? "vehicle gallery: real SC3D car v2-v8 (default ?vehicle=v5)"
     : `asset: ${assetPath}`);
   console.log(`validated parts: ${Object.keys(ir.parts).length}`);
 });
