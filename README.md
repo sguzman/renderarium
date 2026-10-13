@@ -265,7 +265,12 @@ review of bias artifacts and shadow-edge softness across environments.
 
 Start the actual Three.js/WebGL seven-environment preview with
 `corepack pnpm preview:environments` after installing dependencies.
-Open `http://127.0.0.1:4177/?scene=living-room` in a local browser.
+On Linux, this starts the local server and opens the Living Room in
+the default browser automatically via `xdg-open`. If desktop opening
+is unavailable, navigate to the printed local address, normally
+`http://127.0.0.1:4177/?scene=living-room`. For headless QA use
+`corepack pnpm preview:environments:server` or
+`node scripts/launch-environments.mjs --no-open`.
 Select Living Room, Kitchen, Bathroom, Office, Backyard, Garage or
 Factory from the environment menu. Drag to **orbit the camera** around
 fixed, source-authored geometry; wheel to zoom, right-drag or Shift-drag
