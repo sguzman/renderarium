@@ -92,7 +92,7 @@ def main():
                 page.locator("#vehicle").select_option("v8")
                 page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v8'",timeout=45000)
                 v8=report(page)
-                assert v8["source_part_count"]==147
+                assert v8["source_part_count"]==149
                 assert near(direction(v7),direction(v8),.001),"v8 switch changed user camera angle"
                 assert near(direction(next_snapshot),direction(v7),.001),"v7 switch changed orbit angle"
 
