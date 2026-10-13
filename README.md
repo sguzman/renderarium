@@ -279,3 +279,12 @@ a local browser server, not a public hosted deployment. Automated Chromium
 tests verify camera motion, stable scene transform and mesh count,
 nonempty 3D output at multiple angles, and WebGL context health.
 The legacy single-asset static turntable preview stays compatible.
+
+The independent CI job `Interactive seven-environment Three.js WebGL QA`
+tests genuine pointer orbiting, four quarter-turns through a full camera
+revolution, scroll zoom, view above and rear, and precise camera reset.
+It rejects blank framebuffers, unexpected mesh-count changes, wrong
+scene identifiers, errors, and geometry/presentation rotation. Source
+snapshots remain byte-identical. Each environment gets genuine Chromium
+screenshots and JSON QA evidence; this is browser correctness, not a
+guarantee of physical GPU speed or subjective visual quality.

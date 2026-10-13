@@ -46,6 +46,39 @@ jobs:
           path: artifacts/canonical-chat/
           if-no-files-found: warn
 
+  interactive:
+    name: Interactive seven-environment Three.js WebGL QA
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce public publication boundary
+        run: node tools/publication-gate.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install pnpm via Corepack
+        run: corepack enable
+      - name: Install declared dependencies
+        run: corepack pnpm install --frozen-lockfile
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Playwright and Chromium
+        run: |
+          python -m pip install playwright 'pillow>=12,<13'
+          python -m playwright install --with-deps chromium
+      - name: Orbit and zoom real Three.js scene geometry in seven environments
+        run: python scripts/test-block-chibi-environment-orbit.py --allow-swiftshader
+      - name: Upload interactive environment QA even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: interactive-environment-qa
+          path: artifacts/interactive-environments/
+          if-no-files-found: warn
+
   chromium:
     name: Canonical Three.js / Chromium WebGL browser QA
     if: ${{ github.event.repository.private == false }}
