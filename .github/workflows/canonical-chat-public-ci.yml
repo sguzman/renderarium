@@ -118,7 +118,13 @@ jobs:
         run: node scripts/export-vehicle-review-html.mjs
       - name: Test offline canonical Three.js viewer in Chromium
         run: python scripts/test-offline-vehicle-review.py
-      - name: Upload standalone canonical car review viewer\n        uses: actions/upload-artifact@v4\n        with:\n          name: canonical-car-review-html\n          path: artifacts/vehicle-review-qa/renderarium-canonical-car-review.html\n          if-no-files-found: error\n      - name: Upload independent vehicle candidate views
+      - name: Upload standalone canonical car review viewer
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-car-review-html
+          path: artifacts/vehicle-review-qa/renderarium-canonical-car-review.html
+          if-no-files-found: error
+      - name: Upload independent vehicle candidate views
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
