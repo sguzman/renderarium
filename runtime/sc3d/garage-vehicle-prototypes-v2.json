@@ -3632,7 +3632,7 @@
               0.145,
               0.058
             ],
-            "radius": 0.033,
+            "radius": 0.028,
             "segments": 3
           },
           "material": "lights",
@@ -3682,7 +3682,7 @@
               0.145,
               0.058
             ],
-            "radius": 0.033,
+            "radius": 0.028,
             "segments": 3
           },
           "material": "lights",
