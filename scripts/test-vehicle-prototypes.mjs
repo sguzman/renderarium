@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3"]);
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4"]);
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,10 +28,48 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (["car","car_v2","car_v3"].includes(name)) {
-   assert.equal(parts.length,name==="car"?89:name==="car_v3"?86:31);
+ } else if (["car","car_v2","car_v3","car_v4"].includes(name)) {
+   assert.equal(parts.length,name==="car"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
-   if (name==="car") {
+
+   if(name==="car"){
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     const body=byName.get("belt_body"), cabin=byName.get("cabin");
+     assert(body&&cabin&&cabin.position[1]-cabin.geometry.height/2
+       < body.position[1]+body.geometry.height/2-0.025,
+       "v5 cabin does not structurally overlap the body");
+     const roof=byName.get("roof_cap");
+     assert(roof&&roof.position[1]-roof.geometry.size[1]/2
+       < cabin.position[1]+cabin.geometry.height/2,
+       "v5 roof cap disconnected from cabin");
+     const tires=["tire_front_left","tire_front_right","tire_rear_left","tire_rear_right"]
+       .map(k=>{assert(byName.has(k));return byName.get(k)});
+     assert(tires.every(p=>p.position[1]-p.geometry.radius>=0),
+       "v5 tire penetrates ground");
+     assert(Math.abs(tires[0].position[0]+tires[1].position[0])<0.00001,
+       "v5 front wheels are not laterally symmetrical");
+     assert(Math.abs(tires[2].position[0]+tires[3].position[0])<0.00001,
+       "v5 rear wheels are not laterally symmetrical");
+     assert(Math.abs((tires[2].position[2]-tires[0].position[2])-2.03)<0.00001,
+       "v5 wheelbase changed unexpectedly");
+     assert(byName.get("underbody").geometry.size[0]/2
+       < Math.abs(tires[0].position[0])-tires[0].geometry.height/2,
+       "v5 underbody intersects tire swept volume");
+     const panels=["sculpted_side_left","sculpted_side_right"].map(k=>byName.get(k));
+     assert(panels.every(p=>p?.kind==="polygon_prism"&&p.geometry.profile.length>=30),
+       "v5 integrated wheel-well side panels missing");
+     const archTop=Math.max(...panels[0].geometry.profile.map(point=>point[1])
+       .filter(y=>y<.9));
+     assert(archTop>tires[0].position[1]+tires[0].geometry.radius+.07,
+       "v5 wheel arch apex leaves insufficient tire clearance");
+     for(const side of ["left","right"]){
+       assert(byName.get("front_side_glass_"+side)?.kind==="loft");
+       assert(byName.get("rear_side_glass_"+side)?.kind==="loft");
+       for(const axle of ["front","rear"])
+         assert(byName.get("wheel_opening_lip_"+axle+"_"+side)?.kind==="ribbon_path");
+     }
+   }
+   if (name==="car_v4") {
      const byName=new Map(entry.parts.map(p=>[p.id,p]));
      const body=byName.get("belt_body"),cabin=byName.get("cabin");
      assert(body&&cabin);
