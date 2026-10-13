@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9"]);
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10"]);
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,8 +28,8 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9"].includes(name)) {
-   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v9"?156:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
+ } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10"].includes(name)) {
+   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v9"?156:name==="car_v10"?167:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
 
 
@@ -80,6 +80,50 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
 
 
 
+
+   if(name==="car_v10"){
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     const src=ir.parts;
+     const hatchId="rear_hatch_assembly_v10";
+     assert(src[hatchId]&&!src[hatchId].geometry,"v10 has no dedicated liftgate hierarchy");
+     for(const id of ["rear_window","rear_deck","rear_hatch_handle",
+                       "rear_lower_hatch","rear_hatch_lower_seal",
+                       "rear_upper_belt","rear_hatch_upper_seal",
+                       "rear_hatch_center_reinforcement","hatch_latch_receiver"])
+       assert.equal(src[id]?.parent,hatchId,"Disconnected v10 liftgate component "+id);
+     const glass=byName.get("rear_window").geometry.sections;
+     assert(glass.length>=5,"v10 glass is insufficiently raked");
+     assert(glass.at(-1).z>1.34,"v10 glass does not extend into hatch");
+     assert(glass[0].profile[0][1]-glass.at(-1).profile[0][1]>.5,
+        "v10 glass has no substantial tailgate slope");
+     const skin=byName.get("rear_deck").geometry.sections;
+     assert(skin.length>=5&&skin[0].z>1.3,
+       "v10 must expose a distinct lower stamped liftgate");
+     assert(skin[0].z<=glass.at(-1).z,
+       "v10 upper glass must overlap the liftgate lower skin");
+     for(const side of ["left","right"]){
+       const s=side==="left"?-1:1;
+       for(const id of ["rear_liftgate_shutline_","front_fender_transition_"]){
+         const part=byName.get(id+side);
+         assert(part&&["ribbon_path","loft"].includes(part.kind),
+           "v10 missing shaped structural part "+id+side);
+       }
+       const haunch=byName.get("front_fender_transition_"+side);
+       assert(haunch.kind==="loft"&&haunch.geometry.sections.length>=5);
+       assert(haunch.geometry.sections[0].z<haunch.geometry.sections.at(-1).z);
+       assert.equal(src["rear_hatch_hinge_"+side]?.parent,hatchId);
+       assert.equal(src["taillight_"+side]?.parent,"root",
+         "v10 taillights must remain on the fixed body");
+       assert.equal(src["quarter_glass_"+side]?.parent,"root",
+         "v10 quarter glass should not open with rear hatch");
+       for(const door of ["front","rear"])
+         assert.equal(src[door+"_side_glass_"+side]?.parent,door+"_door_"+side,
+           "v10 may not lose mechanically attached windows");
+       assert(byName.get("rear_tail_lamp_mount_"+side)?.kind==="rounded_box");
+       assert(Math.abs(haunch.geometry.sections[0].profile[0][0])>.80,
+         "v10 front haunch must connect outboard to the fender");
+     }
+   }
    if(name==="car_v9"){
      const byName=new Map(entry.parts.map(p=>[p.id,p]));
      assert(!byName.has("sculpted_side_left"),"v9 may not reinstate a continuous toy-side slab");
