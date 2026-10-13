@@ -10,7 +10,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const text=path=>readFileSync(resolve(root,path),"utf8");
 const pack=value=>gzipSync(Buffer.from(value)).toString("base64");
-const versions=["v2","v3","v4","v5","v6","v7","v8"];
+const versions=["v2","v3","v4","v5","v6","v7","v8","v9"];
 const assets={};
 for(const version of versions){
   const ir=await loadSc3dFile(resolve(root,
