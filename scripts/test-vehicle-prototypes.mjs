@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5"]);
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7"]);
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,8 +28,8 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (["car","car_v2","car_v3","car_v4","car_v5"].includes(name)) {
-   assert.equal(parts.length,name==="car"?96:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
+ } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7"].includes(name)) {
+   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
 
 
@@ -75,6 +75,33 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
        const archTop=Math.max(...p.geometry.profile.map(x=>x[1]).filter(y=>y<.9));
        assert(archTop>tires[0].position[1]+tires[0].geometry.radius+.07,
          "v6 wheel arch clearance insufficient");
+     }
+   }
+
+   if(name==="car_v7"){
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     for(const id of ["mid_lower_shell","front_lower_apron","rear_lower_apron"])
+       assert(byName.has(id),"v7 lower shell not sealed: "+id);
+     const shell=byName.get("mid_lower_shell"),underbody=byName.get("underbody"),belt=byName.get("belt_body");
+     assert(shell.position[1]-shell.geometry.height/2 < underbody.position[1]+underbody.geometry.size[1]/2+.02,
+       "v7 mid shell must meet underbody");
+     assert(shell.position[1]+shell.geometry.height/2 > belt.position[1]-belt.geometry.height/2+.01,
+       "v7 mid shell must overlap belt");
+     for(const side of ["left","right"]){
+       const front=byName.get("front_side_glass_"+side).geometry.sections;
+       const rear=byName.get("rear_side_glass_"+side).geometry.sections;
+       assert.equal(front.length,4,"v7 front glass no A-pillar contour");
+       assert.equal(rear.length,4,"v7 rear glass no C-pillar contour");
+       assert(front[0].profile[1][1]<front[1].profile[1][1]-.25,
+         "v7 front glass not tapered to A pillar");
+       assert(rear.at(-1).profile[1][1]<rear.at(-2).profile[1][1]-.25,
+         "v7 rear glass not tapered to C pillar");
+       assert(Math.abs(front[1].profile[1][1]-rear[0].profile[1][1])<.005,
+         "v7 side window headers aren't aligned");
+       assert(front[0].profile[0][1]===rear[0].profile[0][1],
+         "v7 side glazing not on a continuous sill");
+       const b=byName.get("b_pillar_"+side);
+       assert(b.geometry.size[2]>=.105,"v7 B pillar leaves open window split");
      }
    }
    if(name==="car_v5"){
