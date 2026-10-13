@@ -30,6 +30,9 @@ def main():
       page.locator("#vehicle").select_option("v8")
       page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v8'",timeout=30000)
       assert page.evaluate("() => window.__SC3D_VEHICLE_REPORT__?.().source_part_count")==149
+      page.locator("#vehicle").select_option("v9")
+      page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v9'",timeout=30000)
+      assert page.evaluate("() => window.__SC3D_VEHICLE_REPORT__?.().source_part_count")==156
       page.locator("#vehicle").select_option("v4")
       page.wait_for_function("() => window.__SC3D_VEHICLE_REPORT__?.().asset_id==='block-chibi-compact-car-v4'",timeout=30000)
       assert page.locator("#viewport canvas").count()==1
