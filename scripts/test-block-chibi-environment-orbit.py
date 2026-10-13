@@ -40,7 +40,9 @@ def server_url(process: subprocess.Popen[str]) -> str:
 def pixels_present(data: bytes) -> None:
     with Image.open(BytesIO(data)) as opened:
         image = opened.convert("RGB")
-    assert image.size == (960, 640), image.size
+    # The explorer includes a toolbar; the canvas occupies the remaining
+    # viewport height. Verify its real pixel dimensions, not page dimensions.
+    assert image.width == 960 and 400 <= image.height <= 640, image.size
     background = Image.new("RGB", image.size, (37, 35, 42))
     difference = ImageChops.difference(image, background)
     assert difference.getbbox(), "Blank framebuffer: only background color"
