@@ -13,7 +13,8 @@
     "verify:chat-preview-pipeline": "node scripts/verify-chat-preview-pipeline.mjs",
     "verify:campaign": "node tools/verify-chibi-campaign.mjs",
     "verify:factory-preview": "node tools/verify-factory-preview.mjs",
-    "preview:sc3d": "node scripts/serve-sc3d-preview.mjs"
+    "preview:sc3d": "node scripts/serve-sc3d-preview.mjs",
+    "preview:environments": "node scripts/serve-sc3d-preview.mjs --environments"
   },
   "dependencies": {
     "ajv": "^8.17.1",

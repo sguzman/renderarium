@@ -33,6 +33,17 @@
   <main>
     <header>
       <strong id="title">SC3D preview</strong>
+      <label id="environment-choice" hidden>Environment
+        <select id="environment" aria-label="Choose environment"></select>
+      </label>
+      <label id="projection-choice" hidden>Camera
+        <select id="projection" aria-label="Camera projection">
+          <option value="perspective">Perspective</option>
+          <option value="orthographic">Orthographic</option>
+        </select>
+      </label>
+      <button id="above" type="button" hidden>view above</button>
+      <button id="rear" type="button" hidden>view rear</button>
       <label><input id="structure" type="checkbox"> structure / wireframe</label>
       <button id="reset" type="button">reset view</button>
       <span id="status">loading…</span>
@@ -97,6 +108,8 @@
     const structure = document.querySelector("#structure");
     const reset = document.querySelector("#reset");
     const params = new URLSearchParams(location.search);
+    const environmentMode = params.has("scene");
+    const requestedEnvironment = params.get("scene");
     const requestedView = params.get("view");
     const diagnosticMode = params.get("diagnostic") === "1";
     const qualityExperiment = selectQualityExperiment(params, diagnosticMode);
@@ -118,12 +131,50 @@
       document.querySelector("#viewport").style.minHeight = "100vh";
     }
 
-    const ir = await fetch("/asset-ir.json", { cache: "no-store" }).then((r) => {
+    const irUrl = environmentMode
+      ? "/asset-ir.json?scene=" + encodeURIComponent(requestedEnvironment)
+      : "/asset-ir.json";
+    const ir = await fetch(irUrl, { cache: "no-store" }).then((r) => {
       if (!r.ok) throw new Error(`asset load failed: HTTP ${r.status}`);
       return r.json();
     });
 
     title.textContent = `${ir.asset.name ?? ir.asset.id} · SC3D ${ir.version}`;
+    if (environmentMode) {
+      const catalogResponse = await fetch("/environment-list.json", {cache:"no-store"});
+      if (!catalogResponse.ok) throw new Error("Seven-scene gallery server is not available");
+      const catalog = await catalogResponse.json();
+      if (!catalog.scenes.includes(requestedEnvironment)) {
+        throw new Error("Selected environment is not in the approved catalog");
+      }
+      const choice = document.querySelector("#environment");
+      for (const sceneName of catalog.scenes) {
+        const option = document.createElement("option");
+        option.value = sceneName;
+        option.textContent = sceneName.replaceAll("-", " ");
+        choice.append(option);
+      }
+      choice.value = requestedEnvironment;
+      choice.addEventListener("change", () => {
+        const next = new URL(location.href);
+        next.searchParams.set("scene", choice.value);
+        location.assign(next.href);
+      });
+      document.querySelector("#environment-choice").hidden = false;
+      document.querySelector("#projection-choice").hidden = false;
+      document.querySelector("#above").hidden = false;
+      document.querySelector("#rear").hidden = false;
+      const projectionChoice = document.querySelector("#projection");
+      projectionChoice.value = params.get("projection") === "orthographic"
+        ? "orthographic" : "perspective";
+      projectionChoice.addEventListener("change", () => {
+        const next = new URL(location.href);
+        next.searchParams.set("projection", projectionChoice.value);
+        location.assign(next.href);
+      });
+      document.querySelector(".note").textContent =
+        "Real Three.js / WebGL scene. Drag to orbit the camera. Wheel to zoom. Right-drag to pan. Reset restores the starting viewpoint.";
+    }
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("#25232a");
@@ -216,7 +267,8 @@
     let zoom = 1;
 
     function createCamera() {
-      if (requestedProjection === "perspective") {
+      if (requestedProjection === "perspective" ||
+          (environmentMode && requestedProjection !== "orthographic")) {
         const fov = Number.isFinite(requestedFov) && requestedFov > 1 && requestedFov < 120
           ? requestedFov
           : 24;
@@ -235,6 +287,7 @@
     const bounds = new THREE.Box3().setFromObject(character);
     const boundSize = bounds.getSize(new THREE.Vector3());
     const boundCenter = bounds.getCenter(new THREE.Vector3());
+    const initialBoundCenter = boundCenter.clone();
     let baseHalfHeight = Math.max(1.85, boundSize.y * 0.58);
 
     const ground = new THREE.Mesh(
@@ -337,6 +390,7 @@
     }
 
     const viewDirections = {
+      above: new THREE.Vector3(0.001, 1, -0.001),
       front: new THREE.Vector3(0, 0.04, -1),
       "front-three-quarter": new THREE.Vector3(0.58, 0.06, -0.82),
       front3q: new THREE.Vector3(0.58, 0.06, -0.82),
@@ -393,6 +447,7 @@
     }
 
     function resetView() {
+      if (environmentMode) boundCenter.copy(initialBoundCenter);
       setViewPreset("front-three-quarter");
       requestRender();
     }
@@ -434,13 +489,39 @@
 
     structure.addEventListener("change", () => { setStructureMode(character, structure.checked); requestRender(); });
     reset.addEventListener("click", resetView);
+    if (environmentMode) {
+      document.querySelector("#above").addEventListener("click", () => setViewPreset("above"));
+      document.querySelector("#rear").addEventListener("click", () => setViewPreset("rear"));
+    }
 
     let dragging = false;
+    let panning = false;
     let lastX = 0;
     let lastY = 0;
+    const stableMeshCount = (() => {
+      let count = 0;
+      character.traverse(object => { if (object.isMesh) count++; });
+      return count;
+    })();
+    if (environmentMode) {
+      window.__SC3D_ENVIRONMENT_REPORT__ = () => ({
+        engine: "Three.js WebGLRenderer",
+        scene: ir.asset.id,
+        camera_position: camera.position.toArray(),
+        camera_projection: camera.isPerspectiveCamera ? "perspective" : "orthographic",
+        camera_target: boundCenter.toArray(),
+        camera_zoom: camera.zoom,
+        presentation_rotation: presentation.rotation.toArray().slice(0, 3),
+        mesh_count: stableMeshCount,
+        renderer_context: renderer.getContext().constructor.name,
+        frame: frameProof.frameCount(),
+      });
+    }
 
     renderer.domElement.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 && event.button !== 2) return;
       dragging = true;
+      panning = environmentMode && (event.button === 2 || event.shiftKey);
       lastX = event.clientX;
       lastY = event.clientY;
       renderer.domElement.setPointerCapture(event.pointerId);
@@ -450,12 +531,42 @@
       if (!dragging) return;
       const dx = event.clientX - lastX;
       const dy = event.clientY - lastY;
-      presentation.rotation.y += dx * 0.009;
-      presentation.rotation.x = THREE.MathUtils.clamp(
-        presentation.rotation.x + dy * 0.006,
-        -0.42,
-        0.42,
-      );
+      if (environmentMode) {
+        if (panning) {
+          const distance = camera.position.distanceTo(boundCenter);
+          const scale = camera.isPerspectiveCamera
+            ? distance * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * 2
+            : (camera.top - camera.bottom) / camera.zoom;
+          const size = Math.max(1, viewport.clientHeight);
+          const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
+          const up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
+          const delta = right.multiplyScalar(-dx * scale / size)
+            .add(up.multiplyScalar(dy * scale / size));
+          boundCenter.add(delta);
+          camera.position.add(delta);
+          camera.lookAt(boundCenter);
+        } else {
+          const spherical = new THREE.Spherical().setFromVector3(
+            camera.position.clone().sub(boundCenter)
+          );
+          spherical.theta -= dx * 0.009;
+          spherical.phi = THREE.MathUtils.clamp(
+            spherical.phi + dy * 0.006, 0.075, Math.PI - 0.075
+          );
+          camera.position.copy(boundCenter).add(
+            new THREE.Vector3().setFromSpherical(spherical)
+          );
+          camera.lookAt(boundCenter);
+        }
+      } else {
+        // Preserve the existing static preview's turntable interaction.
+        presentation.rotation.y += dx * 0.009;
+        presentation.rotation.x = THREE.MathUtils.clamp(
+          presentation.rotation.x + dy * 0.006,
+          -0.42,
+          0.42,
+        );
+      }
       lastX = event.clientX;
       lastY = event.clientY;
       requestRender();
@@ -463,15 +574,29 @@
 
     renderer.domElement.addEventListener("pointerup", (event) => {
       dragging = false;
-      renderer.domElement.releasePointerCapture(event.pointerId);
+      panning = false;
+      if (renderer.domElement.hasPointerCapture(event.pointerId)) {
+        renderer.domElement.releasePointerCapture(event.pointerId);
+      }
+    });
+    renderer.domElement.addEventListener("pointercancel", () => {
+      dragging = false;
+      panning = false;
+    });
+    renderer.domElement.addEventListener("contextmenu", event => {
+      if (environmentMode) event.preventDefault();
     });
 
     renderer.domElement.addEventListener("wheel", (event) => {
       event.preventDefault();
-      zoom = THREE.MathUtils.clamp(zoom * Math.exp(-event.deltaY * 0.001), 0.65, 2.4);
+      zoom = THREE.MathUtils.clamp(
+        zoom * Math.exp(-event.deltaY * 0.001), 0.65, environmentMode ? 6 : 2.4
+      );
       if (camera.isPerspectiveCamera) {
         const direction = camera.position.clone().sub(boundCenter).normalize();
-        const distance = perspectiveFitDistance() / zoom;
+        const distance = environmentMode
+          ? Math.max(boundSize.length() * 0.65, perspectiveFitDistance() / zoom)
+          : perspectiveFitDistance() / zoom;
         camera.position.copy(boundCenter).addScaledVector(direction, distance);
       } else {
         camera.zoom = zoom;

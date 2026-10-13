@@ -6,7 +6,14 @@ import { fileURLToPath } from "node:url";
 import { loadSc3dFile } from "../runtime/sc3d/load.mjs";
 
 const repoRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const assetPath = resolve(process.argv[2] ?? "assets/constructive-3d/quest-girl-minimal.sc3d.yml");
+const environmentMode = process.argv[2] === "--environments";
+const environmentNames = Object.freeze([
+  "living-room", "kitchen", "bathroom", "office",
+  "backyard", "garage", "factory",
+]);
+const assetPath = environmentMode
+  ? resolve(repoRoot, "scenes/block-chibi-living-room-v1/room.assembly.yml")
+  : resolve(process.argv[2] ?? "assets/constructive-3d/quest-girl-minimal.sc3d.yml");
 const port = Number(process.env.PORT ?? 4177);
 
 const webglHtmlPath = resolve(repoRoot, "scenes/sc3d-preview/index.html");
@@ -54,6 +61,24 @@ const ir = assetPath.endsWith(".assembly.yml")
     ))
   : await loadSc3dFile(assetPath);
 const assetJson = JSON.stringify(ir);
+const environmentCache = new Map(environmentMode ? [["living-room", assetJson]] : []);
+function environmentIr(scene) {
+  if (!environmentNames.includes(scene)) return null;
+  if (!environmentCache.has(scene)) {
+    const file = `scenes/block-chibi-${scene}-v1/room.assembly.yml`;
+    const value = execFileSync(
+      process.execPath,
+      [resolve(repoRoot, "scripts/assemble-sc3d-scene.mjs"), "--emit-ir-json", file],
+      {cwd: repoRoot, encoding: "utf8", timeout: 120000, maxBuffer: 16 * 1024 * 1024},
+    );
+    const parsed = JSON.parse(value);
+    if (parsed.asset?.id !== `block-chibi-${scene}-v1`) {
+      throw new Error(`Incorrect source-bound scene IR for ${scene}`);
+    }
+    environmentCache.set(scene, JSON.stringify(parsed));
+  }
+  return environmentCache.get(scene);
+}
 
 const contentType = (path) => ({
   ".html": "text/html; charset=utf-8",
@@ -80,12 +105,27 @@ const routes = new Map([
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", "http://127.0.0.1");
-    if (url.pathname === "/asset-ir.json") {
+    if (url.pathname === "/environment-list.json" && environmentMode) {
       response.writeHead(200, {
         "content-type": "application/json; charset=utf-8",
         "cache-control": "no-store",
       });
-      response.end(assetJson);
+      response.end(JSON.stringify({scenes: environmentNames}));
+      return;
+    }
+    if (url.pathname === "/asset-ir.json") {
+      const requested = url.searchParams.get("scene") ?? "living-room";
+      const body = environmentMode ? environmentIr(requested) : assetJson;
+      if (body === null) {
+        response.writeHead(400, {"content-type":"text/plain; charset=utf-8"});
+        response.end("Unknown accepted environment");
+        return;
+      }
+      response.writeHead(200, {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+      });
+      response.end(body);
       return;
     }
 
@@ -114,6 +154,8 @@ server.listen(port, "127.0.0.1", () => {
   const address = server.address();
   const listeningPort = typeof address === "object" && address ? address.port : port;
   console.log(`SC3D preview: http://127.0.0.1:${listeningPort}/`);
-  console.log(`asset: ${assetPath}`);
+  console.log(environmentMode
+    ? "scene gallery: seven accepted environments (use ?scene=living-room)"
+    : `asset: ${assetPath}`);
   console.log(`validated parts: ${Object.keys(ir.parts).length}`);
 });

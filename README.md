@@ -260,3 +260,22 @@ VSM blur can reduce stair-stepped edges but may wash out small shadows.
 This study does not approve either effect for the production renderer.
 The gallery records settings and pixel differences to enable visual
 review of bias artifacts and shadow-edge softness across environments.
+
+## Interactive environment exploration
+
+Start the actual Three.js/WebGL seven-environment preview with
+`corepack pnpm preview:environments` after installing dependencies.
+Open `http://127.0.0.1:4177/?scene=living-room` in a local browser.
+Select Living Room, Kitchen, Bathroom, Office, Backyard, Garage or
+Factory from the environment menu. Drag to **orbit the camera** around
+fixed, source-authored geometry; wheel to zoom, right-drag or Shift-drag
+to pan, and use view above, view rear, or reset to navigate.
+Perspective and orthographic camera choices use the same WebGL renderer.
+
+The launcher serves only an explicit seven-name allowlist. Assemblies
+are resolved in memory through the same canonical assembler; no accepted
+mesh, scene specification, or generated snapshot is rewritten. This is
+a local browser server, not a public hosted deployment. Automated Chromium
+tests verify camera motion, stable scene transform and mesh count,
+nonempty 3D output at multiple angles, and WebGL context health.
+The legacy single-asset static turntable preview stays compatible.
