@@ -325,3 +325,17 @@ and captures genuine Three.js Chromium perspective views. **Neither
 candidate is installed into the approved Garage**, and neither is
 visually accepted. Any replacement requires a separate comparison
 and explicit approval of the revised scene.
+
+### Vehicle geometry revision after interactive review
+
+The bicycle v2 keeps its circular wheels but replaces center-plane fork,
+seat-stay, chain-stay and rack-support members with **paired lateral
+supports**. All supports adjacent to tires now run outside the tire
+plane, with a CI geometric clearance assertion. It remains a candidate
+until reviewed inside the conversation.
+
+The car v3 is a separately authored experimental revision with distinct
+hood, cabin and rear deck, two side windows separated by a B pillar,
+door panels, and visible wheel-arch outlines. The earlier car v2 is
+retained for comparison. The accepted garage assembly, preview,
+vehicle v1 assets and frozen scene signatures are unchanged.

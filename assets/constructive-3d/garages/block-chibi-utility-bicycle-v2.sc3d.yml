@@ -5,10 +5,10 @@ coordinates: {handedness: right, up: y, forward: "-z"}
 requires: [core.primitives, core.rigid-hierarchy]
 asset:
   id: block-chibi-utility-bicycle-v2
-  name: Block Chibi utility bicycle v2 candidate
+  name: Block Chibi utility bicycle v2 wheel-clearance candidate
   kind: prop
   root: root
-  tags: [garage, non-human, vehicle, experimental-v2]
+  tags: [garage, non-human, vehicle, experimental]
 materials:
   frame: {role: frame, base_color: "#80b4a9", roughness: 0.93}
   rim: {role: rim, base_color: "#41434c", roughness: 0.93}
@@ -387,30 +387,6 @@ parts:
     geometry: {kind: cylinder, radius: 0.052, height: 0.6977105417004964, segments: 12}
     material: frame
     transform: {translate: [0, 0.73, 0.16], rotate_deg: [27.2996, 0, 0]}
-  seat_stay:
-    role: seat_stay
-    parent: root
-    geometry: {kind: cylinder, radius: 0.039, height: 0.8028075734570521, segments: 12}
-    material: frame
-    transform: {translate: [0, 0.73, 0.575], rotate_deg: [140.5599, 0, 0]}
-  chain_stay:
-    role: chain_stay
-    parent: root
-    geometry: {kind: cylinder, radius: 0.043, height: 0.83, segments: 12}
-    material: frame
-    transform: {translate: [0, 0.42, 0.415], rotate_deg: [90, 0, 0]}
-  front_fork:
-    role: front_fork
-    parent: root
-    geometry: {kind: cylinder, radius: 0.06, height: 0.7424284477308235, segments: 12}
-    material: frame
-    transform: {translate: [0, 0.75, -0.72], rotate_deg: [-152.7447, 0, 0]}
-  rear_rack_support:
-    role: rear_rack_support
-    parent: root
-    geometry: {kind: cylinder, radius: 0.033, height: 0.6020797289396148, segments: 12}
-    material: frame
-    transform: {translate: [0, 0.72, 0.805], rotate_deg: [-4.7636, 0, 0]}
   seat_post:
     role: seat_post
     parent: root
@@ -507,5 +483,89 @@ parts:
     geometry: {kind: cuboid, size: [0.045, 0.22, 0.33]}
     material: basket
     transform: {translate: [0.225, 1.16, -0.81], rotate_deg: [0, 0, 0]}
+  fork_crown_left:
+    role: fork_crown_left
+    parent: root
+    geometry: {kind: cylinder, radius: 0.039, height: 0.22472, segments: 12}
+    material: frame
+    transform: {translate: [-0.09, 1.03, -0.595], rotate_deg: [-138.01279, 0, 53.2247]}
+  fork_leg_left:
+    role: fork_leg_left
+    parent: root
+    geometry: {kind: cylinder, radius: 0.037, height: 0.61327, segments: 12}
+    material: frame
+    transform: {translate: [-0.18, 0.7, -0.765], rotate_deg: [-155.94265, 0, 0]}
+  seat_stay_top_left:
+    role: seat_stay_top_left
+    parent: root
+    geometry: {kind: cylinder, radius: 0.033, height: 0.21307, segments: 12}
+    material: frame
+    transform: {translate: [-0.09, 0.995, 0.355], rotate_deg: [142.12502, 0, 57.64857]}
+  rear_seat_stay_left:
+    role: rear_seat_stay_left
+    parent: root
+    geometry: {kind: cylinder, radius: 0.034, height: 0.68884, segments: 12}
+    material: frame
+    transform: {translate: [-0.18, 0.685, 0.61], rotate_deg: [140.30093, 0, 0]}
+  chain_stay_root_left:
+    role: chain_stay_root_left
+    parent: root
+    geometry: {kind: cylinder, radius: 0.034, height: 0.23431, segments: 12}
+    material: frame
+    transform: {translate: [-0.09, 0.42, 0.075], rotate_deg: [90, 0, 50.19443]}
+  rear_chain_stay_left:
+    role: rear_chain_stay_left
+    parent: root
+    geometry: {kind: cylinder, radius: 0.034, height: 0.68, segments: 12}
+    material: frame
+    transform: {translate: [-0.18, 0.42, 0.49], rotate_deg: [90, 0, 0]}
+  rack_stay_left:
+    role: rack_stay_left
+    parent: root
+    geometry: {kind: cylinder, radius: 0.027, height: 0.62008, segments: 12}
+    material: frame
+    transform: {translate: [-0.18, 0.73, 0.825], rotate_deg: [-0.92405, 0, 0]}
+  fork_crown_right:
+    role: fork_crown_right
+    parent: root
+    geometry: {kind: cylinder, radius: 0.039, height: 0.22472, segments: 12}
+    material: frame
+    transform: {translate: [0.09, 1.03, -0.595], rotate_deg: [-138.01279, 0, -53.2247]}
+  fork_leg_right:
+    role: fork_leg_right
+    parent: root
+    geometry: {kind: cylinder, radius: 0.037, height: 0.61327, segments: 12}
+    material: frame
+    transform: {translate: [0.18, 0.7, -0.765], rotate_deg: [-155.94265, 0, 0]}
+  seat_stay_top_right:
+    role: seat_stay_top_right
+    parent: root
+    geometry: {kind: cylinder, radius: 0.033, height: 0.21307, segments: 12}
+    material: frame
+    transform: {translate: [0.09, 0.995, 0.355], rotate_deg: [142.12502, 0, -57.64857]}
+  rear_seat_stay_right:
+    role: rear_seat_stay_right
+    parent: root
+    geometry: {kind: cylinder, radius: 0.034, height: 0.68884, segments: 12}
+    material: frame
+    transform: {translate: [0.18, 0.685, 0.61], rotate_deg: [140.30093, 0, 0]}
+  chain_stay_root_right:
+    role: chain_stay_root_right
+    parent: root
+    geometry: {kind: cylinder, radius: 0.034, height: 0.23431, segments: 12}
+    material: frame
+    transform: {translate: [0.09, 0.42, 0.075], rotate_deg: [90, 0, -50.19443]}
+  rear_chain_stay_right:
+    role: rear_chain_stay_right
+    parent: root
+    geometry: {kind: cylinder, radius: 0.034, height: 0.68, segments: 12}
+    material: frame
+    transform: {translate: [0.18, 0.42, 0.49], rotate_deg: [90, 0, 0]}
+  rack_stay_right:
+    role: rack_stay_right
+    parent: root
+    geometry: {kind: cylinder, radius: 0.027, height: 0.62008, segments: 12}
+    material: frame
+    transform: {translate: [0.18, 0.73, 0.825], rotate_deg: [-0.92405, 0, 0]}
 extensions:
   scenarium: {style_ref: block-chibi-room, review: pending, garage_source_preserved: true}
