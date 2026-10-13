@@ -1860,6 +1860,2608 @@
       }
     },
     "car": {
+      "id": "block-chibi-compact-car-v4",
+      "source": "assets/constructive-3d/garages/block-chibi-compact-car-v4.sc3d.yml",
+      "parts": [
+        {
+          "id": "underbody",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.7,
+              0.42,
+              2.8
+            ],
+            "radius": 0.09,
+            "segments": 3
+          },
+          "material": "lower",
+          "position": [
+            0,
+            0.5,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "belt_body",
+          "kind": "tapered_box",
+          "geometry": {
+            "bottom": [
+              1.75,
+              2.94
+            ],
+            "top": [
+              1.7,
+              2.89
+            ],
+            "height": 0.47
+          },
+          "material": "body",
+          "position": [
+            0,
+            0.846,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "hood",
+          "kind": "tapered_box",
+          "geometry": {
+            "bottom": [
+              1.74,
+              1.18
+            ],
+            "top": [
+              1.57,
+              1.08
+            ],
+            "height": 0.2
+          },
+          "material": "body",
+          "position": [
+            0,
+            1.14,
+            -0.9
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "rear_deck",
+          "kind": "tapered_box",
+          "geometry": {
+            "bottom": [
+              1.67,
+              0.78
+            ],
+            "top": [
+              1.54,
+              0.68
+            ],
+            "height": 0.17
+          },
+          "material": "body",
+          "position": [
+            0,
+            1.12,
+            1.05
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "cabin",
+          "kind": "tapered_box",
+          "geometry": {
+            "bottom": [
+              1.47,
+              1.82
+            ],
+            "top": [
+              1.17,
+              1.24
+            ],
+            "height": 0.72
+          },
+          "material": "roof",
+          "position": [
+            0,
+            1.39,
+            0.225
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "roof_slab",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.16,
+              0.055,
+              1.25
+            ],
+            "radius": 0.023,
+            "segments": 3
+          },
+          "material": "roof",
+          "position": [
+            0,
+            1.756,
+            0.225
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "windshield",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              1.14,
+              0.52,
+              0.027
+            ]
+          },
+          "material": "glass",
+          "position": [
+            0,
+            1.475,
+            -0.57
+          ],
+          "rotation": [
+            28,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "rear_window",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              1.04,
+              0.42,
+              0.027
+            ]
+          },
+          "material": "window",
+          "position": [
+            0,
+            1.475,
+            1.03
+          ],
+          "rotation": [
+            -28,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "front_bumper",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.67,
+              0.12,
+              0.16
+            ],
+            "radius": 0.038,
+            "segments": 3
+          },
+          "material": "trim",
+          "position": [
+            0,
+            0.52,
+            -1.515
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "rear_bumper",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.67,
+              0.12,
+              0.16
+            ],
+            "radius": 0.038,
+            "segments": 3
+          },
+          "material": "trim",
+          "position": [
+            0,
+            0.52,
+            1.515
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "front_grille",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.65,
+              0.115,
+              0.018
+            ]
+          },
+          "material": "detail",
+          "position": [
+            0,
+            0.704,
+            -1.461
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "headlamp_left",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.31,
+              0.135,
+              0.038
+            ]
+          },
+          "material": "lights",
+          "position": [
+            -0.61,
+            0.845,
+            -1.472
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tail_lamp_left",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.32,
+              0.14,
+              0.032
+            ]
+          },
+          "material": "tail",
+          "position": [
+            -0.61,
+            0.845,
+            1.474
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "headlamp_right",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.31,
+              0.135,
+              0.038
+            ]
+          },
+          "material": "lights",
+          "position": [
+            0.61,
+            0.845,
+            -1.472
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tail_lamp_right",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.32,
+              0.14,
+              0.032
+            ]
+          },
+          "material": "tail",
+          "position": [
+            0.61,
+            0.845,
+            1.474
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "front_window_left",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.023,
+              0.34,
+              0.53
+            ]
+          },
+          "material": "glass",
+          "position": [
+            -0.628,
+            1.47,
+            -0.2
+          ],
+          "rotation": [
+            0,
+            0,
+            -8
+          ]
+        },
+        {
+          "id": "rear_window_side_left",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.023,
+              0.34,
+              0.43
+            ]
+          },
+          "material": "window",
+          "position": [
+            -0.628,
+            1.47,
+            0.43
+          ],
+          "rotation": [
+            0,
+            0,
+            -8
+          ]
+        },
+        {
+          "id": "b_pillar_left",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.037,
+              0.48,
+              0.036
+            ]
+          },
+          "material": "roof",
+          "position": [
+            -0.634,
+            1.47,
+            0.116
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "door_handle_left",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.024,
+              0.033,
+              0.15
+            ]
+          },
+          "material": "trim",
+          "position": [
+            -0.9,
+            1.01,
+            -0.21
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "door_seam_left",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.016,
+              0.31,
+              0.014
+            ]
+          },
+          "material": "detail",
+          "position": [
+            -0.894,
+            0.83,
+            0.16
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "mirror_left",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              0.13,
+              0.11,
+              0.16
+            ],
+            "radius": 0.03,
+            "segments": 3
+          },
+          "material": "roof",
+          "position": [
+            -0.79,
+            1.23,
+            -0.52
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "side_sill_left",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.05,
+              0.08,
+              1.18
+            ]
+          },
+          "material": "lower",
+          "position": [
+            -0.858,
+            0.599,
+            0.11
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tire_front_left",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.324,
+            "height": 0.215,
+            "segments": 16
+          },
+          "material": "rubber",
+          "position": [
+            -0.865,
+            0.348,
+            -1.01
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_front_left",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.202,
+            "height": 0.036,
+            "segments": 16
+          },
+          "material": "hub",
+          "position": [
+            -1.004,
+            0.348,
+            -1.01
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_cap_front_left",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.074,
+            "height": 0.042,
+            "segments": 16
+          },
+          "material": "trim",
+          "position": [
+            -1.027,
+            0.348,
+            -1.01
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "fender_front_left_0",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.40888,
+            -0.62564
+          ],
+          "rotation": [
+            -9,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.52467,
+            -0.66327
+          ],
+          "rotation": [
+            -27,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_2",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.62317,
+            -0.73483
+          ],
+          "rotation": [
+            -45,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_3",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.69473,
+            -0.83333
+          ],
+          "rotation": [
+            -63,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_4",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.73236,
+            -0.94912
+          ],
+          "rotation": [
+            -81,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_5",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.73236,
+            -1.07088
+          ],
+          "rotation": [
+            -99,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_6",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.69473,
+            -1.18667
+          ],
+          "rotation": [
+            -117,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_7",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.62317,
+            -1.28517
+          ],
+          "rotation": [
+            -135,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_8",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.52467,
+            -1.35673
+          ],
+          "rotation": [
+            -153,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_left_9",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.40888,
+            -1.39436
+          ],
+          "rotation": [
+            -171,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tire_rear_left",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.324,
+            "height": 0.215,
+            "segments": 16
+          },
+          "material": "rubber",
+          "position": [
+            -0.865,
+            0.348,
+            0.97
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_rear_left",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.202,
+            "height": 0.036,
+            "segments": 16
+          },
+          "material": "hub",
+          "position": [
+            -1.004,
+            0.348,
+            0.97
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_cap_rear_left",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.074,
+            "height": 0.042,
+            "segments": 16
+          },
+          "material": "trim",
+          "position": [
+            -1.027,
+            0.348,
+            0.97
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "fender_rear_left_0",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.40888,
+            1.35436
+          ],
+          "rotation": [
+            -9,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.52467,
+            1.31673
+          ],
+          "rotation": [
+            -27,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_2",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.62317,
+            1.24517
+          ],
+          "rotation": [
+            -45,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_3",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.69473,
+            1.14667
+          ],
+          "rotation": [
+            -63,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_4",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.73236,
+            1.03088
+          ],
+          "rotation": [
+            -81,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_5",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.73236,
+            0.90912
+          ],
+          "rotation": [
+            -99,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_6",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.69473,
+            0.79333
+          ],
+          "rotation": [
+            -117,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_7",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.62317,
+            0.69483
+          ],
+          "rotation": [
+            -135,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_8",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.52467,
+            0.62327
+          ],
+          "rotation": [
+            -153,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_left_9",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            -0.957,
+            0.40888,
+            0.58564
+          ],
+          "rotation": [
+            -171,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "front_window_right",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.023,
+              0.34,
+              0.53
+            ]
+          },
+          "material": "glass",
+          "position": [
+            0.628,
+            1.47,
+            -0.2
+          ],
+          "rotation": [
+            0,
+            0,
+            8
+          ]
+        },
+        {
+          "id": "rear_window_side_right",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.023,
+              0.34,
+              0.43
+            ]
+          },
+          "material": "window",
+          "position": [
+            0.628,
+            1.47,
+            0.43
+          ],
+          "rotation": [
+            0,
+            0,
+            8
+          ]
+        },
+        {
+          "id": "b_pillar_right",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.037,
+              0.48,
+              0.036
+            ]
+          },
+          "material": "roof",
+          "position": [
+            0.634,
+            1.47,
+            0.116
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "door_handle_right",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.024,
+              0.033,
+              0.15
+            ]
+          },
+          "material": "trim",
+          "position": [
+            0.9,
+            1.01,
+            -0.21
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "door_seam_right",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.016,
+              0.31,
+              0.014
+            ]
+          },
+          "material": "detail",
+          "position": [
+            0.894,
+            0.83,
+            0.16
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "mirror_right",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              0.13,
+              0.11,
+              0.16
+            ],
+            "radius": 0.03,
+            "segments": 3
+          },
+          "material": "roof",
+          "position": [
+            0.79,
+            1.23,
+            -0.52
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "side_sill_right",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.05,
+              0.08,
+              1.18
+            ]
+          },
+          "material": "lower",
+          "position": [
+            0.858,
+            0.599,
+            0.11
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tire_front_right",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.324,
+            "height": 0.215,
+            "segments": 16
+          },
+          "material": "rubber",
+          "position": [
+            0.865,
+            0.348,
+            -1.01
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_front_right",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.202,
+            "height": 0.036,
+            "segments": 16
+          },
+          "material": "hub",
+          "position": [
+            1.004,
+            0.348,
+            -1.01
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_cap_front_right",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.074,
+            "height": 0.042,
+            "segments": 16
+          },
+          "material": "trim",
+          "position": [
+            1.027,
+            0.348,
+            -1.01
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "fender_front_right_0",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.40888,
+            -0.62564
+          ],
+          "rotation": [
+            -9,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.52467,
+            -0.66327
+          ],
+          "rotation": [
+            -27,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_2",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.62317,
+            -0.73483
+          ],
+          "rotation": [
+            -45,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_3",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.69473,
+            -0.83333
+          ],
+          "rotation": [
+            -63,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_4",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.73236,
+            -0.94912
+          ],
+          "rotation": [
+            -81,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_5",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.73236,
+            -1.07088
+          ],
+          "rotation": [
+            -99,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_6",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.69473,
+            -1.18667
+          ],
+          "rotation": [
+            -117,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_7",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.62317,
+            -1.28517
+          ],
+          "rotation": [
+            -135,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_8",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.52467,
+            -1.35673
+          ],
+          "rotation": [
+            -153,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_front_right_9",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.40888,
+            -1.39436
+          ],
+          "rotation": [
+            -171,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tire_rear_right",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.324,
+            "height": 0.215,
+            "segments": 16
+          },
+          "material": "rubber",
+          "position": [
+            0.865,
+            0.348,
+            0.97
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_rear_right",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.202,
+            "height": 0.036,
+            "segments": 16
+          },
+          "material": "hub",
+          "position": [
+            1.004,
+            0.348,
+            0.97
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_cap_rear_right",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.074,
+            "height": 0.042,
+            "segments": 16
+          },
+          "material": "trim",
+          "position": [
+            1.027,
+            0.348,
+            0.97
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "fender_rear_right_0",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.40888,
+            1.35436
+          ],
+          "rotation": [
+            -9,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.52467,
+            1.31673
+          ],
+          "rotation": [
+            -27,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_2",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.62317,
+            1.24517
+          ],
+          "rotation": [
+            -45,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_3",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.69473,
+            1.14667
+          ],
+          "rotation": [
+            -63,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_4",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.73236,
+            1.03088
+          ],
+          "rotation": [
+            -81,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_5",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.73236,
+            0.90912
+          ],
+          "rotation": [
+            -99,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_6",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.69473,
+            0.79333
+          ],
+          "rotation": [
+            -117,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_7",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.62317,
+            0.69483
+          ],
+          "rotation": [
+            -135,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_8",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.52467,
+            0.62327
+          ],
+          "rotation": [
+            -153,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "fender_rear_right_9",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.023,
+            "height": 0.12327,
+            "segments": 12
+          },
+          "material": "arch",
+          "position": [
+            0.957,
+            0.40888,
+            0.58564
+          ],
+          "rotation": [
+            -171,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "continuous_belt",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.73,
+              0.105,
+              2.8
+            ],
+            "radius": 0.042,
+            "segments": 3
+          },
+          "material": "side",
+          "position": [
+            0,
+            1.08,
+            0.02
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "hood_continuity",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.4,
+              0.04,
+              0.78
+            ],
+            "radius": 0.019,
+            "segments": 3
+          },
+          "material": "roof",
+          "position": [
+            0,
+            1.252,
+            -0.94
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "left_front_pillar",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.044,
+              0.42,
+              0.043
+            ]
+          },
+          "material": "roof",
+          "position": [
+            -0.63,
+            1.46,
+            -0.56
+          ],
+          "rotation": [
+            24,
+            0,
+            -6
+          ]
+        },
+        {
+          "id": "left_rear_pillar",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.044,
+              0.43,
+              0.044
+            ]
+          },
+          "material": "roof",
+          "position": [
+            -0.63,
+            1.46,
+            0.95
+          ],
+          "rotation": [
+            -23,
+            0,
+            -6
+          ]
+        },
+        {
+          "id": "left_rocker",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              0.045,
+              0.085,
+              1.27
+            ],
+            "radius": 0.018,
+            "segments": 3
+          },
+          "material": "lower",
+          "position": [
+            -0.85,
+            0.61,
+            0.025
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "right_front_pillar",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.044,
+              0.42,
+              0.043
+            ]
+          },
+          "material": "roof",
+          "position": [
+            0.63,
+            1.46,
+            -0.56
+          ],
+          "rotation": [
+            24,
+            0,
+            6
+          ]
+        },
+        {
+          "id": "right_rear_pillar",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.044,
+              0.43,
+              0.044
+            ]
+          },
+          "material": "roof",
+          "position": [
+            0.63,
+            1.46,
+            0.95
+          ],
+          "rotation": [
+            -23,
+            0,
+            6
+          ]
+        },
+        {
+          "id": "right_rocker",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              0.045,
+              0.085,
+              1.27
+            ],
+            "radius": 0.018,
+            "segments": 3
+          },
+          "material": "lower",
+          "position": [
+            0.85,
+            0.61,
+            0.025
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "materials": {
+        "body": "#e4abb9",
+        "side": "#dba1ad",
+        "lower": "#915868",
+        "roof": "#f4c9d2",
+        "glass": "#a2c4ce",
+        "window": "#b8d5dc",
+        "rubber": "#343944",
+        "hub": "#eae0d3",
+        "lights": "#fff2bb",
+        "tail": "#c97683",
+        "trim": "#e3d6c6",
+        "detail": "#725568",
+        "arch": "#c48b98"
+      }
+    },
+    "car_v2": {
+      "id": "block-chibi-compact-car-v2",
+      "source": "assets/constructive-3d/garages/block-chibi-compact-car-v2.sc3d.yml",
+      "parts": [
+        {
+          "id": "chassis",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.65,
+              0.44,
+              2.52
+            ],
+            "radius": 0.11,
+            "segments": 3
+          },
+          "material": "lower",
+          "position": [
+            0,
+            0.58,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "body",
+          "kind": "tapered_box",
+          "geometry": {
+            "bottom": [
+              1.85,
+              2.72
+            ],
+            "top": [
+              1.71,
+              2.6
+            ],
+            "height": 0.48
+          },
+          "material": "body",
+          "position": [
+            0,
+            0.91,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "cabin",
+          "kind": "tapered_box",
+          "geometry": {
+            "bottom": [
+              1.47,
+              1.43
+            ],
+            "top": [
+              1.19,
+              1.16
+            ],
+            "height": 0.65
+          },
+          "material": "roof",
+          "position": [
+            0,
+            1.46,
+            0.16
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "windshield",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              1.18,
+              0.48,
+              0.035
+            ]
+          },
+          "material": "glass",
+          "position": [
+            0,
+            1.45,
+            -0.51
+          ],
+          "rotation": [
+            25,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "rear_glass",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              1.08,
+              0.38,
+              0.035
+            ]
+          },
+          "material": "window",
+          "position": [
+            0,
+            1.45,
+            0.83
+          ],
+          "rotation": [
+            -22,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "side_glass_-1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.024,
+              0.36,
+              1.02
+            ]
+          },
+          "material": "glass",
+          "position": [
+            -0.636,
+            1.48,
+            0.17
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "door_line_-1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.016,
+              0.29,
+              0.022
+            ]
+          },
+          "material": "detail",
+          "position": [
+            -0.919,
+            0.93,
+            0.23
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "door_handle_-1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.022,
+              0.042,
+              0.21
+            ]
+          },
+          "material": "trim",
+          "position": [
+            -0.93,
+            1.02,
+            -0.02
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tire_front_-1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.35,
+            "height": 0.21,
+            "segments": 12
+          },
+          "material": "rubber",
+          "position": [
+            -0.96,
+            0.36,
+            -0.83
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_front_-1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.213,
+            "height": 0.225,
+            "segments": 12
+          },
+          "material": "hub",
+          "position": [
+            -0.97,
+            0.36,
+            -0.83
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_center_front_-1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.085,
+            "height": 0.235,
+            "segments": 12
+          },
+          "material": "trim",
+          "position": [
+            -0.98,
+            0.36,
+            -0.83
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "tire_rear_-1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.35,
+            "height": 0.21,
+            "segments": 12
+          },
+          "material": "rubber",
+          "position": [
+            -0.96,
+            0.36,
+            0.85
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_rear_-1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.213,
+            "height": 0.225,
+            "segments": 12
+          },
+          "material": "hub",
+          "position": [
+            -0.97,
+            0.36,
+            0.85
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_center_rear_-1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.085,
+            "height": 0.235,
+            "segments": 12
+          },
+          "material": "trim",
+          "position": [
+            -0.98,
+            0.36,
+            0.85
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "headlamp_-1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.29,
+              0.14,
+              0.04
+            ]
+          },
+          "material": "lights",
+          "position": [
+            -0.58,
+            0.81,
+            -1.384
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tail_lamp_-1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.28,
+              0.14,
+              0.04
+            ]
+          },
+          "material": "tail",
+          "position": [
+            -0.59,
+            0.77,
+            1.386
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "side_glass_1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.024,
+              0.36,
+              1.02
+            ]
+          },
+          "material": "glass",
+          "position": [
+            0.636,
+            1.48,
+            0.17
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "door_line_1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.016,
+              0.29,
+              0.022
+            ]
+          },
+          "material": "detail",
+          "position": [
+            0.919,
+            0.93,
+            0.23
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "door_handle_1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.022,
+              0.042,
+              0.21
+            ]
+          },
+          "material": "trim",
+          "position": [
+            0.93,
+            1.02,
+            -0.02
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tire_front_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.35,
+            "height": 0.21,
+            "segments": 12
+          },
+          "material": "rubber",
+          "position": [
+            0.96,
+            0.36,
+            -0.83
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_front_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.213,
+            "height": 0.225,
+            "segments": 12
+          },
+          "material": "hub",
+          "position": [
+            0.97,
+            0.36,
+            -0.83
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_center_front_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.085,
+            "height": 0.235,
+            "segments": 12
+          },
+          "material": "trim",
+          "position": [
+            0.98,
+            0.36,
+            -0.83
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "tire_rear_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.35,
+            "height": 0.21,
+            "segments": 12
+          },
+          "material": "rubber",
+          "position": [
+            0.96,
+            0.36,
+            0.85
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_rear_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.213,
+            "height": 0.225,
+            "segments": 12
+          },
+          "material": "hub",
+          "position": [
+            0.97,
+            0.36,
+            0.85
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "hub_center_rear_1",
+          "kind": "cylinder",
+          "geometry": {
+            "radius": 0.085,
+            "height": 0.235,
+            "segments": 12
+          },
+          "material": "trim",
+          "position": [
+            0.98,
+            0.36,
+            0.85
+          ],
+          "rotation": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "headlamp_1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.29,
+              0.14,
+              0.04
+            ]
+          },
+          "material": "lights",
+          "position": [
+            0.58,
+            0.81,
+            -1.384
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "tail_lamp_1",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.28,
+              0.14,
+              0.04
+            ]
+          },
+          "material": "tail",
+          "position": [
+            0.59,
+            0.77,
+            1.386
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "front_bumper",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.67,
+              0.13,
+              0.16
+            ],
+            "radius": 0.035,
+            "segments": 3
+          },
+          "material": "trim",
+          "position": [
+            0,
+            0.54,
+            -1.407
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "rear_bumper",
+          "kind": "rounded_box",
+          "geometry": {
+            "size": [
+              1.67,
+              0.13,
+              0.16
+            ],
+            "radius": 0.035,
+            "segments": 3
+          },
+          "material": "trim",
+          "position": [
+            0,
+            0.54,
+            1.407
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "front_grille",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.65,
+              0.115,
+              0.015
+            ]
+          },
+          "material": "detail",
+          "position": [
+            0,
+            0.66,
+            -1.394
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "roof_highlight",
+          "kind": "cuboid",
+          "geometry": {
+            "size": [
+              0.96,
+              0.035,
+              0.74
+            ]
+          },
+          "material": "roof",
+          "position": [
+            0,
+            1.793,
+            0.17
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "materials": {
+        "body": "#dda0ad",
+        "lower": "#8d586a",
+        "roof": "#f3c3cb",
+        "glass": "#9fc6d1",
+        "window": "#b9d8df",
+        "rubber": "#353941",
+        "hub": "#ebe4d6",
+        "lights": "#fff0bf",
+        "tail": "#c96f79",
+        "trim": "#d7c8be",
+        "detail": "#614856"
+      }
+    },
+    "car_v3": {
       "id": "block-chibi-compact-car-v3",
       "source": "assets/constructive-3d/garages/block-chibi-compact-car-v3.sc3d.yml",
       "parts": [
@@ -3703,698 +6305,7 @@
         "detail": "#725568",
         "arch": "#b97687"
       }
-    },
-    "car_v2": {
-      "id": "block-chibi-compact-car-v2",
-      "source": "assets/constructive-3d/garages/block-chibi-compact-car-v2.sc3d.yml",
-      "parts": [
-        {
-          "id": "chassis",
-          "kind": "rounded_box",
-          "geometry": {
-            "size": [
-              1.65,
-              0.44,
-              2.52
-            ],
-            "radius": 0.11,
-            "segments": 3
-          },
-          "material": "lower",
-          "position": [
-            0,
-            0.58,
-            0
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "body",
-          "kind": "tapered_box",
-          "geometry": {
-            "bottom": [
-              1.85,
-              2.72
-            ],
-            "top": [
-              1.71,
-              2.6
-            ],
-            "height": 0.48
-          },
-          "material": "body",
-          "position": [
-            0,
-            0.91,
-            0
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "cabin",
-          "kind": "tapered_box",
-          "geometry": {
-            "bottom": [
-              1.47,
-              1.43
-            ],
-            "top": [
-              1.19,
-              1.16
-            ],
-            "height": 0.65
-          },
-          "material": "roof",
-          "position": [
-            0,
-            1.46,
-            0.16
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "windshield",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              1.18,
-              0.48,
-              0.035
-            ]
-          },
-          "material": "glass",
-          "position": [
-            0,
-            1.45,
-            -0.51
-          ],
-          "rotation": [
-            25,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "rear_glass",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              1.08,
-              0.38,
-              0.035
-            ]
-          },
-          "material": "window",
-          "position": [
-            0,
-            1.45,
-            0.83
-          ],
-          "rotation": [
-            -22,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "side_glass_-1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.024,
-              0.36,
-              1.02
-            ]
-          },
-          "material": "glass",
-          "position": [
-            -0.636,
-            1.48,
-            0.17
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "door_line_-1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.016,
-              0.29,
-              0.022
-            ]
-          },
-          "material": "detail",
-          "position": [
-            -0.919,
-            0.93,
-            0.23
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "door_handle_-1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.022,
-              0.042,
-              0.21
-            ]
-          },
-          "material": "trim",
-          "position": [
-            -0.93,
-            1.02,
-            -0.02
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "tire_front_-1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.35,
-            "height": 0.21,
-            "segments": 12
-          },
-          "material": "rubber",
-          "position": [
-            -0.96,
-            0.36,
-            -0.83
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "hub_front_-1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.213,
-            "height": 0.225,
-            "segments": 12
-          },
-          "material": "hub",
-          "position": [
-            -0.97,
-            0.36,
-            -0.83
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "hub_center_front_-1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.085,
-            "height": 0.235,
-            "segments": 12
-          },
-          "material": "trim",
-          "position": [
-            -0.98,
-            0.36,
-            -0.83
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "tire_rear_-1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.35,
-            "height": 0.21,
-            "segments": 12
-          },
-          "material": "rubber",
-          "position": [
-            -0.96,
-            0.36,
-            0.85
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "hub_rear_-1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.213,
-            "height": 0.225,
-            "segments": 12
-          },
-          "material": "hub",
-          "position": [
-            -0.97,
-            0.36,
-            0.85
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "hub_center_rear_-1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.085,
-            "height": 0.235,
-            "segments": 12
-          },
-          "material": "trim",
-          "position": [
-            -0.98,
-            0.36,
-            0.85
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "headlamp_-1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.29,
-              0.14,
-              0.04
-            ]
-          },
-          "material": "lights",
-          "position": [
-            -0.58,
-            0.81,
-            -1.384
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "tail_lamp_-1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.28,
-              0.14,
-              0.04
-            ]
-          },
-          "material": "tail",
-          "position": [
-            -0.59,
-            0.77,
-            1.386
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "side_glass_1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.024,
-              0.36,
-              1.02
-            ]
-          },
-          "material": "glass",
-          "position": [
-            0.636,
-            1.48,
-            0.17
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "door_line_1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.016,
-              0.29,
-              0.022
-            ]
-          },
-          "material": "detail",
-          "position": [
-            0.919,
-            0.93,
-            0.23
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "door_handle_1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.022,
-              0.042,
-              0.21
-            ]
-          },
-          "material": "trim",
-          "position": [
-            0.93,
-            1.02,
-            -0.02
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "tire_front_1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.35,
-            "height": 0.21,
-            "segments": 12
-          },
-          "material": "rubber",
-          "position": [
-            0.96,
-            0.36,
-            -0.83
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "hub_front_1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.213,
-            "height": 0.225,
-            "segments": 12
-          },
-          "material": "hub",
-          "position": [
-            0.97,
-            0.36,
-            -0.83
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "hub_center_front_1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.085,
-            "height": 0.235,
-            "segments": 12
-          },
-          "material": "trim",
-          "position": [
-            0.98,
-            0.36,
-            -0.83
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "tire_rear_1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.35,
-            "height": 0.21,
-            "segments": 12
-          },
-          "material": "rubber",
-          "position": [
-            0.96,
-            0.36,
-            0.85
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "hub_rear_1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.213,
-            "height": 0.225,
-            "segments": 12
-          },
-          "material": "hub",
-          "position": [
-            0.97,
-            0.36,
-            0.85
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "hub_center_rear_1",
-          "kind": "cylinder",
-          "geometry": {
-            "radius": 0.085,
-            "height": 0.235,
-            "segments": 12
-          },
-          "material": "trim",
-          "position": [
-            0.98,
-            0.36,
-            0.85
-          ],
-          "rotation": [
-            0,
-            0,
-            90
-          ]
-        },
-        {
-          "id": "headlamp_1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.29,
-              0.14,
-              0.04
-            ]
-          },
-          "material": "lights",
-          "position": [
-            0.58,
-            0.81,
-            -1.384
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "tail_lamp_1",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.28,
-              0.14,
-              0.04
-            ]
-          },
-          "material": "tail",
-          "position": [
-            0.59,
-            0.77,
-            1.386
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "front_bumper",
-          "kind": "rounded_box",
-          "geometry": {
-            "size": [
-              1.67,
-              0.13,
-              0.16
-            ],
-            "radius": 0.035,
-            "segments": 3
-          },
-          "material": "trim",
-          "position": [
-            0,
-            0.54,
-            -1.407
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "rear_bumper",
-          "kind": "rounded_box",
-          "geometry": {
-            "size": [
-              1.67,
-              0.13,
-              0.16
-            ],
-            "radius": 0.035,
-            "segments": 3
-          },
-          "material": "trim",
-          "position": [
-            0,
-            0.54,
-            1.407
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "front_grille",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.65,
-              0.115,
-              0.015
-            ]
-          },
-          "material": "detail",
-          "position": [
-            0,
-            0.66,
-            -1.394
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "id": "roof_highlight",
-          "kind": "cuboid",
-          "geometry": {
-            "size": [
-              0.96,
-              0.035,
-              0.74
-            ]
-          },
-          "material": "roof",
-          "position": [
-            0,
-            1.793,
-            0.17
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        }
-      ],
-      "materials": {
-        "body": "#dda0ad",
-        "lower": "#8d586a",
-        "roof": "#f3c3cb",
-        "glass": "#9fc6d1",
-        "window": "#b9d8df",
-        "rubber": "#353941",
-        "hub": "#ebe4d6",
-        "lights": "#fff0bf",
-        "tail": "#c96f79",
-        "trim": "#d7c8be",
-        "detail": "#614856"
-      }
     }
   },
-  "note": "Bicycle clearance-corrected v2; newly redesigned car v3. Both remain separate from the accepted Garage and v1 props."
+  "note": "Car v4 is a separate candidate, car v3 and v2 remain archived; bicycle and accepted Garage unchanged."
 }
