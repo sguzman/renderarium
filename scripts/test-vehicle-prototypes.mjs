@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8"]);
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9"]);
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,8 +28,8 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8"].includes(name)) {
-   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
+ } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9"].includes(name)) {
+   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v9"?156:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
 
 
@@ -79,6 +79,49 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
 
 
+
+   if(name==="car_v9"){
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     assert(!byName.has("sculpted_side_left"),"v9 may not reinstate a continuous toy-side slab");
+     const hood=byName.get("hood");
+     assert(hood.kind==="loft"&&hood.geometry.sections.length>=5,
+       "v9 hood must be a genuinely tapered stamped loft");
+     const hoodS=hood.geometry.sections;
+     assert(hoodS.at(-1).profile[2][1]-hoodS[0].profile[2][1]>.18,
+       "v9 hood has not acquired a downward nose slope");
+     assert(hoodS[0].z<hoodS.at(-1).z,"v9 hood stations reversed");
+     const hatch=byName.get("rear_deck");
+     assert(hatch.kind==="loft"&&hatch.geometry.sections.length>=4,
+       "v9 hatch still a toylike rectangular block");
+     const hatchS=hatch.geometry.sections;
+     assert(hatchS[0].profile[2][1]-hatchS.at(-1).profile[2][1]>.16,
+       "v9 rear hatch is not sloped toward tail");
+     const rearGlass=byName.get("rear_window");
+     assert(rearGlass.geometry.sections.at(-1).z>1.24,
+       "v9 rear window isn't structurally integrated with sloped hatch");
+     const belly=byName.get("belt_body"),lower=byName.get("mid_lower_shell");
+     assert(belly.position[1]-belly.geometry.height/2<
+       lower.position[1]+lower.geometry.height/2,
+       "v9 stamped body lost load-bearing underfloor overlap");
+     for(const side of ["left","right"]){
+       const f=byName.get("front_fender_skin_"+side);
+       const q=byName.get("rear_quarter_skin_"+side);
+       assert(f.geometry.profile.length>=20&&q.geometry.profile.length>=20,
+         "v9 must preserve semicircular wheel-arch cuts");
+       assert(f.geometry.profile[0][1]<f.geometry.profile[4][1]-.15,
+         "v9 front fender top is still a horizontal toy slab");
+       assert(q.geometry.profile[4][1]<q.geometry.profile[0][1]-.15,
+         "v9 rear quarter still has squared-off top");
+       for(const role of ["hood_shutline","front_fender_crown","rear_quarter_crown"]){
+         assert(byName.get(role+"_"+side)?.kind==="ribbon_path",
+           "v9 lacks connected stamping line "+role+"_"+side);
+       }
+       for(const door of ["front","rear"]){
+         assert.equal(ir.parts[door+"_side_glass_"+side]?.parent,
+           door+"_door_"+side,"v9 lost v8 door-window ownership");
+       }
+     }
+   }
    if(name==="car_v8"){
      const byName=new Map(entry.parts.map(p=>[p.id,p]));
      // The candidate has a real door skin volume and separate front/rear
