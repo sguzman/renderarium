@@ -1,0 +1,213 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-compact-car-v2
+  name: Block Chibi compact car v2 candidate
+  kind: prop
+  root: root
+  tags: [garage, non-human, vehicle, experimental-v2]
+materials:
+  body: {role: body, base_color: "#dda0ad", roughness: 0.93}
+  lower: {role: lower, base_color: "#8d586a", roughness: 0.93}
+  roof: {role: roof, base_color: "#f3c3cb", roughness: 0.93}
+  glass: {role: glass, base_color: "#9fc6d1", roughness: 0.93}
+  window: {role: window, base_color: "#b9d8df", roughness: 0.93}
+  rubber: {role: rubber, base_color: "#353941", roughness: 0.93}
+  hub: {role: hub, base_color: "#ebe4d6", roughness: 0.93}
+  lights: {role: lights, base_color: "#fff0bf", roughness: 0.93}
+  tail: {role: tail, base_color: "#c96f79", roughness: 0.93}
+  trim: {role: trim, base_color: "#d7c8be", roughness: 0.93}
+  detail: {role: detail, base_color: "#614856", roughness: 0.93}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  chassis:
+    role: chassis
+    parent: root
+    geometry: {kind: rounded_box, size: [1.65, 0.44, 2.52], radius: 0.11, segments: 3}
+    material: lower
+    transform: {translate: [0, 0.58, 0], rotate_deg: [0, 0, 0]}
+  body:
+    role: body
+    parent: root
+    geometry: {kind: tapered_box, bottom: [1.85, 2.72], top: [1.71, 2.6], height: 0.48}
+    material: body
+    transform: {translate: [0, 0.91, 0], rotate_deg: [0, 0, 0]}
+  cabin:
+    role: cabin
+    parent: root
+    geometry: {kind: tapered_box, bottom: [1.47, 1.43], top: [1.19, 1.16], height: 0.65}
+    material: roof
+    transform: {translate: [0, 1.46, 0.16], rotate_deg: [0, 0, 0]}
+  windshield:
+    role: windshield
+    parent: root
+    geometry: {kind: cuboid, size: [1.18, 0.48, 0.035]}
+    material: glass
+    transform: {translate: [0, 1.45, -0.51], rotate_deg: [25, 0, 0]}
+  rear_glass:
+    role: rear_glass
+    parent: root
+    geometry: {kind: cuboid, size: [1.08, 0.38, 0.035]}
+    material: window
+    transform: {translate: [0, 1.45, 0.83], rotate_deg: [-22, 0, 0]}
+  side_glass_-1:
+    role: side_glass_-1
+    parent: root
+    geometry: {kind: cuboid, size: [0.024, 0.36, 1.02]}
+    material: glass
+    transform: {translate: [-0.636, 1.48, 0.17], rotate_deg: [0, 0, 0]}
+  door_line_-1:
+    role: door_line_-1
+    parent: root
+    geometry: {kind: cuboid, size: [0.016, 0.29, 0.022]}
+    material: detail
+    transform: {translate: [-0.919, 0.93, 0.23], rotate_deg: [0, 0, 0]}
+  door_handle_-1:
+    role: door_handle_-1
+    parent: root
+    geometry: {kind: cuboid, size: [0.022, 0.042, 0.21]}
+    material: trim
+    transform: {translate: [-0.93, 1.02, -0.02], rotate_deg: [0, 0, 0]}
+  tire_front_-1:
+    role: tire_front_-1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.35, height: 0.21, segments: 12}
+    material: rubber
+    transform: {translate: [-0.96, 0.36, -0.83], rotate_deg: [0, 0, 90]}
+  hub_front_-1:
+    role: hub_front_-1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.213, height: 0.225, segments: 12}
+    material: hub
+    transform: {translate: [-0.97, 0.36, -0.83], rotate_deg: [0, 0, 90]}
+  hub_center_front_-1:
+    role: hub_center_front_-1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.085, height: 0.235, segments: 12}
+    material: trim
+    transform: {translate: [-0.98, 0.36, -0.83], rotate_deg: [0, 0, 90]}
+  tire_rear_-1:
+    role: tire_rear_-1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.35, height: 0.21, segments: 12}
+    material: rubber
+    transform: {translate: [-0.96, 0.36, 0.85], rotate_deg: [0, 0, 90]}
+  hub_rear_-1:
+    role: hub_rear_-1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.213, height: 0.225, segments: 12}
+    material: hub
+    transform: {translate: [-0.97, 0.36, 0.85], rotate_deg: [0, 0, 90]}
+  hub_center_rear_-1:
+    role: hub_center_rear_-1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.085, height: 0.235, segments: 12}
+    material: trim
+    transform: {translate: [-0.98, 0.36, 0.85], rotate_deg: [0, 0, 90]}
+  headlamp_-1:
+    role: headlamp_-1
+    parent: root
+    geometry: {kind: cuboid, size: [0.29, 0.14, 0.04]}
+    material: lights
+    transform: {translate: [-0.58, 0.81, -1.384], rotate_deg: [0, 0, 0]}
+  tail_lamp_-1:
+    role: tail_lamp_-1
+    parent: root
+    geometry: {kind: cuboid, size: [0.28, 0.14, 0.04]}
+    material: tail
+    transform: {translate: [-0.59, 0.77, 1.386], rotate_deg: [0, 0, 0]}
+  side_glass_1:
+    role: side_glass_1
+    parent: root
+    geometry: {kind: cuboid, size: [0.024, 0.36, 1.02]}
+    material: glass
+    transform: {translate: [0.636, 1.48, 0.17], rotate_deg: [0, 0, 0]}
+  door_line_1:
+    role: door_line_1
+    parent: root
+    geometry: {kind: cuboid, size: [0.016, 0.29, 0.022]}
+    material: detail
+    transform: {translate: [0.919, 0.93, 0.23], rotate_deg: [0, 0, 0]}
+  door_handle_1:
+    role: door_handle_1
+    parent: root
+    geometry: {kind: cuboid, size: [0.022, 0.042, 0.21]}
+    material: trim
+    transform: {translate: [0.93, 1.02, -0.02], rotate_deg: [0, 0, 0]}
+  tire_front_1:
+    role: tire_front_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.35, height: 0.21, segments: 12}
+    material: rubber
+    transform: {translate: [0.96, 0.36, -0.83], rotate_deg: [0, 0, 90]}
+  hub_front_1:
+    role: hub_front_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.213, height: 0.225, segments: 12}
+    material: hub
+    transform: {translate: [0.97, 0.36, -0.83], rotate_deg: [0, 0, 90]}
+  hub_center_front_1:
+    role: hub_center_front_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.085, height: 0.235, segments: 12}
+    material: trim
+    transform: {translate: [0.98, 0.36, -0.83], rotate_deg: [0, 0, 90]}
+  tire_rear_1:
+    role: tire_rear_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.35, height: 0.21, segments: 12}
+    material: rubber
+    transform: {translate: [0.96, 0.36, 0.85], rotate_deg: [0, 0, 90]}
+  hub_rear_1:
+    role: hub_rear_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.213, height: 0.225, segments: 12}
+    material: hub
+    transform: {translate: [0.97, 0.36, 0.85], rotate_deg: [0, 0, 90]}
+  hub_center_rear_1:
+    role: hub_center_rear_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.085, height: 0.235, segments: 12}
+    material: trim
+    transform: {translate: [0.98, 0.36, 0.85], rotate_deg: [0, 0, 90]}
+  headlamp_1:
+    role: headlamp_1
+    parent: root
+    geometry: {kind: cuboid, size: [0.29, 0.14, 0.04]}
+    material: lights
+    transform: {translate: [0.58, 0.81, -1.384], rotate_deg: [0, 0, 0]}
+  tail_lamp_1:
+    role: tail_lamp_1
+    parent: root
+    geometry: {kind: cuboid, size: [0.28, 0.14, 0.04]}
+    material: tail
+    transform: {translate: [0.59, 0.77, 1.386], rotate_deg: [0, 0, 0]}
+  front_bumper:
+    role: front_bumper
+    parent: root
+    geometry: {kind: rounded_box, size: [1.67, 0.13, 0.16], radius: 0.035, segments: 3}
+    material: trim
+    transform: {translate: [0, 0.54, -1.407], rotate_deg: [0, 0, 0]}
+  rear_bumper:
+    role: rear_bumper
+    parent: root
+    geometry: {kind: rounded_box, size: [1.67, 0.13, 0.16], radius: 0.035, segments: 3}
+    material: trim
+    transform: {translate: [0, 0.54, 1.407], rotate_deg: [0, 0, 0]}
+  front_grille:
+    role: front_grille
+    parent: root
+    geometry: {kind: cuboid, size: [0.65, 0.115, 0.015]}
+    material: detail
+    transform: {translate: [0, 0.66, -1.394], rotate_deg: [0, 0, 0]}
+  roof_highlight:
+    role: roof_highlight
+    parent: root
+    geometry: {kind: cuboid, size: [0.96, 0.035, 0.74]}
+    material: roof
+    transform: {translate: [0, 1.793, 0.17], rotate_deg: [0, 0, 0]}
+extensions:
+  scenarium: {style_ref: block-chibi-room, review: pending, garage_source_preserved: true}

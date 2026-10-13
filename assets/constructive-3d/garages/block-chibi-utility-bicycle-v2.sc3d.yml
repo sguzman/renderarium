@@ -1,0 +1,511 @@
+format: scenarium-constructive-3d
+version: "0.1"
+units: meters
+coordinates: {handedness: right, up: y, forward: "-z"}
+requires: [core.primitives, core.rigid-hierarchy]
+asset:
+  id: block-chibi-utility-bicycle-v2
+  name: Block Chibi utility bicycle v2 candidate
+  kind: prop
+  root: root
+  tags: [garage, non-human, vehicle, experimental-v2]
+materials:
+  frame: {role: frame, base_color: "#80b4a9", roughness: 0.93}
+  rim: {role: rim, base_color: "#41434c", roughness: 0.93}
+  spoke: {role: spoke, base_color: "#d3d6ce", roughness: 0.93}
+  hub: {role: hub, base_color: "#eee6d9", roughness: 0.93}
+  seat: {role: seat, base_color: "#cf8f9e", roughness: 0.93}
+  handle: {role: handle, base_color: "#72564d", roughness: 0.93}
+  basket: {role: basket, base_color: "#ccad91", roughness: 0.93}
+  pedal: {role: pedal, base_color: "#a39c9e", roughness: 0.93}
+  trim: {role: trim, base_color: "#a3d4c5", roughness: 0.93}
+parts:
+  root: {role: prop-root, parent: null, articulation: static}
+  front_tire_0:
+    role: front_tire_0
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218474, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.4818, -0.4998], rotate_deg: [-9, 0, 0]}
+  front_tire_1:
+    role: front_tire_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321846, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.5994, -0.538], rotate_deg: [-27, 0, 0]}
+  front_tire_2:
+    role: front_tire_2
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218477, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.6994, -0.6106], rotate_deg: [-45, 0, 0]}
+  front_tire_3:
+    role: front_tire_3
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.772, -0.7106], rotate_deg: [-63, 0, 0]}
+  front_tire_4:
+    role: front_tire_4
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.8102, -0.8282], rotate_deg: [-81, 0, 0]}
+  front_tire_5:
+    role: front_tire_5
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218468, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.8102, -0.9518], rotate_deg: [-99, 0, 0]}
+  front_tire_6:
+    role: front_tire_6
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218466, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.772, -1.0694], rotate_deg: [-117, 0, 0]}
+  front_tire_7:
+    role: front_tire_7
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.6994, -1.1694], rotate_deg: [-135, 0, 0]}
+  front_tire_8:
+    role: front_tire_8
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218477, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.5994, -1.242], rotate_deg: [-153, 0, 0]}
+  front_tire_9:
+    role: front_tire_9
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218468, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.4818, -1.2802], rotate_deg: [-171, 0, 0]}
+  front_tire_10:
+    role: front_tire_10
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218457, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.3582, -1.2802], rotate_deg: [171, 0, 0]}
+  front_tire_11:
+    role: front_tire_11
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218488, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.2406, -1.242], rotate_deg: [153, 0, 0]}
+  front_tire_12:
+    role: front_tire_12
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218457, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.1406, -1.1694], rotate_deg: [135, 0, 0]}
+  front_tire_13:
+    role: front_tire_13
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218482, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.068, -1.0694], rotate_deg: [117, 0, 0]}
+  front_tire_14:
+    role: front_tire_14
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321846, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.0298, -0.9518], rotate_deg: [99, 0, 0]}
+  front_tire_15:
+    role: front_tire_15
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321848, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.0298, -0.8282], rotate_deg: [81, 0, 0]}
+  front_tire_16:
+    role: front_tire_16
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321846, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.068, -0.7106], rotate_deg: [63, 0, 0]}
+  front_tire_17:
+    role: front_tire_17
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.1406, -0.6106], rotate_deg: [45, 0, 0]}
+  front_tire_18:
+    role: front_tire_18
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218477, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.2406, -0.538], rotate_deg: [27, 0, 0]}
+  front_tire_19:
+    role: front_tire_19
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218468, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.3582, -0.4998], rotate_deg: [9, 0, 0]}
+  front_spoke_0:
+    role: front_spoke_0
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.365, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.42, -0.7075], rotate_deg: [90, 0, 0]}
+  front_spoke_1:
+    role: front_spoke_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.365, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.549, -0.761], rotate_deg: [45, 0, 0]}
+  front_spoke_2:
+    role: front_spoke_2
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.36499999999999994, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.6025, -0.89], rotate_deg: [0, 0, 0]}
+  front_spoke_3:
+    role: front_spoke_3
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.36500000000000005, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.549, -1.019], rotate_deg: [-45, 0, 0]}
+  front_spoke_4:
+    role: front_spoke_4
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.3649999999999999, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.42, -1.0725], rotate_deg: [-90, 0, 0]}
+  front_spoke_5:
+    role: front_spoke_5
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.365, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.291, -1.019], rotate_deg: [-135, 0, 0]}
+  front_spoke_6:
+    role: front_spoke_6
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.365, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.2375, -0.89], rotate_deg: [-180, 0, 0]}
+  front_spoke_7:
+    role: front_spoke_7
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.36500000000000005, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.291, -0.761], rotate_deg: [135, 0, 0]}
+  front_axle:
+    role: front_axle
+    parent: root
+    geometry: {kind: cylinder, radius: 0.065, height: 0.26, segments: 12}
+    material: hub
+    transform: {translate: [0, 0.42, -0.89], rotate_deg: [0, 0, 90]}
+  rear_tire_0:
+    role: rear_tire_0
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218474, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.4818, 1.2202], rotate_deg: [-9, 0, 0]}
+  rear_tire_1:
+    role: rear_tire_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218466, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.5994, 1.182], rotate_deg: [-27, 0, 0]}
+  rear_tire_2:
+    role: rear_tire_2
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321846, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.6994, 1.1094], rotate_deg: [-45, 0, 0]}
+  rear_tire_3:
+    role: rear_tire_3
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218482, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.772, 1.0094], rotate_deg: [-63, 0, 0]}
+  rear_tire_4:
+    role: rear_tire_4
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.8102, 0.8918], rotate_deg: [-81, 0, 0]}
+  rear_tire_5:
+    role: rear_tire_5
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218468, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.8102, 0.7682], rotate_deg: [-99, 0, 0]}
+  rear_tire_6:
+    role: rear_tire_6
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218477, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.772, 0.6506], rotate_deg: [-117, 0, 0]}
+  rear_tire_7:
+    role: rear_tire_7
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218463, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.6994, 0.5506], rotate_deg: [-135, 0, 0]}
+  rear_tire_8:
+    role: rear_tire_8
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218474, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.5994, 0.478], rotate_deg: [-153, 0, 0]}
+  rear_tire_9:
+    role: rear_tire_9
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.4818, 0.4398], rotate_deg: [-171, 0, 0]}
+  rear_tire_10:
+    role: rear_tire_10
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218457, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.3582, 0.4398], rotate_deg: [171, 0, 0]}
+  rear_tire_11:
+    role: rear_tire_11
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218488, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.2406, 0.478], rotate_deg: [153, 0, 0]}
+  rear_tire_12:
+    role: rear_tire_12
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218468, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.1406, 0.5506], rotate_deg: [135, 0, 0]}
+  rear_tire_13:
+    role: rear_tire_13
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.068, 0.6506], rotate_deg: [117, 0, 0]}
+  rear_tire_14:
+    role: rear_tire_14
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.0298, 0.7682], rotate_deg: [99, 0, 0]}
+  rear_tire_15:
+    role: rear_tire_15
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321848, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.0298, 0.8918], rotate_deg: [81, 0, 0]}
+  rear_tire_16:
+    role: rear_tire_16
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321846, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.068, 1.0094], rotate_deg: [63, 0, 0]}
+  rear_tire_17:
+    role: rear_tire_17
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.1251475720321847, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.1406, 1.1094], rotate_deg: [45, 0, 0]}
+  rear_tire_18:
+    role: rear_tire_18
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218477, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.2406, 1.182], rotate_deg: [27, 0, 0]}
+  rear_tire_19:
+    role: rear_tire_19
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.12514757203218468, segments: 12}
+    material: rim
+    transform: {translate: [0, 0.3582, 1.2202], rotate_deg: [9, 0, 0]}
+  rear_spoke_0:
+    role: rear_spoke_0
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.3649999999999999, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.42, 1.0125], rotate_deg: [90, 0, 0]}
+  rear_spoke_1:
+    role: rear_spoke_1
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.365, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.549, 0.959], rotate_deg: [45, 0, 0]}
+  rear_spoke_2:
+    role: rear_spoke_2
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.36499999999999994, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.6025, 0.83], rotate_deg: [0, 0, 0]}
+  rear_spoke_3:
+    role: rear_spoke_3
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.36500000000000005, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.549, 0.701], rotate_deg: [-45, 0, 0]}
+  rear_spoke_4:
+    role: rear_spoke_4
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.365, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.42, 0.6475], rotate_deg: [-90, 0, 0]}
+  rear_spoke_5:
+    role: rear_spoke_5
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.365, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.291, 0.701], rotate_deg: [-135, 0, 0]}
+  rear_spoke_6:
+    role: rear_spoke_6
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.365, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.2375, 0.83], rotate_deg: [-180, 0, 0]}
+  rear_spoke_7:
+    role: rear_spoke_7
+    parent: root
+    geometry: {kind: cylinder, radius: 0.013, height: 0.36500000000000005, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.291, 0.959], rotate_deg: [135, 0, 0]}
+  rear_axle:
+    role: rear_axle
+    parent: root
+    geometry: {kind: cylinder, radius: 0.065, height: 0.26, segments: 12}
+    material: hub
+    transform: {translate: [0, 0.42, 0.83], rotate_deg: [0, 0, 90]}
+  top_tube:
+    role: top_tube
+    parent: root
+    geometry: {kind: cylinder, radius: 0.055, height: 0.8709190547921203, segments: 12}
+    material: frame
+    transform: {translate: [0, 1.06, -0.115], rotate_deg: [-87.3676, 0, 0]}
+  down_tube:
+    role: down_tube
+    parent: root
+    geometry: {kind: cylinder, radius: 0.056, height: 0.8591274643497321, segments: 12}
+    material: frame
+    transform: {translate: [0, 0.75, -0.275], rotate_deg: [140.1944, 0, 0]}
+  seat_tube:
+    role: seat_tube
+    parent: root
+    geometry: {kind: cylinder, radius: 0.052, height: 0.6977105417004964, segments: 12}
+    material: frame
+    transform: {translate: [0, 0.73, 0.16], rotate_deg: [27.2996, 0, 0]}
+  seat_stay:
+    role: seat_stay
+    parent: root
+    geometry: {kind: cylinder, radius: 0.039, height: 0.8028075734570521, segments: 12}
+    material: frame
+    transform: {translate: [0, 0.73, 0.575], rotate_deg: [140.5599, 0, 0]}
+  chain_stay:
+    role: chain_stay
+    parent: root
+    geometry: {kind: cylinder, radius: 0.043, height: 0.83, segments: 12}
+    material: frame
+    transform: {translate: [0, 0.42, 0.415], rotate_deg: [90, 0, 0]}
+  front_fork:
+    role: front_fork
+    parent: root
+    geometry: {kind: cylinder, radius: 0.06, height: 0.7424284477308235, segments: 12}
+    material: frame
+    transform: {translate: [0, 0.75, -0.72], rotate_deg: [-152.7447, 0, 0]}
+  rear_rack_support:
+    role: rear_rack_support
+    parent: root
+    geometry: {kind: cylinder, radius: 0.033, height: 0.6020797289396148, segments: 12}
+    material: frame
+    transform: {translate: [0, 0.72, 0.805], rotate_deg: [-4.7636, 0, 0]}
+  seat_post:
+    role: seat_post
+    parent: root
+    geometry: {kind: cylinder, radius: 0.045, height: 0.25, segments: 12}
+    material: spoke
+    transform: {translate: [0, 1.105, 0.32], rotate_deg: [0, 0, 0]}
+  saddle:
+    role: saddle
+    parent: root
+    geometry: {kind: rounded_box, size: [0.33, 0.085, 0.38], radius: 0.034, segments: 3}
+    material: seat
+    transform: {translate: [0, 1.23, 0.36], rotate_deg: [0, 0, 0]}
+  steering_stem:
+    role: steering_stem
+    parent: root
+    geometry: {kind: cylinder, radius: 0.05, height: 0.20024984394500783, segments: 12}
+    material: handle
+    transform: {translate: [0, 1.18, -0.555], rotate_deg: [-2.8624, 0, 0]}
+  handle_bar:
+    role: handle_bar
+    parent: root
+    geometry: {kind: cylinder, radius: 0.043, height: 0.72, segments: 12}
+    material: handle
+    transform: {translate: [0, 1.3, -0.57], rotate_deg: [0, 0, 90]}
+  grip_l:
+    role: grip_l
+    parent: root
+    geometry: {kind: cylinder, radius: 0.06, height: 0.16, segments: 12}
+    material: seat
+    transform: {translate: [-0.37, 1.3, -0.57], rotate_deg: [0, 0, 90]}
+  grip_r:
+    role: grip_r
+    parent: root
+    geometry: {kind: cylinder, radius: 0.06, height: 0.16, segments: 12}
+    material: seat
+    transform: {translate: [0.37, 1.3, -0.57], rotate_deg: [0, 0, 90]}
+  chainring:
+    role: chainring
+    parent: root
+    geometry: {kind: cylinder, radius: 0.14, height: 0.09, segments: 12}
+    material: spoke
+    transform: {translate: [0, 0.42, 0], rotate_deg: [0, 0, 90]}
+  pedal_axle:
+    role: pedal_axle
+    parent: root
+    geometry: {kind: cylinder, radius: 0.03, height: 0.42, segments: 12}
+    material: pedal
+    transform: {translate: [0, 0.42, 0], rotate_deg: [0, 0, 90]}
+  pedal_l:
+    role: pedal_l
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.04, 0.13]}
+    material: pedal
+    transform: {translate: [-0.25, 0.42, 0], rotate_deg: [0, 0, 0]}
+  pedal_r:
+    role: pedal_r
+    parent: root
+    geometry: {kind: cuboid, size: [0.16, 0.04, 0.13]}
+    material: pedal
+    transform: {translate: [0.25, 0.42, 0], rotate_deg: [0, 0, 0]}
+  rear_rack:
+    role: rear_rack
+    parent: root
+    geometry: {kind: cuboid, size: [0.42, 0.04, 0.5]}
+    material: basket
+    transform: {translate: [0, 1.04, 0.83], rotate_deg: [0, 0, 0]}
+  basket_bottom:
+    role: basket_bottom
+    parent: root
+    geometry: {kind: cuboid, size: [0.48, 0.055, 0.33]}
+    material: basket
+    transform: {translate: [0, 1.02, -0.81], rotate_deg: [0, 0, 0]}
+  basket_front:
+    role: basket_front
+    parent: root
+    geometry: {kind: cuboid, size: [0.48, 0.22, 0.055]}
+    material: basket
+    transform: {translate: [0, 1.16, -0.99], rotate_deg: [0, 0, 0]}
+  basket_rear:
+    role: basket_rear
+    parent: root
+    geometry: {kind: cuboid, size: [0.48, 0.22, 0.055]}
+    material: basket
+    transform: {translate: [0, 1.16, -0.63], rotate_deg: [0, 0, 0]}
+  basket_left:
+    role: basket_left
+    parent: root
+    geometry: {kind: cuboid, size: [0.045, 0.22, 0.33]}
+    material: basket
+    transform: {translate: [-0.225, 1.16, -0.81], rotate_deg: [0, 0, 0]}
+  basket_right:
+    role: basket_right
+    parent: root
+    geometry: {kind: cuboid, size: [0.045, 0.22, 0.33]}
+    material: basket
+    transform: {translate: [0.225, 1.16, -0.81], rotate_deg: [0, 0, 0]}
+extensions:
+  scenarium: {style_ref: block-chibi-room, review: pending, garage_source_preserved: true}
