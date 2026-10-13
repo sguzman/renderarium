@@ -8,7 +8,7 @@ import { loadSc3dFile } from "../runtime/sc3d/load.mjs";
 const repoRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const environmentMode = process.argv[2] === "--environments";
 const vehicleMode = process.argv[2] === "--vehicles";
-const vehicleVersions = Object.freeze(["v2","v3","v4","v5","v6"]);
+const vehicleVersions = Object.freeze(["v2","v3","v4","v5","v6","v7"]);
 const vehicleSource = version => resolve(repoRoot, `assets/constructive-3d/garages/block-chibi-compact-car-${version}.sc3d.yml`);
 const environmentNames = Object.freeze([
   "living-room", "kitchen", "bathroom", "office",
