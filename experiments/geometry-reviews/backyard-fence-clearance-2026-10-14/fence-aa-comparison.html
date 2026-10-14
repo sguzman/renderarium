@@ -17,41 +17,47 @@
 <div id="aa-error"></div>
 <div class="foot">Drag to orbit · Scroll to zoom · Review candidate: original 181-part source preserved. Repaired candidate draws 179 parts, removing duplicate rear corner posts and separating pickets from posts. Rails remain joined but are moved behind pickets. AA is unchanged.</div>
 <script>
-(function(){
+(async function(){
 const root=document.getElementById('aa-lab'),g=k=>root.querySelector('#aa-'+k),cv=g('canvas'),status=g('status');
 try{
 const PACKED=`
-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
+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
+2M9zyPl15SkYQMkGiY/whFqNNwK4LaeyI06lilFIwC2YgHLM6jiIF+dDcrpFvB5s
+VSbrxOccsgQVFlRYUGFBhQUVFlRYUGFBhUWhsCgUFoXCymKcJwxygDyVSr5FbYI4
+DjjM71iKm4+qA/iFAZwQJlMe5xPqczCKWISdpDh4BKfy88pMlE9bebzB51HOG4aB
+jMJ8D9DPCcpsDEg2BqqX14oANKJRElXUx7ifG9CLl89gSFV4AC7hMv6UvQU1Vh4r
+GEGZTQDJIi4VEYhAV+6IwVF+3VI1vFUArmLfTWBoubhuaQ+JfXwQe7aXbceHXYOn
+9qjw8yOshLeytYg78XQUVjkKq/TCKr2wyllY5SysKiqsKiqscjH+LAyyGvBZU3DH
+ymEDYgQu4+8KsRo7ohoLP8MKlwv3hSZspHQ2BtOWqxy3gHpciClckl3gquAtbAJH
++6wsw6mW4GKux4zPCmB7uJ7ATh2FTSwCpxnOvAQbeD3eIgLL8ArHJnBNZbe04niD
+WhnUyqBWBrUyqJVBrQxqZVArg1oZ1MpNrdzUyk2t3NTKTa3c1MpNrdzUyk2t3NTK
+pFYmtTKplUmtTGplUiuTWpnUyqRWJrXyUCsPtfJQKw+18lArD7XyUCsPtfJQKw+1
+8lIrL7XyUisvtfJSKy+18lIrL7XyUisvtSo2cDOTOyvAz7hlIXbimE7cwbZgqHg5
+vmp1Lvc2+R+0eJmY4UcxlGTydX0UX7XFgOMj4MHirVoqW7wAt+96/CsH0KPuzUIJ
+7160G3cwgHE25LThMZHDLtgNL5XM3BtnpWDDY8KGukGyuiGz/wD17GGy
 `.replace(/\s+/g,'');
-if(PACKED.length!==2572)throw Error('Packed data length '+PACKED.length);
-const compressed=Uint8Array.from(atob(PACKED),x=>x.charCodeAt(0));if(compressed.length!==1927)throw Error('Packed source invalid');
-const out=[];for(let at=0;at<compressed.length;){let h=compressed[at++];if(h<128){for(let j=0;j<=h;j++)out.push(compressed[at++]);}else{const n=h-125,dist=compressed[at]|(compressed[at+1]<<8);at+=2;if(!dist||dist>out.length)throw Error('Invalid geometry compression');for(let j=0;j<n;j++)out.push(out[out.length-dist]);}}
-const raw=Uint8Array.from(out);if(raw.length!==3265)throw Error('Decoded scene size '+raw.length);let hash=2166136261;for(let x of raw)hash=Math.imul(hash^x,16777619)>>>0;if(hash!==2710925923)throw Error('Backyard checksum mismatch');
+if(PACKED.length!==1848)throw Error('Transport length mismatch: '+PACKED.length+' expected 1848');
+if(typeof DecompressionStream==='undefined')throw Error('Browser deflate decompression unsupported');
+const compressed=Uint8Array.from(atob(PACKED),x=>x.charCodeAt(0));
+const raw=new Uint8Array(await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+if(raw.length!==3265)throw Error('Source decompression failed: '+raw.length);
+let hash=2166136261;for(let x of raw)hash=Math.imul(hash^x,16777619)>>>0;
+if(hash!==2710925923)throw Error('Original Backyard checksum mismatch: '+hash);
 let at=4;if(String.fromCharCode(...raw.slice(0,4))!=='RB01')throw Error('Invalid scene header');const u8=()=>raw[at++],u16=()=>u8()|(u8()<<8),num=k=>{let x=u16();return(x>32767?x-65536:x)/k},v3=k=>[num(k),num(k),num(k)];
 const palette=[];for(let i=0,n=u8();i<n;i++)palette.push([u8()/255,u8()/255,u8()/255]);const groups=[];for(let i=0,n=u8();i<n;i++)groups.push([v3(1000),v3(100),v3(1000)]);
 const parts=[];for(let i=0,n=u16();i<n;i++){let group=u8(),color=u8(),flags=u8(),dims=[];for(let k=0;k<(flags&1?5:3);k++)dims.push(num(1000));parts.push({group,color,flags,dims,pos:flags&2?v3(1000):[0,0,0],rot:flags&4?v3(100):[0,0,0],scale:flags&8?v3(1000):[1,1,1]});}if(parts.length!==181||groups.length!==18||at!==raw.length)throw Error('Backyard data incomplete');
