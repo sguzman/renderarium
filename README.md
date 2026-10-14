@@ -261,6 +261,30 @@ This study does not approve either effect for the production renderer.
 The gallery records settings and pixel differences to enable visual
 review of bias artifacts and shadow-edge softness across environments.
 
+### Accepted Backyard day/night cycle (14 October 2026)
+
+The principal reviewed the corrected in-chat interactive day/night scene
+and explicitly praised its visual result. Its standalone WebGL2 HTML
+implementation is preserved at
+`experiments/interactive-weather/backyard-daynight-2026-10-14.html`,
+with byte-exact GitHub readback.
+
+The demo uses **the approved 181-part/18-group Backyard source geometry**,
+packed reversibly without remote fetches, and exposes one 24-hour slider
+controlling sun angle, moving directional shadow map, sunlight temperature
+and brightness, ambient color, sunrise/sunset sky gradients, moonlight and
+stars. Orbit and zoom remain available.
+
+Earlier attempted chat transports failed source checksum and GLSL shader
+parsing (reserved identifier); those defects were repaired before positive
+review. The 06:00 sunrise and 18:00 sunset are **stylized** rather than
+astronomically/geographically accurate. This file is a demonstration,
+not a production Three.js integration or an authorization to change
+any approved environment source.
+
+Canonical semantic review:
+`sguzman/taria/taria/scenarium/evaluations/interactive-daynight-backyard-2026-10-14.yml`.
+
 ### Positively reviewed in-chat Backyard snow (14 October 2026)
 
 The principal viewed the real in-chat source-derived WebGL2 snow simulation
