@@ -261,6 +261,28 @@ This study does not approve either effect for the production renderer.
 The gallery records settings and pixel differences to enable visual
 review of bias artifacts and shadow-edge softness across environments.
 
+### Positively reviewed in-chat Backyard snow (14 October 2026)
+
+The principal viewed the real in-chat source-derived WebGL2 snow simulation
+and responded: **"this is pretty good. very cute. i like it"**.
+The exact standalone HTML source corresponding to that reviewed viewer is
+preserved at
+`experiments/interactive-weather/backyard-snow-2026-10-14.html` and was
+read back byte-for-byte from GitHub.
+
+It uses the original accepted 181-part / 18-group Backyard (offline RB01
+payload, decoded 3,265 bytes, FNV1a32 `2710925923`) and supports snowfall
+amount, fall speed, signed horizontal wind, flake size/visibility, haze,
+brightness, pause, flurries/steady/heavy/blizzard presets, orbit/zoom, and
+a **nonphysical visual-only snow accumulation tint**. This experiment did
+not modify the frozen scene or become a production default.
+
+Taria's canonical review is
+`sguzman/taria/taria/scenarium/evaluations/interactive-snow-backyard-2026-10-14.yml`.
+The first raw-HTML-in-chat delivery was rejected for not being interactive;
+a real embedded AppBlock was positively reviewed afterward. This source
+archive is not proof of broad renderer/Three.js parity or physics correctness.
+
 ### Preserved in-chat Backyard rain and wind demonstration (13 October 2026)
 
 The source-derived WebGL2 rain study accepted by the principal is archived as
