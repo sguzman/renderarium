@@ -7,7 +7,7 @@ import {loadSc3dFile} from "../runtime/sc3d/load.mjs";
 const root=resolve(import.meta.dirname,"..");
 const prototypes=JSON.parse(readFileSync(resolve(root,"runtime/sc3d/garage-vehicle-prototypes-v2.json"),"utf8"));
 assert.equal(prototypes.schema,"renderarium-garage-vehicle-prototypes-v2");
-assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10","car_v11"].sort());
+assert.deepEqual(Object.keys(prototypes.entries).sort(),["bicycle","car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10","car_v11","car_v11r"].sort());
 for(const [name,entry] of Object.entries(prototypes.entries)){
  const ir=await loadSc3dFile(resolve(root,entry.source));
  const parts=Object.values(ir.parts).filter(p=>p.geometry);
@@ -28,8 +28,8 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
    }
    assert(!entry.parts.some(p => ["front_fork","seat_stay","chain_stay","rear_rack_support"].includes(p.id)),
      "Old centerline wheel-intersecting strut returned");
- } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10","car_v11"].includes(name)) {
-   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v9"?156:name==="car_v10"?167:name==="car_v11"?167:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
+ } else if (["car","car_v2","car_v3","car_v4","car_v5","car_v7","car_v8","car_v9","car_v10","car_v11","car_v11r"].includes(name)) {
+   assert.equal(parts.length,name==="car"?96:name==="car_v7"?99:name==="car_v8"?149:name==="car_v9"?156:name==="car_v10"?167:name==="car_v11"?167:name==="car_v11r"?177:name==="car_v5"?80:name==="car_v4"?89:name==="car_v3"?86:31);
    assert(entry.parts.filter(p=>p.id.startsWith("tire_") || p.id.endsWith("_wheel")).length===4);
 
 
@@ -82,6 +82,49 @@ for(const [name,entry] of Object.entries(prototypes.entries)){
 
 
 
+
+   if(name==="car_v11r"){
+     const byName=new Map(entry.parts.map(p=>[p.id,p]));
+     const prev=new Map(prototypes.entries.car_v11.parts.map(p=>[p.id,p]));
+     assert.equal(entry.parts.length,177);
+     for(const side of ["left","right"]){
+       const direction=side==="left"?-1:1;
+       const ds=byName.get("front_door_skin_"+side);
+       assert.equal(ds.kind,"loft","Real v11 doors must remain intact");
+       for(const fixed of ["front_fender_skin_","rear_quarter_skin_"]){
+         const p=byName.get(fixed+side);
+         const outer=Math.abs(p.position[0])+p.geometry.depth/2;
+         assert(Math.abs(outer-.903)<.003,"v11r fixed panel is still recessed: "+fixed+side);
+         const old=prev.get(fixed+side);
+         assert(Math.abs(p.position[0])>Math.abs(old.position[0])+.026,
+           "v11r must repair fixed-to-door surface step: "+fixed+side);
+       }
+       const f=byName.get("front_fender_skin_"+side).geometry.profile;
+       const q=byName.get("rear_quarter_skin_"+side).geometry.profile;
+       assert(Math.abs(f[5][0]-.699)<.0001,
+         "v11r front fender doesn't meet front door shut line");
+       assert(Math.abs(q[0][0]+.694)<.0001,
+         "v11r rear quarter doesn't meet rear door shut line");
+       for(const type of ["front","center","rear"])
+         assert(byName.get("door_jamb_"+type+"_"+side)?.kind==="rounded_box",
+           "v11r leaves door aperture visibly unsupported");
+       const rocker=byName.get("outer_rocker_plate_"+side);
+       assert(Math.abs(Math.abs(rocker.position[0])+rocker.geometry.size[0]/2-.900)<.003,
+         "v11r rocker is still buried behind door bottom");
+       for(const wheel of ["front","rear"]){
+         const liner=byName.get("wheelwell_liner_"+wheel+"_"+side);
+         assert(liner?.kind==="polygon_prism","v11r exposed wheelhouse");
+         assert(liner.geometry.profile.length>=18,
+           "v11r wheelhouse must be an actual formed curved liner");
+       }
+       for(const door of ["front","rear"]){
+         assert.equal(ir.parts[door+"_side_glass_"+side]?.parent,door+"_door_"+side,
+           "v11r window detached from real door");
+       }
+     }
+     assert.equal(byName.get("hood").geometry.sections[0].z,
+       prev.get("hood").geometry.sections[0].z,"v11r must preserve the approved proportions for review");
+   }
    if(name==="car_v11"){
      const byName=new Map(entry.parts.map(p=>[p.id,p]));
      const earlier=prototypes.entries.car_v10;
