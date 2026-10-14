@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;background:#101822;color:#eff5ff;font:13px system-ui,sans-serif">
+<div id="sc-snow" style="background:#111a26;color:#eaf3ff;border-radius:13px;overflow:hidden">
+<style>
+#sc-snow *{box-sizing:border-box}
+#sc-snow .top{padding:12px 14px;background:#233448;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+#sc-snow .top small{font-size:11px;color:#bdd1e9}
+#sc-snow canvas{display:block;width:100%;height:400px;touch-action:none;cursor:grab;background:#8295a7}
+#sc-snow canvas:active{cursor:grabbing}
+#sc-snow .controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:13px}
+#sc-snow .field{display:flex;flex-direction:column;gap:5px;min-width:0}
+#sc-snow label{display:flex;justify-content:space-between;gap:8px;color:#c1d4e6;font-size:12px}
+#sc-snow input[type=range]{width:100%;accent-color:#b2dcff;min-width:0}
+#sc-snow .actions{display:flex;gap:7px;flex-wrap:wrap;padding:0 13px 12px}
+#sc-snow button{border:1px solid #5b7ea2;border-radius:7px;background:#284464;color:#edf6ff;padding:8px 10px;cursor:pointer;font:inherit}
+#sc-snow button:hover{background:#38587a}
+#sc-snow .note{padding:0 13px 13px;color:#aac0d6;font-size:11px}
+#sc-snow .err{padding:0 13px 11px;color:#ffc0c6;font-size:12px}
+@media(max-width:540px){#sc-snow canvas{height:310px}#sc-snow .controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<div class="top"><strong>Backyard · Snow laboratory</strong><small id="snow-status">Loading accepted scene…</small></div>
+<canvas id="snow-canvas" aria-label="Interactive 3D snowfall over accepted block-chibi backyard"></canvas>
+<div class="controls">
+<div class="field"><label>Amount <span id="snow-amountVal">60%</span></label><input id="snow-amount" type="range" min="0" max="100" value="60"></div>
+<div class="field"><label>Fall speed <span id="snow-speedVal">2.8</span></label><input id="snow-speed" type="range" min="0.5" max="8" step="0.1" value="2.8"></div>
+<div class="field"><label>Wind ↔ <span id="snow-windVal">0.4</span></label><input id="snow-wind" type="range" min="-5" max="5" step="0.1" value="0.4"></div>
+<div class="field"><label>Flake size <span id="snow-sizeVal">1.4</span></label><input id="snow-size" type="range" min="0.5" max="4" step="0.1" value="1.4"></div>
+<div class="field"><label>Visibility <span id="snow-opacityVal">70%</span></label><input id="snow-opacity" type="range" min="0" max="100" value="70"></div>
+<div class="field"><label>Haze <span id="snow-hazeVal">34%</span></label><input id="snow-haze" type="range" min="0" max="100" value="34"></div>
+<div class="field"><label>Accumulation <span id="snow-accumVal">35%</span></label><input id="snow-accum" type="range" min="0" max="100" value="35"></div>
+<div class="field"><label>Light <span id="snow-lightVal">78%</span></label><input id="snow-light" type="range" min="30" max="140" step="5" value="78"></div>
+<div class="field"><label style="justify-content:start;gap:8px"><input id="snow-pause" type="checkbox"> Pause animation</label></div>
+</div>
+<div class="actions"><button data-preset="flurries">Flurries</button><button data-preset="steady">Steady</button><button data-preset="heavy">Heavy</button><button data-preset="blizzard">Blizzard</button><button id="snow-reset">Reset view</button></div>
+<div id="snow-error" class="err"></div>
+<div class="note">Drag to orbit · Wheel to zoom · Wind moves flakes horizontally · Snow cover is a visual treatment, not simulated buildup · Offline original Backyard geometry</div>
+<script>
+(function(){
+const root=document.getElementById('sc-snow'),get=id=>root.querySelector('#snow-'+id),status=get('status'),error=get('error'),cv=get('canvas');
+try{
+const PAYLOAD=`
+UkIwMSxUTExjiGVnTEByn3l2VUKBrXSDqYGGaFSIcV2JtXmQa1GRt4WbeVibuKabwYycvoOoeWKu0YuwjneyhmSyzZa1iWa4iWO906G+0Z/FjnjLnVrLt6XXoaHXuKDdnq3guIfjv6DkxrfnorLoqrLoz7To1b3ptbzqwp/x3MPy18T55c7/4bMSAAAAAAAAAAAAAAAA6APoA+gD1vebAKYEAAAAAAAA6APoA+gDJvibAIz7AAAAAAAA6A
+PoA+gDDP6bAPAFAAAAAAAA6APoA+gDVAbcAHgAAAAAAAAA6APoA+gDVAbcACL8AAAAAAAA6APoA+gDCP2bAGj3AAAAAAAA6APoA+gDdv2bAHr5AAAAAAAA6APoA+gDmP6bAKD7AAAAAAAA6APoA+gDpv+bAND9AAAAAAAA6APoA+gDIgGbACT/AAAAAAAA6APoA+gDDvf0AYL7AAAAAAAA6APoA+gDDPn0AaD7AAAAAAAA6APoA+gD1vz0
+AfoFAAAAAAAA6APoA+gD6P70AdIFAAAAAAAA6APoA+gDBgSCAEoGAAAAAAAA6APoA+gDkgmCAA4GAAAAAAAA6APoA+gDOPWbACgAAAAAAAAA6APoA+gDtQAACAAAGfAAUBQADwJqGCMAsBMAAIoAAAAAHQL2CTQAZggYBqwAdv0AKAIWAxUA8gPaAtEAX/sAIQIWAxUA8gMYBtEAX/sAKAIWAxUA8gNWCdEAX/sAIQIWAxUA8gPaAtEAjf
+8AKAIWAxUA8gMYBtEAjf8AIQIWAxUA8gNWCdEAjf8ACQKaAQUABAFu9p8AnP8AFAKaAQUABAG0+58AYgcACQKaAQUABAFw/p8AUPsAFAKaAQUABAG+Cp8AsAQACQKaAQUABAFSA58AuPcAKgJUAZwEggD89LICdAkAKgJUAZwEggD99rICdAkAKgJUAZwEggD9+LICdAkAKgJUAZwEggD++rICdAkAKgJUAZwEggD//LICdAkAKgJUAZwE
+ggAA/7ICdAkAKgJUAZwEggAAAbICdAkAKgJUAZwEggABA7ICdAkAKgJUAZwEggACBbICdAkAKgJUAZwEggADB7ICdAkAKgJUAZwEggADCbICdAkAKgJUAZwEggAEC7ICdAkAKgKMAJwEXgH487ICpPcAKgKMAJwEXgH487ICBvoAKgKMAJwEXgH487ICaPwAKgKMAJwEXgH487ICyv4AKgKMAJwEXgH487ICLAEAKgKMAJwEXgH487ICjg
+MAKgKMAJwEXgH487IC8AUAKgKMAJwEXgH487ICUggAJAIEATwFBAH4854CBPcAJAIEATwFBAH4854COAkAKgKMAJwEXgEIDLICpPcAKgKMAJwEXgEIDLICBvoAKgKMAJwEXgEIDLICaPwAKgKMAJwEXgEIDLICyv4AKgKMAJwEXgEIDLICLAEAKgKMAJwEXgEIDLICjgMAKgKMAJwEXgEIDLIC8AUAKgKMAJwEXgEIDLICUggAJAIEATwF
+BAEIDJ4CBPcAJAIEATwFBAEIDJ4COAkAJALmADwFDgGO9J4CnAkAJALmADwFDgEAAJ4CnAkAJALmADwFDgFyC54CnAkBCgOuAaQBNgEsAQgHAACEAwAAARUCRAK0ACYCAABaAAAAAQMDOgcOBrwH1gaAAgAAEgcAAAEOAxYIWAfgBnIGngIAAAYJUAABFwOgBXgF/AMQBFgCAAD6CigAAQ4CzAG4AU4ChvyiCEz/AQMC1gHCAUQCjgNSCI
+wAASMCoACgAKAAdv3QB/78ASMClgCgAJYAOgKICRz9ASMClgCgAJYAeAAOC/j9AhYCZAWWAIQDAABaAAAAAhYCqgUsAYIAAAA2AWb+AhYCqgUsAYIAAAA2AZoBAhYCeAAsAcYCYv02AQAAAhYCeAAsAcYCngI2AQAAAgIC2AQyAKgCAABeAQAAAh8CvgU8AJYAAADqAWb+Ah8CvgU8AJYAAADqAZoBAgUDyAC+AOYA3AAYAWb+CAIAAAIR
+A8gAvgDmANwANgEAABcCWgACBQPIAL4A5gDcAA4BhgEDArD/AxYCZAWWAIQDAABaAAAAAxYCqgUsAYIAAAA2AWb+AxYCqgUsAYIAAAA2AZoBAxYCeAAsAcYCYv02AQAAAxYCeAAsAcYCngI2AQAAAwIC2AQyAKgCAABeAQAAAx8CvgU8AJYAAADqAWb+Ax8CvgU8AJYAAADqAZoBAwUDyAC+AOYA3AAYAWb+CAIAAAMRA8gAvgDmANwANg
+EAABcCWgADBQPIAL4A5gDcAA4BhgEDArD/BBkCvgWgAAgCAAAIAgAABCYCRgVkALgBAACNAuz/BA0CyAWoAqAAAACiAw4BBCkC3AVLAMgAAAAKBQ4BBAcCqgDcAFgCJv2yAvb/BAcCqgDcAFgC2gKyAvb/BAcCoAAIAqAAqP0EAUz/BAcCoAAIAqAAWAIEAUz/BAcCoAAIAqAAqP0EAbQABAcCoAAIAqAAWAIEAbQABRACUgOCAGICAAD0
+AQAABScCWAIMAJoBAAA+AgAABQQCggDMAYIA3v7mAEL/BQQCggDMAYIAIgHmAEL/BQQCggDMAYIA3v7mAL4ABQQCggDMAYIAIgHmAL4ABRwDqgCqAIwAjACMALQAlALY/wUGA4IAggDSAKAA3AC0ACAD2P8GGwOAAq4BRAKaAVUAAAAqAAAABiUDWAKQARICcgEwAAAAZQAAAAcbA4ACrgFEApoBVQAAACoAAAAHJQNYApABEgJyATAAAA
+BlAAAACBsDgAKuAUQCmgFVAAAAKgAAAAglA1gCkAESAnIBMAAAAGUAAAAJGwOAAq4BRAKaAVUAAAAqAAAACSUDWAKQARICcgEwAAAAZQAAAAobA4ACrgFEApoBVQAAACoAAAAKJQNYApABEgJyATAAAABlAAAACwECQQCuAUIATP/wAOz/CwECQQBeAUIAqgDNAHgACwECPAA2ATwAAAC5AEz/CwsC5gBkAJYA/P60APb/CxgCtABaANwA
+8ACCAG4ACyICaAHcAF4BTP/+Aez/CxoCggA3AIIATP+CAuz/CysCNgHIAEABqgCpAXgACxoCeAA3AHgAqgAeAngACyICvgCgAMgAAAByAUz/DAECQQCuAUIATP/wAOz/DAECQQBeAUIAqgDNAHgADAECPAA2ATwAAAC5AEz/DAsC5gBkAJYA/P60APb/DBgCtABaANwA8ACCAG4ADCICaAHcAF4BTP/+Aez/DBoCggA3AIIATP+CAuz/DC
+sCNgHIAEABqgCpAXgADBoCeAA3AHgAqgAeAngADCICvgCgAMgAAAByAUz/DQECQQCuAUIATP/wAOz/DQECQQBeAUIAqgDNAHgADQECPAA2ATwAAAC5AEz/DQsC5gBkAJYA/P60APb/DRgCtABaANwA8ACCAG4ADSICaAHcAF4BTP/+Aez/DRoCggA3AIIATP+CAuz/DSsCNgHIAEABqgCpAXgADRoCeAA3AHgAqgAeAngADSICvgCgAMgA
+AAByAUz/DgECQQCuAUIATP/wAOz/DgECQQBeAUIAqgDNAHgADgECPAA2ATwAAAC5AEz/DgsC5gBkAJYA/P60APb/DhgCtABaANwA8ACCAG4ADiICaAHcAF4BTP/+Aez/DhoCggA3AIIATP+CAuz/DisCNgHIAEABqgCpAXgADhoCeAA3AHgAqgAeAngADiICvgCgAMgAAAByAUz/DwECQQCuAUIATP/wAOz/DwECQQBeAUIAqgDNAHgADw
+ECPAA2ATwAAAC5AEz/DwsC5gBkAJYA/P60APb/DxgCtABaANwA8ACCAG4ADyICaAHcAF4BTP/+Aez/DxoCggA3AIIATP+CAuz/DysCNgHIAEABqgCpAXgADxoCeAA3AHgAqgAeAngADyICvgCgAMgAAAByAUz/EAECQQCuAUIATP/wAOz/EAECQQBeAUIAqgDNAHgAEAECPAA2ATwAAAC5AEz/EAsC5gBkAJYA/P60APb/EBgCtABaANwA
+8ACCAG4AECICaAHcAF4BTP/+Aez/EBoCggA3AIIATP+CAuz/ECsCNgHIAEABqgCpAXgAEBoCeAA3AHgAqgAeAngAECICvgCgAMgAAAByAUz/EQwCoAC+BaAAAADfAgAAEQwChgF4AIYBAABGAAAAESACRAIIAvQBAAAOBgAAER4D+AKUAkQC9AEOAQAAlAcAABEAAqAAqgAPAAAASgb3/hETAloAWgAEAQAAlgV6/gASAo4XcwCMAAAA1g
+GwCQASAo4XcwCMAAAAmAOwCQASAowAcwBcEvjz1gEUAAASAowAcwBcEvjzmAMUAAASAowAcwBcEggM1gEUAAASAowAcwBcEggMmAMUAA==
+`;
+const encoded=PAYLOAD.replace(/\s+/g,'');if(encoded.length!==4356)throw Error('Encoded source has wrong length '+encoded.length);
+const raw=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0));if(raw.length!==3265)throw Error('Decoded source size mismatch');
+let hash=2166136261;for(const v of raw)hash=Math.imul(hash^v,16777619)>>>0;if(hash!==2710925923)throw Error('Backyard source checksum mismatch');
+let at=0;const u8=()=>raw[at++],u16=()=>u8()|(u8()<<8),num=sc=>{let n=u16();return(n>=32768?n-65536:n)/sc},v3=sc=>[num(sc),num(sc),num(sc)];
+if(String.fromCharCode(...raw.slice(0,4))!=='RB01')throw Error('Invalid scene header');at=4;
+const colors=[];for(let i=0,count=u8();i<count;i++)colors.push([u8()/255,u8()/255,u8()/255]);
+const groups=[];for(let i=0,count=u8();i<count;i++)groups.push([v3(1000),v3(100),v3(1000)]);
+const parts=[];for(let i=0,count=u16();i<count;i++){
+let group=u8(),color=u8(),flags=u8(),dims=[];for(let j=0;j<(flags&1?5:3);j++)dims.push(num(1000));
+parts.push({group,color,flags,dims,pos:flags&2?v3(1000):[0,0,0],rot:flags&4?v3(100):[0,0,0],scale:flags&8?v3(1000):[1,1,1]});}
+if(parts.length!==181||groups.length!==18||at!==raw.length)throw Error('Scene is incomplete');
+const gl=cv.getContext('webgl2',{alpha:false,antialias:true});if(!gl)throw Error('WebGL2 not available in chat');
+function shader(t,src){let s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s}
+function program(vs,fs){let p=gl.createProgram();gl.attachShader(p,shader(gl.VERTEX_SHADER,vs));gl.attachShader(p,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p}
+const projection=`uniform vec3 eye,camRight,camUp,camForward;uniform float focal,aspect;
+vec4 project(vec3 p){vec3 q=p-eye;float z=dot(q,camForward);return vec4(dot(q,camRight)*focal/aspect,dot(q,camUp)*focal,z*1.002-0.2002,z);}`;
+const groundVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in vec3 n;layout(location=2)in vec3 col;${projection}
+out vec3 base;out float depth;out float topFacing;out vec3 world;
+void main(){gl_Position=project(p);base=col*(.57+.43*abs(dot(n,normalize(vec3(-.5,.85,.58)))));topFacing=max(0.,n.y);world=p;depth=gl_Position.w;}`;
+const groundFS=`#version 300 es
+precision highp float;in vec3 base;in float depth;in float topFacing;in vec3 world;
+uniform vec3 sky;uniform float light,haze,accum;out vec4 frag;
+void main(){float snow=accum*pow(topFacing,1.4);vec3 colored=mix(base,vec3(.92,.96,1.),snow*.92);float f=1.-exp(-pow(depth*haze*.017,2.));frag=vec4(mix(min(colored*light,vec3(1.)),sky,clamp(f,0.,1.)),1.);}`;
+const flakeVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 spawn;layout(location=1)in float phase;${projection}
+uniform float time,speed,wind,flakeSize;uniform vec4 bounds;uniform vec2 levels;
+out float fade;out float variation;
+void main(){float sx=bounds.y-bounds.x,sz=bounds.w-bounds.z,sy=levels.y-levels.x;
+float fall=speed*(.65+.55*phase);float descent=time*fall;
+float wobble=.17*sin(time*1.25+phase*23.0+spawn.x*3.0);
+float x=bounds.x+mod(spawn.x-bounds.x+sx*200.+time*wind*1.2+wobble,sx);
+float y=levels.x+mod(spawn.y-levels.x-descent+sy*200.,sy);
+float z=bounds.z+mod(spawn.z-bounds.z+sz*200.+.11*sin(time*.7+phase*8.),sz);
+gl_Position=project(vec3(x,y,z));gl_PointSize=(4.0+phase*5.0)*flakeSize*clamp(9.0/max(gl_Position.w,.5),.3,2.7);
+fade=clamp((18.-gl_Position.w)/12.,.18,1.);variation=phase;}`;
+const flakeFS=`#version 300 es
+precision highp float;in float fade;in float variation;uniform float opacity;out vec4 frag;
+void main(){vec2 p=gl_PointCoord-.5;float d=length(p)*2.;float core=1.-smoothstep(.2,1.,d);float halo=(1.-smoothstep(.64,1.,d))*.13;float a=opacity*fade*(core+halo);if(a<.025)discard;frag=vec4(.95,.975,1.,min(a,1.));}`;
+const programs=[program(groundVS,groundFS),program(flakeVS,flakeFS)],uniforms=programs.map(p=>{let d={};for(const x of ['eye','camRight','camUp','camForward','focal','aspect','sky','light','haze','accum','time','speed','wind','flakeSize','bounds','levels','opacity'])d[x]=gl.getUniformLocation(p,x);return d});
+const sub=(a,b)=>a.map((v,i)=>v-b[i]),add=(a,b)=>a.map((v,i)=>v+b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit=a=>{let d=Math.hypot(...a)||1;return a.map(v=>v/d)};
+function xform(p,t,r,s){let x=p[0]*s[0],y=p[1]*s[1],z=p[2]*s[2],rot=r.map(v=>v*Math.PI/180),c=Math.cos(rot[0]),sn=Math.sin(rot[0]);[y,z]=[y*c-z*sn,y*sn+z*c];c=Math.cos(rot[1]);sn=Math.sin(rot[1]);[x,z]=[x*c+z*sn,z*c-x*sn];c=Math.cos(rot[2]);sn=Math.sin(rot[2]);[x,y]=[x*c-y*sn,x*sn+y*c];return[x+t[0],y+t[1],z+t[2]]}
+const faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];
+let vertices=[],low=[Infinity,Infinity,Infinity],high=[-Infinity,-Infinity,-Infinity];
+for(const p of parts){let d=p.dims,h=p.flags&1?d[4]:d[1],bx=d[0]*.5,bz=(p.flags&1?d[1]:d[2])*.5,tx=(p.flags&1?d[2]:d[0])*.5,tz=(p.flags&1?d[3]:d[2])*.5;
+let cube=[[-bx,-h/2,-bz],[bx,-h/2,-bz],[bx,-h/2,bz],[-bx,-h/2,bz],[-tx,h/2,-tz],[tx,h/2,-tz],[tx,h/2,tz],[-tx,h/2,tz]].map(v=>{v=xform(v,p.pos,p.rot,p.scale);v=xform(v,...groups[p.group]);for(let k=0;k<3;k++){low[k]=Math.min(low[k],v[k]);high[k]=Math.max(high[k],v[k]);}return v;});
+for(let q of faces){let n=unit(cross(sub(cube[q[1]],cube[q[0]]),sub(cube[q[2]],cube[q[0]])));for(let j of [0,1,2,0,2,3])vertices.push(...cube[q[j]],...n,...colors[p.color]);}}
+function vao(array,stride,attrs){let obj=gl.createVertexArray();gl.bindVertexArray(obj);let buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(array),gl.STATIC_DRAW);for(let [index,size,offset]of attrs){gl.enableVertexAttribArray(index);gl.vertexAttribPointer(index,size,gl.FLOAT,false,4*stride,offset*4);}return obj}
+const terrain=vao(vertices,9,[[0,3,0],[1,3,3],[2,3,6]]),terrainCount=vertices.length/9;
+let seed=2389;const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+const bx0=low[0]-.8,bx1=high[0]+.8,bz0=low[2]-.8,bz1=high[2]+.8,by0=low[1]+.3,by1=Math.max(7.2,high[1]+1.4),flakeMax=2400,particles=[];
+for(let i=0;i<flakeMax;i++)particles.push(bx0+rand()*(bx1-bx0),by0+rand()*(by1-by0),bz0+rand()*(bz1-bz0),rand());
+const snow=vao(particles,4,[[0,3,0],[1,1,3]]);
+const initial=low.map((x,i)=>(x+high[i])*.5),target=initial.slice(),homeDistance=Math.max(9,Math.max(...high.map((x,i)=>x-low[i]))*1.85);let distance=homeDistance,yaw=.7,pitch=.42,elapsed=0,prev=0;
+gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LESS);
+const controls=['amount','speed','wind','size','opacity','haze','accum','light'];function labels(){for(let k of controls){let v=+get(k).value;get(k+'Val').textContent=['amount','opacity','haze','accum','light'].includes(k)?v+'%':v.toFixed(1)}}controls.forEach(k=>get(k).addEventListener('input',labels));labels();
+const presets={flurries:[18,1.4,.2,1.1,50,18,15,100],steady:[60,2.8,.4,1.4,70,34,35,78],heavy:[100,3.6,1.,1.8,82,46,58,66],blizzard:[100,5.5,3.,2.2,90,68,72,52]};root.querySelectorAll('button[data-preset]').forEach(b=>b.addEventListener('click',()=>{controls.forEach((k,i)=>get(k).value=presets[b.dataset.preset][i]);get('pause').checked=false;labels()}));
+get('reset').addEventListener('click',()=>{distance=homeDistance;yaw=.7;pitch=.42});
+let moving=false,px=0,py=0;cv.addEventListener('pointerdown',e=>{moving=true;px=e.clientX;py=e.clientY;cv.setPointerCapture(e.pointerId)});cv.addEventListener('pointermove',e=>{if(!moving)return;yaw-=(e.clientX-px)*.008;pitch=Math.max(-1.2,Math.min(1.35,pitch+(e.clientY-py)*.008));px=e.clientX;py=e.clientY});cv.addEventListener('pointerup',()=>moving=false);cv.addEventListener('pointercancel',()=>moving=false);cv.addEventListener('wheel',e=>{e.preventDefault();distance=Math.max(1.8,Math.min(55,distance*Math.exp(e.deltaY*.001)))},{passive:false});
+function setCamera(i,eye,right,up,forward,aspect){let u=uniforms[i];gl.useProgram(programs[i]);gl.uniform3fv(u.eye,eye);gl.uniform3fv(u.camRight,right);gl.uniform3fv(u.camUp,up);gl.uniform3fv(u.camForward,forward);gl.uniform1f(u.focal,1.65);gl.uniform1f(u.aspect,aspect);return u}
+function frame(t){if(prev&&!get('pause').checked)elapsed+=Math.min(.05,(t-prev)/1000);prev=t;
+let w=Math.max(280,Math.round(cv.clientWidth)),h=Math.max(250,Math.round(cv.clientHeight));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}gl.viewport(0,0,w,h);
+let bright=+get('light').value/100,sky=[.58,.65,.74].map(v=>v*(.63+bright*.39));gl.clearColor(...sky,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+let eye=add(target,[distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch)]),forward=unit(sub(target,eye)),right=unit(cross(forward,[0,1,0])),up=unit(cross(right,forward));
+let u=setCamera(0,eye,right,up,forward,w/h);gl.uniform3fv(u.sky,sky);gl.uniform1f(u.light,bright*1.08);gl.uniform1f(u.haze,+get('haze').value/100);gl.uniform1f(u.accum,+get('accum').value/100);gl.disable(gl.BLEND);gl.depthMask(true);gl.bindVertexArray(terrain);gl.drawArrays(gl.TRIANGLES,0,terrainCount);
+let amount=+get('amount').value/100;if(amount>0){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
+let p=setCamera(1,eye,right,up,forward,w/h);gl.uniform1f(p.time,elapsed);gl.uniform1f(p.speed,+get('speed').value);gl.uniform1f(p.wind,+get('wind').value);gl.uniform1f(p.flakeSize,+get('size').value);gl.uniform4fv(p.bounds,[bx0,bx1,bz0,bz1]);gl.uniform2fv(p.levels,[by0,by1]);gl.uniform1f(p.opacity,+get('opacity').value/100*.85);gl.bindVertexArray(snow);gl.drawArrays(gl.POINTS,0,Math.floor(flakeMax*amount));gl.depthMask(true);gl.disable(gl.BLEND)}
+requestAnimationFrame(frame)}
+status.textContent='181 accepted parts · '+(terrainCount/3)+' triangles · Snow ready';requestAnimationFrame(frame);
+}catch(e){status.textContent='Viewer failed';error.textContent='Snow viewer: '+String(e?.message||e)}
+})();
+</script></div></body></html>
