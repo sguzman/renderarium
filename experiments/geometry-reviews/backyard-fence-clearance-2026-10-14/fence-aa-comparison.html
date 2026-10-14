@@ -321,7 +321,7 @@ function render(){
  gl.uniform2fv(U.srcResolution,[rw,rh]);gl.uniform1i(U.technique,method);
  gl.drawArrays(gl.TRIANGLES,0,3);
  const err=gl.getError();if(err!==gl.NO_ERROR){g('error').textContent='WebGL error '+err;}
- g('status').textContent='181 approved parts · '+(method===3?'4× pixel workload':isMS?samples+' MSAA samples':'1 sample per pixel');
+ g('status').textContent=(fence===1?'179 repaired candidate parts':'181 original parts')+' · '+(method===3?'4× pixel workload':isMS?samples+' MSAA samples':'1 sample per pixel');
 }
 render();
 }catch(e){status.textContent='Viewer failed';g('error').textContent='AA lab: '+String(e.message||e);}
