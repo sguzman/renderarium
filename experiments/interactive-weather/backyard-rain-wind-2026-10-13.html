@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#111725;color:#e6ecf8;font:13px system-ui"><div id="rain-demo">
+<style>
+#rain-demo .head{padding:12px;background:#223146;display:flex;justify-content:space-between;gap:10px;align-items:center}
+#rain-demo canvas{width:100%;height:450px;display:block;touch-action:none;background:#697b8b;cursor:grab}
+#rain-demo .panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:13px}
+#rain-demo label{display:flex;justify-content:space-between;gap:8px;color:#c1d3e6;font-size:12px;align-items:center}
+#rain-demo .field{display:flex;flex-direction:column;gap:5px;min-width:0}
+#rain-demo input[type=range]{width:100%;accent-color:#a6cfff}
+#rain-demo .bar{padding:0 13px 14px;display:flex;gap:8px;flex-wrap:wrap}
+#rain-demo button{color:#edf6ff;background:#2b486a;border:1px solid #4c719a;padding:7px 10px;border-radius:7px;cursor:pointer}
+#rain-demo .note{padding:0 13px 13px;color:#a7bdd5;font-size:11px}
+#rain-demo .error{color:#ffafb4;padding:0 12px 9px}
+@media(max-width:540px){#rain-demo .panel{grid-template-columns:repeat(2,minmax(0,1fr))}#rain-demo canvas{height:310px}}
+</style>
+<div class="head"><strong>Backyard · Rain study</strong><small id="rain-status">Initializing…</small></div>
+<canvas id="rain-canvas"></canvas>
+<div class="panel">
+<div class="field"><label>Amount <span id="rain-amountValue">65%</span></label><input id="rain-amount" type="range" min="0" max="100" step="1" value="65"></div>
+<div class="field"><label>Speed <span id="rain-speedValue">6.0</span></label><input id="rain-speed" type="range" min="1" max="16" step=".5" value="6"></div>
+<div class="field"><label>Wind ← / → <span id="rain-windValue">0.3</span></label><input id="rain-wind" type="range" min="-5" max="5" step=".1" value=".3"></div>
+<div class="field"><label>Drop length <span id="rain-lengthValue">0.34</span></label><input id="rain-length" type="range" min=".07" max=".85" step=".01" value=".34"></div>
+<div class="field"><label>Drop visibility <span id="rain-opacityValue">65%</span></label><input id="rain-opacity" type="range" min="10" max="100" step="5" value="65"></div>
+<div class="field"><label>Atmospheric haze <span id="rain-hazeValue">28%</span></label><input id="rain-haze" type="range" min="0" max="100" step="1" value="28"></div>
+<div class="field"><label>Light <span id="rain-lightValue">75%</span></label><input id="rain-light" type="range" min="30" max="140" step="5" value="75"></div>
+<div class="field"><label style="justify-content:flex-start"><input type="checkbox" id="rain-splashes" checked> Ground splashes</label></div>
+<div class="field"><label style="justify-content:flex-start"><input type="checkbox" id="rain-pause"> Pause animation</label></div>
+</div>
+<div class="bar"><button data-preset="drizzle">Drizzle</button><button data-preset="shower">Shower</button><button data-preset="downpour">Downpour</button><button data-preset="storm">Storm</button><button id="rain-reset">Reset camera</button></div>
+<div id="rain-error" class="error"></div><div class="note">Drag to orbit · Scroll to zoom · Genuine source-derived Backyard (181 primitives) · Wind drives horizontal motion + streak angle · GPU depth occlusion · Offline</div>
+<script>
+(function(){
+const root=document.getElementById('rain-demo'),get=n=>root.querySelector('#rain-'+n),status=get('status'),error=get('error'),cv=get('canvas');
+try{
+const PAYLOAD=`
+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
+`.replace(/\s+/g,'');
+const raw=Uint8Array.from(atob(PAYLOAD),c=>c.charCodeAt(0));let h=2166136261;for(let v of raw)h=Math.imul(h^v,16777619)>>>0;if(h!==2710925923)throw Error('Source checksum mismatch');
+let o=0;const byte=()=>raw[o++],short=()=>byte()|(byte()<<8),signed=s=>{let x=short();return (x>32767?x-65536:x)/s},vec=s=>[signed(s),signed(s),signed(s)];
+if(String.fromCharCode(...raw.slice(0,4))!=='RB01')throw Error('Invalid source header');o=4;
+const palette=[];for(let i=0,n=byte();i<n;i++)palette.push([byte()/255,byte()/255,byte()/255]);
+const groups=[];for(let i=0,n=byte();i<n;i++)groups.push([vec(1000),vec(100),vec(1000)]);
+const parts=[];for(let i=0,n=short();i<n;i++){let group=byte(),color=byte(),flags=byte(),dims=[];for(let k=0;k<(flags&1?5:3);k++)dims.push(signed(1000));let pos=flags&2?vec(1000):[0,0,0],rot=flags&4?vec(100):[0,0,0],sc=flags&8?vec(1000):[1,1,1];parts.push([group,color,flags,dims,pos,rot,sc])}
+if(o!==raw.length||parts.length!==181||groups.length!==18)throw Error('Scene decode incomplete');
+const gl=cv.getContext('webgl2',{alpha:false,antialias:true});if(!gl)throw Error('WebGL2 unavailable in chat viewer');
+function makeProgram(vs,fs){let compile=(type,source)=>{let s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s},p=gl.createProgram();gl.attachShader(p,compile(gl.VERTEX_SHADER,vs));gl.attachShader(p,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p}
+const cameraGL=`uniform vec3 eye,camRight,camUp,camForward;uniform float focal,aspect;vec4 project(vec3 p){vec3 q=p-eye;float z=dot(q,camForward);return vec4(dot(q,camRight)*focal/aspect,dot(q,camUp)*focal,z*1.002-0.2002,z);}`;
+const meshVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in vec3 n;layout(location=2)in vec3 c;${cameraGL}out vec3 base;out float depth;void main(){gl_Position=project(p);base=c*(.56+.44*abs(dot(n,normalize(vec3(-.5,.9,.65)))));depth=gl_Position.w;}`;
+const meshFS=`#version 300 es
+precision highp float;in vec3 base;in float depth;uniform float brightness,haze;uniform vec3 sky;out vec4 outColor;void main(){float fog=1.-exp(-pow(depth*haze*.017,2.));outColor=vec4(mix(min(base*brightness,vec3(1.)),sky,clamp(fog,0.,1.)),1.);}`;
+const rainVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 spawn;layout(location=1)in vec2 corner;${cameraGL}uniform float rainTime,speed,wind,streak,width;uniform vec4 bounds;uniform vec2 vertical;out float fade;void main(){float sx=bounds.y-bounds.x;float vx=wind*2.0;float xx=mod(spawn.x-bounds.x+sx*100.+vx*rainTime,sx)+bounds.x;float yy=vertical.x+mod(spawn.y-vertical.x-rainTime*speed,vertical.y-vertical.x);vec3 p=vec3(xx,yy,spawn.z);p+=vec3(-vx*streak/max(1.,speed)*corner.y,streak*corner.y,0.);p+=camRight*corner.x*width;gl_Position=project(p);fade=clamp((14.-gl_Position.w)/8.,.25,1.);}`;
+const rainFS=`#version 300 es
+precision highp float;in float fade;uniform float alpha;out vec4 outColor;void main(){outColor=vec4(.77,.86,.99,alpha*fade);}`;
+const splashVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in float phase;${cameraGL}uniform float rainTime,speed;out float age;void main(){age=fract(phase+rainTime*speed*.14);gl_Position=project(p);gl_PointSize=(3.+age*8.)*clamp(8./gl_Position.w,.45,2.);}`;
+const splashFS=`#version 300 es
+precision highp float;in float age;uniform float alpha;out vec4 outColor;void main(){float d=length(gl_PointCoord-.5)*2.;if(d<.45||d>.87)discard;outColor=vec4(.82,.91,1.,alpha*(1.-age)*.5);}`;
+const programs=[makeProgram(meshVS,meshFS),makeProgram(rainVS,rainFS),makeProgram(splashVS,splashFS)];
+let uniforms=programs.map(program=>{let out={};for(let k of ['eye','camRight','camUp','camForward','focal','aspect','brightness','haze','sky','rainTime','speed','wind','streak','width','bounds','vertical','alpha'])out[k]=gl.getUniformLocation(program,k);return out});
+const add=(a,b)=>a.map((x,i)=>x+b[i]),sub=(a,b)=>a.map((x,i)=>x-b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm=a=>{let l=Math.hypot(...a)||1;return a.map(x=>x/l)};
+function transform(p,t,r,s){let x=p[0]*s[0],y=p[1]*s[1],z=p[2]*s[2],[rx,ry,rz]=r.map(v=>v*Math.PI/180),c=Math.cos(rx),a=Math.sin(rx);[y,z]=[y*c-z*a,y*a+z*c];c=Math.cos(ry);a=Math.sin(ry);[x,z]=[x*c+z*a,z*c-x*a];c=Math.cos(rz);a=Math.sin(rz);[x,y]=[x*c-y*a,x*a+y*c];return[x+t[0],y+t[1],z+t[2]]}
+const polygons=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];
+let mesh=[],min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
+for(let part of parts){let [g,col,f,d,t,r,s]=part,H=f&1?d[4]:d[1],bx=d[0]/2,bz=(f&1?d[1]:d[2])/2,tx=(f&1?d[2]:d[0])/2,tz=(f&1?d[3]:d[2])/2;
+let v=[[-bx,-H/2,-bz],[bx,-H/2,-bz],[bx,-H/2,bz],[-bx,-H/2,bz],[-tx,H/2,-tz],[tx,H/2,-tz],[tx,H/2,tz],[-tx,H/2,tz]].map(q=>{q=transform(q,t,r,s);q=transform(q,...groups[g]);for(let k=0;k<3;k++){min[k]=Math.min(min[k],q[k]);max[k]=Math.max(max[k],q[k])}return q});
+for(let [i,j,k,l]of polygons){let N=norm(cross(sub(v[j],v[i]),sub(v[k],v[i])));for(let id of [i,j,k,i,k,l])mesh.push(...v[id],...N,...palette[col])}
+}
+function createVAO(arr,stride,attrib){let vao=gl.createVertexArray();gl.bindVertexArray(vao);let buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(arr),gl.STATIC_DRAW);for(let [idx,size,offset]of attrib){gl.enableVertexAttribArray(idx);gl.vertexAttribPointer(idx,size,gl.FLOAT,false,stride*4,offset*4)}return vao}
+let meshVAO=createVAO(mesh,9,[[0,3,0],[1,3,3],[2,3,6]]),meshVerts=mesh.length/9;
+let seed=1927;const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+const xMin=min[0]-.6,xMax=max[0]+.6,zMin=min[2]-.6,zMax=max[2]+.6,yMin=min[1]+.25,yMax=Math.max(max[1]+1,6.6);
+let drops=[],splashes=[];const dropMax=2300,splashMax=500;
+for(let i=0;i<dropMax;i++){let x=xMin+rand()*(xMax-xMin),y=yMin+rand()*(yMax-yMin),z=zMin+rand()*(zMax-zMin);for(let [sx,sy]of [[-1,0],[1,0],[1,1],[-1,0],[1,1],[-1,1]])drops.push(x,y,z,sx,sy)}
+for(let i=0;i<splashMax;i++)splashes.push(xMin+rand()*(xMax-xMin),min[1]+.2,zMin+rand()*(zMax-zMin),rand());
+let rainVAO=createVAO(drops,5,[[0,3,0],[1,2,3]]),splashVAO=createVAO(splashes,4,[[0,3,0],[1,1,3]]);
+let target=min.map((m,i)=>(m+max[i])/2),home=target.slice(),distance=11,baseDistance=11,yaw=.7,pitch=.4,runTime=0,lastTime=null;
+baseDistance=Math.max(9,Math.max(...max.map((m,i)=>m-min[i]))*1.85);distance=baseDistance;
+gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LESS);
+const controls=['amount','speed','wind','length','opacity','haze','light'];function updateLabels(){for(let key of controls){let v=Number(get(key).value);get(key+'Value').textContent=key==='amount'||key==='opacity'||key==='haze'||key==='light'?v+'%':key==='length'?v.toFixed(2):v.toFixed(1)}}updateLabels();
+function uniformCamera(programIndex,eye,right,up,forward,aspect){let p=programs[programIndex],u=uniforms[programIndex];gl.useProgram(p);gl.uniform3fv(u.eye,eye);gl.uniform3fv(u.camRight,right);gl.uniform3fv(u.camUp,up);gl.uniform3fv(u.camForward,forward);gl.uniform1f(u.focal,1.65);gl.uniform1f(u.aspect,aspect);return u}
+function render(ts){if(lastTime!=null&&!get('pause').checked)runTime+=Math.min(.05,(ts-lastTime)/1000);lastTime=ts;let w=Math.max(280,Math.round(cv.clientWidth)),h=Math.max(260,Math.round(cv.clientHeight));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h};gl.viewport(0,0,w,h);
+let haze=+get('haze').value/100,light=+get('light').value/100,background=[.48,.57,.65].map(v=>v*(.55+light*.43));gl.clearColor(...background,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+let eye=add(target,[distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch)]),forward=norm(sub(target,eye)),right=norm(cross(forward,[0,1,0])),up=norm(cross(right,forward));
+let u=uniformCamera(0,eye,right,up,forward,w/h);gl.uniform1f(u.brightness,light*1.12);gl.uniform1f(u.haze,haze);gl.uniform3fv(u.sky,background);gl.bindVertexArray(meshVAO);gl.disable(gl.BLEND);gl.depthMask(true);gl.drawArrays(gl.TRIANGLES,0,meshVerts);
+let amount=+get('amount').value/100;if(amount>0){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);let u=uniformCamera(1,eye,right,up,forward,w/h);gl.uniform1f(u.rainTime,runTime);gl.uniform1f(u.speed,+get('speed').value);gl.uniform1f(u.wind,+get('wind').value);gl.uniform1f(u.streak,+get('length').value);gl.uniform1f(u.width,.009);gl.uniform4fv(u.bounds,[xMin,xMax,zMin,zMax]);gl.uniform2fv(u.vertical,[yMin,yMax]);gl.uniform1f(u.alpha,+get('opacity').value/100*.68);gl.bindVertexArray(rainVAO);gl.drawArrays(gl.TRIANGLES,0,Math.floor(dropMax*amount)*6);
+if(get('splashes').checked){let v=uniformCamera(2,eye,right,up,forward,w/h);gl.uniform1f(v.rainTime,runTime);gl.uniform1f(v.speed,+get('speed').value);gl.uniform1f(v.alpha,amount*.75);gl.bindVertexArray(splashVAO);gl.drawArrays(gl.POINTS,0,Math.floor(splashMax*amount));}
+gl.depthMask(true);gl.disable(gl.BLEND);}
+requestAnimationFrame(render)}
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);cv.dataset.drag='1';cv.dataset.px=e.clientX;cv.dataset.py=e.clientY});cv.addEventListener('pointermove',e=>{if(cv.dataset.drag!=='1')return;yaw-=(e.clientX-Number(cv.dataset.px))*.008;pitch=Math.min(1.34,Math.max(-1.2,pitch+(e.clientY-Number(cv.dataset.py))*.008));cv.dataset.px=e.clientX;cv.dataset.py=e.clientY});cv.addEventListener('pointerup',()=>cv.dataset.drag='0');cv.addEventListener('pointercancel',()=>cv.dataset.drag='0');cv.addEventListener('wheel',e=>{e.preventDefault();distance=Math.min(55,Math.max(2,distance*Math.exp(e.deltaY*.001)))},{passive:false});
+controls.forEach(k=>get(k).addEventListener('input',updateLabels));get('reset').addEventListener('click',()=>{target=home.slice();yaw=.7;pitch=.4;distance=baseDistance});
+const presets={drizzle:[20,3,.2,.15,45,13,100],shower:[65,6,.3,.34,65,28,75],downpour:[100,10,1.2,.50,84,48,55],storm:[100,13,3,.70,90,64,42]};root.querySelectorAll('button[data-preset]').forEach(b=>b.addEventListener('click',()=>{let v=presets[b.dataset.preset];controls.forEach((c,i)=>get(c).value=v[i]);get('splashes').checked=true;get('pause').checked=false;updateLabels()}));
+status.textContent='181 accepted parts · '+meshVerts/3+' triangles · GPU rain';window.__rainLab={getPartCount:()=>parts.length,getTriangleCount:()=>meshVerts/3,phase:()=>runTime};requestAnimationFrame(render);
+}catch(e){status.textContent='Viewer failed';error.textContent=String(e?.message||e);}
+})();
+</script>
+</div></body></html>
