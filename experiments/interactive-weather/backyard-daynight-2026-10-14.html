@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;background:#101827;color:#eef5fc;font:13px system-ui,sans-serif">
+<div id="dn" style="background:#121a29;color:#eaf2fc;border-radius:13px;overflow:hidden;font:13px system-ui,sans-serif">
+<style>
+#dn *{box-sizing:border-box}#dn .head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;background:#202e42}#dn .head small{color:#bed2ea}#dn canvas{display:block;width:100%;height:435px;touch-action:none;cursor:grab}#dn canvas:active{cursor:grabbing}#dn .timebox{padding:14px 17px 8px}#dn .times{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-variant-numeric:tabular-nums}#dn .clock{font-size:22px;font-weight:650}#dn .phase{color:#afc7e0;font-size:12px}#dn input[type=range]{width:100%;accent-color:#e9b264;cursor:pointer;margin:12px 0 1px}#dn .ticks{display:flex;justify-content:space-between;color:#8fa7c1;font-size:11px;padding:0 2px 8px}#dn .hint{padding:0 17px 14px;color:#92abc3;font-size:11px}#dn .error{padding:8px 15px;color:#ffb4b4}#dn .reading{display:flex;gap:12px;flex-wrap:wrap;color:#abc3dc;font-size:11px;padding:0 17px 11px}#dn .reading b{color:#eaf0f9;font-weight:600}
+@media(max-width:550px){#dn canvas{height:310px}#dn .clock{font-size:19px}}
+</style>
+<div class="head"><strong>Backyard · Day ↔ Night</strong><small id="dn-status">Initializing accepted scene…</small></div>
+<canvas id="dn-canvas" aria-label="Interactive 3D Backyard changing with a time of day slider"></canvas>
+<div class="timebox"><div class="times"><span class="clock" id="dn-clock">12:00</span><span class="phase" id="dn-phase">Midday</span></div><input id="dn-time" type="range" min="0" max="24" step="0.25" value="12" aria-label="Time of day"/><div class="ticks"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div></div>
+<div class="reading"><span>Sun altitude <b id="dn-altitude">—</b></span><span>Light <b id="dn-temperature">—</b></span><span>Shadows <b id="dn-shadows">—</b></span></div>
+<div class="hint">One slider controls sun position, directional shadows, sky colors, ambient illumination, sunset warmth, stars and moonlight. Drag to orbit · Scroll to zoom · Original 181-part Backyard · Offline</div>
+<div class="error" id="dn-error"></div>
+<script>
+(function(){
+const root=document.getElementById('dn'),g=id=>root.querySelector('#dn-'+id),canvas=g('canvas'),status=g('status');
+try{
+const PACKED=`
+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
+`.replace(/\s+/g,'');
+if(PACKED.length!==2572)throw Error('Packed source transport length mismatch: '+PACKED.length);
+const compressed=Uint8Array.from(atob(PACKED),x=>x.charCodeAt(0));
+if(compressed.length!==1927)throw Error('Packed scene data damaged');
+const decompressed=[];
+for(let at=0;at<compressed.length;){
+ const h=compressed[at++];
+ if(h<128){let n=h+1;for(let j=0;j<n;j++)decompressed.push(compressed[at++]);}
+ else{let n=h-125,dist=compressed[at]|(compressed[at+1]<<8);at+=2;
+ if(dist<1||dist>decompressed.length)throw Error('Invalid source backreference');
+ for(let j=0;j<n;j++)decompressed.push(decompressed[decompressed.length-dist]);}
+}
+const raw=Uint8Array.from(decompressed);
+if(raw.length!==3265)throw Error('Original geometry size differs');
+if(raw.length!==3265)throw Error('Packed source size differs');
+let hash=2166136261;for(const x of raw)hash=Math.imul(hash^x,16777619)>>>0;if(hash!==2710925923)throw Error('Backyard source checksum mismatch: '+hash);
+let at=4;if(String.fromCharCode(...raw.slice(0,4))!=='RB01')throw Error('Source header is wrong');
+const u8=()=>raw[at++],u16=()=>u8()|(u8()<<8),num=k=>{const x=u16();return(x>32767?x-65536:x)/k},v3=k=>[num(k),num(k),num(k)];
+const palette=[];for(let i=0,n=u8();i<n;i++)palette.push([u8()/255,u8()/255,u8()/255]);
+const groups=[];for(let i=0,n=u8();i<n;i++)groups.push([v3(1000),v3(100),v3(1000)]);
+const parts=[];for(let i=0,n=u16();i<n;i++){const group=u8(),color=u8(),f=u8(),d=[];for(let k=0;k<(f&1?5:3);k++)d.push(num(1000));parts.push({group,color,f,d,pos:f&2?v3(1000):[0,0,0],rot:f&4?v3(100):[0,0,0],scale:f&8?v3(1000):[1,1,1]});}
+if(parts.length!==181||groups.length!==18||at!==raw.length)throw Error('Backyard geometry parse incomplete');
+const gl=canvas.getContext('webgl2',{alpha:false,antialias:true});if(!gl)throw Error('WebGL2 is unavailable');
+function program(v,f){function make(type,src){let sh=gl.createShader(type);gl.shaderSource(sh,src);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(sh));return sh}let p=gl.createProgram();gl.attachShader(p,make(gl.VERTEX_SHADER,v));gl.attachShader(p,make(gl.FRAGMENT_SHADER,f));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p}
+const camera=`uniform vec3 eye,camRight,camUp,camForward;uniform float focal,aspect;vec4 project(vec3 p){vec3 q=p-eye;float z=dot(q,camForward);return vec4(dot(q,camRight)*focal/aspect,dot(q,camUp)*focal,z*1.002-0.2002,z);}`;
+const skyVS=`#version 300 es
+precision highp float;void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0.,1.);}`;
+const skyFS=`#version 300 es
+precision highp float;uniform vec3 camRight,camUp,camForward,skyTop,skyHorizon,sunDir,moonDir;uniform float focal,aspect,night,day,time;uniform vec2 screen;out vec4 outputColor;
+void main(){vec2 uv=(gl_FragCoord.xy/screen)*2.-1.;vec3 r=normalize(camForward+camRight*(uv.x*aspect/focal)+camUp*(uv.y/focal));float h=smoothstep(-.12,.83,r.y);vec3 sky=mix(skyHorizon,skyTop,h);sky+=vec3(.13,.1,.09)*exp(-18.*abs(r.y))*(1.-night);
+float d=dot(r,sunDir);float sunDisk=smoothstep(.9985,.99945,d)*day;float halo=pow(max(d,0.),36.)*day;sky=mix(sky,vec3(1.0,.92,.68),sunDisk*.94);sky+=vec3(.42,.24,.13)*halo*.26;
+float moon=smoothstep(.99935,.99962,dot(r,moonDir))*night;sky=mix(sky,vec3(.92,.94,1.),moon*.96);
+vec3 cell=floor(r*430.);float star=fract(sin(dot(cell,vec3(12.9898,78.233,38.719)))*43758.5453);float bright=step(.9979,star)*night*smoothstep(.03,.17,r.y);sky+=bright*vec3(.55,.63,.78);outputColor=vec4(clamp(sky,0.,1.),1.);}`;
+const depthVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;uniform mat4 lightMatrix;void main(){gl_Position=lightMatrix*vec4(p,1.);}`;
+const depthFS=`#version 300 es
+precision highp float;void main(){}`;
+const modelVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in vec3 n;layout(location=2)in vec3 color;${camera}
+uniform mat4 lightMatrix;out vec3 vColor,vNormal,vWorld;out vec4 vShadow;out float viewDepth;
+void main(){gl_Position=project(p);vColor=color;vNormal=n;vWorld=p;vShadow=lightMatrix*vec4(p,1.);viewDepth=gl_Position.w;}`;
+const modelFS=`#version 300 es
+precision highp float;in vec3 vColor,vNormal,vWorld;in vec4 vShadow;in float viewDepth;
+uniform vec3 sunDir,moonDir,sunColor,ambientColor,skyHorizon;uniform float daylight,sunPower,ambientPower,moonPower,haze;
+uniform sampler2D shadowTexture;out vec4 outColor;
+float shadow(){if(daylight<.002)return 1.;vec3 q=vShadow.xyz/vShadow.w*.5+.5;if(q.x<0.||q.y<0.||q.x>1.||q.y>1.||q.z>1.||q.z<0.)return 1.;vec2 texel=1./vec2(textureSize(shadowTexture,0));float shade=0.;float bias=max(.0025,.009*(1.-max(dot(normalize(vNormal),sunDir),0.)));for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float z=texture(shadowTexture,q.xy+vec2(float(x),float(y))*texel).r;shade+=(q.z-bias<=z?1.:0.);}return mix(.18,1.,shade/9.);}
+void main(){vec3 n=normalize(vNormal);float direct=max(dot(n,sunDir),0.);float moon=max(dot(n,moonDir),0.);float shadowVisibility=shadow();vec3 lum=ambientColor*ambientPower+sunColor*(sunPower*direct*shadowVisibility)+vec3(.45,.59,.92)*(moonPower*moon);
+vec3 color=vColor*lum;float fog=1.-exp(-pow(viewDepth*haze*.012,2.));color=mix(color,skyHorizon,fog*.32);outColor=vec4(clamp(color,0.,1.),1.);}`;
+const skyP=program(skyVS,skyFS),depthP=program(depthVS,depthFS),modelP=program(modelVS,modelFS),ALL=[skyP,depthP,modelP];
+const uniform=ALL.map(p=>{const o={};for(const k of ['eye','camRight','camUp','camForward','focal','aspect','lightMatrix','skyTop','skyHorizon','sunDir','moonDir','night','day','time','screen','sunColor','ambientColor','daylight','sunPower','ambientPower','moonPower','haze','shadowTexture'])o[k]=gl.getUniformLocation(p,k);return o});
+const dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],sub=(a,b)=>a.map((x,i)=>x-b[i]),add=(a,b)=>a.map((x,i)=>x+b[i]),unit=a=>{let m=Math.hypot(...a)||1;return a.map(x=>x/m)};
+function xform(p,t,r,s){let x=p[0]*s[0],y=p[1]*s[1],z=p[2]*s[2];let [a,b,c]=r.map(x=>x*Math.PI/180),q=Math.cos(a),v=Math.sin(a);[y,z]=[y*q-z*v,y*v+z*q];q=Math.cos(b);v=Math.sin(b);[x,z]=[x*q+z*v,z*q-x*v];q=Math.cos(c);v=Math.sin(c);[x,y]=[x*q-y*v,x*v+y*q];return[x+t[0],y+t[1],z+t[2]];}
+const faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]],verts=[];let lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];
+for(const p of parts){const d=p.d,H=(p.f&1)?d[4]:d[1],bx=d[0]/2,bz=((p.f&1)?d[1]:d[2])/2,tx=((p.f&1)?d[2]:d[0])/2,tz=((p.f&1)?d[3]:d[2])/2;
+const cube=[[-bx,-H/2,-bz],[bx,-H/2,-bz],[bx,-H/2,bz],[-bx,-H/2,bz],[-tx,H/2,-tz],[tx,H/2,-tz],[tx,H/2,tz],[-tx,H/2,tz]].map(v=>{v=xform(v,p.pos,p.rot,p.scale);v=xform(v,...groups[p.group]);for(let j=0;j<3;j++){lo[j]=Math.min(lo[j],v[j]);hi[j]=Math.max(hi[j],v[j])}return v});
+for(const f of faces){const normal=unit(cross(sub(cube[f[1]],cube[f[0]]),sub(cube[f[2]],cube[f[0]])));for(const k of [0,1,2,0,2,3])verts.push(...cube[f[k]],...normal,...palette[p.color]);}}
+const vao=gl.createVertexArray();gl.bindVertexArray(vao);const vbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(verts),gl.STATIC_DRAW);for(const [index,size,off]of [[0,3,0],[1,3,3],[2,3,6]]){gl.enableVertexAttribArray(index);gl.vertexAttribPointer(index,size,gl.FLOAT,false,36,off*4)};
+const tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT24,1024,1024,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_INT,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,tex,0);gl.drawBuffers([gl.NONE]);gl.readBuffer(gl.NONE);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('Sun shadow framebuffer unavailable');gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+function lookAt(eye,at){let z=unit(sub(eye,at)),x=unit(cross([0,1,0],z)),y=cross(z,x);return[x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1]}
+function ortho(r,n,f){return[1/r,0,0,0,0,1/r,0,0,0,0,-2/(f-n),0,0,0,-(f+n)/(f-n),1]}
+function mul(a,b){let out=new Array(16).fill(0);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)out[c*4+r]+=a[k*4+r]*b[c*4+k];return out}
+const sceneCenter=lo.map((x,i)=>(x+hi[i])/2),ext=Math.max(...lo.map((x,i)=>hi[i]-x)),span=ext*1.28+2;
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),lerp=(a,b,f)=>a+(b-a)*f,mix=(a,b,f)=>a.map((x,i)=>lerp(x,b[i],f)),smooth=(a,b,x)=>{let t=clamp((x-a)/(b-a));return t*t*(3-2*t)};
+const stops=[
+[0,[.020,.035,.09],[.06,.09,.17]],
+[4.6,[.020,.035,.09],[.07,.10,.19]],
+[5.6,[.13,.20,.37],[.65,.33,.28]],
+[6.2,[.25,.32,.51],[.93,.52,.31]],
+[7.4,[.36,.54,.72],[.79,.81,.81]],
+[10,[.24,.51,.79],[.73,.84,.91]],
+[14,[.23,.50,.80],[.72,.85,.94]],
+[16.5,[.37,.52,.74],[.81,.79,.77]],
+[17.7,[.27,.34,.55],[.98,.45,.27]],
+[18.2,[.19,.25,.43],[.76,.31,.28]],
+[19.3,[.065,.11,.26],[.19,.15,.30]],
+[20.5,[.020,.035,.09],[.07,.10,.19]],
+[24,[.020,.035,.09],[.06,.09,.17]]];
+function skyAt(t){let i=0;while(i<stops.length-2&&t>stops[i+1][0])i++;let a=stops[i],b=stops[i+1],f=smooth(a[0],b[0],t);return[mix(a[1],b[1],f),mix(a[2],b[2],f)]}
+let yaw=.7,pitch=.42,distance=ext*1.85+2,drag=false,px=0,py=0;
+canvas.addEventListener('pointerdown',e=>{drag=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-px)*.008;pitch=clamp(pitch+(e.clientY-py)*.008,-1.2,1.34);px=e.clientX;py=e.clientY;render()});
+canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('pointercancel',()=>drag=false);
+canvas.addEventListener('wheel',e=>{e.preventDefault();distance=clamp(distance*Math.exp(e.deltaY*.001),2,55);render()},{passive:false});
+function u3(u,v){if(u!==null)gl.uniform3fv(u,v)}function u1(u,v){if(u!==null)gl.uniform1f(u,v)}
+function uniformCamera(U,right,up,forward,eye,w,h){u3(U.camRight,right);u3(U.camUp,up);u3(U.camForward,forward);u3(U.eye,eye);u1(U.focal,1.65);u1(U.aspect,w/h)}
+const slider=g('time');slider.addEventListener('input',render);let lastRender=0;
+function render(){
+const t=+slider.value,clock=t===24?'24:00':String(Math.floor(t)).padStart(2,'0')+':'+String(Math.round((t%1)*60)).padStart(2,'0');g('clock').textContent=clock;
+const solarPhase=(t-6)/12*Math.PI,elevation=Math.sin(solarPhase),day=smooth(-.07,.18,elevation),night=1.-smooth(-.22,-.025,elevation),warm=1.-smooth(.07,.8,elevation);
+let sunDir=unit([-.98*Math.cos(solarPhase),elevation*.94,.29]),moonDir=unit(sunDir.map(v=>-v));let visibleSun=Math.asin(clamp(sunDir[1],-1,1))*180/Math.PI;
+let phase=t<5?'Night':t<6.3?'Dawn':t<9?'Morning':t<16.5?'Daylight':t<18.5?'Sunset':t<20?'Twilight':'Night';g('phase').textContent=phase;
+g('altitude').textContent=(visibleSun>0?'+':'')+Math.round(visibleSun)+'°';g('temperature').textContent=night>.8?'Cool moonlight':warm>.5?'Warm golden light':'Neutral daylight';g('shadows').textContent=day>.15?'Sun-cast':'Moonlit';
+const [top,horizon]=skyAt(t),ambient=mix([.36,.45,.7],[.93,.97,1],day),sunColor=mix([1.,.62,.37],[1.,.99,.91],1.-warm),sunPower=day*(.42+.69*Math.max(elevation,0)),ambientPower=lerp(.12,.70,day),moonPower=.19*night;
+const w=Math.max(280,Math.round(canvas.clientWidth)),h=Math.max(230,Math.round(canvas.clientHeight));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+const eye=add(sceneCenter,[distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch)]),forward=unit(sub(sceneCenter,eye)),right=unit(cross(forward,[0,1,0])),up=unit(cross(right,forward));
+const lEye=add(sceneCenter,sunDir.map(x=>x*20)),lightMatrix=mul(ortho(span,.1,65),lookAt(lEye,sceneCenter));
+gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LESS);gl.disable(gl.BLEND);gl.bindVertexArray(vao);
+if(day>.05){gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.viewport(0,0,1024,1024);gl.clearDepth(1);gl.clear(gl.DEPTH_BUFFER_BIT);gl.useProgram(depthP);gl.uniformMatrix4fv(uniform[1].lightMatrix,false,lightMatrix);gl.colorMask(false,false,false,false);gl.drawArrays(gl.TRIANGLES,0,verts.length/9);gl.colorMask(true,true,true,true);}
+gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,w,h);gl.clearDepth(1);gl.clear(gl.DEPTH_BUFFER_BIT);gl.disable(gl.DEPTH_TEST);gl.useProgram(skyP);let U=uniform[0];uniformCamera(U,right,up,forward,eye,w,h);u3(U.skyTop,top);u3(U.skyHorizon,horizon);u3(U.sunDir,sunDir);u3(U.moonDir,moonDir);u1(U.night,night);u1(U.day,day);u1(U.time,t);gl.uniform2fv(U.screen,[w,h]);gl.drawArrays(gl.TRIANGLES,0,3);
+gl.enable(gl.DEPTH_TEST);gl.useProgram(modelP);U=uniform[2];uniformCamera(U,right,up,forward,eye,w,h);gl.uniformMatrix4fv(U.lightMatrix,false,lightMatrix);u3(U.sunDir,sunDir);u3(U.moonDir,moonDir);u3(U.sunColor,sunColor);u3(U.ambientColor,ambient);u3(U.skyHorizon,horizon);u1(U.daylight,day);u1(U.sunPower,sunPower);u1(U.ambientPower,ambientPower);u1(U.moonPower,moonPower);u1(U.haze,night*.4+.13);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex);gl.uniform1i(U.shadowTexture,0);gl.drawArrays(gl.TRIANGLES,0,verts.length/9);
+const err=gl.getError();if(err!==gl.NO_ERROR)throw Error('WebGL scene draw error '+err);
+lastRender=t;
+}
+status.textContent='181 approved parts · live sunlight + shadows';render();
+}catch(e){status.textContent='Viewer failed';g('error').textContent='Day/night viewer: '+String(e.message||e);}
+})();
+</script></div></body></html>
