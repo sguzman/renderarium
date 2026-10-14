@@ -1,0 +1,288 @@
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head><body style="margin:0;background:#111725;color:#ebf3ff">
+<div id="aa-lab" style="font:13px system-ui,sans-serif;background:#111725;color:#ebf3ff;border-radius:12px;overflow:hidden">
+<style>
+#aa-lab *{box-sizing:border-box}#aa-lab .head{padding:12px 14px;background:#223448;display:flex;justify-content:space-between;gap:8px}#aa-lab small{color:#b6cee7}
+#aa-lab canvas{width:100%;height:425px;display:block;touch-action:none;background:#92a4b7;cursor:grab}#aa-lab canvas:active{cursor:grabbing}
+#aa-lab .row{display:flex;flex-wrap:wrap;gap:7px;padding:11px 14px 0}#aa-lab button{background:#283f5c;color:#ebf5ff;border:1px solid #526f92;border-radius:7px;padding:7px 10px;font:inherit;cursor:pointer}#aa-lab button.active{background:#557da8;border-color:#b3d5fb}#aa-lab .lab{display:flex;gap:10px;align-items:center;padding:10px 14px;color:#c6d7eb}#aa-lab .lab strong{white-space:nowrap;font-size:12px}#aa-lab .lab input{flex:1;min-width:80px;accent-color:#abcffb}
+#aa-lab .foot{padding:8px 14px 13px;color:#abc2d9;font-size:11px}#aa-lab #aa-error{color:#ffb9b9;padding:0 14px 9px}#aa-lab .reading{display:flex;gap:14px;flex-wrap:wrap;padding:9px 14px 4px;color:#bed0e3}#aa-lab b{color:#eff7ff}@media(max-width:550px){#aa-lab canvas{height:315px}#aa-lab .lab{flex-wrap:wrap}}
+</style>
+<div class="head"><strong>Backyard · Antialiasing Laboratory</strong><small id="aa-status">Initializing…</small></div>
+<canvas id="aa-canvas" aria-label="Accepted Backyard 3D scene with interactive antialiasing comparison"></canvas>
+<div class="row"><button data-aa="0">No AA</button><button data-aa="1" class="active">FXAA</button><button data-aa="2">4× MSAA</button><button data-aa="3">2× SSAA</button><button data-aa="4">MSAA + FXAA</button></div>
+<div class="row"><button data-shade="0">Unlit</button><button data-shade="1">Lambert</button><button data-shade="2">Toon</button><button data-shade="3" class="active">Toon + Outline</button></div>
+<div class="lab"><strong>Detail zoom <span id="aa-zoomVal">1.0×</span></strong><input type="range" id="aa-zoom" min="1" max="3" step="0.1" value="1"/></div>
+<div class="lab"><strong>Outline <span id="aa-outlineVal">1.5px</span></strong><input type="range" id="aa-outline" min="0" max="4" step="0.5" value="1.5"/></div>
+<div class="reading"><span>Technique: <b id="aa-method">FXAA</b></span><span>Material: <b id="aa-shading">Toon + Outline</b></span></div>
+<div id="aa-error"></div>
+<div class="foot">Drag to orbit · Scroll to zoom · Same frozen 181-part Backyard · FXAA smooths final pixels · MSAA smooths geometry edges · SSAA renders 4× as many pixels</div>
+<script>
+(function(){
+const root=document.getElementById('aa-lab'),g=k=>root.querySelector('#aa-'+k),cv=g('canvas'),status=g('status');
+try{
+const PACKED=`
+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
+`.replace(/\s+/g,'');
+if(PACKED.length!==2572)throw Error('Packed data length '+PACKED.length);
+const compressed=Uint8Array.from(atob(PACKED),x=>x.charCodeAt(0));if(compressed.length!==1927)throw Error('Packed source invalid');
+const out=[];for(let at=0;at<compressed.length;){let h=compressed[at++];if(h<128){for(let j=0;j<=h;j++)out.push(compressed[at++]);}else{const n=h-125,dist=compressed[at]|(compressed[at+1]<<8);at+=2;if(!dist||dist>out.length)throw Error('Invalid geometry compression');for(let j=0;j<n;j++)out.push(out[out.length-dist]);}}
+const raw=Uint8Array.from(out);if(raw.length!==3265)throw Error('Decoded scene size '+raw.length);let hash=2166136261;for(let x of raw)hash=Math.imul(hash^x,16777619)>>>0;if(hash!==2710925923)throw Error('Backyard checksum mismatch');
+let at=4;if(String.fromCharCode(...raw.slice(0,4))!=='RB01')throw Error('Invalid scene header');const u8=()=>raw[at++],u16=()=>u8()|(u8()<<8),num=k=>{let x=u16();return(x>32767?x-65536:x)/k},v3=k=>[num(k),num(k),num(k)];
+const palette=[];for(let i=0,n=u8();i<n;i++)palette.push([u8()/255,u8()/255,u8()/255]);const groups=[];for(let i=0,n=u8();i<n;i++)groups.push([v3(1000),v3(100),v3(1000)]);
+const parts=[];for(let i=0,n=u16();i<n;i++){let group=u8(),color=u8(),flags=u8(),dims=[];for(let k=0;k<(flags&1?5:3);k++)dims.push(num(1000));parts.push({group,color,flags,dims,pos:flags&2?v3(1000):[0,0,0],rot:flags&4?v3(100):[0,0,0],scale:flags&8?v3(1000):[1,1,1]});}if(parts.length!==181||groups.length!==18||at!==raw.length)throw Error('Backyard data incomplete');
+const gl=cv.getContext('webgl2',{alpha:false,antialias:true});if(!gl)throw Error('WebGL2 unavailable');
+function compile(v,f){function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s}let p=gl.createProgram();gl.attachShader(p,shader(gl.VERTEX_SHADER,v));gl.attachShader(p,shader(gl.FRAGMENT_SHADER,f));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p}
+const camera=`uniform vec3 eye,camRight,camUp,camForward;uniform float focal,aspect;vec4 project(vec3 p){vec3 q=p-eye;float z=dot(q,camForward);return vec4(dot(q,camRight)*focal/aspect,dot(q,camUp)*focal,z*1.002-0.2002,z);}`;
+const meshVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in vec3 n;layout(location=2)in vec3 color;${camera}out vec3 vColor,vNormal;out float depth;void main(){gl_Position=project(p);vColor=color;vNormal=n;depth=gl_Position.w;}`;
+const meshFS=`#version 300 es
+precision highp float;
+in vec3 vColor,vNormal;
+in float depth;
+uniform vec3 lightDir,skyColor;
+uniform float intensity,ambient,mode,bands;
+layout(location=0)out vec4 frag;
+layout(location=1)out vec4 normalEncoded;
+void main(){
+ float ndl=max(dot(normalize(vNormal),normalize(lightDir)),0.);
+ float illuminated=1.;
+ if(mode>0.5){
+   if(mode<1.5) illuminated=ambient+intensity*ndl;
+   else {float b=max(2.,bands);float quant=floor(ndl*b)/max(1.,b-1.);illuminated=ambient+intensity*clamp(quant,0.,1.);}
+ }
+ vec3 shaded=clamp(vColor*illuminated,0.,1.);
+ float fog=1.-exp(-pow(depth*.01,2.));
+ frag=vec4(mix(shaded,skyColor,fog*.16),1.);
+ normalEncoded=vec4(normalize(vNormal)*.5+.5,1.);
+}`;
+const screenVS=`#version 300 es
+precision highp float;
+void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0.,1.);}`;
+const screenFS=`#version 300 es
+precision highp float;
+uniform sampler2D colorBuffer,normalBuffer,depthBuffer;
+uniform vec2 resolution;
+uniform float thickness,darkness,crease,outlineOn;
+out vec4 frag;
+float linearDepth(float rawDepth){return 0.1001/max(.00001,1.001-rawDepth);}
+void main(){
+ ivec2 pixel=ivec2(gl_FragCoord.xy);
+ vec3 original=texelFetch(colorBuffer,pixel,0).rgb;
+ if(outlineOn<.5 || thickness<.1 || darkness<.01){frag=vec4(original,1.);return;}
+ float z=texelFetch(depthBuffer,pixel,0).r;
+ if(z>.99995){frag=vec4(original,1.);return;}
+ vec3 n=normalize(texelFetch(normalBuffer,pixel,0).rgb*2.-1.);
+ float dist=linearDepth(z);
+ float depthEdge=0.;float normalEdge=0.;
+ ivec2 offsets[8]=ivec2[8](ivec2(1,0),ivec2(-1,0),ivec2(0,1),ivec2(0,-1),ivec2(1,1),ivec2(-1,1),ivec2(1,-1),ivec2(-1,-1));
+ for(int j=1;j<=4;j++){
+   if(float(j)>thickness+.25)continue;
+   for(int k=0;k<8;k++){
+     ivec2 samplePixel=clamp(pixel+offsets[k]*j,ivec2(0),ivec2(resolution)-ivec2(1));
+     float dz=texelFetch(depthBuffer,samplePixel,0).r;
+     float relative=dz>.99995?1.0:(linearDepth(dz)-dist)/max(1.,dist);
+     depthEdge=max(depthEdge,smoothstep(.025,.115,relative));
+     if(crease>.001 && dz<.99995 && abs(relative)<.08){
+       vec3 otherN=normalize(texelFetch(normalBuffer,samplePixel,0).rgb*2.-1.);
+       float changed=1.-dot(n,otherN);
+       normalEdge=max(normalEdge,smoothstep(.38,.75,changed));
+     }
+   }
+ }
+ float edge=clamp(max(depthEdge,normalEdge*crease),0.,1.);
+ vec3 ink=vec3(.065,.085,.105);
+ frag=vec4(mix(original,ink,edge*darkness),1.);
+}`;
+const finalFS=`#version 300 es
+precision highp float;
+uniform sampler2D srcTex;
+uniform vec2 srcResolution;
+uniform int technique;
+out vec4 frag;
+float luma(vec3 c){return dot(c,vec3(.299,.587,.114));}
+vec3 atUV(vec2 uv){return texture(srcTex,clamp(uv,vec2(.0001),vec2(.9999))).rgb;}
+void main(){
+ ivec2 coord=ivec2(gl_FragCoord.xy);
+ if(technique==3){
+   ivec2 p=coord*2;
+   vec3 c=(texelFetch(srcTex,p,0).rgb+texelFetch(srcTex,p+ivec2(1,0),0).rgb+
+           texelFetch(srcTex,p+ivec2(0,1),0).rgb+texelFetch(srcTex,p+ivec2(1,1),0).rgb)*.25;
+   frag=vec4(c,1.);return;
+ }
+ vec2 uv=gl_FragCoord.xy/srcResolution;
+ vec3 rgbM=atUV(uv);
+ if(technique!=1 && technique!=4){frag=vec4(rgbM,1.);return;}
+ vec2 px=1./srcResolution;
+ vec3 rgbNW=atUV(uv+vec2(-1.,-1.)*px),rgbNE=atUV(uv+vec2(1.,-1.)*px);
+ vec3 rgbSW=atUV(uv+vec2(-1.,1.)*px),rgbSE=atUV(uv+vec2(1.,1.)*px);
+ float lM=luma(rgbM),lNW=luma(rgbNW),lNE=luma(rgbNE),lSW=luma(rgbSW),lSE=luma(rgbSE);
+ float lo=min(lM,min(min(lNW,lNE),min(lSW,lSE)));
+ float hi=max(lM,max(max(lNW,lNE),max(lSW,lSE)));
+ if(hi-lo<max(.032,hi*.11)){frag=vec4(rgbM,1.);return;}
+ vec2 dir=vec2(-((lNW+lNE)-(lSW+lSE)),(lNW+lSW)-(lNE+lSE));
+ float adjust=max((lNW+lNE+lSW+lSE)*(.25*.125),.0078125);
+ float div=1./(min(abs(dir.x),abs(dir.y))+adjust);
+ dir=clamp(dir*div,vec2(-8.),vec2(8.))*px;
+ vec3 a=.5*(atUV(uv+dir*(1./3.-.5))+atUV(uv+dir*(2./3.-.5)));
+ vec3 b=a*.5+.25*(atUV(uv+dir*(-.5))+atUV(uv+dir*.5));
+ float lb=luma(b);
+ frag=vec4(lb<lo||lb>hi?a:b,1.);
+}`;
+
+const programs=[compile(meshVS,meshFS),compile(screenVS,screenFS),compile(screenVS,finalFS)];
+const names=['eye','camRight','camUp','camForward','focal','aspect','lightDir','skyColor','intensity','ambient','mode','bands','thickness','darkness','crease','outlineOn','resolution','colorBuffer','normalBuffer','depthBuffer','srcTex','srcResolution','technique'];
+const uniforms=programs.map(p=>{const u={};for(const name of names)u[name]=gl.getUniformLocation(p,name);return u;});
+const gbuffer=gl.createFramebuffer(),postFBO=gl.createFramebuffer(),msFBO=gl.createFramebuffer();
+const colorTex=gl.createTexture(),normalTex=gl.createTexture(),depthTex=gl.createTexture(),postTex=gl.createTexture();
+const msColor=gl.createRenderbuffer(),msNormals=gl.createRenderbuffer(),msDepth=gl.createRenderbuffer();
+const quad=gl.createVertexArray();
+let bufferWidth=0,bufferHeight=0,msReady=false;
+const samples=Math.min(4,gl.getParameter(gl.MAX_SAMPLES));
+function textureSize(tex,w,h,format,type,internal){
+ gl.bindTexture(gl.TEXTURE_2D,tex);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+ gl.texImage2D(gl.TEXTURE_2D,0,internal,w,h,0,format,type,null);
+}
+function allocate(w,h){
+ if(w===bufferWidth&&h===bufferHeight)return;
+ bufferWidth=w;bufferHeight=h;
+ textureSize(colorTex,w,h,gl.RGBA,gl.UNSIGNED_BYTE,gl.RGBA8);
+ textureSize(normalTex,w,h,gl.RGBA,gl.UNSIGNED_BYTE,gl.RGBA8);
+ textureSize(depthTex,w,h,gl.DEPTH_COMPONENT,gl.UNSIGNED_INT,gl.DEPTH_COMPONENT24);
+ textureSize(postTex,w,h,gl.RGBA,gl.UNSIGNED_BYTE,gl.RGBA8);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+ gl.bindFramebuffer(gl.FRAMEBUFFER,gbuffer);
+ gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,colorTex,0);
+ gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT1,gl.TEXTURE_2D,normalTex,0);
+ gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,depthTex,0);
+ gl.drawBuffers([gl.COLOR_ATTACHMENT0,gl.COLOR_ATTACHMENT1]);
+ if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('Geometry framebuffer incomplete');
+ gl.bindFramebuffer(gl.FRAMEBUFFER,postFBO);
+ gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,postTex,0);
+ gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+ if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('Outline framebuffer incomplete');
+ msReady=false;
+ if(samples>=2){
+  gl.bindFramebuffer(gl.FRAMEBUFFER,msFBO);
+  for(const [rb,internal,attachment] of [[msColor,gl.RGBA8,gl.COLOR_ATTACHMENT0],[msNormals,gl.RGBA8,gl.COLOR_ATTACHMENT1],[msDepth,gl.DEPTH_COMPONENT24,gl.DEPTH_ATTACHMENT]]){
+   gl.bindRenderbuffer(gl.RENDERBUFFER,rb);
+   gl.renderbufferStorageMultisample(gl.RENDERBUFFER,samples,internal,w,h);
+   gl.framebufferRenderbuffer(gl.FRAMEBUFFER,attachment,gl.RENDERBUFFER,rb);
+  }
+  gl.drawBuffers([gl.COLOR_ATTACHMENT0,gl.COLOR_ATTACHMENT1]);
+  msReady=gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE;
+ }
+ gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.bindRenderbuffer(gl.RENDERBUFFER,null);
+}
+
+const sub=(a,b)=>a.map((x,i)=>x-b[i]),add=(a,b)=>a.map((x,i)=>x+b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit=a=>{let n=Math.hypot(...a)||1;return a.map(x=>x/n)},clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function transform(p,t,r,s){let x=p[0]*s[0],y=p[1]*s[1],z=p[2]*s[2];let [rx,ry,rz]=r.map(q=>q*Math.PI/180),c=Math.cos(rx),v=Math.sin(rx);[y,z]=[y*c-z*v,y*v+z*c];c=Math.cos(ry);v=Math.sin(ry);[x,z]=[x*c+z*v,z*c-x*v];c=Math.cos(rz);v=Math.sin(rz);[x,y]=[x*c-y*v,x*v+y*c];return[x+t[0],y+t[1],z+t[2]];}
+const faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];let mesh=[],lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];
+for(let part of parts){let d=part.dims,H=part.flags&1?d[4]:d[1],bx=d[0]/2,bz=(part.flags&1?d[1]:d[2])/2,tx=(part.flags&1?d[2]:d[0])/2,tz=(part.flags&1?d[3]:d[2])/2;let cube=[[-bx,-H/2,-bz],[bx,-H/2,-bz],[bx,-H/2,bz],[-bx,-H/2,bz],[-tx,H/2,-tz],[tx,H/2,-tz],[tx,H/2,tz],[-tx,H/2,tz]].map(p=>{let v=transform(transform(p,part.pos,part.rot,part.scale),...groups[part.group]);for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],v[i]);hi[i]=Math.max(hi[i],v[i]);}return v;});for(let f of faces){let n=unit(cross(sub(cube[f[1]],cube[f[0]]),sub(cube[f[2]],cube[f[0]])));for(let k of [0,1,2,0,2,3])mesh.push(...cube[f[k]],...n,...palette[part.color]);}}
+const vao=gl.createVertexArray();gl.bindVertexArray(vao);let vbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(mesh),gl.STATIC_DRAW);for(let [index,size,offset]of [[0,3,0],[1,3,3],[2,3,6]]){gl.enableVertexAttribArray(index);gl.vertexAttribPointer(index,size,gl.FLOAT,false,36,offset*4);}const vertexCount=mesh.length/9;
+
+
+const center=lo.map((x,i)=>(x+hi[i])/2),extent=Math.max(...lo.map((x,i)=>hi[i]-x));
+let yaw=.7,pitch=.42,distance=extent*1.85+2,drag=false,px=0,py=0,method=1,shade=3;
+const methods=['Off','FXAA','4× MSAA','2× SSAA','MSAA + FXAA'];
+const modes=['Unlit','Lambert','Toon','Toon + Outline'];
+function refresh(){
+ root.querySelectorAll('button[data-aa]').forEach(b=>b.classList.toggle('active',+b.dataset.aa===method));
+ root.querySelectorAll('button[data-shade]').forEach(b=>b.classList.toggle('active',+b.dataset.shade===shade));
+ g('method').textContent=methods[method];g('shading').textContent=modes[shade];
+ g('zoomVal').textContent=(+g('zoom').value).toFixed(1)+'×';
+ g('outlineVal').textContent=(+g('outline').value).toFixed(1)+'px';
+}
+root.querySelectorAll('button[data-aa]').forEach(b=>b.addEventListener('click',()=>{method=+b.dataset.aa;refresh();render();}));
+root.querySelectorAll('button[data-shade]').forEach(b=>b.addEventListener('click',()=>{shade=+b.dataset.shade;refresh();render();}));
+for(const k of ['zoom','outline'])g(k).addEventListener('input',()=>{refresh();render();});
+refresh();
+cv.addEventListener('pointerdown',e=>{drag=true;px=e.clientX;py=e.clientY;cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-px)*.008;pitch=clamp(pitch+(e.clientY-py)*.008,-1.2,1.34);px=e.clientX;py=e.clientY;render();});
+cv.addEventListener('pointerup',()=>drag=false);cv.addEventListener('pointercancel',()=>drag=false);
+cv.addEventListener('wheel',e=>{e.preventDefault();distance=clamp(distance*Math.exp(e.deltaY*.001),2,55);render();},{passive:false});
+function camUniforms(U,eye,right,up,forward,w,h){
+ gl.uniform3fv(U.eye,eye);gl.uniform3fv(U.camRight,right);gl.uniform3fv(U.camUp,up);gl.uniform3fv(U.camForward,forward);
+ gl.uniform1f(U.focal,1.65);gl.uniform1f(U.aspect,w/h);
+}
+function render(){
+ const w=Math.max(280,Math.round(cv.clientWidth)),h=Math.max(240,Math.round(cv.clientHeight));
+ if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
+ const scaled=method===3?2:1,rw=w*scaled,rh=h*scaled;
+ allocate(rw,rh);
+ if((method===2||method===4)&&!msReady){g('error').textContent='MSAA unavailable on this GPU. Choose FXAA or SSAA.';return;}
+ g('error').textContent='';
+ const visualZoom=+g('zoom').value;
+ const eye=add(center,[distance/visualZoom*Math.sin(yaw)*Math.cos(pitch),distance/visualZoom*Math.sin(pitch),distance/visualZoom*Math.cos(yaw)*Math.cos(pitch)]);
+ const forward=unit(sub(center,eye)),right=unit(cross(forward,[0,1,0])),up=unit(cross(right,forward)),sky=[.58,.66,.74],light=unit([-.55,.62,.56]);
+ const isMS=method===2||method===4;
+ gl.bindFramebuffer(gl.FRAMEBUFFER,isMS?msFBO:gbuffer);
+ gl.viewport(0,0,rw,rh);gl.drawBuffers([gl.COLOR_ATTACHMENT0,gl.COLOR_ATTACHMENT1]);
+ gl.clearBufferfv(gl.COLOR,0,[...sky,1]);gl.clearBufferfv(gl.COLOR,1,[0,0,0,0]);gl.clearBufferfv(gl.DEPTH,0,[1]);
+ gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LESS);gl.disable(gl.CULL_FACE);
+ gl.bindVertexArray(vao);gl.useProgram(programs[0]);let U=uniforms[0];camUniforms(U,eye,right,up,forward,rw,rh);
+ gl.uniform3fv(U.lightDir,light);gl.uniform3fv(U.skyColor,sky);
+ gl.uniform1f(U.intensity,.85);gl.uniform1f(U.ambient,.32);
+ gl.uniform1f(U.mode,shade===3?2:shade);gl.uniform1f(U.bands,4);
+ gl.drawArrays(gl.TRIANGLES,0,vertexCount);
+ if(isMS){
+   gl.bindFramebuffer(gl.READ_FRAMEBUFFER,msFBO);
+   gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,gbuffer);
+   for(let i=0;i<2;i++){
+     gl.readBuffer(gl.COLOR_ATTACHMENT0+i);
+     gl.drawBuffers([gl.COLOR_ATTACHMENT0+i]);
+     gl.blitFramebuffer(0,0,rw,rh,0,0,rw,rh,gl.COLOR_BUFFER_BIT,gl.NEAREST);
+   }
+   gl.blitFramebuffer(0,0,rw,rh,0,0,rw,rh,gl.DEPTH_BUFFER_BIT,gl.NEAREST);
+   gl.bindFramebuffer(gl.FRAMEBUFFER,gbuffer);
+   gl.drawBuffers([gl.COLOR_ATTACHMENT0,gl.COLOR_ATTACHMENT1]);
+ }
+ gl.bindFramebuffer(gl.FRAMEBUFFER,postFBO);gl.viewport(0,0,rw,rh);
+ gl.disable(gl.DEPTH_TEST);gl.useProgram(programs[1]);gl.bindVertexArray(quad);U=uniforms[1];
+ gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,colorTex);gl.uniform1i(U.colorBuffer,0);
+ gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,normalTex);gl.uniform1i(U.normalBuffer,1);
+ gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,depthTex);gl.uniform1i(U.depthBuffer,2);
+ gl.uniform2fv(U.resolution,[rw,rh]);gl.uniform1f(U.thickness,+g('outline').value*scaled);
+ gl.uniform1f(U.darkness,.75);gl.uniform1f(U.crease,0);
+ gl.uniform1f(U.outlineOn,shade===3?1:0);
+ gl.drawArrays(gl.TRIANGLES,0,3);
+ gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,w,h);gl.drawBuffers([gl.BACK]);
+ gl.useProgram(programs[2]);gl.bindVertexArray(quad);U=uniforms[2];
+ gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,postTex);gl.uniform1i(U.srcTex,0);
+ gl.uniform2fv(U.srcResolution,[rw,rh]);gl.uniform1i(U.technique,method);
+ gl.drawArrays(gl.TRIANGLES,0,3);
+ const err=gl.getError();if(err!==gl.NO_ERROR){g('error').textContent='WebGL error '+err;}
+ g('status').textContent='181 approved parts · '+(method===3?'4× pixel workload':isMS?samples+' MSAA samples':'1 sample per pixel');
+}
+render();
+}catch(e){status.textContent='Viewer failed';g('error').textContent='AA lab: '+String(e.message||e);}
+})();
+
+</script></div></body></html>
