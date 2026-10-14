@@ -257,7 +257,7 @@ function render(){
    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,gbuffer);
    for(let i=0;i<2;i++){
      gl.readBuffer(gl.COLOR_ATTACHMENT0+i);
-     gl.drawBuffers([gl.COLOR_ATTACHMENT0+i]);
+     gl.drawBuffers(i===0?[gl.COLOR_ATTACHMENT0,gl.NONE]:[gl.NONE,gl.COLOR_ATTACHMENT1]);
      gl.blitFramebuffer(0,0,rw,rh,0,0,rw,rh,gl.COLOR_BUFFER_BIT,gl.NEAREST);
    }
    gl.blitFramebuffer(0,0,rw,rh,0,0,rw,rh,gl.DEPTH_BUFFER_BIT,gl.NEAREST);
