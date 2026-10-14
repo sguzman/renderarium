@@ -310,6 +310,19 @@ normal/depth bias candidate. Changes are **never** applied to accepted
 source geometry or the default renderer. Visual review remains
 necessary before treating any specific bias as an improvement.
 
+### Final disposition of compact-car variants (2026-10-13)
+
+**FAILED — not accepted; development closed.** The independent compact-car
+geometry iteration sequence v2-v11r did not meet visual-quality requirements.
+The in-chat preview delivery path also failed repeatedly. The principal
+explicitly ended this car effort rather than authorizing further repairs.
+
+All historical SC3D versions, associated preview manifests, and verification
+code are retained for provenance and audit. No candidate is promoted into
+the already accepted Garage scene, and no new compact-car work is queued.
+The separate bicycle candidate is not covered by this decision.
+Reopening requires an explicit new request.
+
 ### Separate Garage vehicle candidates (not accepted)
 
 SC3D v2 candidate bicycle and car assets live alongside the untouched v1
