@@ -36,47 +36,45 @@ parts:
   lawn_patch_2: {role: soft-grass-color-variation, parent: root, geometry: {kind: cuboid, size: [0.41, 0.005, 0.26]}, material: grass_c, transform: {translate: [-0.4, 0.159, -1.2]}}
   lawn_patch_3: {role: soft-grass-color-variation, parent: root, geometry: {kind: cuboid, size: [0.41, 0.005, 0.26]}, material: grass_b, transform: {translate: [2.75, 0.159, 1.2]}}
   lawn_patch_4: {role: soft-grass-color-variation, parent: root, geometry: {kind: cuboid, size: [0.41, 0.005, 0.26]}, material: grass_c, transform: {translate: [0.85, 0.159, -2.12]}}
-  rear_rail_low: {role: rear-fence-rail, parent: root, geometry: {kind: cuboid, size: [6.03, 0.115, 0.14]}, material: rail, transform: {translate: [0, 0.47, 2.48]}}
-  rear_rail_high: {role: rear-fence-rail, parent: root, geometry: {kind: cuboid, size: [6.03, 0.115, 0.14]}, material: rail, transform: {translate: [0, 0.92, 2.48]}}
-  rear_picket_0: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-2.82, 0.69, 2.42]}}
-  rear_picket_1: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-2.307272727272727, 0.69, 2.42]}}
-  rear_picket_2: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-1.7945454545454544, 0.69, 2.42]}}
-  rear_picket_3: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-1.2818181818181817, 0.69, 2.42]}}
-  rear_picket_4: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-0.769090909090909, 0.69, 2.42]}}
-  rear_picket_5: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-0.25636363636363635, 0.69, 2.42]}}
-  rear_picket_6: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [0.25636363636363635, 0.69, 2.42]}}
-  rear_picket_7: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [0.769090909090909, 0.69, 2.42]}}
-  rear_picket_8: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [1.2818181818181817, 0.69, 2.42]}}
-  rear_picket_9: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [1.7945454545454544, 0.69, 2.42]}}
-  rear_picket_10: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [2.307272727272727, 0.69, 2.42]}}
-  rear_picket_11: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [2.82, 0.69, 2.42]}}
-  left_rail_low: {role: side-fence-rail, parent: root, geometry: {kind: cuboid, size: [0.14, 0.115, 4.7]}, material: rail, transform: {translate: [-3.08, 0.47, 0.02]}}
-  left_rail_high: {role: side-fence-rail, parent: root, geometry: {kind: cuboid, size: [0.14, 0.115, 4.7]}, material: rail, transform: {translate: [-3.08, 0.92, 0.02]}}
-  left_picket_0: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, -2.14]}}
-  left_picket_1: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, -1.5300000000000002]}}
-  left_picket_2: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, -0.9200000000000002]}}
-  left_picket_3: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, -0.3100000000000003]}}
-  left_picket_4: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, 0.2999999999999998]}}
-  left_picket_5: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, 0.9099999999999997]}}
-  left_picket_6: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, 1.5199999999999996]}}
-  left_picket_7: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, 2.1299999999999994]}}
+  rear_rail_low: {role: rear-fence-rail, parent: root, geometry: {kind: cuboid, size: [6.03, 0.115, 0.14]}, material: rail, transform: {translate: [0, .47, 2.535]}}
+  rear_rail_high: {role: rear-fence-rail, parent: root, geometry: {kind: cuboid, size: [6.03, 0.115, 0.14]}, material: rail, transform: {translate: [0, .92, 2.535]}}
+  rear_picket_0: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-2.760, 0.69, 2.42]}}
+  rear_picket_1: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-2.269, 0.69, 2.42]}}
+  rear_picket_2: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-1.778, 0.69, 2.42]}}
+  rear_picket_3: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-1.287, 0.69, 2.42]}}
+  rear_picket_4: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-0.796, 0.69, 2.42]}}
+  rear_picket_5: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [-0.305, 0.69, 2.42]}}
+  rear_picket_6: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [0.305, 0.69, 2.42]}}
+  rear_picket_7: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [0.796, 0.69, 2.42]}}
+  rear_picket_8: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [1.287, 0.69, 2.42]}}
+  rear_picket_9: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [1.778, 0.69, 2.42]}}
+  rear_picket_10: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [2.269, 0.69, 2.42]}}
+  rear_picket_11: {role: rear-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.34, 1.18, 0.13]}, material: fence, transform: {translate: [2.760, 0.69, 2.42]}}
+  left_rail_low: {role: side-fence-rail, parent: root, geometry: {kind: cuboid, size: [0.14, 0.115, 4.7]}, material: rail, transform: {translate: [-3.160, .47, 0.02]}}
+  left_rail_high: {role: side-fence-rail, parent: root, geometry: {kind: cuboid, size: [0.14, 0.115, 4.7]}, material: rail, transform: {translate: [-3.160, .92, 0.02]}}
+  left_picket_0: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, -1.980]}}
+  left_picket_1: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, -1.406]}}
+  left_picket_2: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, -0.831]}}
+  left_picket_3: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, -0.257]}}
+  left_picket_4: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, 0.317]}}
+  left_picket_5: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, 0.891]}}
+  left_picket_6: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, 1.466]}}
+  left_picket_7: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [-3.08, 0.69, 2.040]}}
   left_post_front: {role: fence-structural-post, parent: root, geometry: {kind: cuboid, size: [0.26, 1.34, 0.26]}, material: fencepost, transform: {translate: [-3.08, 0.67, -2.3]}}
   left_post_rear: {role: fence-structural-post, parent: root, geometry: {kind: cuboid, size: [0.26, 1.34, 0.26]}, material: fencepost, transform: {translate: [-3.08, 0.67, 2.36]}}
-  right_rail_low: {role: side-fence-rail, parent: root, geometry: {kind: cuboid, size: [0.14, 0.115, 4.7]}, material: rail, transform: {translate: [3.08, 0.47, 0.02]}}
-  right_rail_high: {role: side-fence-rail, parent: root, geometry: {kind: cuboid, size: [0.14, 0.115, 4.7]}, material: rail, transform: {translate: [3.08, 0.92, 0.02]}}
-  right_picket_0: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, -2.14]}}
-  right_picket_1: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, -1.5300000000000002]}}
-  right_picket_2: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, -0.9200000000000002]}}
-  right_picket_3: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, -0.3100000000000003]}}
-  right_picket_4: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, 0.2999999999999998]}}
-  right_picket_5: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, 0.9099999999999997]}}
-  right_picket_6: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, 1.5199999999999996]}}
-  right_picket_7: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, 2.1299999999999994]}}
+  right_rail_low: {role: side-fence-rail, parent: root, geometry: {kind: cuboid, size: [0.14, 0.115, 4.7]}, material: rail, transform: {translate: [3.160, .47, 0.02]}}
+  right_rail_high: {role: side-fence-rail, parent: root, geometry: {kind: cuboid, size: [0.14, 0.115, 4.7]}, material: rail, transform: {translate: [3.160, .92, 0.02]}}
+  right_picket_0: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, -1.980]}}
+  right_picket_1: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, -1.406]}}
+  right_picket_2: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, -0.831]}}
+  right_picket_3: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, -0.257]}}
+  right_picket_4: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, 0.317]}}
+  right_picket_5: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, 0.891]}}
+  right_picket_6: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, 1.466]}}
+  right_picket_7: {role: side-boundary-picket, parent: root, geometry: {kind: cuboid, size: [0.14, 1.18, 0.35]}, material: fence, transform: {translate: [3.08, 0.69, 2.040]}}
   right_post_front: {role: fence-structural-post, parent: root, geometry: {kind: cuboid, size: [0.26, 1.34, 0.26]}, material: fencepost, transform: {translate: [3.08, 0.67, -2.3]}}
   right_post_rear: {role: fence-structural-post, parent: root, geometry: {kind: cuboid, size: [0.26, 1.34, 0.26]}, material: fencepost, transform: {translate: [3.08, 0.67, 2.36]}}
-  rear_post_left: {role: fence-structural-post, parent: root, geometry: {kind: cuboid, size: [0.23, 1.34, 0.27]}, material: fencepost, transform: {translate: [-2.93, 0.67, 2.46]}}
   rear_post_middle: {role: fence-structural-post, parent: root, geometry: {kind: cuboid, size: [0.23, 1.34, 0.27]}, material: fencepost, transform: {translate: [0, 0.67, 2.46]}}
-  rear_post_right: {role: fence-structural-post, parent: root, geometry: {kind: cuboid, size: [0.23, 1.34, 0.27]}, material: fencepost, transform: {translate: [2.93, 0.67, 2.46]}}
 extensions:
   scenarium:
     semantic_ref: specification:block-chibi-backyard-v1
