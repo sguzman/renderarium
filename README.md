@@ -261,6 +261,31 @@ This study does not approve either effect for the production renderer.
 The gallery records settings and pixel differences to enable visual
 review of bias artifacts and shadow-edge softness across environments.
 
+### Preserved in-chat Backyard rain and wind demonstration (13 October 2026)
+
+The source-derived WebGL2 rain study accepted by the principal is archived as
+`experiments/interactive-weather/backyard-rain-wind-2026-10-13.html`.
+This is the locally verified standalone HTML source corresponding to the
+working in-chat experiment (with chat-specific wrapper differences), not a
+claim of independent headless GPU QA.
+
+The offline model payload is a compact copy of the **unchanged approved
+181-part / 18-group Backyard**. Its 3,265 decoded bytes have FNV1a32
+`2710925923`. The demo exposes amount, speed, signed wind, streak length,
+opacity, haze, brightness, splashes, pause, presets and orbit/zoom. The
+initial wind bug (angled streaks without sideways travel) was repaired so
+velocity and streak angle agree; a separate malformed Base64 transfer was
+repaired before human acceptance. No source-scene geometry or production
+default is changed.
+
+Canonical human-review and effect-admission status live in private
+`sguzman/taria/taria/scenarium/evaluations/interactive-rain-backyard-2026-10-13.yml`.
+The separate Living Room fog experiment also worked for one scene but retained
+density-slider and remote-scene-fetch defects; see the corresponding private
+Taria evaluation. This README does not claim the rain feature has been
+integrated into the production Three.js preview or independently
+benchmark-tested on physical GPU hardware.
+
 ## Interactive environment exploration
 
 Start the actual Three.js/WebGL seven-environment preview with
