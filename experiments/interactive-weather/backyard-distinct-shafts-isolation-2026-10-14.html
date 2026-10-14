@@ -1,0 +1,111 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Backyard Distinct Sun Shafts v3 — Isolation</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#101827;color:#eaf2fc;font:13px system-ui,sans-serif}#shaft-test{background:#101827;color:#eaf2fc;border-radius:12px;overflow:hidden}.head{padding:12px;background:#263850;display:flex;justify-content:space-between;gap:12px}.head small{color:#bdd1e4}canvas{display:block;width:100%;height:400px;background:#92a7bb;touch-action:none;cursor:grab}.row{padding:11px 12px 0;display:flex;flex-wrap:wrap;gap:8px}button{font:inherit;color:#f3f7fe;background:#294562;border:1px solid #58789a;padding:8px 10px;border-radius:8px;cursor:pointer}button.active{background:#547fa6;border-color:#b6d7fa}.sliders{padding:13px 12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.field label{display:flex;justify-content:space-between;gap:5px;font-size:11px;color:#bed5e8}.field input{width:100%;accent-color:#b9dcff}.foot{padding:8px 12px 14px;color:#afc5de;font-size:11px}.error{padding:0 12px;color:#ffc1bd}.detail{padding:5px 12px;color:#c4d6e9}@media(max-width:560px){canvas{height:300px}.sliders{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>
+<div id="shaft-test"><div class="head"><strong>Backyard · Individual Sun Shafts v3</strong><small id="st-status">Loading 179 parts…</small></div><canvas id="st-canvas"></canvas>
+<div class="row"><button data-mode="0">Off</button><button data-mode="1" class="active">Narrow beams</button><button data-mode="2">Wide beams</button><button data-mode="3">Beam mask</button></div>
+<div class="sliders">
+<div class="field"><label>Sun elevation <span id="st-elev-val">27°</span></label><input id="st-elev" type="range" min="10" max="65" value="27" step="1"></div>
+<div class="field"><label>Sun direction <span id="st-az-val">135°</span></label><input id="st-az" type="range" min="0" max="360" value="135" step="5"></div>
+<div class="field"><label>Beam strength <span id="st-strength-val">170%</span></label><input id="st-strength" type="range" min="0" max="250" value="170" step="5"></div>
+<div class="field"><label>Beam width <span id="st-width-val">100%</span></label><input id="st-width" type="range" min="50" max="200" value="100" step="5"></div>
+</div><div class="detail">Eight separate sun-aligned shafts · <b>No global haze or dust</b> · AO Off · Corrected depth</div><div id="st-error" class="error"></div><div class="foot">Drag to orbit · Wheel to zoom · Beam mask reveals only shaft coverage. Stylized 3D light volumes positioned near canopy and fence openings; not physical atmospheric simulation.</div></div>
+<script>
+(async()=>{const root=document.getElementById('shaft-test'),el=id=>root.querySelector('#st-'+id),cv=el('canvas'),status=el('status');try{
+const chunks=[
+"eNpllm9sU1UUwM+9973X1/b1tRv/BiLCNifiPoAxQMg0uBA+YGNwGaZZFJMxkGhCdJC54RcoOkHHgoYsZJ1rIUhGI8tSSqgG",
+"akAlSwD5YxyEDMWIMAkfJox1f9o+z62zvGP78pL3O+fc+37v9vS+1lQvXlJZ6/dv2L3xbf/KxnBL07rqnce27Tq6s3Vz7e73",
+"39xzomXfu699fvLjUEsglDgSOtPWldzV01Lfe+WzvvYPYq0NsYsdJ/ZsSuzZcPrng8kr4R/bm89/WXf+5FfXDh68lojc7D52",
+"K/HJH99Fbp87efdQbCgaG7oUH/rl9F8nTt07G/578PsH134Y//Mn6/fjxWD7DAl5DKRCcESxRyrGQtA2aY8Y2RAMq/ZIrTYI",
+"zfD/SGnaHtEzIdicskeaMLJ93B45gDNHyL2OWCG4nLFHSlkIyi17xEyNsCA1HB9hdJ6B9AibIM5D2RF2lUQ0JQhrNHvkC2cQ",
+"TBJZ/igEC8mTHgfQAWYPw9rp4OXvlJRB3zSAT2XBk3zU+QJs0ku0r6EpAwv5TDEDHogb/Aq8NQkLprBEy+F/2dedJCuL91r5",
+"rCxGXGArRnTyTqaCwraMhqHLgulTGJ8MQ70jn30vG4a1k/ls0hWGPiWfrRFhSKRgEa9lXbgQyx/F+DZnHstSBM1xguMTBG+n",
+"CV7KElzCCM4VBB0qwQcawZs6wX7XFLZBl7KejT2M8VVjBIMTBM+kCVpZgi8ygh8Kgt+qBMccUM4VVqUqiN1cSRFc/thKN4iV",
+"RJuVRJuVRJuVRJuVRJuVRJuVRJuVbhAriWhVzu9AlWoygG7e5WQu0csOs6WskukOgI8EAJvBV/E4VHCAOuxhJsQKh6mdcgxo",
+"OzBUjFXMFDP1gOOW1qh1Y0hzrgU2S0TUZjUtfEoAQxOuhVjFL7AEe5W3pg/pfosJPsDOslW8XdTobcDKeATk0ZS57MimETsQ",
+"OmAF3+2cm8ljM5jusQyfyRvUjpydVEKMqpUsiJdL2aYswU6G2AyV7ByvzyxlueJ/sZvnkPPryvPQg5LrJT7Fk2oV3gjgnpzK",
+"jjiVKvohCXdgEEowq+MgXpQPyelm8TqwVZmsFZ+zzxJUWFBhQYUFFRZUWFBhQYUFFRaFwqJQWBQKK7NxngjIAfJUKvhqtQES",
+"OGAvv28pHt6v9uAXBnBImEx5lg+qr0A/ogs7SXHwKE4V4BWZGB+18niDT6GcNwI9GYX5H2OAE5TZOJBsHFQfrxFBqEejEVRR",
+"n+EBbkAnXr6EIVXhQbiAy/hr9g5UW3ksZQRlNgkkizhXRCEKbbkjDvv5dUvV8FZBuIp9N4ih+eK6pT0hdvBe7NlOtg4fdhGe",
+"2tMiwPexYt7IFiNuxNNRWOUorNILq/TCKmdhlbOwylVY5SqscjP+MvSyavBbw3DfyuF6xChcxN8VYhV2RBUWfoMVbjfuCw3Y",
+"SOlsHEYtdwluAXW4EMO4JFvAXco3s0Ec7beyDKeag4u5DDN+K4jt4X4OO7UfVrIoHGU48xxs4GV4iyjMwyscm8Q1ld3SiOMN",
+"amVQK4NaGdTKoFYGtTKolUGtDGplUCsPtfJQKw+18lArD7XyUCsPtfJQKw+18lArk1qZ1MqkVia1MqmVSa1MamVSK5NamdTK",
+"S6281MpLrbzUykutvNTKS6281MpLrbzUyketfNTKR6181MpHrXzUyketfNTKR6181KrIwM1M7qwAv+GWhdiKY1pxB1uNoaL5",
+"+KrVudzb5L/MonlijO/H0AiT7+f9+KotAhwfBS8Wr9FS2aJpuH3X4Z81gA51exaKefusrbiDAQywu04bHhA5bIOt8EZxz8MB",
+"Nh1seEDYMGCQbMCQ2X8AxO5eDA==",
+];
+if(chunks.length!==20||chunks.some((s,i)=>s.length!==(i===19?28:96)))throw Error('Scene chunks corrupted');
+const b64=chunks.join('');if(b64.length!==1852)throw Error('Packed length '+b64.length);
+const bytes=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));const raw=new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+let hash=2166136261;for(const b of raw)hash=Math.imul(hash^b,16777619)>>>0;if(raw.length!==3235||hash!==3583097875)throw Error('Scene checksum mismatch');
+let k=4;if(String.fromCharCode(...raw.slice(0,4))!=='RB01')throw Error('RB01 header');const u8=()=>raw[k++],u16=()=>u8()|(u8()<<8),num=s=>{let q=u16();return(q>32767?q-65536:q)/s},vec=s=>[num(s),num(s),num(s)];
+const pal=[],groups=[],parts=[];for(let i=0,n=u8();i<n;i++)pal.push([u8()/255,u8()/255,u8()/255]);for(let i=0,n=u8();i<n;i++)groups.push([vec(1000),vec(100),vec(1000)]);
+for(let i=0,n=u16();i<n;i++){let group=u8(),color=u8(),f=u8(),d=[];for(let j=0;j<(f&1?5:3);j++)d.push(num(1000));parts.push({group,color,f,d,pos:f&2?vec(1000):[0,0,0],rot:f&4?vec(100):[0,0,0],scale:f&8?vec(1000):[1,1,1]});}
+if(k!==raw.length||parts.length!==179||groups.length!==18)throw Error('Scene geometry count');
+const gl=cv.getContext('webgl2',{alpha:false,antialias:false});if(!gl)throw Error('WebGL2 unavailable');
+function make(v,f){function comp(t,s){let sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(sh));return sh}let p=gl.createProgram();gl.attachShader(p,comp(gl.VERTEX_SHADER,v));gl.attachShader(p,comp(gl.FRAGMENT_SHADER,f));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p;}
+const camera=`uniform vec3 eye,right,up,forward;uniform float focal,aspect;vec4 project(vec3 p){vec3 q=p-eye;float z=dot(q,forward);return vec4(dot(q,right)*focal/aspect,dot(q,up)*focal,z*(81./79.)-160./79.,z);}`;
+const meshVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in vec3 n;layout(location=2)in vec3 color;${camera}out vec3 vColor,vNormal;out float viewDepth;void main(){gl_Position=project(p);vColor=color;vNormal=n;viewDepth=gl_Position.w;}`;
+const meshFS=`#version 300 es
+precision highp float;in vec3 vColor,vNormal;in float viewDepth;out vec4 frag;void main(){float lit=max(dot(normalize(vNormal),normalize(vec3(-.56,.65,.54))),0.);float q=floor(lit*4.)/3.;float fog=1.-exp(-pow(viewDepth*.01,2.));frag=vec4(mix(clamp(vColor*(.33+.83*q),0.,1.),vec3(.58,.66,.74),fog*.16),1.);}`;
+const quadVS=`#version 300 es
+precision highp float;void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0.,1.);}`;
+const shaftFS=`#version 300 es
+precision highp float;
+uniform sampler2D scene,depthTex;uniform vec2 resolution;uniform vec3 eye,right,up,forward,sunDir;
+uniform float focal,aspect,strength,beamWidth;uniform int mode;
+out vec4 frag;
+float linearZ(float d){return 80./(80.-79.*d);}
+float densityAt(vec3 point){
+  vec3 flow=-sunDir;float sum=0.;
+  for(int j=0;j<8;j++){
+    vec3 src;float len;float wt;
+    if(j==0){src=vec3(-2.75,3.45,1.70);len=6.8;wt=.98;}
+    else if(j==1){src=vec3(-1.90,3.28,1.58);len=7.0;wt=1.10;}
+    else if(j==2){src=vec3(-1.38,3.18,.96);len=6.8;wt=.85;}
+    else if(j==3){src=vec3(-2.33,3.10,.47);len=6.4;wt=.76;}
+    else if(j==4){src=vec3(-1.02,1.42,2.42);len=3.1;wt=.84;}
+    else if(j==5){src=vec3(-.15,1.44,2.42);len=3.3;wt=.72;}
+    else if(j==6){src=vec3(.73,1.39,2.42);len=3.0;wt=.83;}
+    else{src=vec3(1.76,1.40,2.42);len=3.2;wt=.72;}
+    vec3 v=point-src;float t=dot(v,flow);if(t<=0.||t>=len)continue;
+    float r=mix(j<4?.17:.11,j<4?.30:.23,t/len)*beamWidth;
+    float d=length(v-flow*t)/r;
+    sum+=exp(-2.2*d*d)*smoothstep(0.,.35,t)*(1.-smoothstep(len-.8,len,t))*wt;
+  }
+  return min(sum,2.5);
+}
+void main(){
+  vec2 uv=gl_FragCoord.xy/resolution;
+  vec3 c=texture(scene,uv).rgb;
+  if(mode==0){frag=vec4(c,1.);return;}
+  float dep=texture(depthTex,uv).r,limit=dep>.99999?40.:min(40.,linearZ(dep));
+  vec2 ndc=uv*2.-1.;vec3 ray=forward+right*ndc.x*aspect/focal+up*ndc.y/focal;
+  vec3 aabb0=(vec3(-3.4,.18,-2.6)-eye)/ray,aabb1=(vec3(3.4,4.30,2.6)-eye)/ray;
+  vec3 mn=min(aabb0,aabb1),mx=max(aabb0,aabb1);
+  float start=max(1.02,max(mn.x,max(mn.y,mn.z)));
+  float stop=min(limit,min(mx.x,min(mx.y,mx.z)));
+  float accum=0.;
+  if(stop>start){float dt=(stop-start)/40.;for(int i=0;i<40;i++)accum+=densityAt(eye+ray*(start+(float(i)+.5)*dt))*dt;}
+  float radiance=min(.47,.60*(1.-exp(-accum*.84*strength)));
+  if(mode==3){frag=vec4(vec3(radiance*2.0,radiance*.9,radiance*.1),1.);return;}
+  vec3 col=min(vec3(1.),c+vec3(1.,.72,.31)*radiance);
+  frag=vec4(col,1.);
+}`;
+const programs=[make(meshVS,meshFS),make(quadVS,shaftFS)];
+const sub=(a,b)=>a.map((v,i)=>v-b[i]),add=(a,b)=>a.map((v,i)=>v+b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit=a=>{let m=Math.hypot(...a)||1;return a.map(v=>v/m)},clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function tr(p,t,r,s){let[x,y,z]=p.map((v,i)=>v*s[i]),[rx,ry,rz]=r.map(v=>v*Math.PI/180),co=Math.cos(rx),si=Math.sin(rx);[y,z]=[y*co-z*si,y*si+z*co];co=Math.cos(ry);si=Math.sin(ry);[x,z]=[x*co+z*si,z*co-x*si];co=Math.cos(rz);si=Math.sin(rz);[x,y]=[x*co-y*si,x*si+y*co];return[x+t[0],y+t[1],z+t[2]];}
+let vertices=[],lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];const faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];
+for(const o of parts){let d=o.d,H=o.f&1?d[4]:d[1],bx=d[0]/2,bz=(o.f&1?d[1]:d[2])/2,tx=(o.f&1?d[2]:d[0])/2,tz=(o.f&1?d[3]:d[2])/2;const box=[[-bx,-H/2,-bz],[bx,-H/2,-bz],[bx,-H/2,bz],[-bx,-H/2,bz],[-tx,H/2,-tz],[tx,H/2,-tz],[tx,H/2,tz],[-tx,H/2,tz]].map(v=>{let p=tr(tr(v,o.pos,o.rot,o.scale),...groups[o.group]);for(let j=0;j<3;j++){lo[j]=Math.min(lo[j],p[j]);hi[j]=Math.max(hi[j],p[j]);}return p;});for(const f of faces){let n=unit(cross(sub(box[f[1]],box[f[0]]),sub(box[f[2]],box[f[0]])));for(const j of [0,1,2,0,2,3])vertices.push(...box[f[j]],...n,...pal[o.color]);}}
+const vao=gl.createVertexArray();gl.bindVertexArray(vao);let vbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);for(const [idx,n,ofs]of [[0,3,0],[1,3,3],[2,3,6]]){gl.enableVertexAttribArray(idx);gl.vertexAttribPointer(idx,n,gl.FLOAT,false,36,ofs*4);}
+const quad=gl.createVertexArray(),fbo=gl.createFramebuffer(),color=gl.createTexture(),depth=gl.createTexture();let oldW=0,oldH=0;
+function resize(w,h){if(w===oldW&&h===oldH)return;oldW=w;oldH=h;for(const [t,isDepth]of [[color,false],[depth,true]]){gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,isDepth?gl.NEAREST:gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,isDepth?gl.NEAREST:gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,isDepth?gl.DEPTH_COMPONENT24:gl.RGBA8,w,h,0,isDepth?gl.DEPTH_COMPONENT:gl.RGBA,isDepth?gl.UNSIGNED_INT:gl.UNSIGNED_BYTE,null);}gl.bindFramebuffer(gl.FRAMEBUFFER,fbo);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,color,0);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,depth,0);gl.drawBuffers([gl.COLOR_ATTACHMENT0]);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('FBO incomplete');}
+const center=lo.map((v,i)=>(v+hi[i])/2),extent=Math.max(...lo.map((v,i)=>hi[i]-v));let yaw=.7,pitch=.42,distance=extent*1.85+2,mode=1,drag=false,x0=0,y0=0;
+function labels(){root.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',+b.dataset.mode===mode));for(const [k,s]of [['elev','°'],['az','°'],['strength','%'],['width','%']])el(k+'-val').textContent=el(k).value+s;}
+root.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=+b.dataset.mode;if(mode===1)el('width').value=100;if(mode===2)el('width').value=160;labels();render()}));
+for(const k of ['elev','az','strength','width'])el(k).addEventListener('input',()=>{labels();render()});
+cv.addEventListener('pointerdown',e=>{drag=true;x0=e.clientX;y0=e.clientY;cv.setPointerCapture(e.pointerId)});cv.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-x0)*.008;pitch=clamp(pitch+(e.clientY-y0)*.008,-1.1,1.25);x0=e.clientX;y0=e.clientY;render()});cv.addEventListener('pointerup',()=>drag=false);cv.addEventListener('pointercancel',()=>drag=false);cv.addEventListener('wheel',e=>{e.preventDefault();distance=clamp(distance*Math.exp(e.deltaY*.001),3,55);render()},{passive:false});
+function camSend(p,eye,right,up,fwd,w,h){for(const [k,v]of [['eye',eye],['right',right],['up',up],['forward',fwd]])gl.uniform3fv(gl.getUniformLocation(p,k),v);gl.uniform1f(gl.getUniformLocation(p,'focal'),1.65);gl.uniform1f(gl.getUniformLocation(p,'aspect'),w/h);}
+function render(){const w=Math.max(260,Math.round(cv.clientWidth)),h=Math.max(220,Math.round(cv.clientHeight));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}resize(w,h);let eye=add(center,[distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch)]),fw=unit(sub(center,eye)),rt=unit(cross(fw,[0,1,0])),up=unit(cross(rt,fw));gl.bindFramebuffer(gl.FRAMEBUFFER,fbo);gl.viewport(0,0,w,h);gl.clearColor(.58,.66,.74,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LESS);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.useProgram(programs[0]);gl.bindVertexArray(vao);camSend(programs[0],eye,rt,up,fw,w,h);gl.drawArrays(gl.TRIANGLES,0,vertices.length/9);
+gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.drawBuffers([gl.BACK]);gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.useProgram(programs[1]);gl.bindVertexArray(quad);camSend(programs[1],eye,rt,up,fw,w,h);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,color);gl.uniform1i(gl.getUniformLocation(programs[1],'scene'),0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,depth);gl.uniform1i(gl.getUniformLocation(programs[1],'depthTex'),1);let az=+el('az').value*Math.PI/180,ev=+el('elev').value*Math.PI/180;gl.uniform3fv(gl.getUniformLocation(programs[1],'sunDir'),unit([Math.cos(az)*Math.cos(ev),Math.sin(ev),Math.sin(az)*Math.cos(ev)]));gl.uniform1f(gl.getUniformLocation(programs[1],'strength'),+el('strength').value/100);gl.uniform1f(gl.getUniformLocation(programs[1],'beamWidth'),+el('width').value/100);gl.uniform1i(gl.getUniformLocation(programs[1],'mode'),mode);gl.uniform2fv(gl.getUniformLocation(programs[1],'resolution'),[w,h]);gl.drawArrays(gl.TRIANGLES,0,3);const err=gl.getError();el('error').textContent=err?'WebGL error '+err:'';status.textContent='179 parts · distinct shafts diagnostic · AO Off';}
+labels();render();}catch(e){status.textContent='Viewer failed';el('error').textContent='Shaft lab: '+String(e.message||e)}})();
+</script></html>
