@@ -225,7 +225,7 @@
           "const": "appearance_and_composition"
         },
         "authority": {
-          "const": "contracts/accepted-block-chibi-v1.json"
+          "enum": ["contracts/accepted-block-chibi-v1.json", "contracts/accepted-backyard-geometry-amendment-2026-10-14.json"]
         },
         "approved_preview_git_blob": {
           "type": "string",
