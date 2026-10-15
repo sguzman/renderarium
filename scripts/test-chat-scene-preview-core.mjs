@@ -20,7 +20,7 @@ const cases=[
   ["kitchen",149,11],
   ["bathroom",139,10],
   ["office",104,12],
-  ["backyard",181,18],
+  ["backyard",179,18],
   ["garage",112,8],
   ["factory",209,16],
 ];
