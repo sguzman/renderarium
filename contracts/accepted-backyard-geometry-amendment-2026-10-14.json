@@ -1,0 +1,35 @@
+{
+  "format": "scenarium-accepted-backyard-geometry-amendment-v1",
+  "recorded_at": "2026-10-14",
+  "scene": "block-chibi-backyard-v1",
+  "authority": "Subsequent human visual acceptance of the fence-clearance correction; supplements but does not overwrite the 2026-10-09 visual acceptance ledger",
+  "baseline_ledger_path": "contracts/accepted-block-chibi-v1.json",
+  "baseline_ledger_blob": "d49365235fd3c60c0693a7c04ead0464640955da",
+  "baseline": {
+    "parts": 181,
+    "groups": 18,
+    "preview_blob": "06c608928f4c51cc3abc9663d1a6a81b4ae722c8",
+    "shell_blob": "a0afcbdfbd3c115d9d4dca8b623449806a444993",
+    "historical_preview_path": "experiments/geometry-reviews/backyard-fence-clearance-2026-10-14/frozen-before-correction-preview.json",
+    "historical_shell_path": "experiments/geometry-reviews/backyard-fence-clearance-2026-10-14/frozen-before-correction-shell.sc3d.yml"
+  },
+  "corrected": {
+    "parts": 179,
+    "groups": 18,
+    "preview_path": "scenes/block-chibi-backyard-v1/preview-geometry.json",
+    "preview_blob": "ba84322ab1a5c1e7db4515b35bd0ce760d3cbc03",
+    "shell_path": "scenes/block-chibi-backyard-v1/components/backyard-shell.sc3d.yml",
+    "shell_blob": "6a310a23e80863f18d8abb88b8cad18a9aaf2029"
+  },
+  "checks": [
+    "historical ledger remains byte-identical",
+    "historical 181-part preview and shell remain available as immutable archival blobs",
+    "new preview still references the original frozen assembly and all 18 source-derived component pins",
+    "179-part corrected candidate was visually accepted and must not be overwritten by the historical version"
+  ],
+  "prohibitions": [
+    "do not silently replace the 2026-10-09 ledger",
+    "do not infer physical GPU certification from browser tests",
+    "do not request renewed visual approval for the accepted fence correction"
+  ]
+}
