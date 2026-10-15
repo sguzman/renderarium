@@ -28,6 +28,14 @@ VIEWS=[
     {"name":"near-camera","clock":14.0,"yaw":0.7,"pitch":0.42,"distanceScale":0.58},
 ]
 SIZE=(620,295)
+# Regression budget is deliberately far wider than the observed 2026-10-15
+# seven-view CI baseline (six identical, worst: MAE .0003, change .000241).
+# A test failure means a measurable backend mismatch, NOT an artistic verdict.
+MAX_MAE_255=0.05
+MAX_CHANGED_FRACTION=0.005
+MAX_CHANGED_GE3=0.001
+MAX_CHANNEL_DELTA=32
+MIN_INTRA_RENDERER_VIEW_CHANGE=0.005
 
 class Handler(SimpleHTTPRequestHandler):
     def log_message(self, *args):
@@ -51,6 +59,27 @@ def compare(a:Image.Image,b:Image.Image)->dict:
         "changed_pixel_fraction_ge3":round(sum(x>=3 for x in mask)/len(mask),6),
         "max_rgb_channel_delta":max(mask),
     }
+
+def parity_ok(metric:dict)->bool:
+    return (metric["mean_abs_rgb_channel_delta_255"]<=MAX_MAE_255
+        and metric["changed_pixel_fraction"]<=MAX_CHANGED_FRACTION
+        and metric["changed_pixel_fraction_ge3"]<=MAX_CHANGED_GE3
+        and metric["max_rgb_channel_delta"]<=MAX_CHANNEL_DELTA)
+
+def self_test()->None:
+    a=Image.new("RGB",SIZE,(30,45,60))
+    assert parity_ok(compare(a,a)),"Identical frames must pass"
+    b=a.copy();b.putpixel((0,0),(46,45,60))
+    assert parity_ok(compare(a,b)),"Tiny local delta must pass"
+    c=Image.new("RGB",SIZE,(31,45,60))
+    assert not parity_ok(compare(a,c)),"Full-frame regression must fail"
+    d=a.copy()
+    for x in range(0,120):
+        for y in range(0,20):
+            d.putpixel((x,y),(33,45,60))
+    assert not parity_ok(compare(a,d)),"Widespread changed-pixel regression must fail"
+    assert MIN_INTRA_RENDERER_VIEW_CHANGE>0
+    print("PASS multi-view parity gates: identical and isolated-delta accepted, full-frame and wide-area drift rejected")
 
 def contact_sheet(rows:list[tuple[str,Image.Image,Image.Image]],output:Path)->None:
     gap=6;header=25;w=SIZE[0];h=SIZE[1]
@@ -110,15 +139,23 @@ def run(allow_swiftshader:bool,out:Path)->None:
             context.close();browser.close()
     finally:
         server.shutdown();server.server_close();thread.join(timeout=5)
-    rows=[];measurements=[]
+    rows=[];measurements=[];failures=[]
+    source_frames={}
     for view in VIEWS:
         name=view["name"]
         a,a_size=read_capture(out/f"{name}-custom.png")
         b,b_size=read_capture(out/f"{name}-three.png")
         metric=compare(a,b)
-        # Changes under camera/lighting can reveal backend mismatches. Report
-        # thresholds as diagnostic flags, NOT subjective approval conditions.
-        flag=metric["mean_abs_rgb_channel_delta_255"]<=1.0 and metric["changed_pixel_fraction"]<=0.05
+        # These bounds are enforced numerical regression limits, not visual approval.
+        flag=parity_ok(metric)
+        if not flag:failures.append(f"{name}: backend difference {metric}")
+        for label,image in [("custom",a),("three",b)]:
+            if name=="afternoon-baseline":
+                source_frames[label]=image
+            else:
+                distinct=compare(source_frames[label],image)["changed_pixel_fraction"]
+                if distinct<MIN_INTRA_RENDERER_VIEW_CHANGE:
+                    failures.append(f"{name}: stale {label} camera/daylight capture; changed_fraction={distinct:.6f}")
         measurements.append({
             "name":name,"view":view,"custom":observed["custom"][name],"three":observed["three"][name],
             "custom_capture_css_size":a_size,"three_capture_css_size":b_size,
@@ -135,6 +172,13 @@ def run(allow_swiftshader:bool,out:Path)->None:
         "samples":measurements,
         "near_match_count":sum(x["near_match_diagnostic_threshold"] for x in measurements),
         "evaluated_count":len(measurements),
+        "regression_thresholds":{"mean_abs_rgb_255":MAX_MAE_255,
+            "changed_pixel_fraction":MAX_CHANGED_FRACTION,
+            "changed_pixel_fraction_ge3":MAX_CHANGED_GE3,
+            "max_channel_delta":MAX_CHANNEL_DELTA,
+            "minimum_changed_fraction_from_baseline_per_backend":MIN_INTRA_RENDERER_VIEW_CHANGE},
+        "regression_passed":not failures,
+        "regression_failures":failures,
         "limits":["Software Chromium rendering, not physical RTX 3090 measurements",
                   "Only Combined effects settings; camera, clock and sample state pinned",
                   "Image thresholds flag discrepancies, do not certify visual acceptance",
@@ -142,11 +186,14 @@ def run(allow_swiftshader:bool,out:Path)->None:
     }
     (out/"parity-matrix.json").write_text(json.dumps(result,indent=2)+"\n")
     contact_sheet(rows,out/"parity-contact-sheet.png")
-    print(f'PASS seven fixed camera and lighting comparisons; {result["near_match_count"]}/7 diagnostic near matches; all 179-source and draw-count checks passed')
+    assert not failures,"Multi-view renderer parity regression:\\n" + "\\n".join(failures)
+    print(f'PASS enforced seven-view camera/daylight parity; {result["near_match_count"]}/7 within measured numerical budgets; all 179-source and draw-count checks passed')
 
 if __name__=="__main__":
     p=argparse.ArgumentParser()
+    p.add_argument("--self-test",action="store_true")
     p.add_argument("--allow-swiftshader",action="store_true")
     p.add_argument("--output-dir",type=Path,default=ROOT/"artifacts/backyard-parity-matrix-v1")
     args=p.parse_args()
-    run(args.allow_swiftshader,args.output_dir)
+    if args.self_test:self_test()
+    else:run(args.allow_swiftshader,args.output_dir)
