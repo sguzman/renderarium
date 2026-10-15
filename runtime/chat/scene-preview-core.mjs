@@ -106,7 +106,10 @@ function normalize(packetOrPresentation) {
   });
   invariant(new Set(groups.map(x=>x.id)).size===groups.length,
     "duplicate component identity");
-  const lines=p.parts.split("\n");
+  // Accept a single harmless terminal newline from a source-authored preview,
+  // while preserving rejection of blank records in the middle of the source.
+  const sourceRows=p.parts.endsWith("\n")?p.parts.slice(0,-1):p.parts;
+  const lines=sourceRows.split("\n");
   invariant(lines.length>0,"no primitive records");
   const parts=lines.map((line,index)=>parseRow(line,groups,index));
   if(packetOrPresentation?.canonical_semantics) {
