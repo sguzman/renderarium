@@ -70,6 +70,7 @@ console.log("PASS Backyard effects benchmark v2 static regression: canonical pay
 const three = readFileSync("experiments/diagnostics/backyard-threejs-full-effects-pipeline-benchmark-v3-2026-10-15.html","utf8");
 assert.equal(sourceChunks(three),b,"Three.js effects benchmark diverged from the accepted 179-part source");
 for(const name of shaderNames)assert.equal(shader(three,name),shader(original,name),"Three.js effects benchmark GLSL drift: "+name);
+assert.ok(three.includes("g.setAttribute('position',countAttribute)"),"Three.js scene source p/seed must provide draw counts");
 for(const required of ["new T.WebGLRenderer","new T.RawShaderMaterial","new T.DepthTexture","new T.Points","new T.WebGLRenderTarget","source:'backyard-unified-effects-v1-1-precision-fix-2026-10-15.html'","measurementMs:2400","warmupMs:700","sunDir","frameIntervalMs","gpuTimer:'not-instrumented'"])
   assert.ok(three.includes(required),"Three.js effects benchmark missing explicit requirement: "+required);
 const threeBody=three.match(/<script type="module">([\s\S]*?)<\/script><\/body><\/html>/);
