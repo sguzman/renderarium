@@ -14,14 +14,17 @@ function git(...args){
 const paths=[
   "scenes/block-chibi-kitchen-v1/room.assembly.yml",
   "assets/constructive-3d/kitchens/stove.sc3d.yml",
-  "contracts/accepted-block-chibi-v1.json"
+  "contracts/accepted-block-chibi-v1.json",
+  "contracts/accepted-backyard-geometry-amendment-2026-10-14.json",
+  "experiments/geometry-reviews/backyard-fence-clearance-2026-10-14/frozen-before-correction-preview.json",
+  "experiments/geometry-reviews/backyard-fence-clearance-2026-10-14/frozen-before-correction-shell.sc3d.yml"
 ];
 try{
   git("init","-q");
   for(const p of paths){mkdirSync(dirname(join(root,p)),{recursive:true});writeFileSync(join(root,p),"original\n");}
   git("add","--",...paths);
   git("-c","user.name=Scenarium Test","-c","user.email=none@example.invalid","commit","-qm","fixture");
-  assert.equal(assertFrozenWorktreeClean(root),3);
+  assert.equal(assertFrozenWorktreeClean(root),5);
   for(const p of paths){
     writeFileSync(join(root,p),"modified\n");
     assert.throws(()=>assertFrozenWorktreeClean(root),"unstaged drift accepted: "+p);
@@ -42,7 +45,7 @@ try{
   const outside="docs/ordinary-not-frozen.md";
   mkdirSync(dirname(join(root,outside)),{recursive:true});
   writeFileSync(join(root,outside),"allowed\n");
-  assert.equal(assertFrozenWorktreeClean(root),3,
+  assert.equal(assertFrozenWorktreeClean(root),5,
     "unrelated documentation change incorrectly blocked");
   console.log("PASS isolated Git frozen-source guard: clean, staged, unstaged, untracked, and nonfrozen edits");
 }finally{rmSync(root,{recursive:true,force:true});}
