@@ -361,7 +361,7 @@ def run_scene(
     )
     verified_preview_blob = accepted["preview_git_blob"]
     acceptance_authority = "contracts/accepted-block-chibi-v1.json"
-    if scene == "backyard":
+    if name == "backyard":
         amendment_path = "contracts/accepted-backyard-geometry-amendment-2026-10-14.json"
         assert git_blob_sha(ROOT / amendment_path) == "5c4c69a05743b84c793b80289ca7be441dce5b7a", (
             f"{scene_id}: corrected acceptance amendment drift"
