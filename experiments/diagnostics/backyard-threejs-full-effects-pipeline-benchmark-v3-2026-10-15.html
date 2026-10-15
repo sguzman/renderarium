@@ -158,6 +158,36 @@ const sky=quadPass(skyFS),outline=quadPass(outlineFS),shaft=quadPass(shaftFS),ex
 const particleMaterial=material(particleVS,particleFS);particleMaterial.transparent=true;particleMaterial.blending=T.NormalBlending;
 const particleScene=new T.Scene(),particleGeometry=geometry({seed:seeds}),particleObj=new T.Points(particleGeometry,particleMaterial);particleObj.frustumCulled=false;particleScene.add(particleObj);
 let width=0,height=0,rt=[],lastResults=null,bench=null,lastFrame=0,changedCamera=false;
+const timerExt=gl.getExtension('EXT_disjoint_timer_query_webgl2'),gpuPending=[];
+let gpuEvery=0,gpuDisjoint=false;
+function pollGpu(){
+ if(!timerExt)return;
+ if(gl.getParameter(timerExt.GPU_DISJOINT_EXT)){
+  gpuDisjoint=true;
+  for(const x of gpuPending)gl.deleteQuery(x.q);
+  gpuPending.length=0;
+  if(bench)for(const r of bench.records)r.gpu.length=0;
+  return;
+ }
+ for(let i=0;i<gpuPending.length;){
+  const x=gpuPending[i];
+  if(!gl.getQueryParameter(x.q,gl.QUERY_RESULT_AVAILABLE)){i++;continue;}
+  const nanos=gl.getQueryParameter(x.q,gl.QUERY_RESULT);
+  gl.deleteQuery(x.q);gpuPending.splice(i,1);
+  if(!gpuDisjoint)x.record.gpu.push(nanos/1e6);
+ }
+}
+function beginGpu(record){
+ if(!record||!timerExt||gpuDisjoint||gpuPending.length>=6||(++gpuEvery%3)!==0)return null;
+ const q=gl.createQuery();
+ gl.beginQuery(timerExt.TIME_ELAPSED_EXT,q);
+ return{q,record};
+}
+function endGpu(active){
+ if(!active)return;
+ gl.endQuery(timerExt.TIME_ELAPSED_EXT);
+ gpuPending.push(active);
+}
 const diagnosticView={clock:14,yaw:.7,pitch:.42,distanceScale:1}; // diagnostic-only camera/time source of truth
 const cases=[["Minimal",false,false,0,"none",false],["Outlines",true,false,0,"none",false],["Shafts",false,true,0,"none",false],["Bloom",false,false,25,"none",false],["Dust",false,false,0,"dust",false],["FXAA",false,false,0,"none",true],["Combined",true,true,25,"dust",true]];
 const median=a=>{if(!a.length)return null;const v=a.slice().sort((x,y)=>x-y),i=v.length>>1;return v.length%2?v[i]:(v[i-1]+v[i])/2};
@@ -171,6 +201,7 @@ function settings(s){return {scenario:s[0],outline:s[1],shafts:s[2],bloom:s[3],w
 function render(index,record=true){
  const w=Math.max(280,Math.round(cv.clientWidth)),h=Math.max(220,Math.round(cv.clientHeight));allocate(w,h);
  const cfg=settings(cases[index]),timer=performance.now();renderer.info.reset();
+ const gpuSample=beginGpu(record&&bench?.phase==='measure'?bench.records[index]:null);
  const timeOfDay=diagnosticView.clock,daylight=Math.max(0,Math.min(1,(Math.sin((timeOfDay-6)*Math.PI/12)+.1)*1.25)),dusk=1-Math.abs(daylight-.5)*2,ang=(timeOfDay-6)*Math.PI/12;
  const sunDir=unit([Math.cos(ang)*.75,Math.max(.16,Math.sin((timeOfDay-6)*Math.PI/12)),Math.sin(ang)*.9]);
  const ambient=[.075+.07*daylight,.10+.065*daylight,.16+.06*daylight],yaw=diagnosticView.yaw,pitch=diagnosticView.pitch,distance=initialDistance*diagnosticView.distanceScale;
@@ -194,16 +225,30 @@ function render(index,record=true){
  if(cfg.weather==='dust'){cameraUniform(particleMaterial.uniforms,cam);particleMaterial.uniforms.time.value=0;particleMaterial.uniforms.wind.value=.3;particleMaterial.uniforms.amount.value=.55;particleMaterial.uniforms.kind.value=3;particleMaterial.uniforms.sceneDepth.value=depth;
  renderer.setRenderTarget(rt[6]);renderer.render(particleScene,sceneCamera);}
  mark('weather');
- fxaa.u.scene.value=rt[6].texture;fxaa.u.resolution.value.set(w,h);fxaa.u.enabled.value=+cfg.fxaa;draw(fxaa,null);mark('fxaa');
+ fxaa.u.scene.value=rt[6].texture;fxaa.u.resolution.value.set(w,h);fxaa.u.enabled.value=+cfg.fxaa;draw(fxaa,null);mark('fxaa');endGpu(gpuSample);
  const drawCalls=renderer.info.render.calls,glError=gl.getError();if(glError!==gl.NO_ERROR)throw Error('Three.js WebGL error '+glError);
  if(record)return {cpu:performance.now()-timer,drawCalls,resolution:w+'x'+h,stages,drawsByStage};return null;
 }
-function profile(r){return {scenario:r.scenario,frames:r.cpu.length,resolution:r.resolution,drawCalls:median(r.draws),cpuRenderMs:{p50:median(r.cpu),p95:p95(r.cpu)},frameIntervalMs:{p50:median(r.intervals),p95:p95(r.intervals)},cpuStagesCumulativeMs:r.stages,drawsByStage:r.drawsByStage};}
-function begin(){if(bench)return;lastResults=null;$('copy').disabled=true;$('run').disabled=true;bench={index:0,phase:'warmup',since:performance.now(),records:cases.map(x=>({scenario:x[0],cpu:[],draws:[],intervals:[],resolution:'',stages:{}})),last:0};$('status').textContent='Measuring '+cases[0][0];}
-function tick(now){try{const b=bench;if(b){const rec=b.records[b.index],active=b.phase==='measure',elapsed=now-b.since;
- if(b.phase==='warmup'&&elapsed>700){b.phase='measure';b.since=now;b.last=0;}
+function profile(r){return {scenario:r.scenario,frames:r.cpu.length,resolution:r.resolution,drawCalls:median(r.draws),cpuRenderMs:{p50:median(r.cpu),p95:p95(r.cpu)},gpuPipelineMs:{p50:median(r.gpu),samples:r.gpu.length},frameIntervalMs:{p50:median(r.intervals),p95:p95(r.intervals)},cpuStagesCumulativeMs:r.stages,drawsByStage:r.drawsByStage};}
+function begin(){if(bench)return;lastResults=null;$('copy').disabled=true;$('run').disabled=true;
+ for(const x of gpuPending)gl.deleteQuery(x.q);
+ gpuPending.length=0;gpuEvery=0;gpuDisjoint=false;
+ bench={index:0,phase:'warmup',since:performance.now(),records:cases.map(x=>({scenario:x[0],cpu:[],draws:[],gpu:[],intervals:[],resolution:'',stages:{}})),last:0};
+ $('status').textContent='Measuring '+cases[0][0];}
+function tick(now){try{pollGpu();const b=bench;if(b){const rec=b.records[b.index],active=b.phase==='measure';
+ if(b.phase==='warmup'&&now-b.since>700){b.phase='measure';b.since=now;b.last=0;}
  const result=render(b.index,active);if(active&&result){rec.cpu.push(result.cpu);rec.draws.push(result.drawCalls);rec.resolution=result.resolution;rec.drawsByStage=result.drawsByStage;if(b.last)rec.intervals.push(now-b.last);b.last=now;for(const [k,v] of Object.entries(result.stages))(rec.stages[k]??=[]).push(v);}
- if(b.phase==='measure'&&now-b.since>2400){b.index++;if(b.index===cases.length){lastResults={version:3,renderer:'Three.js-r160-WebGL2',geometryParts:179,source:'backyard-unified-effects-v1-1-precision-fix-2026-10-15.html',warmupMs:700,measurementMs:2400,fixedSettings:{clock:14,camera:[.7,.42,'initial distance'],particles:55,beam:85,weatherForWeatherTests:'dust',pixelScale:'1 CSS px per framebuffer px'},gpuTimer:'not-instrumented',scenarios:b.records.map(profile)};bench=null;$('run').disabled=false;$('copy').disabled=false;$('status').textContent='Complete: seven Three.js full-effects profiles';$('report').textContent=JSON.stringify(lastResults,null,2);window.__THREE_EFFECTS_REPORT__=lastResults;render(6,false);}else{b.phase='warmup';b.since=now;b.last=0;$('status').textContent='Warming '+cases[b.index][0];}}
+ if(b.phase==='measure'&&now-b.since>2400){
+  if(b.index===cases.length-1){b.phase='drain';b.since=now;$('status').textContent='Resolving asynchronous GPU queries';}
+  else{b.index++;b.phase='warmup';b.since=now;b.last=0;$('status').textContent='Warming '+cases[b.index][0];}
+ }
+ if(b.phase==='drain'&&(!gpuPending.length||now-b.since>3000)){
+  for(const x of gpuPending)gl.deleteQuery(x.q);
+  gpuPending.length=0;
+  const scenarios=b.records.map(profile);
+  lastResults={version:3,renderer:'Three.js-r160-WebGL2',geometryParts:179,source:'backyard-unified-effects-v1-1-precision-fix-2026-10-15.html',warmupMs:700,measurementMs:2400,fixedSettings:{clock:14,camera:[.7,.42,'initial distance'],particles:55,beam:85,weatherForWeatherTests:'dust',pixelScale:'1 CSS px per framebuffer px'},gpuTimer:!timerExt?'unsupported':gpuDisjoint?'disjoint-invalid':scenarios.some(x=>!x.gpuPipelineMs.samples)?'partial':'supported',scenarios};
+  bench=null;$('run').disabled=false;$('copy').disabled=false;$('status').textContent='Complete: seven Three.js full-effects profiles';$('report').textContent=JSON.stringify(lastResults,null,2);window.__THREE_EFFECTS_REPORT__=lastResults;render(6,false);
+ }
  }else if(!changedCamera){render(6,false);changedCamera=true;}requestAnimationFrame(tick);}catch(e){bench=null;$('run').disabled=false;$('status').textContent='Benchmark error';$('error').textContent=String(e?.stack||e);window.__THREE_EFFECTS_ERROR__=String(e);}}
 $('run').addEventListener('click',begin);$('copy').addEventListener('click',()=>lastResults&&navigator.clipboard.writeText(JSON.stringify(lastResults,null,2)));
 window.__THREE_EFFECTS_DIAGNOSTIC__=function(view){
