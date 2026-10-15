@@ -129,6 +129,11 @@ def self_test() -> None:
         except (AssertionError, KeyError, TypeError):
             continue
         raise AssertionError("Corrupted/mismatched hardware result was incorrectly accepted")
+    assert preflight_error("linux", ":0", False, 1) is None
+    assert "DISPLAY" in preflight_error("linux", None, False, 1)
+    assert "Linux" in preflight_error("darwin", ":0", False, 1)
+    assert preflight_error("linux", None, True, 1) is None
+    assert "1..5" in preflight_error("linux", ":0", False, 0)
     assert not child_environment(False).get("_nonexistent_expected_key_")
     for key, value in PRIME.items():
         assert child_environment(True)[key] == value
@@ -136,13 +141,17 @@ def self_test() -> None:
           "wrong GPU, software fallback, missing scenarios and absent timers")
 
 
+def preflight_error(platform: str, display: str | None, headless: bool, repeat: int) -> str | None:
+    if platform != "linux":
+        return "Physical-GPU launcher requires Linux"
+    if not headless and not display:
+        return "Headed Chromium requires DISPLAY/XWayland; no default GPU settings were changed"
+    if not 1 <= repeat <= 5:
+        return "--repeat must be 1..5"
+    return None
+
+
 def run(args: argparse.Namespace) -> int:
-    if sys.platform != "linux":
-        raise RuntimeError("Physical-GPU launcher requires Linux")
-    if not args.headless and not os.environ.get("DISPLAY"):
-        raise RuntimeError("Headed Chromium requires DISPLAY/XWayland; no default GPU settings were changed")
-    if not 1 <= args.repeat <= 5:
-        raise ValueError("--repeat must be 1..5")
     out = args.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
     revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
@@ -165,6 +174,14 @@ def run(args: argparse.Namespace) -> int:
     successes: list[dict] = []
     destination = out / "attempt.json"
     try:
+        problem = preflight_error(sys.platform, os.environ.get("DISPLAY"), args.headless, args.repeat)
+        if problem:
+            record["result"] = "failed"
+            record["preflight_error"] = problem
+            record["finished_at_utc"] = utc_now()
+            destination.write_text(json.dumps(record, indent=2) + "\n")
+            print(f"Hardware benchmark preflight: {problem}; evidence: {destination}", file=sys.stderr)
+            return 1
         for index in range(1, args.repeat + 1):
             folder = out / f"run-{index:02d}"
             folder.mkdir(exist_ok=True)
