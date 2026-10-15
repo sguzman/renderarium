@@ -177,6 +177,7 @@ def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bo
             err = page.evaluate("window.__THREE_EFFECTS_ERROR__ || null")
             assert not err, f"Three.js initialization: {err}"
             three_device = gpu_provenance(page)
+            (out/'gpu-context-three.json').write_text(json.dumps(three_device, indent=2)+'\n')
             verify_device(three_device, require_hardware, expected_gpu)
             page.locator("#run").click()
             page.wait_for_function(
@@ -204,6 +205,7 @@ def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bo
                 timeout=45000,
             )
             custom_device = gpu_provenance(page)
+            (out/'gpu-context-custom.json').write_text(json.dumps(custom_device, indent=2)+'\n')
             verify_device(custom_device, require_hardware, expected_gpu)
             page.locator("#benchRun").click()
             page.wait_for_function(
