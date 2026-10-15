@@ -211,6 +211,14 @@ get('benchCancel').addEventListener('click',()=>finish('Cancelled: partial data'
 get('benchCopy').addEventListener('click',async()=>{if(!lastResults)return;try{await navigator.clipboard.writeText(JSON.stringify(lastResults,null,2));get('benchStatus').textContent='Results copied';}catch(e){get('benchStatus').textContent='Copy failed: '+e.message;}});
 cv.addEventListener('webglcontextlost',e=>{e.preventDefault();if(benchmark)finish('Interrupted: WebGL context lost');});
 
+window.__CUSTOM_EFFECTS_DIAGNOSTIC__=function(view){
+ if(benchmark)throw Error('Cannot change camera during measurement');
+ for(const name of ['clock','yaw','pitch','distanceScale'])if(!Number.isFinite(view[name]))throw Error('Invalid diagnostic '+name);
+ if(view.clock<0||view.clock>24||Math.abs(view.pitch)>1.32||view.distanceScale<=0)throw Error('Diagnostic view out of range');
+ assign({time:String(view.clock),beam:'85',bloom:'25',exposure:'100',weather:'dust',particle:'55',wind:'.3',width:'100',outline:true,fxaa:true,shafts:true,pause:true});
+ yaw=view.yaw;pitch=view.pitch;distance=initialDistance*view.distanceScale;time=0;grade=0;info();render();
+ return {view:{...view},drawingBuffer:[cv.width,cv.height],geometryParts:parts.length,drawCalls,renderer:'custom-WebGL2'};
+};
 function render(now=performance.now(),frameDelta=0){const frameStart=performance.now();pollGpu();const rec=benchmark?.phase==='measure'?benchmark.records[benchmark.index]:null;const marks=rec?{}:null;let lastMark=performance.now();function mark(name){if(rec)(marks[name]??=[]).push(performance.now()-lastMark);lastMark=performance.now();}const w=Math.max(280,Math.round(cv.clientWidth)),h=Math.max(220,Math.round(cv.clientHeight));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}allocate(w,h);drawCalls=0;
 const timeOfDay=+get('time').value,daylight=clamp((Math.sin((timeOfDay-6)*Math.PI/12)+.1)*1.25,0,1),dusk=1.-Math.abs(daylight-.5)*2,ang=(timeOfDay-6)*Math.PI/12;
 const sunDir=unit([Math.cos(ang)*.75,Math.max(.16,Math.sin((timeOfDay-6)*Math.PI/12)),Math.sin(ang)*.9]);const ambient=[.075+.07*daylight,.10+.065*daylight,.16+.06*daylight];
