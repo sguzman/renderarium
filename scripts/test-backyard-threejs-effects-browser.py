@@ -54,6 +54,16 @@ def validate(name: str, report: dict, expected_draws: list[int], expected_versio
             name, scenario["scenario"],"measured",scenario["drawCalls"],"expected",expected_draws[i],
             scenario.get("drawsByStage")
         )
+        if name == "Three.js":
+            stages = scenario.get("drawsByStage") or {}
+            assert stages.get("sky") == 1, (name,scenario["scenario"],stages)
+            assert stages.get("mesh") == 2, (
+                "Three.js skipped source geometry",scenario["scenario"],stages
+            )
+            if scenario["scenario"] in ("Dust", "Combined"):
+                assert stages["weather"] == stages["grading"] + 1, (
+                    "Three.js skipped particles",scenario["scenario"],stages
+                )
         assert scenario["frames"] >= 1, scenario
         assert scenario["cpuRenderMs"]["p50"] > 0, scenario
         assert scenario["cpuRenderMs"]["p95"] > 0, scenario
