@@ -213,6 +213,49 @@ def self_test() -> None:
         write_manifest(failed, folder/"attempt.json")
         assert (folder/"summary.md").exists() and "wrong-gpu" in (folder/"summary.md").read_text()
         assert json.loads((folder/"attempt.json").read_text())["result"] == "failed"
+    if sys.platform == "linux":
+        with tempfile.TemporaryDirectory() as temp:
+            temp_path = Path(temp)
+            args = SimpleNamespace(output_dir=temp_path / "success", expected_gpu="RTX 3090",
+                                   repeat=2, no_offload=False, headless=True,
+                                   require_gpu_timers=True)
+            called = []
+            def fake_success(command, **kwargs):
+                assert "--require-hardware" in command
+                assert command[command.index("--expected-gpu")+1] == "RTX 3090"
+                assert kwargs["env"]["__NV_PRIME_RENDER_OFFLOAD"] == "1"
+                output = Path(command[command.index("--output-dir")+1])
+                output.mkdir(parents=True, exist_ok=True)
+                (output / "comparison.json").write_text(json.dumps(good))
+                for backend, version in (("three", 3), ("custom", 2)):
+                    (output / f"{backend}.json").write_text(json.dumps({
+                        "version": version, "geometryParts": 179}))
+                    (output / f"{backend}-combined.png").write_bytes(
+                        b"\\x89PNG\\r\\n\\x1a\\n" + bytes(32))
+                called.append(command)
+                return subprocess.CompletedProcess(command, 0, "PASS mock Chromium", "")
+            assert run(args, bench_runner=fake_success) == 0
+            manifest = json.loads((args.output_dir/"attempt.json").read_text())
+            assert manifest["result"] == "passed"
+            assert manifest["aggregate"]["completed_runs"] == 2 and len(called) == 2
+            assert "| Combined |" in (args.output_dir/"summary.md").read_text()
+            args.output_dir = temp_path / "fallback"
+            args.repeat = 1
+            def fake_software(command, **kwargs):
+                output = Path(command[command.index("--output-dir")+1])
+                output.mkdir(parents=True, exist_ok=True)
+                (output/"gpu-context-three.json").write_text(json.dumps({
+                    "webgl2": True, "unmasked_renderer": "Google SwiftShader"}))
+                return subprocess.CompletedProcess(command, 1, "", "wrong GPU")
+            assert run(args, bench_runner=fake_software) == 1
+            manifest = json.loads((args.output_dir/"attempt.json").read_text())
+            assert manifest["result"] == "failed"
+            assert manifest["runs"][0]["failure_code"] == "software-renderer"
+            assert "software-renderer" in (args.output_dir/"summary.md").read_text()
+            args.output_dir = temp_path / "preflight"
+            args.repeat = 0
+            assert run(args, bench_runner=fake_software) == 1
+            assert json.loads((args.output_dir/"attempt.json").read_text())["result"] == "failed"
     assert summarize([good])["scenarios"][-1]["three_gpu_pipeline_p50_ms_median_over_runs"] == 2.1
     import copy
     mutants = []
@@ -312,6 +355,19 @@ def run(args: argparse.Namespace, *, bench_runner=None) -> int:
                 if result.returncode != 0:
                     raise RuntimeError(f"Browser measurement failed (code {result.returncode}); "
                                        f"see {folder.name}/stderr.log")
+                for filename in ("three-combined.png", "custom-combined.png"):
+                    image_path = folder / filename
+                    if not image_path.exists() or image_path.stat().st_size < 24:
+                        raise RuntimeError(f"Missing rendered framebuffer evidence: {filename}")
+                    if image_path.read_bytes()[:8] != b"\x89PNG\r\n\x1a\n":
+                        raise RuntimeError(f"Invalid rendered screenshot signature: {filename}")
+                for backend in ("three", "custom"):
+                    profile_path = folder / f"{backend}.json"
+                    if not profile_path.exists():
+                        raise RuntimeError(f"Missing renderer benchmark profile: {profile_path.name}")
+                    profile = json.loads(profile_path.read_text())
+                    assert profile.get("geometryParts") == 179, (backend, "scene source drift")
+                    assert profile.get("version") == (3 if backend == "three" else 2), (backend, "unknown profile")
                 report_path = folder / "comparison.json"
                 if not report_path.exists():
                     raise RuntimeError(f"Browser returned success without {report_path.name}")
