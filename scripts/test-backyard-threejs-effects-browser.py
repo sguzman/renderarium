@@ -51,7 +51,8 @@ def validate(name: str, report: dict, expected_draws: list[int], expected_versio
     for i, scenario in enumerate(report["scenarios"]):
         assert scenario["scenario"] == EXPECTED[i], scenario
         assert scenario["drawCalls"] == expected_draws[i], (
-            name, "unexpected measured draw calls", scenario
+            name, scenario["scenario"],"measured",scenario["drawCalls"],"expected",expected_draws[i],
+            scenario.get("drawsByStage")
         )
         assert scenario["frames"] >= 1, scenario
         assert scenario["cpuRenderMs"]["p50"] > 0, scenario
@@ -93,9 +94,10 @@ def run(swiftshader: bool, out: Path) -> None:
             assert not problems, problems
             three = page.evaluate("window.__THREE_EFFECTS_REPORT__")
             assert three["renderer"] == "Three.js-r160-WebGL2"
-            validate("Three.js", three, DRAWS, 3)
             page.locator("#view").screenshot(path=str(out/"three-combined.png"))
             (out/"three.json").write_text(json.dumps(three,indent=2)+"\n")
+            print("Three.js measured stage draws:", [(row["scenario"],row.get("drawsByStage")) for row in three["scenarios"]])
+            validate("Three.js", three, DRAWS, 3)
             three_px = page.evaluate("() => [document.querySelector('#view').width, document.querySelector('#view').height]")
             assert three_px == [620,295], three_px
             print("PASS Three.js full-effects: seven cases, measured draw counts, real GL shaders, 179 canonical parts")
