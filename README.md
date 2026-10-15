@@ -80,8 +80,22 @@ Linux/Hyprland physical GPU environment with dependencies installed:
 
 This command is a reproducible **hardware measurement route**, not proof
 that a hardware measurement was already taken. It records the actual
-device string and CPU submission/frame intervals; it does *not* infer
-that the device is an RTX 3090 and does *not* claim GPU timer timings.
+device string, CPU submission/frame intervals, and, **only if available**,
+valid asynchronous `EXT_disjoint_timer_query_webgl2` GPU-pipeline timings.
+Missing or disjoint GPU samples are reported as `null`, never inferred from
+rAF or CPU submission times. Timer queries wrap the actual Three.js renders,
+including the accepted shader passes, with results resolved asynchronously;
+the custom WebGL2 profiler uses the same extension independently.
+The run never infers that the device is an RTX 3090. To **require** that
+the active GPU identifies as an RTX 3090 instead of the Linux display iGPU,
+use `--require-hardware --expected-gpu "RTX 3090" --headed`. This only
+checks the renderer identity reported by Chromium; it is not cryptographic
+hardware attestation. In a Wayland/Hyprland environment, the Chromium display
+must be available (usually via XWayland).
+
+The two hardware contexts are validated separately, and the report includes
+their unmasked GPU renderer/vendor strings, supported/disjoint timer status,
+per-scenario GPU medians and sample counts, and exact output resolution.
 Standard public GitHub runners continue to use SwiftShader and do not
 execute the hardware-only gate. The browser QA is agent-owned; no manual
 test is necessary for the existing software-renderer CI.
