@@ -71,7 +71,7 @@ const three = readFileSync("experiments/diagnostics/backyard-threejs-full-effect
 assert.equal(sourceChunks(three),b,"Three.js effects benchmark diverged from the accepted 179-part source");
 for(const name of shaderNames)assert.equal(shader(three,name),shader(original,name),"Three.js effects benchmark GLSL drift: "+name);
 assert.ok(three.includes("g.setAttribute('position',countAttribute)"),"Three.js scene source p/seed must provide draw counts");
-for(const required of ["new T.WebGLRenderer","new T.RawShaderMaterial","new T.DepthTexture","new T.Points","new T.WebGLRenderTarget","source:'backyard-unified-effects-v1-1-precision-fix-2026-10-15.html'","measurementMs:2400","warmupMs:700","sunDir","frameIntervalMs","gpuTimer:'not-instrumented'"])
+for(const required of ["new T.WebGLRenderer","new T.RawShaderMaterial","new T.DepthTexture","new T.Points","new T.WebGLRenderTarget","source:'backyard-unified-effects-v1-1-precision-fix-2026-10-15.html'","measurementMs:2400","warmupMs:700","sunDir","frameIntervalMs","gpuTimer:"])
   assert.ok(three.includes(required),"Three.js effects benchmark missing explicit requirement: "+required);
 const threeBody=three.match(/<script type="module">([\s\S]*?)<\/script><\/body><\/html>/);
 assert.ok(threeBody,"Missing real Three.js module code");
@@ -90,12 +90,12 @@ function mockGpu(disjoint=false, supported=true){
     QUERY_RESULT_AVAILABLE:170,QUERY_RESULT:180,
     getQueryParameter:(_,p)=>p===170?true:3200000,
   };
-  const run=new Script(timerCode[0]+\`
+  const run=new Script(timerCode[0]+`
     const sample={gpu:[]};let selected=null;
     for(let i=0;i<3;i++)selected=beginGpu(sample);
     endGpu(selected);pollGpu();
     ({samples:sample.gpu,pending:gpuPending.length,disjoint:gpuDisjoint});
-  \`);
+  `);
   return run.runInNewContext({gl,bench:{records:[{gpu:[]}]},console});
 }
 const validGpu=mockGpu(false,true);
