@@ -158,6 +158,7 @@ const sky=quadPass(skyFS),outline=quadPass(outlineFS),shaft=quadPass(shaftFS),ex
 const particleMaterial=material(particleVS,particleFS);particleMaterial.transparent=true;particleMaterial.blending=T.NormalBlending;
 const particleScene=new T.Scene(),particleGeometry=geometry({seed:seeds}),particleObj=new T.Points(particleGeometry,particleMaterial);particleObj.frustumCulled=false;particleScene.add(particleObj);
 let width=0,height=0,rt=[],lastResults=null,bench=null,lastFrame=0,changedCamera=false;
+const diagnosticView={clock:14,yaw:.7,pitch:.42,distanceScale:1}; // diagnostic-only camera/time source of truth
 const cases=[["Minimal",false,false,0,"none",false],["Outlines",true,false,0,"none",false],["Shafts",false,true,0,"none",false],["Bloom",false,false,25,"none",false],["Dust",false,false,0,"dust",false],["FXAA",false,false,0,"none",true],["Combined",true,true,25,"dust",true]];
 const median=a=>{if(!a.length)return null;const v=a.slice().sort((x,y)=>x-y),i=v.length>>1;return v.length%2?v[i]:(v[i-1]+v[i])/2};
 const p95=a=>{if(!a.length)return null;return a.slice().sort((x,y)=>x-y)[Math.ceil(.95*a.length)-1]};
@@ -170,9 +171,9 @@ function settings(s){return {scenario:s[0],outline:s[1],shafts:s[2],bloom:s[3],w
 function render(index,record=true){
  const w=Math.max(280,Math.round(cv.clientWidth)),h=Math.max(220,Math.round(cv.clientHeight));allocate(w,h);
  const cfg=settings(cases[index]),timer=performance.now();renderer.info.reset();
- const timeOfDay=14,daylight=Math.max(0,Math.min(1,(Math.sin((timeOfDay-6)*Math.PI/12)+.1)*1.25)),dusk=1-Math.abs(daylight-.5)*2,ang=(timeOfDay-6)*Math.PI/12;
+ const timeOfDay=diagnosticView.clock,daylight=Math.max(0,Math.min(1,(Math.sin((timeOfDay-6)*Math.PI/12)+.1)*1.25)),dusk=1-Math.abs(daylight-.5)*2,ang=(timeOfDay-6)*Math.PI/12;
  const sunDir=unit([Math.cos(ang)*.75,Math.max(.16,Math.sin((timeOfDay-6)*Math.PI/12)),Math.sin(ang)*.9]);
- const ambient=[.075+.07*daylight,.10+.065*daylight,.16+.06*daylight],yaw=.7,pitch=.42,distance=initialDistance;
+ const ambient=[.075+.07*daylight,.10+.065*daylight,.16+.06*daylight],yaw=diagnosticView.yaw,pitch=diagnosticView.pitch,distance=initialDistance*diagnosticView.distanceScale;
  const eye=add(center,[distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch)]),forward=unit(sub(center,eye)),right=unit(cross(forward,[0,1,0])),up=unit(cross(right,forward));
  const cam={eye,forward,right,up,aspect:w/h};const stages={},drawsByStage={},mark=k=>{stages[k]=performance.now()-timer;drawsByStage[k]=renderer.info.render.calls;};
  cameraUniform(sky.u,cam);vec(sky.u,'sunDir',sunDir);sky.u.daylight.value=daylight;sky.u.twilight.value=dusk;sky.u.resolution.value.set(w,h);
@@ -182,7 +183,7 @@ function render(index,record=true){
  const depth=rt[0].depthTexture;
  outline.u.src.value=rt[0].texture;outline.u.depthTex.value=depth;outline.u.resolution.value.set(w,h);outline.u.enabled.value=+cfg.outline;draw(outline,rt[1]);mark('outline');
  let original=1;
- if(cfg.shafts){shaft.u.scene.value=rt[1].texture;shaft.u.depthTex.value=depth;shaft.u.resolution.value.set(w,h);cameraUniform(shaft.u,cam);vec(shaft.u,'sunDir',sunDir);shaft.u.strength.value=.85*daylight;shaft.u.beamWidth.value=1;shaft.u.mode.value=1;draw(shaft,rt[2]);original=2;}
+ if(cfg.shafts&&daylight>.06){shaft.u.scene.value=rt[1].texture;shaft.u.depthTex.value=depth;shaft.u.resolution.value.set(w,h);cameraUniform(shaft.u,cam);vec(shaft.u,'sunDir',sunDir);shaft.u.strength.value=.85*daylight;shaft.u.beamWidth.value=1;shaft.u.mode.value=1;draw(shaft,rt[2]);original=2;}
  mark('shafts');
  if(cfg.bloom){const hw=Math.ceil(w/2),hh=Math.ceil(h/2);
  extract.u.scene.value=rt[original].texture;extract.u.resolution.value.set(hw,hh);extract.u.threshold.value=.57;draw(extract,rt[3]);
@@ -205,6 +206,13 @@ function tick(now){try{const b=bench;if(b){const rec=b.records[b.index],active=b
  if(b.phase==='measure'&&now-b.since>2400){b.index++;if(b.index===cases.length){lastResults={version:3,renderer:'Three.js-r160-WebGL2',geometryParts:179,source:'backyard-unified-effects-v1-1-precision-fix-2026-10-15.html',warmupMs:700,measurementMs:2400,fixedSettings:{clock:14,camera:[.7,.42,'initial distance'],particles:55,beam:85,weatherForWeatherTests:'dust',pixelScale:'1 CSS px per framebuffer px'},gpuTimer:'not-instrumented',scenarios:b.records.map(profile)};bench=null;$('run').disabled=false;$('copy').disabled=false;$('status').textContent='Complete: seven Three.js full-effects profiles';$('report').textContent=JSON.stringify(lastResults,null,2);window.__THREE_EFFECTS_REPORT__=lastResults;render(6,false);}else{b.phase='warmup';b.since=now;b.last=0;$('status').textContent='Warming '+cases[b.index][0];}}
  }else if(!changedCamera){render(6,false);changedCamera=true;}requestAnimationFrame(tick);}catch(e){bench=null;$('run').disabled=false;$('status').textContent='Benchmark error';$('error').textContent=String(e?.stack||e);window.__THREE_EFFECTS_ERROR__=String(e);}}
 $('run').addEventListener('click',begin);$('copy').addEventListener('click',()=>lastResults&&navigator.clipboard.writeText(JSON.stringify(lastResults,null,2)));
+window.__THREE_EFFECTS_DIAGNOSTIC__=function(view){
+ if(bench)throw Error('Cannot change camera during measurement');
+ for(const name of ['clock','yaw','pitch','distanceScale'])if(!Number.isFinite(view[name]))throw Error('Invalid diagnostic '+name);
+ if(view.clock<0||view.clock>24||Math.abs(view.pitch)>1.32||view.distanceScale<=0)throw Error('Diagnostic view out of range');
+ Object.assign(diagnosticView,view);const observed=render(6,true);
+ return {view:{...diagnosticView},drawingBuffer:[cv.width,cv.height],geometryParts:parts.length,drawCalls:observed.drawCalls,renderer:'Three.js-r160'};
+};
 window.__THREE_EFFECTS_READY__=true;$('status').textContent='179-part source verified · Three.js r160 full-effects live';requestAnimationFrame(tick);
 }catch(e){$('status').textContent='Viewer failed';$('error').textContent=String(e?.stack||e);window.__THREE_EFFECTS_ERROR__=String(e);}
 })();</script></body></html>
