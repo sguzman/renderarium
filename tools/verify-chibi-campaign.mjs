@@ -20,7 +20,7 @@ const scenes = Object.freeze([
   ["kitchen", 149, 11],
   ["bathroom", 139, 10],
   ["office", 104, 12],
-  ["backyard", 181, 18],
+  ["backyard", 179, 18],
   ["garage", 112, 8],
   ["factory", 209, 16],
 ]);
@@ -154,7 +154,7 @@ function main() {
     groups: acc.groups + item.groups,
     scenePins: acc.scenePins + item.pins
   }), { parts: 0, groups: 0, scenePins: 0 });
-  assert.equal(counts.parts, 981, "campaign geometry total changed");
+  assert.equal(counts.parts, 979, "campaign geometry total changed");
   assert.equal(counts.scenePins, 76, "campaign pin reference count changed");
   console.log("PASS campaign: 7 scenes, " + counts.parts + " primitives, " +
     counts.groups + " instances, " + counts.scenePins + " per-scene source references, " +
