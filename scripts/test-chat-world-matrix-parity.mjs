@@ -51,7 +51,7 @@ const faces=[[0,3,2,1],[4,5,6,7]];
 function check(spec,label){
   const realized=realizeChatScene(spec);
   const groups=spec.groups.map(transform);
-  const rows=spec.parts.split("\n").map(line=>{
+  const rows=spec.parts.split("\n").filter(Boolean).map(line=>{
     const f=line.split("|");assert(f.length===8||f.length===9);
     return {g:Number(f[0]),partId:f[1],parent:f[2],kind:f[3],
       dims:f[4].split(",").map(Number),
