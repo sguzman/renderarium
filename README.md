@@ -53,6 +53,22 @@ Backyard preview. Production source-to-chat packets instead cite the pinned new
 amendment for the 179-part viewer. Acceptance remains a human visual verdict,
 not evidence of canonical WebGL performance or delivery inside ChatGPT.
 
+### Multi-camera effects parity study (seven views)
+
+`scripts/test-backyard-threejs-parity-matrix.py` runs both **real renderers**
+against the same fixed full-effects settings in Chromium at 620×295. It
+captures seven camera/time conditions: afternoon, morning, late day, night,
+reverse angle, elevated angle, and near camera. It records exact camera/time
+inputs, 179-part source count, expected draw counts (the night pass omits
+sunshafts), raw screenshot pairs, color-image pixel metrics, and a contact
+sheet with amplified pixel-difference maps. Diagnostic near-match thresholds
+are recorded separately from human visual approval. `parity-matrix.json`
+and `parity-contact-sheet.png` are CI artifacts.
+
+The test uses **deterministic controls only inside diagnostic forks** of the
+Three.js and custom WebGL2 benchmarks; the historically accepted visual
+source and its original shader strings are not rewritten.
+
 ### Effects-matched Three.js versus custom WebGL2 (v3, experimental)
 
 `experiments/diagnostics/backyard-threejs-full-effects-pipeline-benchmark-v3-2026-10-15.html`
