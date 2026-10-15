@@ -25,7 +25,7 @@ const accepted = new Map([
   ["kitchen", [149, 11]],
   ["bathroom", [139, 10]],
   ["office", [104, 12]],
-  ["backyard", [181, 18]],
+  ["backyard", [179, 18]],
   ["garage", [112, 8]],
   ["factory", [209, 16]],
 ]);
@@ -85,14 +85,33 @@ assert(priorAcceptance,"accepted scene missing from authoritative approval ledge
 assert.equal(priorAcceptance.visual_review,"accepted",
   "scene does not have established visual acceptance");
 assert.equal(priorAcceptance.visual_scope,"appearance_and_composition");
-assert.equal(priorAcceptance.primitives,expectedParts,
+const amended=sceneName==="backyard";
+const amendmentPath="contracts/accepted-backyard-geometry-amendment-2026-10-14.json";
+const amendment=amended?JSON.parse(bytesAt(amendmentPath).toString("utf8")):null;
+if(amended){
+  assert.equal(blobSha(bytesAt(amendmentPath)),"5c4c69a05743b84c793b80289ca7be441dce5b7a",
+    "accepted Backyard amendment revision drift");
+  assert.equal(amendment.scene,sceneId);
+  assert.equal(amendment.baseline.preview_blob,priorAcceptance.preview_git_blob,
+    "amendment does not extend original accepted source");
+  assert.equal(amendment.baseline.parts,priorAcceptance.primitives);
+  assert.equal(amendment.corrected.parts,expectedParts);
+  assert.equal(blobSha(bytesAt(amendment.baseline.historical_preview_path)),
+    amendment.baseline.preview_blob,"historical Backyard preview missing");
+  assert.equal(blobSha(bytesAt(amendment.baseline.historical_shell_path)),
+    amendment.baseline.shell_blob,"historical Backyard source missing");
+  assert.equal(blobSha(bytesAt(amendment.corrected.shell_path)),
+    amendment.corrected.shell_blob,"accepted Backyard source revision drift");
+}else assert.equal(priorAcceptance.primitives,expectedParts,
   "acceptance ledger primitive count drift");
+const authorizedPreviewBlob=amended?amendment.corrected.preview_blob:priorAcceptance.preview_git_blob;
+const authorizedAuthority=amended?amendmentPath:acceptanceLedgerPath;
 assert.equal(priorAcceptance.component_instances,expectedGroups,
   "acceptance ledger instance count drift");
 assert.equal(priorAcceptance.assembly_path,assemblyPath);
 assert.equal(priorAcceptance.preview_path,previewPath);
-assert.equal(priorAcceptance.preview_git_blob,blobSha(bytesAt(previewPath)),
-  "accepted preview revision drift");
+assert.equal(authorizedPreviewBlob,blobSha(bytesAt(previewPath)),
+  "accepted preview or subsequent corrected revision drift");
 assert.equal(priorAcceptance.assembly_git_blob,blobSha(bytesAt(assemblyPath)),
   "accepted assembly revision drift");
 const sourceBytes = bytesAt(assemblyPath);
@@ -158,7 +177,7 @@ for (const [index, group] of spec.groups.entries()) {
 
 const seen = new Set();
 const materialEffectsNotRendered = new Set();
-for (const row of spec.parts.split("\n")) {
+for (const row of spec.parts.split("\n").filter(Boolean)) {
   const number = row.split("|", 1)[0];
   assert(/^(0|[1-9][0-9]*)$/.test(number),
     "invalid primitive component index");
@@ -187,8 +206,8 @@ const packet = {
   existing_visual_acceptance: {
     status: "accepted_prior_to_packet",
     scope: priorAcceptance.visual_scope,
-    authority: acceptanceLedgerPath,
-    approved_preview_git_blob: priorAcceptance.preview_git_blob,
+    authority: authorizedAuthority,
+    approved_preview_git_blob: authorizedPreviewBlob,
     approved_assembly_git_blob: priorAcceptance.assembly_git_blob,
     repeat_review: "not_required",
   },
