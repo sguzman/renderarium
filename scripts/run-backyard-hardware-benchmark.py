@@ -257,7 +257,9 @@ def preflight_error(platform: str, display: str | None, headless: bool, repeat: 
     return None
 
 
-def run(args: argparse.Namespace) -> int:
+def run(args: argparse.Namespace, *, bench_runner=None) -> int:
+    if bench_runner is None:
+        bench_runner = subprocess.run
     out = args.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
     revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
@@ -300,8 +302,8 @@ def run(args: argparse.Namespace) -> int:
                        "diagnosis": None}
             record["runs"].append(attempt)
             try:
-                result = subprocess.run(command, cwd=ROOT,
-                                        env=child_environment(not args.no_offload),
+                result = bench_runner(command, cwd=ROOT,
+                                      env=child_environment(not args.no_offload),
                                         text=True, capture_output=True, timeout=360,
                                         check=False)
                 (folder / "stdout.log").write_text(result.stdout[-65536:])
@@ -319,7 +321,8 @@ def run(args: argparse.Namespace) -> int:
                 attempt["gpu_timer_status"] = report["gpu_timer_status"]
                 attempt["status"] = "passed"
                 successes.append(report)
-            except (RuntimeError, AssertionError, ValueError, OSError, subprocess.TimeoutExpired) as exc:
+            except (RuntimeError, AssertionError, ValueError, TypeError, KeyError,
+                    OSError, subprocess.TimeoutExpired) as exc:
                 attempt["error"] = str(exc)
                 attempt["failure_code"], attempt["diagnosis"] = classify_failure(
                     str(exc), folder, args.expected_gpu
