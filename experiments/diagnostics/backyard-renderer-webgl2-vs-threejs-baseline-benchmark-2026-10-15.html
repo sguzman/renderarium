@@ -1,0 +1,124 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Backyard Renderer A/B Benchmark</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101725;color:#e7f0fa;font:13px system-ui,sans-serif}#bench{background:#101725;border-radius:12px;overflow:hidden}header{background:#20354d;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}header small{color:#b9d0ea}.toolbar{display:flex;flex-wrap:wrap;gap:7px;padding:12px 12px 4px}button,select{border:1px solid #577596;background:#263e59;color:#eef5fc;border-radius:7px;padding:9px;font:inherit;cursor:pointer}button.active{background:#486e96;border-color:#b3d7ff}button:disabled{opacity:.5;cursor:wait}.stage{position:relative;width:100%;height:400px;background:#94a9b8}.stage canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}.fieldrow{display:flex;flex-wrap:wrap;gap:15px;align-items:center;padding:8px 12px 12px}.fieldrow label{display:flex;align-items:center;gap:7px;color:#bfd0e3}.fieldrow input{accent-color:#9fd2ff}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#314357;border-top:1px solid #314357}.stat{background:#152437;padding:10px}.stat small{color:#afc3d8;display:block;font-size:11px}.stat strong{display:block;font:600 17px system-ui;white-space:nowrap}.result{padding:9px 12px;color:#cbd9e9;font-size:12px;min-height:34px}.notice{color:#f1c3a7;padding:2px 12px}.hint{padding:8px 12px 14px;color:#acc3d7;font-size:11px}.bench-progress{height:4px;background:#24394f}.bench-progress div{height:100%;width:0;background:#b0d4fc;transition:width .1s linear}@media(max-width:530px){.stage{height:310px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat strong{font-size:15px}} 
+</style></head><body><div id="bench"><header><strong>Backyard · Renderer Performance Lab</strong><small id="status">Initializing canonical geometry…</small></header>
+<div class="stage" id="stage"><canvas id="custom" aria-label="Custom WebGL2 benchmark"></canvas><canvas id="three" aria-label="Three.js benchmark" style="visibility:hidden"></canvas></div>
+<div class="toolbar"><button id="customButton" class="active">Custom WebGL2</button><button id="threeButton">Three.js (online first load)</button><button id="abButton">Run 12-second A/B</button></div>
+<div class="fieldrow"><label>Geometry mode <select id="batch"><option value="merged">Merged · 1 draw</option><option value="parts">179 parts · 179 draws</option></select></label><label>Render scale <select id="scale"><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.25">125%</option><option value="1.5">150%</option></select></label><label><input id="orbit" type="checkbox" checked> Orbit camera</label></div>
+<div class="bench-progress"><div id="progress"></div></div>
+<div class="stats"><div class="stat"><small>Measured frames / second</small><strong id="fps">—</strong></div><div class="stat"><small>CPU render submission · p50/p95</small><strong id="cpu">—</strong></div><div class="stat"><small>GPU draw time · median</small><strong id="gpu">—</strong></div><div class="stat"><small>Draw calls / triangles</small><strong id="draws">—</strong></div><div class="stat"><small>Framebuffer resolution</small><strong id="resolution">—</strong></div><div class="stat"><small>Estimated geometry upload</small><strong id="memory">—</strong></div></div>
+<div class="result" id="result">Both paths use identical triangulated 179-part geometry and the same GLSL material. No additional effects in this controlled geometry baseline.</div>
+<div class="notice" id="error"></div><div class="hint">Drag to orbit · Scroll to zoom · Custom renderer works offline; Three.js requires an initial CDN load. FPS includes browser scheduling; CPU submission excludes asynchronous GPU execution. GPU time appears only when supported. Memory is an upload estimate, not actual VRAM usage.</div></div>
+<script>
+(async()=>{
+const root=document.getElementById('bench');const get=id=>root.querySelector('#'+id);const custom=get('custom'),threeCanvas=get('three');const gl=custom.getContext('webgl2',{alpha:false,antialias:false,powerPreference:'high-performance'});
+try{if(!gl)throw Error('WebGL2 is not supported in this browser');
+const chunks=[
+"eNpllm9sU1UUwM+9973X1/b1tRv/BiLCNifiPoAxQMg0uBA+YGNwGaZZFJMxkGhCdJC54RcoOkHHgoYsZJ1rIUhGI8tSSqgG",
+"akAlSwD5YxyEDMWIMAkfJox1f9o+z62zvGP78pL3O+fc+37v9vS+1lQvXlJZ6/dv2L3xbf/KxnBL07rqnce27Tq6s3Vz7e73",
+"39xzomXfu699fvLjUEsglDgSOtPWldzV01Lfe+WzvvYPYq0NsYsdJ/ZsSuzZcPrng8kr4R/bm89/WXf+5FfXDh68lojc7D52",
+"K/HJH99Fbp87efdQbCgaG7oUH/rl9F8nTt07G/578PsH134Y//Mn6/fjxWD7DAl5DKRCcESxRyrGQtA2aY8Y2RAMq/ZIrTYI",
+"zfD/SGnaHtEzIdicskeaMLJ93B45gDNHyL2OWCG4nLFHSlkIyi17xEyNsCA1HB9hdJ6B9AibIM5D2RF2lUQ0JQhrNHvkC2cQ",
+"TBJZ/igEC8mTHgfQAWYPw9rp4OXvlJRB3zSAT2XBk3zU+QJs0ku0r6EpAwv5TDEDHogb/Aq8NQkLprBEy+F/2dedJCuL91r5",
+"rCxGXGArRnTyTqaCwraMhqHLgulTGJ8MQ70jn30vG4a1k/ls0hWGPiWfrRFhSKRgEa9lXbgQyx/F+DZnHstSBM1xguMTBG+n",
+"CV7KElzCCM4VBB0qwQcawZs6wX7XFLZBl7KejT2M8VVjBIMTBM+kCVpZgi8ygh8Kgt+qBMccUM4VVqUqiN1cSRFc/thKN4iV",
+"RJuVRJuVRJuVRJuVRJuVRJuVRJuVbhAriWhVzu9AlWoygG7e5WQu0csOs6WskukOgI8EAJvBV/E4VHCAOuxhJsQKh6mdcgxo",
+"OzBUjFXMFDP1gOOW1qh1Y0hzrgU2S0TUZjUtfEoAQxOuhVjFL7AEe5W3pg/pfosJPsDOslW8XdTobcDKeATk0ZS57MimETsQ",
+"OmAF3+2cm8ljM5jusQyfyRvUjpydVEKMqpUsiJdL2aYswU6G2AyV7ByvzyxlueJ/sZvnkPPryvPQg5LrJT7Fk2oV3gjgnpzK",
+"jjiVKvohCXdgEEowq+MgXpQPyelm8TqwVZmsFZ+zzxJUWFBhQYUFFRZUWFBhQYUFFRaFwqJQWBQKK7NxngjIAfJUKvhqtQES",
+"OGAvv28pHt6v9uAXBnBImEx5lg+qr0A/ogs7SXHwKE4V4BWZGB+18niDT6GcNwI9GYX5H2OAE5TZOJBsHFQfrxFBqEejEVRR",
+"n+EBbkAnXr6EIVXhQbiAy/hr9g5UW3ksZQRlNgkkizhXRCEKbbkjDvv5dUvV8FZBuIp9N4ih+eK6pT0hdvBe7NlOtg4fdhGe",
+"2tMiwPexYt7IFiNuxNNRWOUorNILq/TCKmdhlbOwylVY5SqscjP+MvSyavBbw3DfyuF6xChcxN8VYhV2RBUWfoMVbjfuCw3Y",
+"SOlsHEYtdwluAXW4EMO4JFvAXco3s0Ec7beyDKeag4u5DDN+K4jt4X4OO7UfVrIoHGU48xxs4GV4iyjMwyscm8Q1ld3SiOMN",
+"amVQK4NaGdTKoFYGtTKolUGtDGplUCsPtfJQKw+18lArD7XyUCsPtfJQKw+18lArk1qZ1MqkVia1MqmVSa1MamVSK5NamdTK",
+"S6281MpLrbzUykutvNTKS6281MpLrbzUyketfNTKR6181MpHrXzUyketfNTKR6181KrIwM1M7qwAv+GWhdiKY1pxB1uNoaL5",
+"+KrVudzb5L/MonlijO/H0AiT7+f9+KotAhwfBS8Wr9FS2aJpuH3X4Z81gA51exaKefusrbiDAQywu04bHhA5bIOt8EZxz8MB",
+"Nh1seEDYMGCQbMCQ2X8AxO5eDA==",
+];
+if(chunks.length!==20||chunks.some((x,i)=>x.length!==(i===19?28:96)))throw Error('Scene chunks invalid');
+const packed=Uint8Array.from(atob(chunks.join('')),x=>x.charCodeAt(0));
+const raw=new Uint8Array(await new Response(new Blob([packed]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+let fingerprint=2166136261;for(const b of raw)fingerprint=Math.imul(fingerprint^b,16777619)>>>0;
+if(raw.length!==3235||fingerprint!==3583097875)throw Error('Source checksum mismatch');
+let k=4;const u8=()=>raw[k++],u16=()=>u8()|(u8()<<8),num=scale=>{let x=u16();return(x>32767?x-65536:x)/scale;},v3=scale=>[num(scale),num(scale),num(scale)];
+if(String.fromCharCode(...raw.slice(0,4))!=='RB01')throw Error('Source header damaged');
+const colors=[],groups=[],parts=[];
+for(let i=0,n=u8();i<n;i++)colors.push([u8()/255,u8()/255,u8()/255]);
+for(let i=0,n=u8();i<n;i++)groups.push([v3(1000),v3(100),v3(1000)]);
+for(let i=0,n=u16();i<n;i++){
+const group=u8(),color=u8(),flags=u8(),dims=[];
+for(let j=0;j<(flags&1?5:3);j++)dims.push(num(1000));
+parts.push({group,color,flags,dims,pos:flags&2?v3(1000):[0,0,0],rot:flags&4?v3(100):[0,0,0],scale:flags&8?v3(1000):[1,1,1]});
+}
+if(k!==raw.length||parts.length!==179||groups.length!==18)throw Error('Part count mismatch');
+
+const program=(vs,fs)=>{function compile(t,s){const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error('GLSL: '+gl.getShaderInfoLog(sh));return sh;};const p=gl.createProgram();gl.attachShader(p,compile(gl.VERTEX_SHADER,vs));gl.attachShader(p,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error('GLSL link: '+gl.getProgramInfoLog(p));return p;};
+const cam=`uniform vec3 eye,right,up,forward;uniform float focal,aspect;vec4 project(vec3 p){vec3 q=p-eye;float z=dot(q,forward);return vec4(dot(q,right)*focal/aspect,dot(q,up)*focal,z*(81./79.)-160./79.,z);}`;
+const quadVS=`#version 300 es
+precision highp float;void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0.,1.);}`;
+const meshVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in vec3 n;layout(location=2)in vec3 col;${cam}out vec3 vColor,vNormal;out float vDepth;void main(){gl_Position=project(p);vColor=col;vNormal=n;vDepth=gl_Position.w;}`;
+const meshFS=`#version 300 es
+precision highp float;in vec3 vColor,vNormal;in float vDepth;uniform vec3 sunDir;uniform float sunlight;uniform vec3 ambientTint;out vec4 frag;
+void main(){float l=max(dot(normalize(vNormal),sunDir),0.);float quant=floor(l*4.)/3.;vec3 c=vColor*(.28+.82*quant*sunlight);c+=vColor*ambientTint*(1.-sunlight*.36);float fog=1.-exp(-pow(vDepth*.01,2.));frag=vec4(mix(clamp(c,0.,1.),vec3(.56,.64,.77),fog*.15),1.);}`;
+const sub=(a,b)=>a.map((v,i)=>v-b[i]),add=(a,b)=>a.map((v,i)=>v+b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit=a=>{let l=Math.hypot(...a)||1;return a.map(x=>x/l);},clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function tr(p,t,r,s){let [x,y,z]=p.map((v,i)=>v*s[i]),[ax,ay,az]=r.map(v=>v*Math.PI/180),c=Math.cos(ax),sn=Math.sin(ax);[y,z]=[y*c-z*sn,y*sn+z*c];c=Math.cos(ay);sn=Math.sin(ay);[x,z]=[x*c+z*sn,z*c-x*sn];c=Math.cos(az);sn=Math.sin(az);[x,y]=[x*c-y*sn,x*sn+y*c];return[x+t[0],y+t[1],z+t[2]];}
+const vertices=[],lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity],faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];
+for(const o of parts){const d=o.dims,H=o.flags&1?d[4]:d[1],bx=d[0]/2,bz=(o.flags&1?d[1]:d[2])/2,tx=(o.flags&1?d[2]:d[0])/2,tz=(o.flags&1?d[3]:d[2])/2;
+const corners=[[-bx,-H/2,-bz],[bx,-H/2,-bz],[bx,-H/2,bz],[-bx,-H/2,bz],[-tx,H/2,-tz],[tx,H/2,-tz],[tx,H/2,tz],[-tx,H/2,tz]].map(v=>{const p=tr(tr(v,o.pos,o.rot,o.scale),...groups[o.group]);for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],p[i]);hi[i]=Math.max(hi[i],p[i]);}return p;});
+for(const face of faces){const n=unit(cross(sub(corners[face[1]],corners[face[0]]),sub(corners[face[2]],corners[face[0]])));for(const j of [0,1,2,0,2,3])vertices.push(...corners[face[j]],...n,...colors[o.color]);}}
+const mesh=gl.createVertexArray();gl.bindVertexArray(mesh);const meshBuf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,meshBuf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);for(const [i,n,offset]of [[0,3,0],[1,3,3],[2,3,6]]){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,n,gl.FLOAT,false,36,offset*4);}
+
+
+const prog=program(meshVS,meshFS),uNames=['eye','right','up','forward','focal','aspect','sunDir','sunlight','ambientTint'];const U=Object.fromEntries(uNames.map(name=>[name,gl.getUniformLocation(prog,name)]));
+let threeModule=null,threeRenderer=null,threeScene=null,threeCamera=null,threeMaterials=null,threeMerged=null,threeParts=[];
+const nverts=vertices.length/9,triangleCount=nverts/3,geometryBytes=vertices.length*4;
+const ext=gl.getExtension('EXT_disjoint_timer_query_webgl2'),queryCustom={q:[],samples:[],ext,gl};let queryThree=null;
+function gpuPoll(state){if(!state||!state.ext)return;const g=state.gl,e=state.ext;const disjoint=g.getParameter(e.GPU_DISJOINT_EXT);while(state.q.length){const item=state.q[0];if(!g.getQueryParameter(item,g.QUERY_RESULT_AVAILABLE))break;state.q.shift();const nanos=g.getQueryParameter(item,g.QUERY_RESULT);g.deleteQuery(item);if(!disjoint){state.samples.push(nanos/1e6);if(state.samples.length>80)state.samples.shift()}}if(disjoint)state.samples.length=0;}
+function beginGpu(state){if(!state||!state.ext||state.q.length>4)return null;const q=state.gl.createQuery();state.gl.beginQuery(state.ext.TIME_ELAPSED_EXT,q);return q;}
+function endGpu(state,q){if(!q)return;state.gl.endQuery(state.ext.TIME_ELAPSED_EXT);state.q.push(q);}
+const shade={sunDir:[-.56,.65,.54],sunlight:1,ambientTint:[.145,.165,.22]};
+function cameraParams(w,h){const eye=add(center,[distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch)]),forward=unit(sub(center,eye)),right=unit(cross(forward,[0,1,0])),up=unit(cross(right,forward));return{eye,forward,right,up,aspect:w/h,focal:1.65};}
+function nativeCamera(uniforms,params){for(const key of ['eye','right','up','forward'])gl.uniform3fv(uniforms[key],params[key]);gl.uniform1f(uniforms.focal,params.focal);gl.uniform1f(uniforms.aspect,params.aspect);gl.uniform3fv(uniforms.sunDir,shade.sunDir);gl.uniform1f(uniforms.sunlight,shade.sunlight);gl.uniform3fv(uniforms.ambientTint,shade.ambientTint);}
+const timer=x=>Math.round(x*100)/100;
+function nativeRender(w,h,cam,batch){gpuPoll(queryCustom);const q=beginGpu(queryCustom);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,w,h);gl.clearColor(.58,.66,.74,1);gl.clearDepth(1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LESS);gl.useProgram(prog);gl.bindVertexArray(mesh);nativeCamera(U,cam);if(batch==='merged')gl.drawArrays(gl.TRIANGLES,0,nverts);else for(let i=0;i<179;i++)gl.drawArrays(gl.TRIANGLES,i*36,36);endGpu(queryCustom,q);return batch==='merged'?1:179;}
+function threeUniforms(cam){const u=threeMaterials.uniforms;for(const key of ['eye','right','up','forward'])u[key].value.fromArray(cam[key]);u.aspect.value=cam.aspect;u.focal.value=cam.focal;}
+async function loadThree(){if(threeRenderer)return;get('status').textContent='Fetching pinned Three.js r160…';get('threeButton').disabled=true;get('abButton').disabled=true;try{
+let mod;try{mod=await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js');}catch(e){mod=await import('https://unpkg.com/three@0.160.0/build/three.module.min.js');}
+threeModule=mod;const T=mod;const r=new T.WebGLRenderer({canvas:threeCanvas,antialias:false,alpha:false,powerPreference:'high-performance'});r.setPixelRatio(1);r.outputColorSpace=T.LinearSRGBColorSpace;r.toneMapping=T.NoToneMapping;r.setClearColor(new T.Color().setRGB(.58,.66,.74),1);r.autoClear=true;
+let packed=new Float32Array(vertices),pos=new Float32Array(nverts*3),normal=new Float32Array(nverts*3),color=new Float32Array(nverts*3);
+for(let i=0;i<nverts;i++){for(let k=0;k<3;k++){pos[i*3+k]=packed[i*9+k];normal[i*3+k]=packed[i*9+3+k];color[i*3+k]=packed[i*9+6+k];}}
+function geo(P,N,C){const g=new T.BufferGeometry();g.setAttribute('p',new T.BufferAttribute(P,3));g.setAttribute('n',new T.BufferAttribute(N,3));g.setAttribute('col',new T.BufferAttribute(C,3));return g;}
+const shared={eye:{value:new T.Vector3()},right:{value:new T.Vector3()},up:{value:new T.Vector3()},forward:{value:new T.Vector3()},focal:{value:1.65},aspect:{value:1.},sunDir:{value:new T.Vector3(...shade.sunDir)},sunlight:{value:shade.sunlight},ambientTint:{value:new T.Vector3(...shade.ambientTint)}};
+threeMaterials=new T.RawShaderMaterial({glslVersion:T.GLSL3,vertexShader:meshVS.replace(/^#version 300 es\s*/,''),fragmentShader:meshFS.replace(/^#version 300 es\s*/,''),uniforms:shared,side:T.FrontSide,depthTest:true,depthWrite:true});
+threeScene=new T.Scene();threeCamera=new T.Camera();threeCamera.frustumCulled=false;
+threeMerged=new T.Mesh(geo(pos,normal,color),threeMaterials);threeMerged.frustumCulled=false;threeScene.add(threeMerged);
+for(let i=0;i<179;i++){const beg=i*36*3,end=beg+36*3;const g=geo(pos.subarray(beg,end),normal.subarray(beg,end),color.subarray(beg,end));const mesh=new T.Mesh(g,threeMaterials);mesh.frustumCulled=false;mesh.visible=false;threeScene.add(mesh);threeParts.push(mesh)}
+threeRenderer=r;const tg=r.getContext(),te=tg.getExtension('EXT_disjoint_timer_query_webgl2');queryThree={gl:tg,ext:te,q:[],samples:[]};get('status').textContent='Both renderers ready · 179 parts';
+}catch(e){get('error').textContent='Three.js could not load: '+String(e.message||e);get('status').textContent='Custom WebGL2 remains available';throw e;}finally{get('threeButton').disabled=false;get('abButton').disabled=false;}}
+function threeRender(w,h,cam,batch){const r=threeRenderer;r.setSize(w,h,false);const isMerged=batch==='merged';threeMerged.visible=isMerged;for(let i=0;i<179;i++)threeParts[i].visible=!isMerged;threeUniforms(cam);gpuPoll(queryThree);const q=beginGpu(queryThree);r.render(threeScene,threeCamera);endGpu(queryThree,q);return r.info.render.calls;}
+let yaw=.7,pitch=.42,distance=Math.max(...lo.map((x,i)=>hi[i]-x))*1.85+2,mode='custom',running=null,lastRAF=0,lastUI=0,frameCount=0,cpuSamples=[],fpsTimes=[],rafSamples=[],draws=0,renderW=0,renderH=0,failed=false;
+const center=lo.map((x,i)=>(x+hi[i])/2);
+function median(arr){if(!arr.length)return null;const a=[...arr].sort((a,b)=>a-b);return(a[(a.length-1)>>1]+a[a.length>>1])/2}
+function percentile(arr,p){if(!arr.length)return null;const a=[...arr].sort((x,y)=>x-y);return a[Math.min(a.length-1,Math.ceil(p*a.length)-1)]}
+function fmt(x){return x==null?'—':x.toFixed(2)}
+function displayStats(){const gpu=mode==='custom'?queryCustom:queryThree;const f=rafSamples.length>4?1000/median(rafSamples):null;get('fps').textContent=f==null?'—':f.toFixed(1);get('cpu').textContent=fmt(median(cpuSamples))+' / '+fmt(percentile(cpuSamples,.95))+' ms';get('gpu').textContent=gpu?.ext?fmt(median(gpu.samples))+' ms':'not supported';get('draws').textContent=draws+' / '+triangleCount.toLocaleString();get('resolution').textContent=renderW+' × '+renderH;get('memory').textContent=(geometryBytes/1024).toFixed(1)+' KiB (base)';}
+function setMode(x){mode=x;custom.style.visibility=x==='custom'?'visible':'hidden';threeCanvas.style.visibility=x==='three'?'visible':'hidden';get('customButton').classList.toggle('active',x==='custom');get('threeButton').classList.toggle('active',x==='three');cpuSamples.length=0;rafSamples.length=0;lastRAF=0;lastUI=0;}
+function draw(now){const w=Math.max(250,Math.round(get('stage').clientWidth*+get('scale').value)),h=Math.max(220,Math.round(get('stage').clientHeight*+get('scale').value));renderW=w;renderH=h;
+const start=performance.now(),c=cameraParams(w,h),batch=get('batch').value;
+if(mode==='custom'){if(custom.width!==w||custom.height!==h){custom.width=w;custom.height=h;}draws=nativeRender(w,h,c,batch);}else if(threeRenderer){draws=threeRender(w,h,c,batch);}
+const elapsed=performance.now()-start;cpuSamples.push(elapsed);if(cpuSamples.length>180)cpuSamples.shift();if(lastRAF>0){const dt=now-lastRAF;if(dt>0&&dt<250){rafSamples.push(dt);if(rafSamples.length>100)rafSamples.shift();}}lastRAF=now;
+if(now-lastUI>300){displayStats();lastUI=now;} }
+function tick(now){if(failed)return;try{if(get('orbit').checked){yaw+=.0018;}draw(now);if(running)stepBenchmark(now);}catch(e){get('error').textContent=String(e.stack||e);get('status').textContent='Benchmark error';failed=true;return;}requestAnimationFrame(tick);}
+function resultText(info){return `${info.name}: ${info.fps} FPS median · CPU ${info.cpu} ms p50 · GPU ${info.gpu} ms median · ${info.draws} draws · ${info.size}`;}
+function snapshot(name){return {name,fps:rafSamples.length>4?(1000/median(rafSamples)).toFixed(1):'—',cpu:fmt(median(cpuSamples)),gpu:(mode==='custom'?queryCustom:queryThree)?.ext?fmt(median((mode==='custom'?queryCustom:queryThree).samples)):'N/A',draws,size:renderW+'x'+renderH};}
+function stepBenchmark(now){const x=running;if(!x)return;const duration=now-x.since;const idx=x.phase;get('progress').style.width=(Math.min(1,(idx*6000+duration)/12000)*100)+'%';if(duration<6000)return;
+if(idx===0){x.first=snapshot('Custom');x.phase=1;x.since=now;setMode('three');get('result').textContent='A/B comparison: measuring Three.js…';}else{x.second=snapshot('Three.js');get('result').textContent=resultText(x.first)+' | '+resultText(x.second)+' · Same scene, material, resolution and batching. GPU timings can be unavailable.';get('progress').style.width='100%';get('status').textContent='A/B complete · user hardware measured';running=null;get('abButton').disabled=false;}}
+get('customButton').addEventListener('click',()=>{if(running)return;setMode('custom');get('status').textContent='Custom WebGL2 · baseline';});
+get('threeButton').addEventListener('click',async()=>{if(running)return;try{await loadThree();setMode('three');}catch(e){setMode('custom');}});
+get('abButton').addEventListener('click',async()=>{if(running)return;try{await loadThree();setMode('custom');get('progress').style.width='0%';running={phase:0,since:performance.now(),first:null,second:null};get('abButton').disabled=true;get('result').textContent='A/B: measuring custom WebGL2 for 6 seconds, then Three.js for 6 seconds. Keep the tab foregrounded.';}catch(e){setMode('custom');}});
+let dragging=false,px=0,py=0;get('stage').addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;get('stage').setPointerCapture(e.pointerId)});get('stage').addEventListener('pointermove',e=>{if(!dragging)return;yaw-=(e.clientX-px)*.008;pitch=clamp(pitch+(e.clientY-py)*.008,-1.2,1.3);px=e.clientX;py=e.clientY;});get('stage').addEventListener('pointerup',()=>dragging=false);get('stage').addEventListener('pointercancel',()=>dragging=false);get('stage').addEventListener('wheel',e=>{e.preventDefault();distance=clamp(distance*Math.exp(e.deltaY*.001),3,55)},{passive:false});
+get('status').textContent='179 parts · identical material · custom baseline ready';requestAnimationFrame(tick);
+}catch(e){get('status').textContent='Initialization failed';get('error').textContent=String(e.stack||e);}
+})();
+</script></body></html>
