@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Unified Backyard Rendering Lab</title><style>
+*{box-sizing:border-box}body{margin:0;background:#111827;color:#e8f0fa;font:13px system-ui,sans-serif}#unified{width:100%;background:#111827;border-radius:10px;overflow:hidden}.hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px;background:#23364d}.hdr small{color:#bdd0e6}canvas{display:block;width:100%;height:430px;touch-action:none;cursor:grab;background:#92a2b6}.panel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:12px}.field{min-width:0}.field label{font-size:11px;color:#c6d7e9;display:flex;justify-content:space-between;gap:6px;margin-bottom:4px}.field input[type=range]{width:100%;accent-color:#9ac7fe}.field select{width:100%;background:#253d59;border:1px solid #55799f;color:white;border-radius:6px;padding:6px;font:inherit}.pills{display:flex;flex-wrap:wrap;gap:7px;padding:10px 12px 0}.pills button{background:#2a4361;color:#eaf2fc;border:1px solid #587697;border-radius:7px;padding:7px 10px;cursor:pointer;font:inherit}.pills button.active{background:#527eae;border-color:#bad8fc}.checks{display:flex;flex-wrap:wrap;gap:14px;padding:4px 12px;color:#c9d7e9;font-size:12px}.checks label{display:flex;align-items:center;gap:5px}.checks input{accent-color:#a7d2ff}.foot{padding:4px 12px 12px;font-size:11px;color:#b0c5dc}.error{padding:0 12px;color:#ffbbb7}.readout{padding:6px 12px;color:#bed1e3}
+@media(max-width:620px){canvas{height:295px}.panel{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body><div id="unified"><div class="hdr"><strong>Backyard · Unified Renderer v1.1</strong><small id="status">Loading canonical scene…</small></div><canvas id="view" aria-label="Interactive unified 3D Backyard shader and weather renderer"></canvas><div class="pills"><button data-grade="0" class="active">Neutral</button><button data-grade="1">Pastel</button><button data-grade="2">Golden hour</button><button data-grade="3">Cool dusk</button><button id="reset">Reset camera</button></div><div class="panel">
+<div class="field"><label>Time of day <span id="timeVal">14:00</span></label><input type="range" id="time" min="0" max="24" step=".25" value="14"></div>
+<div class="field"><label>Sun shafts <span id="beamVal">85%</span></label><input type="range" id="beam" min="0" max="250" step="5" value="85"></div>
+<div class="field"><label>Bloom <span id="bloomVal">25%</span></label><input type="range" id="bloom" min="0" max="120" step="5" value="25"></div>
+<div class="field"><label>Exposure <span id="exposureVal">100%</span></label><input type="range" id="exposure" min="60" max="150" step="5" value="100"></div>
+<div class="field"><label>Weather</label><select id="weather"><option value="none">Clear</option><option value="rain">Rain</option><option value="snow">Snow</option><option value="dust">Dust</option></select></div>
+<div class="field"><label>Particles <span id="particleVal">55%</span></label><input type="range" id="particle" min="0" max="100" value="55" step="5"></div>
+<div class="field"><label>Wind <span id="windVal">0.3</span></label><input type="range" id="wind" min="-3" max="3" value=".3" step=".1"></div>
+<div class="field"><label>Shaft width <span id="widthVal">100%</span></label><input type="range" id="width" min="50" max="170" value="100" step="5"></div>
+</div><div class="checks"><label><input id="outline" type="checkbox" checked/> Outlines</label><label><input id="fxaa" type="checkbox" checked/> FXAA</label><label><input id="shafts" type="checkbox" checked/> Sunshafts</label><label><input id="pause" type="checkbox"/> Pause motion</label></div><div id="info" class="readout">179 parts · Corrected depth · AO off · Loading</div><div id="error" class="error"></div><div class="foot">Drag to orbit · Wheel to zoom · Source-derived 179-part Backyard · First integration of approved visual techniques; combinations require review · 3D shafts are stylized and may pass through objects</div></div><script>
+(async()=>{
+const root=document.getElementById('unified');const get=id=>root.querySelector('#'+id);const cv=get('view');const gl=cv.getContext('webgl2',{antialias:false,alpha:false});
+try {
+if(!gl)throw Error('WebGL2 unavailable');
+const chunks=[
+"eNpllm9sU1UUwM+9973X1/b1tRv/BiLCNifiPoAxQMg0uBA+YGNwGaZZFJMxkGhCdJC54RcoOkHHgoYsZJ1rIUhGI8tSSqgG",
+"akAlSwD5YxyEDMWIMAkfJox1f9o+z62zvGP78pL3O+fc+37v9vS+1lQvXlJZ6/dv2L3xbf/KxnBL07rqnce27Tq6s3Vz7e73",
+"39xzomXfu699fvLjUEsglDgSOtPWldzV01Lfe+WzvvYPYq0NsYsdJ/ZsSuzZcPrng8kr4R/bm89/WXf+5FfXDh68lojc7D52",
+"K/HJH99Fbp87efdQbCgaG7oUH/rl9F8nTt07G/578PsH134Y//Mn6/fjxWD7DAl5DKRCcESxRyrGQtA2aY8Y2RAMq/ZIrTYI",
+"zfD/SGnaHtEzIdicskeaMLJ93B45gDNHyL2OWCG4nLFHSlkIyi17xEyNsCA1HB9hdJ6B9AibIM5D2RF2lUQ0JQhrNHvkC2cQ",
+"TBJZ/igEC8mTHgfQAWYPw9rp4OXvlJRB3zSAT2XBk3zU+QJs0ku0r6EpAwv5TDEDHogb/Aq8NQkLprBEy+F/2dedJCuL91r5",
+"rCxGXGArRnTyTqaCwraMhqHLgulTGJ8MQ70jn30vG4a1k/ls0hWGPiWfrRFhSKRgEa9lXbgQyx/F+DZnHstSBM1xguMTBG+n",
+"CV7KElzCCM4VBB0qwQcawZs6wX7XFLZBl7KejT2M8VVjBIMTBM+kCVpZgi8ygh8Kgt+qBMccUM4VVqUqiN1cSRFc/thKN4iV",
+"RJuVRJuVRJuVRJuVRJuVRJuVRJuVbhAriWhVzu9AlWoygG7e5WQu0csOs6WskukOgI8EAJvBV/E4VHCAOuxhJsQKh6mdcgxo",
+"OzBUjFXMFDP1gOOW1qh1Y0hzrgU2S0TUZjUtfEoAQxOuhVjFL7AEe5W3pg/pfosJPsDOslW8XdTobcDKeATk0ZS57MimETsQ",
+"OmAF3+2cm8ljM5jusQyfyRvUjpydVEKMqpUsiJdL2aYswU6G2AyV7ByvzyxlueJ/sZvnkPPryvPQg5LrJT7Fk2oV3gjgnpzK",
+"jjiVKvohCXdgEEowq+MgXpQPyelm8TqwVZmsFZ+zzxJUWFBhQYUFFRZUWFBhQYUFFRaFwqJQWBQKK7NxngjIAfJUKvhqtQES",
+"OGAvv28pHt6v9uAXBnBImEx5lg+qr0A/ogs7SXHwKE4V4BWZGB+18niDT6GcNwI9GYX5H2OAE5TZOJBsHFQfrxFBqEejEVRR",
+"n+EBbkAnXr6EIVXhQbiAy/hr9g5UW3ksZQRlNgkkizhXRCEKbbkjDvv5dUvV8FZBuIp9N4ih+eK6pT0hdvBe7NlOtg4fdhGe",
+"2tMiwPexYt7IFiNuxNNRWOUorNILq/TCKmdhlbOwylVY5SqscjP+MvSyavBbw3DfyuF6xChcxN8VYhV2RBUWfoMVbjfuCw3Y",
+"SOlsHEYtdwluAXW4EMO4JFvAXco3s0Ec7beyDKeag4u5DDN+K4jt4X4OO7UfVrIoHGU48xxs4GV4iyjMwyscm8Q1ld3SiOMN",
+"amVQK4NaGdTKoFYGtTKolUGtDGplUCsPtfJQKw+18lArD7XyUCsPtfJQKw+18lArk1qZ1MqkVia1MqmVSa1MamVSK5NamdTK",
+"S6281MpLrbzUykutvNTKS6281MpLrbzUyketfNTKR6181MpHrXzUyketfNTKR6181KrIwM1M7qwAv+GWhdiKY1pxB1uNoaL5",
+"+KrVudzb5L/MonlijO/H0AiT7+f9+KotAhwfBS8Wr9FS2aJpuH3X4Z81gA51exaKefusrbiDAQywu04bHhA5bIOt8EZxz8MB",
+"Nh1seEDYMGCQbMCQ2X8AxO5eDA==",
+];
+if(chunks.length!==20||chunks.some((x,i)=>x.length!==(i===19?28:96)))throw Error('Scene chunks invalid');
+const packed=Uint8Array.from(atob(chunks.join('')),x=>x.charCodeAt(0));
+const raw=new Uint8Array(await new Response(new Blob([packed]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+let fingerprint=2166136261;for(const b of raw)fingerprint=Math.imul(fingerprint^b,16777619)>>>0;
+if(raw.length!==3235||fingerprint!==3583097875)throw Error('Source checksum mismatch');
+let k=4;const u8=()=>raw[k++],u16=()=>u8()|(u8()<<8),num=scale=>{let x=u16();return(x>32767?x-65536:x)/scale;},v3=scale=>[num(scale),num(scale),num(scale)];
+if(String.fromCharCode(...raw.slice(0,4))!=='RB01')throw Error('Source header damaged');
+const colors=[],groups=[],parts=[];
+for(let i=0,n=u8();i<n;i++)colors.push([u8()/255,u8()/255,u8()/255]);
+for(let i=0,n=u8();i<n;i++)groups.push([v3(1000),v3(100),v3(1000)]);
+for(let i=0,n=u16();i<n;i++){
+const group=u8(),color=u8(),flags=u8(),dims=[];
+for(let j=0;j<(flags&1?5:3);j++)dims.push(num(1000));
+parts.push({group,color,flags,dims,pos:flags&2?v3(1000):[0,0,0],rot:flags&4?v3(100):[0,0,0],scale:flags&8?v3(1000):[1,1,1]});
+}
+if(k!==raw.length||parts.length!==179||groups.length!==18)throw Error('Part count mismatch');
+const program=(vs,fs)=>{
+const compile=(type,text)=>{const shader=gl.createShader(type);gl.shaderSource(shader,text);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(shader));return shader;};
+const p=gl.createProgram();gl.attachShader(p,compile(gl.VERTEX_SHADER,vs));gl.attachShader(p,compile(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p;};
+const cam=`uniform vec3 eye,right,up,forward;uniform float focal,aspect;vec4 project(vec3 p){vec3 q=p-eye;float z=dot(q,forward);return vec4(dot(q,right)*focal/aspect,dot(q,up)*focal,z*(81./79.)-160./79.,z);}`;
+const quadVS=`#version 300 es
+precision highp float;void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0.,1.);}`;
+const meshVS=`#version 300 es
+precision highp float;layout(location=0)in vec3 p;layout(location=1)in vec3 n;layout(location=2)in vec3 col;${cam}out vec3 vColor,vNormal;out float vDepth;void main(){gl_Position=project(p);vColor=col;vNormal=n;vDepth=gl_Position.w;}`;
+const meshFS=`#version 300 es
+precision highp float;in vec3 vColor,vNormal;in float vDepth;uniform vec3 sunDir;uniform float sunlight;uniform vec3 ambientTint;out vec4 frag;
+void main(){float l=max(dot(normalize(vNormal),sunDir),0.);float quant=floor(l*4.)/3.;vec3 c=vColor*(.28+.82*quant*sunlight);c+=vColor*ambientTint*(1.-sunlight*.36);float fog=1.-exp(-pow(vDepth*.01,2.));frag=vec4(mix(clamp(c,0.,1.),vec3(.56,.64,.77),fog*.15),1.);}`;
+const skyFS=`#version 300 es
+precision highp float;uniform vec2 resolution;uniform float daylight,twilight;uniform vec3 sunDir,eye,right,up,forward;uniform float focal,aspect;out vec4 frag;
+float hash21(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+void main(){vec2 uv=gl_FragCoord.xy/resolution;vec2 ndc=uv*2.-1.;vec3 ray=normalize(forward+right*ndc.x*aspect/focal+up*ndc.y/focal);float h=clamp(ray.y*.8+.5,0.,1.);vec3 night=mix(vec3(.025,.038,.092),vec3(.075,.105,.19),h);vec3 day=mix(vec3(.82,.75,.69),vec3(.44,.65,.87),h);vec3 c=mix(night,day,daylight);float glow=pow(max(dot(ray,sunDir),0.),48.);c+=vec3(1.,.55,.25)*glow*.22*twilight;vec2 cell=floor(uv*vec2(480.,270.));float star=step(.9989,hash21(cell))*pow(max(h,0.),.2)*(1.-daylight);c+=vec3(star*.8);frag=vec4(c,1.);}`;
+const outlineFS=`#version 300 es
+precision highp float;uniform sampler2D src,depthTex;uniform int enabled;uniform vec2 resolution;out vec4 frag;float linearDepth(float d){return 80./max(.00001,80.-79.*d);}void main(){ivec2 p=ivec2(gl_FragCoord.xy);vec3 base=texelFetch(src,p,0).rgb;float depth=texelFetch(depthTex,p,0).r;if(enabled==0 || depth>.99995){frag=vec4(base,1.);return;}float z=linearDepth(depth),edge=0.;ivec2 neighbors[8]=ivec2[8](ivec2(1,0),ivec2(-1,0),ivec2(0,1),ivec2(0,-1),ivec2(1,1),ivec2(-1,1),ivec2(1,-1),ivec2(-1,-1));for(int j=1;j<=2;j++)for(int i=0;i<8;i++){ivec2 q=clamp(p+j*neighbors[i],ivec2(0),ivec2(resolution)-1);float other=texelFetch(depthTex,q,0).r;float delta=other>.99995?1.:(linearDepth(other)-z)/max(1.,z);edge=max(edge,smoothstep(.025,.115,delta));}frag=vec4(mix(base,vec3(.065,.085,.105),edge*.75),1.);}`;
+const shaftFS=`#version 300 es
+precision highp float;
+uniform sampler2D scene,depthTex;uniform vec2 resolution;uniform vec3 eye,right,up,forward,sunDir;
+uniform float focal,aspect,strength,beamWidth;uniform int mode;
+out vec4 frag;
+float linearZ(float d){return 80./(80.-79.*d);}
+float densityAt(vec3 point){
+  vec3 flow=-sunDir;float sum=0.;
+  for(int j=0;j<8;j++){
+    vec3 src;float len;float wt;
+    if(j==0){src=vec3(-2.75,3.45,1.70);len=6.8;wt=.98;}
+    else if(j==1){src=vec3(-1.90,3.28,1.58);len=7.0;wt=1.10;}
+    else if(j==2){src=vec3(-1.38,3.18,.96);len=6.8;wt=.85;}
+    else if(j==3){src=vec3(-2.33,3.10,.47);len=6.4;wt=.76;}
+    else if(j==4){src=vec3(-1.02,1.42,2.42);len=3.1;wt=.84;}
+    else if(j==5){src=vec3(-.15,1.44,2.42);len=3.3;wt=.72;}
+    else if(j==6){src=vec3(.73,1.39,2.42);len=3.0;wt=.83;}
+    else{src=vec3(1.76,1.40,2.42);len=3.2;wt=.72;}
+    vec3 v=point-src;float t=dot(v,flow);if(t<=0.||t>=len)continue;
+    float r=mix(j<4?.17:.11,j<4?.30:.23,t/len)*beamWidth;
+    float d=length(v-flow*t)/r;
+    sum+=exp(-2.2*d*d)*smoothstep(0.,.35,t)*(1.-smoothstep(len-.8,len,t))*wt;
+  }
+  return min(sum,2.5);
+}
+void main(){
+  vec2 uv=gl_FragCoord.xy/resolution;
+  vec3 c=texture(scene,uv).rgb;
+  if(mode==0){frag=vec4(c,1.);return;}
+  float dep=texture(depthTex,uv).r,limit=dep>.99999?40.:min(40.,linearZ(dep));
+  vec2 ndc=uv*2.-1.;vec3 ray=forward+right*ndc.x*aspect/focal+up*ndc.y/focal;
+  vec3 aabb0=(vec3(-3.4,.18,-2.6)-eye)/ray,aabb1=(vec3(3.4,4.30,2.6)-eye)/ray;
+  vec3 mn=min(aabb0,aabb1),mx=max(aabb0,aabb1);
+  float start=max(1.02,max(mn.x,max(mn.y,mn.z)));
+  float stop=min(limit,min(mx.x,min(mx.y,mx.z)));
+  float accum=0.;
+  if(stop>start){float dt=(stop-start)/40.;for(int i=0;i<40;i++)accum+=densityAt(eye+ray*(start+(float(i)+.5)*dt))*dt;}
+  float radiance=min(.47,.60*(1.-exp(-accum*.84*strength)));
+  if(mode==3){frag=vec4(vec3(radiance*2.0,radiance*.9,radiance*.1),1.);return;}
+  vec3 col=min(vec3(1.),c+vec3(1.,.72,.31)*radiance);
+  frag=vec4(col,1.);
+}`;
+const extractFS=`#version 300 es
+precision highp float;uniform sampler2D scene;uniform vec2 resolution;uniform float threshold;out vec4 frag;void main(){vec2 uv=gl_FragCoord.xy/resolution;vec3 c=texture(scene,uv).rgb;float brightness=dot(c,vec3(.2126,.7152,.0722));float high=max(brightness-threshold,0.);float soft=smoothstep(threshold-.10,threshold+.14,brightness);frag=vec4(c*high*soft*2.5,1.);}`;
+const blurFS=`#version 300 es
+precision highp float;uniform sampler2D tex;uniform vec2 resolution;uniform vec2 direction;out vec4 frag;void main(){vec2 uv=gl_FragCoord.xy/resolution,stepUV=direction/resolution;vec3 c=texture(tex,uv).rgb*.227027;for(int i=1;i<=4;i++){float w=i==1?.1945946:(i==2?.1216216:(i==3?.054054:.016216));vec2 delta=stepUV*float(i);c+=(texture(tex,uv+delta).rgb+texture(tex,uv-delta).rgb)*w;}frag=vec4(c,1.);}`;
+const gradeFS=`#version 300 es
+precision highp float;uniform sampler2D scene,bloom;uniform vec2 resolution;uniform float strength,exposure,saturation;uniform int grade;out vec4 frag;void main(){vec2 uv=gl_FragCoord.xy/resolution;vec3 c=texture(scene,uv).rgb;vec3 glow=texture(bloom,uv).rgb;c+=glow*strength;if(grade==1){c=mix(c,vec3(dot(c,vec3(.30,.59,.11))),.07);c=c*.94+vec3(.035,.035,.045);}else if(grade==2){c=c*vec3(1.09,1.025,.91)+vec3(.018,.008,0.);}else if(grade==3){c=c*vec3(.88,.98,1.12)+vec3(.003,.012,.027);}c*=exposure;float lum=dot(c,vec3(.2126,.7152,.0722));c=mix(vec3(lum),c,saturation);c=(c-.5)*1.015+.5;frag=vec4(clamp(c,0.,1.),1.);}`;
+const fxaaFS=`#version 300 es
+precision highp float;uniform sampler2D scene;uniform int enabled;uniform vec2 resolution;out vec4 frag;float luma(vec3 c){return dot(c,vec3(.299,.587,.114));}vec3 sampleC(vec2 uv){return texture(scene,clamp(uv,vec2(.0001),vec2(.9999))).rgb;}void main(){vec2 uv=gl_FragCoord.xy/resolution,px=1./resolution;vec3 c=sampleC(uv);if(enabled==0){frag=vec4(c,1.);return;}vec3 nw=sampleC(uv-px),ne=sampleC(uv+px*vec2(1.,-1.)),sw=sampleC(uv+px*vec2(-1.,1.)),se=sampleC(uv+px);float l=luma(c),a=luma(nw),b=luma(ne),d=luma(sw),e=luma(se);float low=min(l,min(min(a,b),min(d,e))),hi=max(l,max(max(a,b),max(d,e)));if(hi-low<max(.032,hi*.11)){frag=vec4(c,1.);return;}vec2 dir=vec2(-((a+b)-(d+e)),(a+d)-(b+e));dir=clamp(dir/(min(abs(dir.x),abs(dir.y))+max((a+b+d+e)*.03125,.0078125)),vec2(-8.),vec2(8.))*px;vec3 A=.5*(sampleC(uv-dir/6.)+sampleC(uv+dir/6.));vec3 B=A*.5+.25*(sampleC(uv-dir*.5)+sampleC(uv+dir*.5));frag=vec4(luma(B)<low||luma(B)>hi?A:B,1.);}`;
+const particleVS=`#version 300 es
+precision highp float;precision highp int;layout(location=0)in vec3 seed;uniform vec3 eye,right,up,forward;uniform float focal,aspect,time,wind,amount;uniform int kind;
+out float alpha;out float depthZ;
+float hash1(float x){return fract(sin(x*74.17)*43758.5453);}
+void main(){float id=float(gl_VertexID);float x=seed.x,y=seed.y,z=seed.z;float rate=kind==1?1.8:kind==2?.29:.10;
+float fall=mod(y-rate*time+50.,4.6);vec3 p=vec3(mod(x+wind*.14*time+sin(time*.33+id*.21)*.06+30.,6.)-3.,fall+.20,z);
+if(kind==3){p=seed+vec3(sin(time*.18+id)*.14,cos(time*.27+id)*.11,sin(time*.23+id)*.12);}
+vec3 q=p-eye;float d=dot(q,forward);float safe=max(d,.01);gl_Position=vec4(dot(q,right)*focal/aspect,dot(q,up)*focal,d*(81./79.)-160./79.,d);
+float nearFade=smoothstep(.75,2.,d);float farFade=1.-smoothstep(20.,36.,d);
+float scale=kind==1?28.:kind==2?22.:19.;gl_PointSize=clamp(scale/safe,1.5,kind==1?8.:5.5);
+alpha=amount*nearFade*farFade*(kind==1?.7:kind==2?.82:.33);depthZ=d;
+if(id>amount*480.||d<1.0)gl_PointSize=0.;}
+`;
+const particleFS=`#version 300 es
+precision highp float;precision highp int;in float alpha;in float depthZ;uniform sampler2D sceneDepth;uniform int kind;out vec4 frag;
+void main(){if(alpha<=0.)discard;float d=texelFetch(sceneDepth,ivec2(gl_FragCoord.xy),0).r;if(gl_FragCoord.z>d+.0002)discard;
+vec2 q=gl_PointCoord*2.-1.;float r=dot(q,q);float fall=0.;vec3 tint;
+if(kind==1){fall=smoothstep(.24,.03,abs(q.x))*smoothstep(1.,.2,abs(q.y));tint=vec3(.67,.81,1.);}
+else if(kind==2){fall=(1.-smoothstep(.45,1.,r));tint=vec3(.98,.99,1.);}
+else{fall=pow(max(1.-r,0.),1.4);tint=vec3(1.,.83,.47);}
+if(r>1.&&kind!=1)discard;frag=vec4(tint,alpha*fall);}`;
+const programs=[program(meshVS,meshFS),program(quadVS,skyFS),program(quadVS,outlineFS),program(quadVS,shaftFS),program(quadVS,extractFS),program(quadVS,blurFS),program(quadVS,gradeFS),program(particleVS,particleFS),program(quadVS,fxaaFS)];
+const uNames=['eye','right','up','forward','focal','aspect','sunDir','sunlight','ambientTint','daylight','twilight','resolution','src','depthTex','enabled','scene','strength','beamWidth','mode','threshold','tex','direction','bloom','exposure','saturation','grade','time','wind','amount','kind','sceneDepth'];
+const U=programs.map(p=>Object.fromEntries(uNames.map(k=>[k,gl.getUniformLocation(p,k)])));
+const sub=(a,b)=>a.map((v,i)=>v-b[i]),add=(a,b)=>a.map((v,i)=>v+b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit=a=>{let l=Math.hypot(...a)||1;return a.map(x=>x/l);},clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function tr(p,t,r,s){let [x,y,z]=p.map((v,i)=>v*s[i]),[ax,ay,az]=r.map(v=>v*Math.PI/180),c=Math.cos(ax),sn=Math.sin(ax);[y,z]=[y*c-z*sn,y*sn+z*c];c=Math.cos(ay);sn=Math.sin(ay);[x,z]=[x*c+z*sn,z*c-x*sn];c=Math.cos(az);sn=Math.sin(az);[x,y]=[x*c-y*sn,x*sn+y*c];return[x+t[0],y+t[1],z+t[2]];}
+const vertices=[],lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity],faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]];
+for(const o of parts){const d=o.dims,H=o.flags&1?d[4]:d[1],bx=d[0]/2,bz=(o.flags&1?d[1]:d[2])/2,tx=(o.flags&1?d[2]:d[0])/2,tz=(o.flags&1?d[3]:d[2])/2;
+const corners=[[-bx,-H/2,-bz],[bx,-H/2,-bz],[bx,-H/2,bz],[-bx,-H/2,bz],[-tx,H/2,-tz],[tx,H/2,-tz],[tx,H/2,tz],[-tx,H/2,tz]].map(v=>{const p=tr(tr(v,o.pos,o.rot,o.scale),...groups[o.group]);for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],p[i]);hi[i]=Math.max(hi[i],p[i]);}return p;});
+for(const face of faces){const n=unit(cross(sub(corners[face[1]],corners[face[0]]),sub(corners[face[2]],corners[face[0]])));for(const j of [0,1,2,0,2,3])vertices.push(...corners[face[j]],...n,...colors[o.color]);}}
+const mesh=gl.createVertexArray();gl.bindVertexArray(mesh);const meshBuf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,meshBuf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);for(const [i,n,offset]of [[0,3,0],[1,3,3],[2,3,6]]){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,n,gl.FLOAT,false,36,offset*4);}
+const seeds=[];for(let i=0;i<480;i++){let a=i*.61803398875,b=i*.754877666,c=i*.56984029;let f=x=>x-Math.floor(x);seeds.push((f(a)*2.-1.)*3.,.35+f(b)*4.5,(f(c)*2.-1.)*2.38);}
+const particles=gl.createVertexArray();gl.bindVertexArray(particles);const particleBuf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,particleBuf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(seeds),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,12,0);
+const quad=gl.createVertexArray();const textures=Array.from({length:7},()=>gl.createTexture()),fb=Array.from({length:7},()=>gl.createFramebuffer()),depth=gl.createTexture();let oldW=0,oldH=0;
+function allocate(w,h){if(w===oldW&&h===oldH)return;oldW=w;oldH=h;
+for(let i=0;i<7;i++){const half=i===3||i===4||i===5,tw=half?Math.ceil(w/2):w,th=half?Math.ceil(h/2):h;gl.bindTexture(gl.TEXTURE_2D,textures[i]);for(const [p,v]of [[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]])gl.texParameteri(gl.TEXTURE_2D,p,v);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,tw,th,0,gl.RGBA,gl.UNSIGNED_BYTE,null);gl.bindFramebuffer(gl.FRAMEBUFFER,fb[i]);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,textures[i],0);gl.drawBuffers([gl.COLOR_ATTACHMENT0]);}
+gl.bindTexture(gl.TEXTURE_2D,depth);for(const [p,v]of [[gl.TEXTURE_MIN_FILTER,gl.NEAREST],[gl.TEXTURE_MAG_FILTER,gl.NEAREST],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]])gl.texParameteri(gl.TEXTURE_2D,p,v);gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT24,w,h,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_INT,null);gl.bindFramebuffer(gl.FRAMEBUFFER,fb[0]);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,depth,0);
+for(let i=0;i<7;i++){gl.bindFramebuffer(gl.FRAMEBUFFER,fb[i]);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('Framebuffer '+i+' incomplete');}gl.bindFramebuffer(gl.FRAMEBUFFER,null);}
+const bind=(tex,unit,loc)=>{gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,tex);if(loc!==null)gl.uniform1i(loc,unit);};
+let yaw=.7,pitch=.42,distance=Math.max(...lo.map((x,i)=>hi[i]-x))*1.85+2,drag=false,mouseX=0,mouseY=0,time=0,grade=0,rafLast=0,lastInfo=0,frames=0,fps=0,drawCalls=0;
+const center=lo.map((x,i)=>(x+hi[i])/2),initialDistance=distance;
+function camUniform(u,eye,right,up,forward,w,h){gl.uniform3fv(u.eye,eye);gl.uniform3fv(u.right,right);gl.uniform3fv(u.up,up);gl.uniform3fv(u.forward,forward);gl.uniform1f(u.focal,1.65);gl.uniform1f(u.aspect,w/h);}
+function bindFullscreen(index,pIndex,w,h){gl.bindFramebuffer(gl.FRAMEBUFFER,index<0?null:fb[index]);gl.drawBuffers([index<0?gl.BACK:gl.COLOR_ATTACHMENT0]);gl.viewport(0,0,w,h);gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(quad);gl.useProgram(programs[pIndex]);return U[pIndex];}
+function info(){const timeOfDay=+get('time').value;get('timeVal').textContent=String(Math.floor(timeOfDay)).padStart(2,'0')+':'+String(Math.round((timeOfDay%1)*60)).padStart(2,'0');for(const id of ['beam','bloom','exposure','particle','width'])get(id+'Val').textContent=get(id).value+'%';get('windVal').textContent=Number(get('wind').value).toFixed(1);root.querySelectorAll('[data-grade]').forEach(b=>b.classList.toggle('active',+b.dataset.grade===grade));}
+root.querySelectorAll('[data-grade]').forEach(b=>b.addEventListener('click',()=>{grade=+b.dataset.grade;info();render();}));for(const id of ['time','beam','bloom','exposure','weather','particle','wind','width','outline','fxaa','shafts','pause'])get(id).addEventListener('input',()=>{info();render();});
+get('reset').addEventListener('click',()=>{yaw=.7;pitch=.42;distance=initialDistance;render();});
+cv.addEventListener('pointerdown',e=>{drag=true;mouseX=e.clientX;mouseY=e.clientY;cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-mouseX)*.008;pitch=clamp(pitch+(e.clientY-mouseY)*.008,-1.2,1.32);mouseX=e.clientX;mouseY=e.clientY;render();});cv.addEventListener('pointerup',()=>drag=false);cv.addEventListener('pointercancel',()=>drag=false);
+cv.addEventListener('wheel',e=>{e.preventDefault();distance=clamp(distance*Math.exp(e.deltaY*.001),3,55);render();},{passive:false});
+function render(){const w=Math.max(280,Math.round(cv.clientWidth)),h=Math.max(220,Math.round(cv.clientHeight));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}allocate(w,h);drawCalls=0;
+const timeOfDay=+get('time').value,daylight=clamp((Math.sin((timeOfDay-6)*Math.PI/12)+.1)*1.25,0,1),dusk=1.-Math.abs(daylight-.5)*2,ang=(timeOfDay-6)*Math.PI/12;
+const sunDir=unit([Math.cos(ang)*.75,Math.max(.16,Math.sin((timeOfDay-6)*Math.PI/12)),Math.sin(ang)*.9]);const ambient=[.075+.07*daylight,.10+.065*daylight,.16+.06*daylight];
+const eye=add(center,[distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch)]),forward=unit(sub(center,eye)),right=unit(cross(forward,[0,1,0])),up=unit(cross(right,forward));
+// 1. Dynamic sky and stars into mesh target; preserve the corrected depth path.
+gl.bindFramebuffer(gl.FRAMEBUFFER,fb[0]);gl.viewport(0,0,w,h);gl.clearDepth(1);gl.clear(gl.DEPTH_BUFFER_BIT);gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.bindVertexArray(quad);gl.useProgram(programs[1]);let u=U[1];camUniform(u,eye,right,up,forward,w,h);gl.uniform3fv(u.sunDir,sunDir);gl.uniform1f(u.daylight,daylight);gl.uniform1f(u.twilight,dusk);gl.uniform2fv(u.resolution,[w,h]);gl.drawArrays(gl.TRIANGLES,0,3);drawCalls++;
+// 2. Corrected opaque geometry, with backface culling and near=1/far=80.
+gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LESS);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.useProgram(programs[0]);gl.bindVertexArray(mesh);u=U[0];camUniform(u,eye,right,up,forward,w,h);gl.uniform3fv(u.sunDir,sunDir);gl.uniform1f(u.sunlight,daylight);gl.uniform3fv(u.ambientTint,ambient);gl.drawArrays(gl.TRIANGLES,0,vertices.length/9);drawCalls++;
+// 3. Optional screen-space depth outlines.
+u=bindFullscreen(1,2,w,h);bind(textures[0],0,u.src);bind(depth,1,u.depthTex);gl.uniform2fv(u.resolution,[w,h]);gl.uniform1i(u.enabled,get('outline').checked?1:0);gl.drawArrays(gl.TRIANGLES,0,3);drawCalls++;
+// 4. Accepted stylized shaft profile (nonphysical occlusion; spatially bounded).
+let original=1;if(get('shafts').checked&&+get('beam').value>0&&daylight>.06){u=bindFullscreen(2,3,w,h);bind(textures[1],0,u.scene);bind(depth,1,u.depthTex);gl.uniform2fv(u.resolution,[w,h]);camUniform(u,eye,right,up,forward,w,h);gl.uniform3fv(u.sunDir,sunDir);gl.uniform1f(u.strength,+get('beam').value/100*daylight);gl.uniform1f(u.beamWidth,+get('width').value/100);gl.uniform1i(u.mode,1);gl.drawArrays(gl.TRIANGLES,0,3);drawCalls++;original=2;}
+// 5. Bright extraction + two-pass blur only if bloom enabled.
+const bloomStrength=+get('bloom').value/100;
+if(bloomStrength>0){const hw=Math.ceil(w/2),hh=Math.ceil(h/2);u=bindFullscreen(3,4,hw,hh);bind(textures[original],0,u.scene);gl.uniform2fv(u.resolution,[hw,hh]);gl.uniform1f(u.threshold,.57);gl.drawArrays(gl.TRIANGLES,0,3);drawCalls++;
+u=bindFullscreen(4,5,hw,hh);bind(textures[3],0,u.tex);gl.uniform2fv(u.resolution,[hw,hh]);gl.uniform2fv(u.direction,[1,0]);gl.drawArrays(gl.TRIANGLES,0,3);drawCalls++;
+u=bindFullscreen(5,5,hw,hh);bind(textures[4],0,u.tex);gl.uniform2fv(u.direction,[0,1]);gl.drawArrays(gl.TRIANGLES,0,3);drawCalls++;}
+// 6. Approved color grade + optional bloom composite.
+u=bindFullscreen(6,6,w,h);bind(textures[original],0,u.scene);bind(textures[5],1,u.bloom);gl.uniform2fv(u.resolution,[w,h]);gl.uniform1f(u.strength,bloomStrength);gl.uniform1f(u.exposure,+get('exposure').value/100);gl.uniform1f(u.saturation,grade===1?.85:grade===2?1.12:1.);gl.uniform1i(u.grade,grade);gl.drawArrays(gl.TRIANGLES,0,3);drawCalls++;
+// 7. Optional animated rain/snow/dust sprites, with geometry depth rejection.
+const kind={none:0,rain:1,snow:2,dust:3}[get('weather').value];if(kind&&+get('particle').value>0){gl.bindFramebuffer(gl.FRAMEBUFFER,fb[6]);gl.viewport(0,0,w,h);gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.useProgram(programs[7]);gl.bindVertexArray(particles);u=U[7];camUniform(u,eye,right,up,forward,w,h);gl.uniform1f(u.time,time);gl.uniform1f(u.wind,+get('wind').value);gl.uniform1f(u.amount,+get('particle').value/100);gl.uniform1i(u.kind,kind);bind(depth,1,u.sceneDepth);gl.drawArrays(gl.POINTS,0,480);gl.disable(gl.BLEND);drawCalls++;}
+// 8. Optional FXAA final pass.
+u=bindFullscreen(-1,8,w,h);bind(textures[6],0,u.scene);gl.uniform2fv(u.resolution,[w,h]);gl.uniform1i(u.enabled,get('fxaa').checked?1:0);gl.drawArrays(gl.TRIANGLES,0,3);drawCalls++;
+const err=gl.getError();get('error').textContent=err===gl.NO_ERROR?'':'WebGL error '+err;
+get('info').textContent=`179 corrected parts · ${drawCalls} draw calls · ${fps||'—'} FPS (UI sample) · AO off · ${get('weather').value} · shader integration candidate`;}
+function tick(now){if(!rafLast)rafLast=now;const delta=now-rafLast;if(delta>=33){rafLast=now;if(!get('pause').checked)time+=Math.min(delta,70)*.001;render();frames++;if(now-lastInfo>=1000){fps=Math.round(frames*1000/Math.max(1,now-lastInfo));frames=0;lastInfo=now;}}requestAnimationFrame(tick);}
+info();render();get('status').textContent='179-part source verified · unified GLSL live';requestAnimationFrame(tick);
+}catch(e){get('status').textContent='Viewer failed';get('error').textContent=String(e.message||e);}
+})();
+</script></body></html>
