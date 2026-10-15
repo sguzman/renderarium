@@ -128,9 +128,120 @@ def run(allow_swiftshader: bool, output_dir: Path) -> None:
             "20_samples": pixel_delta(pictures[40], pictures[20]),
             "10_samples": pixel_delta(pictures[40], pictures[10])
         }
+
+        def inspect_beam_region(
+            accepted_40: Image.Image,
+            no_shafts: Image.Image,
+            variant: Image.Image,
+        ) -> dict:
+            # Use the actual accepted shaft contribution as a spatial mask,
+            # rather than hiding meaningful errors by averaging over empty sky.
+            assert accepted_40.size == no_shafts.size == variant.size
+            signal = ImageChops.difference(accepted_40, no_shafts)
+            variance = ImageChops.difference(accepted_40, variant)
+            signal_pixels = list(signal.getdata())
+            variance_pixels = list(variance.getdata())
+            beam_indices = [
+                i for i, p in enumerate(signal_pixels) if max(p) >= 3
+            ]
+            count = len(beam_indices)
+            return {
+                "signal_threshold_rgb": 3,
+                "beam_mask_pixels": count,
+                "beam_mask_fraction": count / len(signal_pixels),
+                "variant_mean_rgb_delta_on_beam_mask_255": (
+                    sum(sum(variance_pixels[i]) for i in beam_indices) /
+                    (3 * count) if count else None
+                ),
+                "variant_fraction_beam_pixels_changed_ge3": (
+                    sum(max(variance_pixels[i]) >= 3 for i in beam_indices) /
+                    count if count else None
+                ),
+                "full_image": pixel_delta(accepted_40, variant),
+            }
+
+        def capture_view(label: str, beam_intensity: str) -> dict:
+            page.locator("#beam").fill(beam_intensity)
+            page.locator("#shaftSamples").select_option("40")
+            page.locator("#shafts").uncheck()
+            page.wait_for_timeout(220)
+            no_path = output_dir / f"{label}-no-shafts.png"
+            page.locator("#view").screenshot(path=str(no_path))
+            with Image.open(no_path) as baseline:
+                no_shafts = baseline.convert("RGB")
+            page.locator("#shafts").check()
+            views = {}
+            for n in (40, 20, 10):
+                page.locator("#shaftSamples").select_option(str(n))
+                page.wait_for_timeout(240)
+                filename = output_dir / f"{label}-shaft-samples-{n}.png"
+                page.locator("#view").screenshot(path=str(filename))
+                with Image.open(filename) as view:
+                    views[n] = view.convert("RGB")
+            return {
+                "beam_strength_percent": int(beam_intensity),
+                "resolution": list(views[40].size),
+                "accepted_40_signal_vs_no_shafts": pixel_delta(
+                    views[40], no_shafts
+                ),
+                "20_samples": inspect_beam_region(
+                    views[40], no_shafts, views[20]
+                ),
+                "10_samples": inspect_beam_region(
+                    views[40], no_shafts, views[10]
+                ),
+            }
+
+        # Reproducible view changes using the actual viewer controls, not
+        # hardcoded camera internals or screenshots of an unrelated renderer.
+        canvas = page.locator("#view")
+        canvas.hover()
+        page.mouse.wheel(0, -880)
+        page.wait_for_timeout(230)
+        closeup = capture_view("closeup", "85")
+        assert ImageChops.difference(
+            pictures[40], Image.open(
+                output_dir / "closeup-shaft-samples-40.png"
+            ).convert("RGB")
+        ).getbbox() is not None, "Zoom did not change actual rendered pixels"
+
+        bounds = canvas.bounding_box()
+        assert bounds is not None
+        mx = bounds["x"] + bounds["width"] / 2
+        my = bounds["y"] + bounds["height"] / 2
+        page.mouse.move(mx, my)
+        page.mouse.down()
+        page.mouse.move(mx + 115, my + 28, steps=7)
+        page.mouse.up()
+        page.wait_for_timeout(220)
+        orbit = capture_view("orbit-closeup", "85")
+        # A stronger shaft signal is a separate stress probe, not the accepted
+        # 85% presentation and cannot itself establish visual approval.
+        stressed = capture_view("orbit-strong-shafts", "170")
+        data["closeup_visual_checks"] = {
+            "camera_method": "Playwright canvas wheel -880 then pointer orbit +115,+28",
+            "views": {
+                "closeup": closeup,
+                "orbit-closeup": orbit,
+                "orbit-strong-shafts": stressed,
+            },
+            "caveats": [
+                "Real screenshots, software WebGL, not RTX 3090 measurements",
+                "Beam-region threshold measures changed pixels, not aesthetic quality",
+                "40-sample shader and source geometry are unchanged",
+            ],
+        }
+        assert not errors, f"Close-up browser errors: {errors}"
+        assert not page.locator("#error").inner_text().strip(), (
+            f"Close-up WebGL error: {page.locator('#error').inner_text()}"
+        )
         (output_dir / "benchmark.json").write_text(json.dumps(data, indent=2) + "\n")
         page.screenshot(path=str(output_dir / "benchmark.png"), full_page=True)
         print("PASS Backyard sunshaft sweep v2.1 browser: 7 scenarios, 40/20/10 raymarch loops, pixel difference capture, accepted baseline unchanged")
+        print("Close-up beam coverage:", json.dumps({
+            name: view["20_samples"]["beam_mask_fraction"]
+            for name, view in data["closeup_visual_checks"]["views"].items()
+        }))
         print("GPU timer support:", data["gpuTimer"])
         context.close()
         browser.close()
