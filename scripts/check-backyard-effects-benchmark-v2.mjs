@@ -56,4 +56,15 @@ assert.ok(body, "No standalone browser script found");
 new Script(body[1], {filename: "backyard-full-effects-benchmark-v2.js"});
 assert.ok(benchmark.includes("id=\"benchRun\""), "Benchmark run UI missing");
 assert.ok(benchmark.includes("id=\"benchCopy\""), "Results export UI missing");
+const sweep = readFileSync("experiments/diagnostics/backyard-sunshaft-raymarch-sample-sweep-v2-1-2026-10-15.html", "utf8");
+assert.equal(sourceChunks(sweep),b,"Sunshaft trial must retain 179-part source");
+for (const name of shaderNames)assert.equal(shader(sweep,name),shader(original,name),"Sunshaft trial changed accepted shader "+name);
+for (const label of ["Minimal","Shafts 40","Shafts 20","Shafts 10","Combined 40","Combined 20","Combined 10"])
+  assert.ok(sweep.includes("['"+label+"',"),"Missing sunshaft sweep scenario "+label);
+for (const item of ["shaft20FS=shaftFS.replace","shaft10FS=shaftFS.replace","for(int i=0;i<40;i++)","for(int i=0;i<20;i++)","for(int i=0;i<10;i++)","id=\\"shaftSamples\\"","endGpu(activeQuery)"])
+  assert.ok(sweep.includes(item),"Missing diagnostic shader invariant "+item);
+const sweepBody=sweep.match(/<script>\s*([\s\S]*?)<\/script><\/body><\/html>/);
+assert.ok(sweepBody,"No sunshaft sweep script");
+new Script(sweepBody[1],{filename:"backyard-sunshaft-sweep-v2-1.js"});
 console.log("PASS Backyard effects benchmark v2 static regression: canonical payload, 13 shaders, seven profiles, script syntax, and instrumentation");
+console.log("PASS Sunshaft v2.1 static diagnostic: unchanged original 13 shaders, verified scene and seven sample-count trials");
