@@ -53,6 +53,39 @@ Backyard preview. Production source-to-chat packets instead cite the pinned new
 amendment for the 179-part viewer. Acceptance remains a human visual verdict,
 not evidence of canonical WebGL performance or delivery inside ChatGPT.
 
+### Enforced backend-parity regression and GPU provenance
+
+The seven-view Chromium matrix is an **enforced numerical regression gate**:
+the per-view RGB-channel mean absolute delta must stay at most
+**0.05/255**; at most **0.5%** of pixels may change; at most **0.1%**
+may differ by three or more channel levels; and no channel may differ by
+more than **32/255**. In addition, each non-baseline view must change at
+least **0.5%** of pixels relative to the afternoon baseline *within each
+renderer*. This catches a renderer that returns stale frames despite
+passing backend equality. The observed baseline is significantly tighter,
+but the relaxed guard allows normal rendering nondeterminism and is not
+a substitute for visual approval. Failures still upload all screenshot
+and JSON evidence before stopping CI. Both the positive and negative
+threshold cases are exercised with synthetic pixels in `--self-test`.
+
+The independent A/B script
+`scripts/test-backyard-threejs-effects-browser.py` additionally has
+an optional **`--require-hardware`** mode and **`--headed`** option.
+It interrogates both real WebGL2 contexts through
+`WEBGL_debug_renderer_info` and rejects SwiftShader, llvmpipe, lavapipe,
+other recognized software renderers and unknown GPU identities. For a
+Linux/Hyprland physical GPU environment with dependencies installed:
+
+`python scripts/test-backyard-threejs-effects-browser.py --require-hardware --headed --output-dir artifacts/backyard-hardware-a-b`
+
+This command is a reproducible **hardware measurement route**, not proof
+that a hardware measurement was already taken. It records the actual
+device string and CPU submission/frame intervals; it does *not* infer
+that the device is an RTX 3090 and does *not* claim GPU timer timings.
+Standard public GitHub runners continue to use SwiftShader and do not
+execute the hardware-only gate. The browser QA is agent-owned; no manual
+test is necessary for the existing software-renderer CI.
+
 ### Multi-camera effects parity study (seven views)
 
 `scripts/test-backyard-threejs-parity-matrix.py` runs both **real renderers**
