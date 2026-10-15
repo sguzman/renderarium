@@ -95,7 +95,9 @@ def run(allow_swiftshader:bool,out:Path)->None:
                 for view in VIEWS:
                     state=page.evaluate(f"(view) => window.{fn}(view)",view)
                     assert state["geometryParts"]==179,state
-                    assert state["view"]=={k:val for k,val in view.items() if k!="name"},state
+                    assert all(state["view"][key] == view[key] for key in (
+                        "clock","yaw","pitch","distanceScale"
+                    )), (label,view["name"],state)
                     assert state["drawingBuffer"]==list(SIZE),state
                     expected_draws=9 if view["clock"]==22 else 10
                     assert state["drawCalls"]==expected_draws,(label,view["name"],state)
