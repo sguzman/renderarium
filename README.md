@@ -30,6 +30,29 @@ These are separate diagnostics, **not changes to the accepted production rendere
 - `node scripts/check-backyard-effects-benchmark-v2.mjs` checks the immutable scene payload, 13 unchanged GLSL/camera shader strings, all seven scenarios, profiler instrumentation and JavaScript syntax. It runs in the public CI canonical job. This structural check is **not** live hardware benchmarking, visual acceptance or proof that an in-chat renderer displayed.
 - The public publication gate now pins every archived Backyard experiment path explicitly; additions are not automatically allowed. Accepted production scene geometry and immutable visual verdicts remain unaffected.
 
+## Backyard acceptance amendment (2026-10-14)
+
+The historical seven-scene visual-acceptance ledger at
+`contracts/accepted-block-chibi-v1.json` is **immutable**. It records the
+October 9 Backyard with **181 geometry parts**. The user subsequently accepted
+a narrowly scoped fence-clearance correction with **179 geometry parts**, without
+revoking acceptance of the other six scenes.
+
+The additive, separately pinned authority is
+`contracts/accepted-backyard-geometry-amendment-2026-10-14.json`. It records
+the accepted corrected preview and shell blob hashes and links to both archived
+pre-correction sources under
+`experiments/geometry-reviews/backyard-fence-clearance-2026-10-14/`.
+Validators verify both the historical original and the newer approved correction;
+they do **not** edit the October 9 acceptance ledger or infer a new human review.
+The current production implementation and full seven-scene source census contain
+**979 geometry parts** (historical snapshot: 981).
+
+Historical CPU-depth raster fingerprints remain attached to the archived original
+Backyard preview. Production source-to-chat packets instead cite the pinned new
+amendment for the 179-part viewer. Acceptance remains a human visual verdict,
+not evidence of canonical WebGL performance or delivery inside ChatGPT.
+
 ## Optional renderer-quality experiments
 
 The production preview keeps its approved defaults. Diagnostic URLs may explicitly request
