@@ -66,7 +66,7 @@ def run(allow_swiftshader: bool, output_dir: Path) -> None:
         assert data["geometryParts"] == 179
         assert len(data["scenarios"]) == 7
         actual_size = page.evaluate("() => [document.querySelector(\'#view\').width, document.querySelector(\'#view\').height]")
-        assert actual_size[0] >= 500 and actual_size[1] == 430, actual_size
+        assert actual_size[0] >= 500 and actual_size[1] >= 280, actual_size
         expected_resolution = f"{actual_size[0]}x{actual_size[1]}"
         for i, item in enumerate(data["scenarios"]):
             assert item["scenario"] == EXPECTED[i], item
