@@ -356,11 +356,30 @@ def run_scene(
         (v for v in ledger["recorded_scenes"] if v["scene"] == scene_id), None
     )
     assert accepted, f"Missing frozen source record for {scene_id}"
-    for field in ("assembly", "preview"):
-        path = ROOT / accepted[f"{field}_path"]
-        assert git_blob_sha(path) == accepted[f"{field}_git_blob"], (
-            f"Frozen {scene_id} {field} source changed"
+    assert git_blob_sha(ROOT / accepted["assembly_path"]) == accepted["assembly_git_blob"], (
+        f"Frozen {scene_id} assembly source changed"
+    )
+    verified_preview_blob = accepted["preview_git_blob"]
+    acceptance_authority = "contracts/accepted-block-chibi-v1.json"
+    if scene == "backyard":
+        amendment_path = "contracts/accepted-backyard-geometry-amendment-2026-10-14.json"
+        assert git_blob_sha(ROOT / amendment_path) == "5c4c69a05743b84c793b80289ca7be441dce5b7a", (
+            f"{scene_id}: corrected acceptance amendment drift"
         )
+        amendment = json.loads((ROOT / amendment_path).read_text())
+        assert amendment["scene"] == scene_id
+        assert amendment["baseline"]["preview_blob"] == accepted["preview_git_blob"]
+        assert amendment["baseline"]["parts"] == accepted["primitives"] == 181
+        assert git_blob_sha(ROOT / amendment["baseline"]["historical_preview_path"]) == accepted["preview_git_blob"]
+        assert git_blob_sha(ROOT / amendment["baseline"]["historical_shell_path"]) == amendment["baseline"]["shell_blob"]
+        assert amendment["corrected"]["parts"] == 179
+        assert amendment["corrected"]["preview_path"] == accepted["preview_path"]
+        assert git_blob_sha(ROOT / amendment["corrected"]["shell_path"]) == amendment["corrected"]["shell_blob"]
+        verified_preview_blob = amendment["corrected"]["preview_blob"]
+        acceptance_authority = amendment_path
+    assert git_blob_sha(ROOT / accepted["preview_path"]) == verified_preview_blob, (
+        f"Frozen {scene_id} current accepted preview source changed"
+    )
 
     generated = ROOT / f"scenes/{scene_id}/generated/{scene_id}.sc3d.yml"
     before = generated.read_bytes() if generated.exists() else None
@@ -502,8 +521,10 @@ def run_scene(
                 "note": "Descriptive sRGB pixel differences only; not quality acceptance",
             },
             "frozen_source": {
+                "authority": acceptance_authority,
                 "assembly_blob": accepted["assembly_git_blob"],
-                "preview_blob": accepted["preview_git_blob"],
+                "preview_blob": verified_preview_blob,
+                "historical_preview_blob": accepted["preview_git_blob"],
             },
             "backend": ref_backend,
             "default_before": baseline,
