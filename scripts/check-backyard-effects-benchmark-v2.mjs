@@ -76,6 +76,8 @@ for(const required of ["new T.WebGLRenderer","new T.RawShaderMaterial","new T.De
 const threeBody=three.match(/<script type="module">([\s\S]*?)<\/script><\/body><\/html>/);
 assert.ok(threeBody,"Missing real Three.js module code");
 new Script(threeBody[1],{filename:"backyard-threejs-effects-benchmark-v3.js"});
+for(const token of ["EXT_disjoint_timer_query_webgl2","gl.beginQuery(timerExt.TIME_ELAPSED_EXT,q)","gl.endQuery(timerExt.TIME_ELAPSED_EXT)","GPU_DISJOINT_EXT","gpuPipelineMs","gpuTimer:!timerExt?","b.phase==='drain'"])
+  assert.ok(three.includes(token),"Three.js asynchronous hardware query feature missing: "+token);
 assert.ok(three.includes("window.__THREE_EFFECTS_DIAGNOSTIC__"),"Missing deterministic Three.js camera/time hook");
 assert.ok(benchmark.includes("window.__CUSTOM_EFFECTS_DIAGNOSTIC__"),"Missing deterministic Custom camera/time hook");
 assert.ok(three.includes("if(cfg.shafts&&daylight>.06)"),"Three.js cannot draw nonphysical sunshafts at night");
