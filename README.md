@@ -100,6 +100,39 @@ Standard public GitHub runners continue to use SwiftShader and do not
 execute the hardware-only gate. The browser QA is agent-owned; no manual
 test is necessary for the existing software-renderer CI.
 
+### Agent-run RTX 3090 hardware benchmark (Linux + Hyprland)
+
+`scripts/run-backyard-hardware-benchmark.py` is a **fail-closed, agent-owned
+launch wrapper** for the same approved-effects A/B browser benchmark. On a Linux
+desktop with Playwright, Chromium, and Pillow installed, it launches **headed
+Chromium via XWayland** and sets NVIDIA PRIME offload variables only in the
+subprocess (no global changes to the compositor, driver, or system settings).
+The offload variables follow NVIDIA's PRIME documentation; they are hints,
+**not proof** that Chromium selected the discrete GPU.
+
+Default single attempt:
+
+`python scripts/run-backyard-hardware-benchmark.py --output-dir artifacts/backyard-hardware-a-b`
+
+For three independent captures with GPU elapsed-time queries required:
+
+`python scripts/run-backyard-hardware-benchmark.py --repeat 3 --require-gpu-timers`
+
+Both WebGL2 contexts must explicitly identify the **RTX 3090**, return the
+complete 179-part / seven-case draw census, and not identify a software
+rasterizer. Per-run `comparison.json` and images are retained alongside
+`stdout.log`, `stderr.log`, and an aggregate `attempt.json`. An invalid
+GPU context, missing draws, or missing requested GPU timing fails the run;
+the failure is recorded instead of silently retrying on software or the iGPU.
+Each scenario exposes GPU sample counts and null timings when unsupported.
+Pass `--no-offload` to inherit existing GPU selection. Headless runs are
+opt-in via `--headless`.
+
+`python scripts/run-backyard-hardware-benchmark.py --self-test` is dependency-
+free and checks GPU rejection, timer reporting, and result aggregation in
+public CI. **No RTX 3090 result has yet been observed from this environment**;
+the wrapper is for an agent with access to the user's running Linux desktop.
+
 ### Multi-camera effects parity study (seven views)
 
 `scripts/test-backyard-threejs-parity-matrix.py` runs both **real renderers**
