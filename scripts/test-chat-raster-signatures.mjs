@@ -36,7 +36,7 @@ const views=[
 ];
 let count=0;
 for(const [name,expected] of signatures){
-  const path=resolve(root,"scenes/block-chibi-"+name+"-v1/preview-geometry.json");
+  const path=resolve(root,name==="backyard"?"experiments/geometry-reviews/backyard-fence-clearance-2026-10-14/frozen-before-correction-preview.json":"scenes/block-chibi-"+name+"-v1/preview-geometry.json");
   const spec=JSON.parse(readFileSync(path,"utf8"));
   const scene=realizeChatScene(spec);
   for(let i=0;i<views.length;i++){
