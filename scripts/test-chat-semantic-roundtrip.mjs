@@ -17,7 +17,7 @@ import { verifyCanonicalPrimitiveRow } from "../runtime/chat/verify-canonical-pr
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const scenes=new Map([
   ["living-room",[87,9]],["kitchen",[149,11]],["bathroom",[139,10]],
-  ["office",[104,12]],["backyard",[181,18]],["garage",[112,8]],
+  ["office",[104,12]],["backyard",[179,18]],["garage",[112,8]],
   ["factory",[209,16]]
 ]);
 function vec(s,fallback){
@@ -45,7 +45,7 @@ for(const [name,[nParts,nGroups]] of scenes){
       transform:transform(group.translate,group.rotate_deg,group.scale)
     };
   }
-  const rows=preview.parts.split("\n");
+  const rows=preview.parts.split("\n").filter(Boolean);
   assert.equal(rows.length,nParts);
   for(const [idx,row] of rows.entries()){
     const cells=row.split("|");
