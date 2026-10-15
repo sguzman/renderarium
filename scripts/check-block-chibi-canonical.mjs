@@ -23,7 +23,7 @@ const scenes = new Map([
   ["kitchen", { geometry: 149, instances: 11 }],
   ["bathroom", { geometry: 139, instances: 10 }],
   ["office", { geometry: 104, instances: 12 }],
-  ["backyard", { geometry: 181, instances: 18 }],
+  ["backyard", { geometry: 179, instances: 18 }],
   ["garage", { geometry: 112, instances: 8 }],
   ["factory", { geometry: 209, instances: 16 }],
 ]);
