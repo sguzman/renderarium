@@ -19,6 +19,17 @@ The accepted files and geometry hashes are preserved. **Visual acceptance is not
 
 The source and tests are provided for agent-owned development and QA. Previously accepted creative work is not reopened automatically. Adding new content requires its own scoped review and an updated public file boundary.
 
+## Backyard WebGL2 renderer experiments (2026-10-15)
+
+These are separate diagnostics, **not changes to the accepted production renderer**:
+
+- `experiments/diagnostics/backyard-renderer-webgl2-vs-threejs-baseline-benchmark-2026-10-15.html` is Renderer Benchmark v1. It compares custom WebGL2 and pinned Three.js r160 over identical 179-part geometry and GLSL material, with merged and per-part draw modes. It intentionally excludes environmental effects. Three.js requires a CDN connection for initial loading.
+- `experiments/diagnostics/backyard-full-effects-pipeline-benchmark-v2-2026-10-15.html` is Renderer Benchmark v2. It forks the accepted Unified Backyard v1.1 experimental effects renderer and runs seven fixed-condition **within-custom-WebGL2** profiles: minimal pipeline, outlines, shafts, bloom, dust, FXAA and combined. The original shader strings, packed 179-part source and scene transforms are unchanged.
+- V2 excludes 700 ms warmup, measures each profile for 2400 ms, then restores the user's original controls and camera. CPU render-call p50/p95, rAF frame intervals, per-stage CPU cost, draw calls and optional asynchronous WebGL2 disjoint-query GPU elapsed times are recorded. The latter are **not available on every system**; missing/invalid measurements must not be guessed.
+- A disabled effect may still incur an existing fullscreen bypass pass. V2 therefore describes *real incremental configuration cost* rather than perfectly isolated shader cost. No v2 Three.js effects parity is claimed; that requires independent implementation and pixel-parity testing.
+- `node scripts/check-backyard-effects-benchmark-v2.mjs` checks the immutable scene payload, 13 unchanged GLSL/camera shader strings, all seven scenarios, profiler instrumentation and JavaScript syntax. It runs in the public CI canonical job. This structural check is **not** live hardware benchmarking, visual acceptance or proof that an in-chat renderer displayed.
+- The public publication gate now pins every archived Backyard experiment path explicitly; additions are not automatically allowed. Accepted production scene geometry and immutable visual verdicts remain unaffected.
+
 ## Optional renderer-quality experiments
 
 The production preview keeps its approved defaults. Diagnostic URLs may explicitly request
