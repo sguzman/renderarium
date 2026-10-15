@@ -59,6 +59,9 @@ def validate(name: str, report: dict, expected_draws: list[int], expected_versio
     assert report["geometryParts"] == 179, report
     assert report["version"] == expected_version, report
     assert len(report["scenarios"]) == 7
+    assert report["gpuTimer"] in (
+        "unsupported", "disjoint-invalid", "partial", "supported"
+    ), (name, report.get("gpuTimer"))
     for i, scenario in enumerate(report["scenarios"]):
         assert scenario["scenario"] == EXPECTED[i], scenario
         assert scenario["drawCalls"] == expected_draws[i], (
@@ -75,13 +78,19 @@ def validate(name: str, report: dict, expected_draws: list[int], expected_versio
                 assert stages["weather"] == stages["grading"] + 1, (
                     "Three.js skipped particles",scenario["scenario"],stages
                 )
+        if "gpuPipelineMs" in scenario:
+            gpu = scenario["gpuPipelineMs"]
+            assert isinstance(gpu["samples"], int) and gpu["samples"] >= 0, scenario
+            assert (gpu["p50"] is None) == (gpu["samples"] == 0), (
+                name, scenario["scenario"], gpu
+            )
         assert scenario["frames"] >= 1, scenario
         assert scenario["cpuRenderMs"]["p50"] > 0, scenario
         assert scenario["cpuRenderMs"]["p95"] > 0, scenario
         assert scenario["frameIntervalMs"]["p50"] is not None, scenario
 
 
-def verify_device(device: dict, require_hardware: bool) -> None:
+def verify_device(device: dict, require_hardware: bool, expected_gpu: str | None = None) -> None:
     """Only identify actual hardware if Chromium exposes an unmasked GPU renderer."""
     assert isinstance(device.get("webgl2"), bool), device
     if not require_hardware:
@@ -91,9 +100,19 @@ def verify_device(device: dict, require_hardware: bool) -> None:
         "Cannot verify physical GPU: WEBGL_debug_renderer_info unavailable",device
     )
     unsupported = ("swiftshader","llvmpipe","softpipe","lavapipe","software rasterizer","software renderer")
-    assert not any(x in device["unmasked_renderer"].lower() for x in unsupported), (
+    renderer = device["unmasked_renderer"].lower()
+    assert not any(x in renderer for x in unsupported), (
         "Software GPU cannot satisfy --require-hardware",device
     )
+    known_hardware=("nvidia","geforce","quadro","radeon","amd","intel",
+                    "iris","adreno","mali","apple gpu","powervr")
+    assert any(x in renderer for x in known_hardware), (
+        "Unknown GPU model is not proof of a physical renderer",device
+    )
+    if expected_gpu:
+        assert expected_gpu.lower() in renderer, (
+            "Selected physical GPU is not active in Chromium WebGL",expected_gpu,device
+        )
 
 
 def gpu_provenance(page) -> dict:
@@ -114,9 +133,15 @@ def gpu_provenance(page) -> dict:
 
 
 def self_test() -> None:
-    verify_device({"webgl2":True,"unmasked_renderer":"NVIDIA GeForce RTX 3090"},True)
+    verify_device({"webgl2":True,"unmasked_renderer":"NVIDIA GeForce RTX 3090"},True,"RTX 3090")
+    try:
+        verify_device({"webgl2":True,"unmasked_renderer":"Intel UHD Graphics"},True,"RTX 3090")
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError("Wrong physical GPU matched --expected-gpu")
     verify_device({"webgl2":True,"unmasked_renderer":None},False)
-    for software in ("Google SwiftShader","Mesa llvmpipe","lavapipe","software renderer",None):
+    for software in ("Google SwiftShader","Mesa llvmpipe","lavapipe","software renderer","Generic WebGL",None):
         try:
             verify_device({"webgl2":True,"unmasked_renderer":software},True)
         except AssertionError:
@@ -125,7 +150,7 @@ def self_test() -> None:
     print("PASS hardware provenance gate: real identified GPU accepted; software and unknown devices rejected")
 
 
-def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bool = False) -> None:
+def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bool = False, expected_gpu: str | None = None) -> None:
     out.mkdir(parents=True, exist_ok=True)
     handler = partial(Handler, directory=str(ROOT))
     http = ThreadingHTTPServer(("127.0.0.1", 0), handler)
@@ -152,7 +177,7 @@ def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bo
             err = page.evaluate("window.__THREE_EFFECTS_ERROR__ || null")
             assert not err, f"Three.js initialization: {err}"
             three_device = gpu_provenance(page)
-            verify_device(three_device, require_hardware)
+            verify_device(three_device, require_hardware, expected_gpu)
             page.locator("#run").click()
             page.wait_for_function(
                 "() => Boolean(window.__THREE_EFFECTS_REPORT__) || Boolean(window.__THREE_EFFECTS_ERROR__)",
@@ -179,7 +204,7 @@ def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bo
                 timeout=45000,
             )
             custom_device = gpu_provenance(page)
-            verify_device(custom_device, require_hardware)
+            verify_device(custom_device, require_hardware, expected_gpu)
             page.locator("#benchRun").click()
             page.wait_for_function(
                 "() => document.querySelector('#benchStatus').textContent.startsWith('Complete:')",
@@ -220,8 +245,10 @@ def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bo
                 "claim":"same packed parts, original shader texts, camera, viewport and effects configuration; different renderer state and pipeline",
                 "gpu_contexts":{"three":three_device,"custom":custom_device},
                 "physical_gpu_verification_required":require_hardware,
+                "expected_gpu_identity":expected_gpu,
                 "physical_gpu_verification_passed":require_hardware,
                 "browser_mode":"headed" if headed else "headless",
+                "gpu_timer_status":{"three":three["gpuTimer"],"custom":custom["gpuTimer"]},
                 "renderer_backends":{
                     "three":"Three.js r160 RawShaderMaterial/real WebGLRenderer",
                     "custom":"Original custom WebGL2 programs",
@@ -234,14 +261,18 @@ def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bo
                         "custom_frames":custom["scenarios"][i]["frames"],
                         "three_cpu_submit_p50_ms":three["scenarios"][i]["cpuRenderMs"]["p50"],
                         "custom_cpu_submit_p50_ms":custom["scenarios"][i]["cpuRenderMs"]["p50"],
+                        "three_gpu_pipeline_p50_ms":three["scenarios"][i]["gpuPipelineMs"]["p50"],
+                        "three_gpu_timer_samples":three["scenarios"][i]["gpuPipelineMs"]["samples"],
+                        "custom_gpu_pipeline_p50_ms":custom["scenarios"][i]["gpuPipelineMs"]["p50"],
+                        "custom_gpu_timer_samples":custom["scenarios"][i]["gpuPipelineMs"]["samples"],
                         "three_frame_interval_p50_ms":three["scenarios"][i]["frameIntervalMs"]["p50"],
                         "custom_frame_interval_p50_ms":custom["scenarios"][i]["frameIntervalMs"]["p50"],
                         "three_draws":three["scenarios"][i]["drawCalls"],
                         "custom_draws":custom["scenarios"][i]["drawCalls"],
                     } for i in range(7)
                 ],
-                "limits":["SwiftShader is software rendering, not RTX 3090 benchmarking",
-                          "GPU timer query unavailable or not instrumented",
+                "limits":["Software CI is not an RTX 3090 benchmark",
+                          "GPU elapsed time is absent unless a valid disjoint timer query completes",
                           "Screenshot differences are observed, not auto-approved",
                           "Submission times may differ due to Three.js state/composer overhead",
                           "Separate serial runs may differ due to thermal/scheduler effects"],
@@ -263,6 +294,8 @@ if __name__ == "__main__":
     parser.add_argument("--allow-swiftshader",action="store_true")
     parser.add_argument("--require-hardware",action="store_true",
         help="Fail unless both actual WebGL2 contexts identify a non-software physical GPU")
+    parser.add_argument("--expected-gpu",default=None,
+        help="Require this case-insensitive substring of BOTH reported unmasked GPU models, e.g. RTX 3090")
     parser.add_argument("--headed",action="store_true",
         help="Run browser with the Linux compositor for opt-in physical GPU measurement")
     parser.add_argument("--output-dir",type=Path,default=ROOT/"artifacts/backyard-three-effects-v3")
@@ -270,4 +303,6 @@ if __name__ == "__main__":
     if args.self_test:
         self_test()
     else:
-        run(args.allow_swiftshader,args.output_dir,args.require_hardware,args.headed)
+        if args.expected_gpu and not args.require_hardware:
+            parser.error("--expected-gpu requires --require-hardware")
+        run(args.allow_swiftshader,args.output_dir,args.require_hardware,args.headed,args.expected_gpu)
