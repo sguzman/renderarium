@@ -67,4 +67,13 @@ const sweepBody=sweep.match(/<script>\s*([\s\S]*?)<\/script><\/body><\/html>/);
 assert.ok(sweepBody,"No sunshaft sweep script");
 new Script(sweepBody[1],{filename:"backyard-sunshaft-sweep-v2-1.js"});
 console.log("PASS Backyard effects benchmark v2 static regression: canonical payload, 13 shaders, seven profiles, script syntax, and instrumentation");
+const three = readFileSync("experiments/diagnostics/backyard-threejs-full-effects-pipeline-benchmark-v3-2026-10-15.html","utf8");
+assert.equal(sourceChunks(three),b,"Three.js effects benchmark diverged from the accepted 179-part source");
+for(const name of shaderNames)assert.equal(shader(three,name),shader(original,name),"Three.js effects benchmark GLSL drift: "+name);
+for(const required of ["new T.WebGLRenderer","new T.RawShaderMaterial","new T.DepthTexture","new T.Points","new T.WebGLRenderTarget","source:'backyard-unified-effects-v1-1-precision-fix-2026-10-15.html'","measurementMs:2400","warmupMs:700","sunDir","frameIntervalMs","gpuTimer:'not-instrumented'"])
+  assert.ok(three.includes(required),"Three.js effects benchmark missing explicit requirement: "+required);
+const threeBody=three.match(/<script type="module">([\s\S]*?)<\/script><\/body><\/html>/);
+assert.ok(threeBody,"Missing real Three.js module code");
+new Script(threeBody[1],{filename:"backyard-threejs-effects-benchmark-v3.js"});
+console.log("PASS Three.js v3 effects-matched static contract: original 13 shader definitions, identical source bytes, WebGL renderer, seven passes and scripted benchmark");
 console.log("PASS Sunshaft v2.1 static diagnostic: unchanged original 13 shaders, verified scene and seven sample-count trials");
