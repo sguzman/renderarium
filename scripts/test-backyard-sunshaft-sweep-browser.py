@@ -161,7 +161,10 @@ def run(allow_swiftshader: bool, output_dir: Path) -> None:
             }
 
         def capture_view(label: str, beam_intensity: str) -> dict:
-            page.locator("#beam").fill(beam_intensity)
+            page.locator("#beam").evaluate(
+                "(element, value) => { element.value = value; element.dispatchEvent(new Event('input', {bubbles:true})); }",
+                beam_intensity,
+            )
             page.locator("#shaftSamples").select_option("40")
             page.locator("#shafts").uncheck()
             page.wait_for_timeout(220)
