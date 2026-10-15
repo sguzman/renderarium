@@ -61,7 +61,7 @@ assert.equal(sourceChunks(sweep),b,"Sunshaft trial must retain 179-part source")
 for (const name of shaderNames)assert.equal(shader(sweep,name),shader(original,name),"Sunshaft trial changed accepted shader "+name);
 for (const label of ["Minimal","Shafts 40","Shafts 20","Shafts 10","Combined 40","Combined 20","Combined 10"])
   assert.ok(sweep.includes("['"+label+"',"),"Missing sunshaft sweep scenario "+label);
-for (const item of ["shaft20FS=shaftFS.replace","shaft10FS=shaftFS.replace","for(int i=0;i<40;i++)","for(int i=0;i<20;i++)","for(int i=0;i<10;i++)","id=\\"shaftSamples\\"","endGpu(activeQuery)"])
+for (const item of ["shaft20FS=shaftFS.replace","shaft10FS=shaftFS.replace","for(int i=0;i<40;i++)","for(int i=0;i<20;i++)","for(int i=0;i<10;i++)",'id="shaftSamples"',"endGpu(activeQuery)"])
   assert.ok(sweep.includes(item),"Missing diagnostic shader invariant "+item);
 const sweepBody=sweep.match(/<script>\s*([\s\S]*?)<\/script><\/body><\/html>/);
 assert.ok(sweepBody,"No sunshaft sweep script");
