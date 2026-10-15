@@ -14,7 +14,9 @@ const defaultRoot=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const frozenPaths=[
   ":(glob)scenes/block-chibi-*/**",
   ":(glob)assets/constructive-3d/**",
-  ":(literal)contracts/accepted-block-chibi-v1.json"
+  ":(literal)contracts/accepted-block-chibi-v1.json",
+  ":(literal)contracts/accepted-backyard-geometry-amendment-2026-10-14.json",
+  ":(glob)experiments/geometry-reviews/backyard-fence-clearance-2026-10-14/frozen-before-correction-*"
 ];
 export function assertFrozenWorktreeClean(root=defaultRoot){
   const result=spawnSync("git",[
