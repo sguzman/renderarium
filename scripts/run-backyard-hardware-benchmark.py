@@ -193,6 +193,26 @@ def self_test() -> None:
     }
     verify_comparison(good, "RTX 3090", True)
     assert summarize([good, good])["completed_runs"] == 2
+    assert "| Combined |" in render_summary({
+        "result": "passed", "expected_gpu": "RTX 3090", "requested_runs": 1,
+        "aggregate": summarize([good]), "runs": [], "git_revision": "test",
+    })
+    with tempfile.TemporaryDirectory() as temp:
+        folder = Path(temp)
+        (folder/"gpu-context-custom.json").write_text(json.dumps({
+            "webgl2": True, "unmasked_renderer": "Intel UHD Graphics"}))
+        assert classify_failure("Browser assertion", folder, "RTX 3090")[0] == "wrong-gpu"
+        (folder/"gpu-context-custom.json").write_text(json.dumps({
+            "webgl2": True, "unmasked_renderer": "Google SwiftShader"}))
+        assert classify_failure("Browser assertion", folder, "RTX 3090")[0] == "software-renderer"
+        (folder/"gpu-context-custom.json").unlink()
+        assert classify_failure("Timeout expired", folder, "RTX 3090")[0] == "benchmark-timeout"
+        failed = {"result": "failed", "expected_gpu": "RTX 3090", "requested_runs": 1,
+                  "runs": [{"index": 1, "status": "failed", "failure_code": "wrong-gpu",
+                            "diagnosis": "Intel UHD Graphics"}]}
+        write_manifest(failed, folder/"attempt.json")
+        assert (folder/"summary.md").exists() and "wrong-gpu" in (folder/"summary.md").read_text()
+        assert json.loads((folder/"attempt.json").read_text())["result"] == "failed"
     assert summarize([good])["scenarios"][-1]["three_gpu_pipeline_p50_ms_median_over_runs"] == 2.1
     import copy
     mutants = []
@@ -265,7 +285,7 @@ def run(args: argparse.Namespace) -> int:
             record["result"] = "failed"
             record["preflight_error"] = problem
             record["finished_at_utc"] = utc_now()
-            destination.write_text(json.dumps(record, indent=2) + "\n")
+            write_manifest(record, destination)
             print(f"Hardware benchmark preflight: {problem}; evidence: {destination}", file=sys.stderr)
             return 1
         for index in range(1, args.repeat + 1):
@@ -276,7 +296,8 @@ def run(args: argparse.Namespace) -> int:
             if not args.headless:
                 command.append("--headed")
             attempt = {"index": index, "status": "failed", "exit_code": None,
-                       "output": folder.name, "error": None}
+                       "output": folder.name, "error": None, "failure_code": None,
+                       "diagnosis": None}
             record["runs"].append(attempt)
             try:
                 result = subprocess.run(command, cwd=ROOT,
@@ -300,12 +321,16 @@ def run(args: argparse.Namespace) -> int:
                 successes.append(report)
             except (RuntimeError, AssertionError, ValueError, OSError, subprocess.TimeoutExpired) as exc:
                 attempt["error"] = str(exc)
-                print(f"Hardware attempt {index} failed: {exc}", file=sys.stderr)
+                attempt["failure_code"], attempt["diagnosis"] = classify_failure(
+                    str(exc), folder, args.expected_gpu
+                )
+                print(f"Hardware attempt {index} failed [{attempt['failure_code']}]: {attempt['diagnosis']}",
+                      file=sys.stderr)
                 break
         record["result"] = "passed" if len(successes) == args.repeat else "failed"
         record["aggregate"] = summarize(successes)
         record["finished_at_utc"] = utc_now()
-        destination.write_text(json.dumps(record, indent=2) + "\n")
+        write_manifest(record, destination)
         print(f"Hardware A/B attempt: {record['result']}; verified {len(successes)}/{args.repeat} "
               f"runs; evidence: {destination}")
         return 0 if record["result"] == "passed" else 1
@@ -314,7 +339,7 @@ def run(args: argparse.Namespace) -> int:
         if not destination.exists():
             record["finished_at_utc"] = utc_now()
             record["result"] = "failed"
-            destination.write_text(json.dumps(record, indent=2) + "\n")
+            write_manifest(record, destination)
 
 
 if __name__ == "__main__":
