@@ -231,7 +231,7 @@ def self_test() -> None:
                     (output / f"{backend}.json").write_text(json.dumps({
                         "version": version, "geometryParts": 179}))
                     (output / f"{backend}-combined.png").write_bytes(
-                        b"\\x89PNG\\r\\n\\x1a\\n" + bytes(32))
+                        b"\x89PNG\r\n\x1a\n" + bytes(32))
                 called.append(command)
                 return subprocess.CompletedProcess(command, 0, "PASS mock Chromium", "")
             assert run(args, bench_runner=fake_success) == 0
