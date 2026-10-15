@@ -80,7 +80,7 @@ function verifyScene(name, expectedParts, expectedGroups, pins, verifiedPaths) {
   assert.equal(spec.groups?.length, expectedGroups,
     id + ": accepted group count changed");
   assert.equal(typeof spec.parts, "string", id + ": missing geometry records");
-  const lines = spec.parts.split("\n");
+  const lines = spec.parts.split("\n").filter(Boolean);
   assert.equal(lines.length, expectedParts, id + ": actual primitive count differs");
 
   pinnedFile(spec.source_assembly, spec.source_assembly_blob,
