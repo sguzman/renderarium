@@ -106,7 +106,7 @@ for(const name of selected){
     String(preview.mesh_count??preview.geometry_count)+" pieces"
   ),name+": live count status missing: "+status.textContent);
   const hiddenId=preview.groups[0].id;
-  const hiddenCount=preview.parts.split("\n").filter(row=>
+  const hiddenCount=preview.parts.split("\n").filter(Boolean).filter(row=>
     Number(row.split("|")[0])===0).length;
   state.visibility={[hiddenId]:false};
   state.presetRevision=1;
