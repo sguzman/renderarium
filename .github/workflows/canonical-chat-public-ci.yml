@@ -201,6 +201,15 @@ jobs:
           name: backyard-effects-v2-browser
           path: artifacts/backyard-effects-v2/
           if-no-files-found: ignore
+      - name: Measure 40, 20 and 10-step Backyard sunshafts in Chromium
+        run: python scripts/test-backyard-sunshaft-sweep-browser.py --allow-swiftshader --output-dir artifacts/backyard-sunshaft-v2-1
+      - name: Upload sunshaft sample-count performance and pixel diagnostics
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: backyard-sunshaft-v2-1
+          path: artifacts/backyard-sunshaft-v2-1/
+          if-no-files-found: ignore
       - name: Verify canonical preview HTTP entrypoints
         run: node scripts/test-block-chibi-canonical-preview-server.mjs
       - name: Exercise actual browser scene controls for seven accepted scenes
