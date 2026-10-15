@@ -192,6 +192,15 @@ jobs:
         run: |
           python -m pip install playwright 'pillow>=12,<13'
           python -m playwright install --with-deps chromium
+      - name: Test all seven Backyard effects profiles in Chromium (software WebGL only)
+        run: python scripts/test-backyard-effects-benchmark-browser.py --allow-swiftshader --output-dir artifacts/backyard-effects-v2
+      - name: Upload Backyard full-effects browser QA evidence even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: backyard-effects-v2-browser
+          path: artifacts/backyard-effects-v2/
+          if-no-files-found: ignore
       - name: Verify canonical preview HTTP entrypoints
         run: node scripts/test-block-chibi-canonical-preview-server.mjs
       - name: Exercise actual browser scene controls for seven accepted scenes
