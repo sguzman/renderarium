@@ -74,11 +74,35 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
     expected_parts, expected_components = SCENES[scene]
     ledger = json.loads((ROOT / "contracts/accepted-block-chibi-v1.json").read_text())
     accepted = next(item for item in ledger["recorded_scenes"] if item["scene"] == scene_id)
-    for kind in ("assembly", "preview"):
-        path = ROOT / accepted[f"{kind}_path"]
-        assert git_blob_sha(path) == accepted[f"{kind}_git_blob"], (
-            f"{scene_id}: frozen {kind} source changed"
+    # The October 9 visual ledger is immutable. The accepted October 14
+    # Backyard fence correction is a separately pinned extension, not a
+    # replacement of the historical approval or a bypass of source checks.
+    authorized_preview_blob = accepted["preview_git_blob"]
+    acceptance_authority = "contracts/accepted-block-chibi-v1.json"
+    assert git_blob_sha(ROOT / accepted["assembly_path"]) == accepted["assembly_git_blob"], (
+        f"{scene_id}: frozen assembly source changed"
+    )
+    if scene == "backyard":
+        amendment_path = "contracts/accepted-backyard-geometry-amendment-2026-10-14.json"
+        amendment_file = ROOT / amendment_path
+        assert git_blob_sha(amendment_file) == "5c4c69a05743b84c793b80289ca7be441dce5b7a", (
+            f"{scene_id}: corrected acceptance amendment changed"
         )
+        amendment = json.loads(amendment_file.read_text())
+        assert amendment["scene"] == scene_id
+        assert amendment["baseline"]["parts"] == accepted["primitives"] == 181
+        assert amendment["baseline"]["preview_blob"] == accepted["preview_git_blob"]
+        assert git_blob_sha(ROOT / amendment["baseline"]["historical_preview_path"]) == accepted["preview_git_blob"]
+        assert git_blob_sha(ROOT / amendment["baseline"]["historical_shell_path"]) == amendment["baseline"]["shell_blob"]
+        assert amendment["corrected"]["parts"] == expected_parts == 179
+        assert amendment["corrected"]["groups"] == expected_components == 18
+        assert amendment["corrected"]["preview_path"] == accepted["preview_path"]
+        assert git_blob_sha(ROOT / amendment["corrected"]["shell_path"]) == amendment["corrected"]["shell_blob"]
+        authorized_preview_blob = amendment["corrected"]["preview_blob"]
+        acceptance_authority = amendment_path
+    assert git_blob_sha(ROOT / accepted["preview_path"]) == authorized_preview_blob, (
+        f"{scene_id}: accepted current preview source changed"
+    )
     generated = ROOT / f"scenes/block-chibi-{scene}-v1/generated/block-chibi-{scene}-v1.sc3d.yml"
     initial_snapshot = generated.read_bytes() if generated.exists() else None
     def verify_snapshot(stage: str) -> None:
