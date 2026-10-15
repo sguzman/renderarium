@@ -31,7 +31,16 @@ class Handler(SimpleHTTPRequestHandler):
 def image_delta(path_a: Path, path_b: Path) -> dict:
     with Image.open(path_a) as a, Image.open(path_b) as b:
         left, right = a.convert("RGB"), b.convert("RGB")
-    assert left.size == right.size, (left.size, right.size)
+    source_sizes = {"custom":list(left.size),"three":list(right.size)}
+    # Both actual drawing buffers have separately been asserted 620x295.
+    # Playwright's element screenshot may include one extra CSS layout pixel.
+    expected = (620,295)
+    for label, image in [("custom",left),("three",right)]:
+        assert image.width == expected[0] and abs(image.height-expected[1]) <= 1, (
+            label, "capture differs from verified framebuffer", image.size
+        )
+    left = left.crop((0,0,*expected))
+    right = right.crop((0,0,*expected))
     diff = ImageChops.difference(left, right)
     rgb = ImageStat.Stat(diff).mean[:3]
     mask = diff.convert("RGB").getdata()
@@ -41,6 +50,8 @@ def image_delta(path_a: Path, path_b: Path) -> dict:
             sum(any(ch for ch in rgb_pixel) for rgb_pixel in mask)/(left.width*left.height), 6
         ),
         "resolution": list(left.size),
+        "source_element_capture_pixels":source_sizes,
+        "cropped_to_verified_gl_drawing_buffers":True,
     }
 
 
