@@ -196,6 +196,7 @@ jobs:
         run: |
           python scripts/test-backyard-threejs-parity-matrix.py --self-test
           python scripts/test-backyard-threejs-effects-browser.py --self-test
+          python scripts/run-backyard-hardware-benchmark.py --self-test
       - name: Verify multi-camera and daylight effects parity in real Chromium
         run: python scripts/test-backyard-threejs-parity-matrix.py --allow-swiftshader --output-dir artifacts/backyard-parity-matrix-v1
       - name: Upload multi-camera and daylight effects parity evidence
