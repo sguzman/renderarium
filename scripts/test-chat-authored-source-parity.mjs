@@ -81,7 +81,7 @@ for(const name of chosen) {
   assert.equal(manifest.id,id);
   assert.equal(manifest.components.length,numGroups);
   assert.equal(spec.groups.length,numGroups);
-  const rows=spec.parts.split("\n");
+  const rows=spec.parts.split("\n").filter(Boolean);
   assert.equal(rows.length,numParts);
   const byGroup=new Map(spec.groups.map(group=>[group.index,[]]));
   for(const row of rows){
