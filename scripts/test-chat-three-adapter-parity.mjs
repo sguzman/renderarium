@@ -58,7 +58,7 @@ for(const name of chosen){
   const nodes=world.userData.sc3dNodes;
   assert(nodes&&typeof nodes==="object","production Three.js nodes missing");
   const portable=realizeChatScene(preview);
-  const rows=preview.parts.split("\n");
+  const rows=preview.parts.split("\n").filter(Boolean);
   assert.equal(rows.length,portable.objects.length);
   assert.equal(Object.values(ir.parts).filter(part=>part.geometry).length,
     rows.length,"canonical geometry count changed");
