@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Check Backyard full-effects benchmark provenance and syntax
+        run: node scripts/check-backyard-effects-benchmark-v2.mjs
       - name: Install pnpm via Corepack
         run: |
           corepack enable
