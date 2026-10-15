@@ -120,13 +120,29 @@ For three independent captures with GPU elapsed-time queries required:
 
 Both WebGL2 contexts must explicitly identify the **RTX 3090**, return the
 complete 179-part / seven-case draw census, and not identify a software
-rasterizer. Per-run `comparison.json` and images are retained alongside
-`stdout.log`, `stderr.log`, and an aggregate `attempt.json`. An invalid
-GPU context, missing draws, or missing requested GPU timing fails the run;
-the failure is recorded instead of silently retrying on software or the iGPU.
-Each scenario exposes GPU sample counts and null timings when unsupported.
-Pass `--no-offload` to inherit existing GPU selection. Headless runs are
-opt-in via `--headless`.
+rasterizer. Each verified measurement requires its renderer JSON, combined
+framebuffer screenshots, and the combined cross-backend comparison. Invalid
+GPU identities, nonfinite timings, missing evidence, missing draws, or missing
+requested timer queries fail the run; the launcher does not silently retry
+with the iGPU or a software rasterizer.
+
+For each run the agent gets `comparison.json`, `three.json`, `custom.json`,
+both actual framebuffer PNGs, `gpu-context-three.json`,
+`gpu-context-custom.json`, `stdout.log`, and `stderr.log`. The run root
+contains stable machine-readable `attempt.json` plus a concise `summary.md`
+with hardware identities and observed CPU/GPU medians. On failure,
+`attempt.json` records `failure_code` and `diagnosis`, with classifications
+such as `wrong-gpu`, `software-renderer`, `gpu-identity-unavailable`,
+`gpu-timer-unavailable`, `benchmark-timeout`, or `browser-failure`.
+Missing display or invalid run count is recorded as a `preflight_error`.
+The original renderer probe JSONs are saved before hardware selection is
+enforced so the agent can diagnose a fallback without rerunning the full test.
+No durations are invented when GPU timer results are missing.
+
+Pass `--no-offload` to inherit GPU selection. Headless is opt-in via
+`--headless`. The dependency-free `--self-test` now mocks a full two-run
+success, rejected software fallback, and preflight failure, checking both
+output files without launching Chromium.
 
 `python scripts/run-backyard-hardware-benchmark.py --self-test` is dependency-
 free and checks GPU rejection, timer reporting, and result aggregation in
