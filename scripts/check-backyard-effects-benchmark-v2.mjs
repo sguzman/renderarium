@@ -78,6 +78,36 @@ assert.ok(threeBody,"Missing real Three.js module code");
 new Script(threeBody[1],{filename:"backyard-threejs-effects-benchmark-v3.js"});
 for(const token of ["EXT_disjoint_timer_query_webgl2","gl.beginQuery(timerExt.TIME_ELAPSED_EXT,q)","gl.endQuery(timerExt.TIME_ELAPSED_EXT)","GPU_DISJOINT_EXT","gpuPipelineMs","gpuTimer:!timerExt?","b.phase==='drain'"])
   assert.ok(three.includes(token),"Three.js asynchronous hardware query feature missing: "+token);
+// Exercise the Three.js timer code with a WebGL2 protocol mock. GitHub-hosted
+// SwiftShader does not expose the hardware timer extension on all runners.
+const timerCode=three.match(/const timerExt=gl\.getExtension\('EXT_disjoint_timer_query_webgl2'\)[\s\S]*?(?=const diagnosticView=)/);
+assert.ok(timerCode,"Missing extractable Three.js timer-query implementation");
+function mockGpu(disjoint=false, supported=true){
+  const ext={TIME_ELAPSED_EXT:150,GPU_DISJOINT_EXT:160};
+  const gl={
+    getExtension:()=>supported?ext:null,getParameter:()=>disjoint,
+    createQuery:()=>({}),beginQuery:()=>{},endQuery:()=>{},deleteQuery:()=>{},
+    QUERY_RESULT_AVAILABLE:170,QUERY_RESULT:180,
+    getQueryParameter:(_,p)=>p===170?true:3200000,
+  };
+  const run=new Script(timerCode[0]+\`
+    const sample={gpu:[]};let selected=null;
+    for(let i=0;i<3;i++)selected=beginGpu(sample);
+    endGpu(selected);pollGpu();
+    ({samples:sample.gpu,pending:gpuPending.length,disjoint:gpuDisjoint});
+  \`);
+  return run.runInNewContext({gl,bench:{records:[{gpu:[]}]},console});
+}
+const validGpu=mockGpu(false,true);
+assert.equal(validGpu.samples.length,1,"Three.js asynchronous GPU query did not yield a sample");
+assert.equal(validGpu.samples[0],3.2,"Three.js GPU nanosecond conversion incorrect");
+assert.equal(validGpu.pending,0,"Three.js completed GPU query was not released");
+const absentGpu=mockGpu(false,false);
+assert.equal(absentGpu.samples.length,0,"Unsupported GPU timer must not invent measurements");
+const disjointGpu=mockGpu(true,true);
+assert.equal(disjointGpu.samples.length,0,"Disjoint timer must invalidate GPU durations");
+assert.equal(disjointGpu.disjoint,true,"GPU disjoint flag was not preserved");
+console.log("PASS Three.js asynchronous WebGL2 GPU timer contract: valid, unsupported, and disjoint");
 assert.ok(three.includes("window.__THREE_EFFECTS_DIAGNOSTIC__"),"Missing deterministic Three.js camera/time hook");
 assert.ok(benchmark.includes("window.__CUSTOM_EFFECTS_DIAGNOSTIC__"),"Missing deterministic Custom camera/time hook");
 assert.ok(three.includes("if(cfg.shafts&&daylight>.06)"),"Three.js cannot draw nonphysical sunshafts at night");
