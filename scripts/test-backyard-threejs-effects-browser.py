@@ -138,8 +138,8 @@ def run(swiftshader: bool, out: Path, require_hardware: bool = False, headed: bo
             if swiftshader:
                 args.append("--enable-unsafe-swiftshader")
             if require_hardware and swiftshader:
-            raise ValueError("--require-hardware conflicts with --allow-swiftshader")
-        browser = pw.chromium.launch(headless=not headed, args=args)
+                raise ValueError("--require-hardware conflicts with --allow-swiftshader")
+            browser = pw.chromium.launch(headless=not headed, args=args)
             ctx = browser.new_context(viewport={"width":620, "height":860}, device_scale_factor=1)
             page = ctx.new_page()
             problems: list[str] = []
