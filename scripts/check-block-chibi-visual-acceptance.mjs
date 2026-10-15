@@ -104,7 +104,7 @@ function checkLedger(ledger) {
     assert.equal(preview.source_assembly,item.assembly_path);
     assert.equal(preview.source_assembly_blob,item.assembly_git_blob);
     const acceptedPartCount=amended?amendment.corrected.parts:sizes[i][0];
-    assert.equal(preview.parts.split("\n").length,acceptedPartCount,
+    assert.equal(preview.parts.split("\n").filter(Boolean).length,acceptedPartCount,
       scene+": accepted primitive rows altered");
     assert.equal(preview.mesh_count??preview.geometry_count,acceptedPartCount);
     assert.equal(item.primitives,sizes[i][0]);
