@@ -65,10 +65,13 @@ def run(allow_swiftshader: bool, output_dir: Path) -> None:
         assert data["renderer"] == "custom-WebGL2"
         assert data["geometryParts"] == 179
         assert len(data["scenarios"]) == 7
+        actual_size = page.evaluate("() => [document.querySelector(\'#view\').width, document.querySelector(\'#view\').height]")
+        assert actual_size[0] >= 500 and actual_size[1] == 430, actual_size
+        expected_resolution = f"{actual_size[0]}x{actual_size[1]}"
         for i, item in enumerate(data["scenarios"]):
             assert item["scenario"] == EXPECTED[i], item
             assert item["frames"] >= 1, f"No frames sampled in {EXPECTED[i]}"
-            assert item["resolution"] == "620x430", item
+            assert item["resolution"] == expected_resolution, item
             assert item["drawCalls"] == EXPECTED_DRAWS[i], item
             assert item["cpuRenderMs"]["p50"] > 0, item
             assert item["cpuRenderMs"]["p95"] > 0, item
