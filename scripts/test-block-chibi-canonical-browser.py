@@ -306,8 +306,10 @@ def run(scene: str, allow_swiftshader: bool, report_json: Path | None = None) ->
                     "schema": "renderarium-renderer-baseline-v1",
                     "scene": scene_id,
                     "accepted_source": {
+                        "authority": acceptance_authority,
                         "assembly_blob": accepted["assembly_git_blob"],
-                        "preview_blob": accepted["preview_git_blob"],
+                        "preview_blob": authorized_preview_blob,
+                        "historical_preview_blob": accepted["preview_git_blob"],
                     },
                     "canonical_ir": {
                         "total_parts": len(parts),
