@@ -53,6 +53,25 @@ Backyard preview. Production source-to-chat packets instead cite the pinned new
 amendment for the 179-part viewer. Acceptance remains a human visual verdict,
 not evidence of canonical WebGL performance or delivery inside ChatGPT.
 
+### Stylized sunshaft sample-count experiment (v2.1)
+
+The verified v2 software Chromium artifact indicated much slower frame intervals
+for the accepted stylized sunshaft pass (about 83 ms versus 17 ms for minimal
+rendering at 620 × 295 on SwiftShader). The original shader integrates 40
+raymarch samples per pixel, each iterating eight source beams; JavaScript render
+submission times remained near 0.2 ms and GPU timer queries were unavailable.
+These measurements identify a software-rendering performance concern, **not**
+the user's physical RTX 3090 speed.
+
+The isolated `experiments/diagnostics/backyard-sunshaft-raymarch-sample-sweep-v2-1-2026-10-15.html`
+compiles trial shaders with 20 and 10 samples as alternatives to the original
+40-sample shader. It measures minimal, shaft-only and all-effects configurations
+with fixed camera/time/weather parameters. Default remains the original
+40-sample shader; no accepted geometry, unified baseline or production GLSL
+is overwritten. Chromium QA records actual timings and color-image differences
+to the 40-sample output. Pixel differences do not imply artistic approval.
+No shader quality reduction is promoted automatically.
+
 ## Optional renderer-quality experiments
 
 The production preview keeps its approved defaults. Diagnostic URLs may explicitly request
