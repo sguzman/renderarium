@@ -19,6 +19,37 @@ import {assertAcceptedLedgerRevision} from "../runtime/chat/accepted-ledger-pin.
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const ledgerPath=resolve(root,"contracts/accepted-block-chibi-v1.json");
+const amendmentPath="contracts/accepted-backyard-geometry-amendment-2026-10-14.json";
+const AMENDMENT_BLOB="5c4c69a05743b84c793b80289ca7be441dce5b7a";
+const acceptedCurrentBackyard={parts:179,preview:"ba84322ab1a5c1e7db4515b35bd0ce760d3cbc03",shell:"6a310a23e80863f18d8abb88b8cad18a9aaf2029"};
+function verifyAmendment(ledger){
+  assert.equal(gitBlob(amendmentPath),AMENDMENT_BLOB,
+    "accepted Backyard geometry amendment changed");
+  const amendment=JSON.parse(sourceBytes(amendmentPath).toString("utf8"));
+  assert.equal(amendment.format,"scenarium-accepted-backyard-geometry-amendment-v1");
+  assert.equal(amendment.baseline_ledger_blob,"d49365235fd3c60c0693a7c04ead0464640955da");
+  const original=ledger.recorded_scenes[4];
+  assert.equal(original.scene,amendment.scene);
+  assert.equal(original.primitives,amendment.baseline.parts);
+  assert.equal(original.preview_git_blob,amendment.baseline.preview_blob);
+  assert.equal(gitBlob(amendment.baseline.historical_preview_path),original.preview_git_blob,
+    "historical accepted Backyard preview not preserved");
+  assert.equal(gitBlob(amendment.baseline.historical_shell_path),amendment.baseline.shell_blob,
+    "historical accepted Backyard shell not preserved");
+  const before=JSON.parse(sourceBytes(amendment.baseline.historical_preview_path).toString("utf8"));
+  assert.equal(before.groups[0].source_blob,amendment.baseline.shell_blob);
+  assert.equal(before.mesh_count,181);
+  assert.equal(before.parts.split("\n").length,181);
+  assert.equal(amendment.corrected.parts,acceptedCurrentBackyard.parts);
+  assert.equal(amendment.corrected.preview_blob,acceptedCurrentBackyard.preview);
+  assert.equal(amendment.corrected.shell_blob,acceptedCurrentBackyard.shell);
+  assert.equal(amendment.corrected.preview_path,original.preview_path);
+  assert.equal(gitBlob(amendment.corrected.preview_path),amendment.corrected.preview_blob,
+    "accepted corrected Backyard preview changed");
+  assert.equal(gitBlob(amendment.corrected.shell_path),amendment.corrected.shell_blob,
+    "accepted corrected Backyard source changed");
+  return amendment;
+}
 const sceneNames=[
   "living-room","kitchen","bathroom","office","backyard","garage","factory"
 ];
@@ -47,6 +78,7 @@ function checkLedger(ledger) {
     "forbidden_without_explicit_owner_request");
   assert.equal(ledger.canonical_threejs,"unverified");
   assert.equal(ledger.recorded_scenes?.length,7,"exactly seven accepted scenes");
+  const amendment=verifyAmendment(ledger);
   const ids=new Set();
   let parts=0,groups=0,sourcePins=0;
   for(const [i,item] of ledger.recorded_scenes.entries()){
@@ -62,15 +94,19 @@ function checkLedger(ledger) {
     assert.match(item.preview_git_blob,/^[0-9a-f]{40}$/);
     assert.equal(gitBlob(item.assembly_path),item.assembly_git_blob,
       scene+": accepted assembly changed");
-    assert.equal(gitBlob(item.preview_path),item.preview_git_blob,
+    const amended=name==="backyard";
+    if(!amended)assert.equal(gitBlob(item.preview_path),item.preview_git_blob,
       scene+": accepted preview changed");
+    else assert.equal(gitBlob(item.preview_path),amendment.corrected.preview_blob,
+      scene+": subsequently accepted 179-part preview changed");
     const preview=JSON.parse(sourceBytes(item.preview_path).toString("utf8"));
     assert.equal(preview.scene,scene);
     assert.equal(preview.source_assembly,item.assembly_path);
     assert.equal(preview.source_assembly_blob,item.assembly_git_blob);
-    assert.equal(preview.parts.split("\n").length,sizes[i][0],
+    const acceptedPartCount=amended?amendment.corrected.parts:sizes[i][0];
+    assert.equal(preview.parts.split("\n").length,acceptedPartCount,
       scene+": accepted primitive rows altered");
-    assert.equal(preview.mesh_count??preview.geometry_count,sizes[i][0]);
+    assert.equal(preview.mesh_count??preview.geometry_count,acceptedPartCount);
     assert.equal(item.primitives,sizes[i][0]);
     assert.equal(preview.groups.length,sizes[i][1],
       scene+": accepted instance count altered");
@@ -86,14 +122,14 @@ function checkLedger(ledger) {
         scene+": accepted component source revision changed: "+group.id);
       sourcePins++;
     }
-    parts+=item.primitives;
+    parts+=acceptedPartCount;
     groups+=item.component_instances;
   }
-  assert.equal(parts,981,"accepted total primitive count drift");
+  assert.equal(parts,979,"current amended campaign geometry total drift");
   assert.equal(groups,84,"accepted total component count drift");
   assert.equal(sourcePins,84,"accepted source provenance incomplete");
   return {scenes:ids.size,parts,groups,sourcePins,
-    uniqueAssetBlobs:blobCache.size-14};
+    uniqueAssetBlobs:blobCache.size-14,amendedBackyard:true};
 }
 const args=process.argv.slice(2);
 assert(args.length===0||(args.length===1&&args[0]==="--self-test"),
