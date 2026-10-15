@@ -210,6 +210,15 @@ jobs:
           name: backyard-sunshaft-v2-1
           path: artifacts/backyard-sunshaft-v2-1/
           if-no-files-found: ignore
+      - name: Exercise effects-matched Three.js and WebGL2 Backyard pipelines in Chromium
+        run: python scripts/test-backyard-threejs-effects-browser.py --allow-swiftshader --output-dir artifacts/backyard-three-effects-v3
+      - name: Upload effects-matched Backyard renderer comparison
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: backyard-three-effects-v3
+          path: artifacts/backyard-three-effects-v3/
+          if-no-files-found: ignore
       - name: Verify canonical preview HTTP entrypoints
         run: node scripts/test-block-chibi-canonical-preview-server.mjs
       - name: Exercise actual browser scene controls for seven accepted scenes
