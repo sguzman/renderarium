@@ -37,7 +37,12 @@ for(const scene of selected){
   const approval=ledger.recorded_scenes.find(x=>x.scene===packet.scene);
   assert.equal(ledger.source_geometry,"frozen");
   assert.equal(ledger.canonical_threejs,"unverified");
-  assert.equal(approval.primitives,packet.canonical_semantics.geometry_part_count);
+  const amended=scene==="backyard";
+  const amendmentPath="contracts/accepted-backyard-geometry-amendment-2026-10-14.json";
+  const amendment=amended?JSON.parse(readFileSync(resolve(root,amendmentPath),"utf8")):null;
+  assert.equal(amended?amendment.corrected.parts:approval.primitives,
+    packet.canonical_semantics.geometry_part_count);
+  if(amended)assert.equal(amendment.baseline.parts,approval.primitives);
   assert.equal(approval.component_instances,
     packet.canonical_semantics.component_count);
   assert(approval&&approval.visual_review==="accepted",
@@ -45,10 +50,10 @@ for(const scene of selected){
   assert.equal(packet.existing_visual_acceptance.status,"accepted_prior_to_packet");
   assert.equal(packet.existing_visual_acceptance.scope,"appearance_and_composition");
   assert.equal(packet.existing_visual_acceptance.authority,
-    "contracts/accepted-block-chibi-v1.json");
+    amended?amendmentPath:"contracts/accepted-block-chibi-v1.json");
   assert.equal(packet.existing_visual_acceptance.repeat_review,"not_required");
   assert.equal(packet.existing_visual_acceptance.approved_preview_git_blob,
-    approval.preview_git_blob);
+    amended?amendment.corrected.preview_blob:approval.preview_git_blob);
   assert.equal(packet.existing_visual_acceptance.approved_assembly_git_blob,
     approval.assembly_git_blob);
 
@@ -71,7 +76,7 @@ for(const scene of selected){
     "base_color_flat_shading_without_pbr_or_emissive");
   assert.equal(packet.scene,packet.canonical_semantics.scene_id);
   assert.equal(packet.presentation.groups.length,packet.canonical_semantics.component_count);
-  assert.equal(packet.presentation.parts.split("\n").length,packet.canonical_semantics.geometry_part_count);
+  assert.equal(packet.presentation.parts.split("\n").filter(Boolean).length,packet.canonical_semantics.geometry_part_count);
   const pins=new Map(packet.source.pinned_files.map(e=>[e.path,e.git_blob]));
   assert.equal(pins.get(packet.source.assembly_path),packet.source.assembly_git_blob);
   const preview=readFileSync(resolve(root,packet.source.preview_path));
