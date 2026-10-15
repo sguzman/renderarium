@@ -53,6 +53,25 @@ Backyard preview. Production source-to-chat packets instead cite the pinned new
 amendment for the 179-part viewer. Acceptance remains a human visual verdict,
 not evidence of canonical WebGL performance or delivery inside ChatGPT.
 
+### Effects-matched Three.js versus custom WebGL2 (v3, experimental)
+
+`experiments/diagnostics/backyard-threejs-full-effects-pipeline-benchmark-v3-2026-10-15.html`
+is an independently rendered pipeline in **actual Three.js r160** using
+`WebGLRenderer`, `RawShaderMaterial`, `WebGLRenderTarget`, a depth texture,
+full-screen GLSL shaders, and source-derived particle geometry. It retains the
+same packed 179-part Backyard, all original GLSL texts and seven effects
+configurations as the custom WebGL2 benchmark v2. The two paths independently
+run the fixed 700 ms warm-up plus 2400 ms measured windows.
+
+`scripts/test-backyard-threejs-effects-browser.py` opens both renderers
+over HTTP in Chromium, confirms the same geometry and draw counts, and records
+measured render-submission durations, frame intervals and all-effects pixel
+differences at matching 620×295 framebuffers. It saves source JSON results
+and screenshots in CI. This is a **candidate for measured effects parity**,
+not automatically a visually equivalent or physical-GPU benchmark: investigate
+pixel differences before accepting any rendering or performance conclusions.
+The approved v1.1/v2 implementation remains unchanged.
+
 ### Stylized sunshaft sample-count experiment (v2.1)
 
 The verified v2 software Chromium artifact indicated much slower frame intervals
