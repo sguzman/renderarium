@@ -76,5 +76,8 @@ for(const required of ["new T.WebGLRenderer","new T.RawShaderMaterial","new T.De
 const threeBody=three.match(/<script type="module">([\s\S]*?)<\/script><\/body><\/html>/);
 assert.ok(threeBody,"Missing real Three.js module code");
 new Script(threeBody[1],{filename:"backyard-threejs-effects-benchmark-v3.js"});
+assert.ok(three.includes("window.__THREE_EFFECTS_DIAGNOSTIC__"),"Missing deterministic Three.js camera/time hook");
+assert.ok(benchmark.includes("window.__CUSTOM_EFFECTS_DIAGNOSTIC__"),"Missing deterministic Custom camera/time hook");
+assert.ok(three.includes("if(cfg.shafts&&daylight>.06)"),"Three.js cannot draw nonphysical sunshafts at night");
 console.log("PASS Three.js v3 effects-matched static contract: original 13 shader definitions, identical source bytes, WebGL renderer, seven passes and scripted benchmark");
 console.log("PASS Sunshaft v2.1 static diagnostic: unchanged original 13 shaders, verified scene and seven sample-count trials");
