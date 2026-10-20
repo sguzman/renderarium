@@ -39,6 +39,27 @@ const scopes=[
   /^runtime\/(?:README\.md|sc3d\/README\.md|(?:[\w.-]+\/)*[\w.-]+\.(?:js|mjs|json))$/,
   /^scenes\/block-chibi-(?:living-room|kitchen|bathroom|office|backyard|garage|factory)-v1\/(?:README\.md|room\.assembly\.yml|preview-geometry\.json|components\/[\w.-]+\.sc3d\.yml|review-depth-(?:buffered|cpu-only)\.html)$/
 ];
+// Block attributed verbatim review text; neutral acceptance summaries remain allowed.
+function hasPrivateReviewQuotation(content){
+  const lines=content.split(/\r?\n/);
+  const attributedQuote=/\b(?:the\s+)?(?:principal|user|owner)\b[^.!?]{0,200}?\b(?:said|responded|replied|wrote|stated|remarked|commented|reported)\s*:\s*(?:\*\*)?\s*["'“]/i;
+  const quotationField=/^\s*(?:principal_statement|user_statement|owner_statement|human_quote|reviewer_quote|verbatim_user_quote)\s*:/i;
+  for(let i=0;i<lines.length;i++){
+    if(quotationField.test(lines[i]) || attributedQuote.test(lines[i]+" "+(lines[i+1]||"")))return true;
+  }
+  return false;
+}
+if(process.argv.includes("--self-test")){
+  const tests=[
+    {text:"The principal reviewed the source geometry; the visual result was accepted.",expected:false},
+    {text:["The prin","cipal responded: **","\"looks acceptable\"**"].join(""),expected:true},
+    {text:["reviewer_","quote: approved"].join(""),expected:true},
+    {text:"Production README: technical outcomes, geometry parity, limitations.",expected:false}
+  ];
+  for(const sample of tests)assert.equal(hasPrivateReviewQuotation(sample.text),sample.expected);
+  console.log("PASS private-review quotation regression cases");
+  process.exit(0);
+}
 const files=execFileSync("git",["ls-files","-z"],{encoding:"utf8"}).split("\0").filter(Boolean);
 assert(files.length>100,"Incomplete public production snapshot");
 const flagged=[];
@@ -54,7 +75,8 @@ for(const file of files){
      /\bprivate[\s-]+conversational(?:ly)?\b/i.test(content) ||
      /\b(?:private|personal)\s+(?:vent|rant|chat|conversation|message|diary)\b/i.test(content) ||
      /\b(?:verbatim|transcript)\s+(?:user|owner|chat|conversation)\b/i.test(content) ||
-     /^\s*(?:user|human|owner)\s*:\s*.+$/mi.test(content)){
+     /^\s*(?:user|human|owner)\s*:\s*.+$/mi.test(content) ||
+     hasPrivateReviewQuotation(content)){
     flagged.push({file,reason:"nonproduction conversation marker"});
   }
 }
