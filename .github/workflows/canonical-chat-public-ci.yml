@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+      - name: Exercise private-review quotation leak regression cases
+        run: node tools/publication-gate.mjs --self-test
       - name: Enforce public publication boundary
         run: node tools/publication-gate.mjs
       - uses: actions/setup-node@v4
