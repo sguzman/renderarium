@@ -25,7 +25,7 @@ These are separate diagnostics, **not changes to the accepted production rendere
 
 - `experiments/diagnostics/backyard-renderer-webgl2-vs-threejs-baseline-benchmark-2026-10-15.html` is Renderer Benchmark v1. It compares custom WebGL2 and pinned Three.js r160 over identical 179-part geometry and GLSL material, with merged and per-part draw modes. It intentionally excludes environmental effects. Three.js requires a CDN connection for initial loading.
 - `experiments/diagnostics/backyard-full-effects-pipeline-benchmark-v2-2026-10-15.html` is Renderer Benchmark v2. It forks the accepted Unified Backyard v1.1 experimental effects renderer and runs seven fixed-condition **within-custom-WebGL2** profiles: minimal pipeline, outlines, shafts, bloom, dust, FXAA and combined. The original shader strings, packed 179-part source and scene transforms are unchanged.
-- V2 excludes 700 ms warmup, measures each profile for 2400 ms, then restores the user's original controls and camera. CPU render-call p50/p95, rAF frame intervals, per-stage CPU cost, draw calls and optional asynchronous WebGL2 disjoint-query GPU elapsed times are recorded. The latter are **not available on every system**; missing/invalid measurements must not be guessed.
+- V2 excludes 700 ms warmup, measures each profile for 2400 ms, then restores the original interactive controls and camera. CPU render-call p50/p95, rAF frame intervals, per-stage CPU cost, draw calls and optional asynchronous WebGL2 disjoint-query GPU elapsed times are recorded. The latter are **not available on every system**; missing/invalid measurements must not be guessed.
 - A disabled effect may still incur an existing fullscreen bypass pass. V2 therefore describes *real incremental configuration cost* rather than perfectly isolated shader cost. No v2 Three.js effects parity is claimed; that requires independent implementation and pixel-parity testing.
 - `node scripts/check-backyard-effects-benchmark-v2.mjs` checks the immutable scene payload, 13 unchanged GLSL/camera shader strings, all seven scenarios, profiler instrumentation and JavaScript syntax. It runs in the public CI canonical job. This structural check is **not** live hardware benchmarking, visual acceptance or proof that an in-chat renderer displayed.
 - The public publication gate now pins every archived Backyard experiment path explicitly; additions are not automatically allowed. Accepted production scene geometry and immutable visual verdicts remain unaffected.
@@ -34,8 +34,7 @@ These are separate diagnostics, **not changes to the accepted production rendere
 
 The historical seven-scene visual-acceptance ledger at
 `contracts/accepted-block-chibi-v1.json` is **immutable**. It records the
-October 9 Backyard with **181 geometry parts**. The user subsequently accepted
-a narrowly scoped fence-clearance correction with **179 geometry parts**, without
+October 9 Backyard with **181 geometry parts**. A narrowly scoped fence-clearance correction was subsequently accepted with **179 geometry parts**, without
 revoking acceptance of the other six scenes.
 
 The additive, separately pinned authority is
@@ -147,7 +146,7 @@ output files without launching Chromium.
 `python scripts/run-backyard-hardware-benchmark.py --self-test` is dependency-
 free and checks GPU rejection, timer reporting, and result aggregation in
 public CI. **No RTX 3090 result has yet been observed from this environment**;
-the wrapper is for an agent with access to the user's running Linux desktop.
+the wrapper is for an agent with access to a suitable Linux desktop.
 
 ### Multi-camera effects parity study (seven views)
 
@@ -192,7 +191,7 @@ rendering at 620 × 295 on SwiftShader). The original shader integrates 40
 raymarch samples per pixel, each iterating eight source beams; JavaScript render
 submission times remained near 0.2 ms and GPU timer queries were unavailable.
 These measurements identify a software-rendering performance concern, **not**
-the user's physical RTX 3090 speed.
+physical RTX 3090 performance.
 
 The isolated `experiments/diagnostics/backyard-sunshaft-raymarch-sample-sweep-v2-1-2026-10-15.html`
 compiles trial shaders with 20 and 10 samples as alternatives to the original
@@ -447,8 +446,7 @@ review of bias artifacts and shadow-edge softness across environments.
 
 ### Accepted Backyard day/night cycle (14 October 2026)
 
-The principal reviewed the corrected in-chat interactive day/night scene
-and explicitly praised its visual result. Its standalone WebGL2 HTML
+The corrected in-chat day/night demonstration received a positive visual review. Its standalone WebGL2 HTML
 implementation is preserved at
 `experiments/interactive-weather/backyard-daynight-2026-10-14.html`,
 with byte-exact GitHub readback.
@@ -471,8 +469,7 @@ Canonical semantic review:
 
 ### Positively reviewed in-chat Backyard snow (14 October 2026)
 
-The principal viewed the real in-chat source-derived WebGL2 snow simulation
-and responded: **"this is pretty good. very cute. i like it"**.
+The source-derived in-chat WebGL2 snow demonstration received a positive visual review.
 The exact standalone HTML source corresponding to that reviewed viewer is
 preserved at
 `experiments/interactive-weather/backyard-snow-2026-10-14.html` and was
@@ -493,7 +490,7 @@ archive is not proof of broad renderer/Three.js parity or physics correctness.
 
 ### Preserved in-chat Backyard rain and wind demonstration (13 October 2026)
 
-The source-derived WebGL2 rain study accepted by the principal is archived as
+The visually accepted source-derived WebGL2 rain study is archived as
 `experiments/interactive-weather/backyard-rain-wind-2026-10-13.html`.
 This is the locally verified standalone HTML source corresponding to the
 working in-chat experiment (with chat-specific wrapper differences), not a
@@ -569,8 +566,7 @@ necessary before treating any specific bias as an improvement.
 
 **FAILED — not accepted; development closed.** The independent compact-car
 geometry iteration sequence v2-v11r did not meet visual-quality requirements.
-The in-chat preview delivery path also failed repeatedly. The principal
-explicitly ended this car effort rather than authorizing further repairs.
+The in-chat preview delivery path also failed repeatedly. This car effort was closed following visual rejection rather than continued revisions.
 
 All historical SC3D versions, associated preview manifests, and verification
 code are retained for provenance and audit. No candidate is promoted into
